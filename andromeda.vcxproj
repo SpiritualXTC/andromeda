@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7D55DF3C-9EA7-4638-A283-F46ED6760B47}</ProjectGuid>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <Keyword>ManagedCProj</Keyword>
+    <RootNamespace>andromeda</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CLRSupport>false</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Development\Git\andromeda\include;C:\Development\SDK\glm;C:\Development\SDK\glew-1.10.0\include;C:\Development\SDK\boost_1_58_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Development\SDK\glew-1.10.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Development\Git\andromeda\include;C:\Development\SDK\glm;C:\Development\SDK\glew-1.10.0\include;C:\Development\SDK\boost_1_58_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Development\SDK\glew-1.10.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CompileAsManaged>false</CompileAsManaged>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies />
+      <NoEntryPoint />
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies />
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Docs\docs.txt" />
+    <ClInclude Include="include\andromeda\andromeda.h" />
+    <ClInclude Include="include\andromeda\Engine\config.h" />
+    <ClInclude Include="include\andromeda\Engine\engine.h" />
+    <ClInclude Include="include\andromeda\Engine\engine.hpp" />
+    <ClInclude Include="include\andromeda\Engine\module.h" />
+    <ClInclude Include="include\andromeda\Engine\system.h" />
+    <ClInclude Include="include\andromeda\Events\event.h" />
+    <ClInclude Include="include\andromeda\Events\event_manager.h" />
+    <ClInclude Include="include\andromeda\Events\event_manager.hpp" />
+    <ClInclude Include="include\andromeda\exception.h" />
+    <ClInclude Include="include\andromeda\Graphics\buffer.h" />
+    <ClInclude Include="include\andromeda\Graphics\context.h" />
+    <ClInclude Include="include\andromeda\Math\glmx\glm_extension.h" />
+    <ClInclude Include="include\andromeda\Math\glmx\glm_infinity.h" />
+    <ClInclude Include="include\andromeda\Math\region.h" />
+    <ClInclude Include="include\andromeda\Graphics\geometry_builder.h" />
+    <ClInclude Include="include\andromeda\Graphics\opengl.h" />
+    <ClInclude Include="include\andromeda\Graphics\renderer.h" />
+    <ClInclude Include="include\andromeda\Graphics\view.h" />
+    <ClInclude Include="include\andromeda\Input\input.h" />
+    <ClInclude Include="include\andromeda\Input\keyboard.h" />
+    <ClInclude Include="include\andromeda\Input\mouse.h" />
+    <ClInclude Include="include\andromeda\Platform\platform.h" />
+    <ClInclude Include="include\andromeda\stddef.h" />
+    <ClInclude Include="include\andromeda\Utilities\dependancy.h" />
+    <ClInclude Include="include\andromeda\Utilities\log.h" />
+    <ClInclude Include="include\andromeda\Utilities\observer.h" />
+    <ClInclude Include="include\andromeda\Utilities\singleton.h" />
+    <ClInclude Include="include\andromeda\Utilities\template.h" />
+    <ClInclude Include="include\andromeda\Utilities\timing.h" />
+    <ClInclude Include="src\windows\Graphics\context_windows.h" />
+    <ClInclude Include="src\windows\Platform\platform_windows.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Docs\code.txt" />
+    <Text Include="Docs\notes.txt" />
+    <Text Include="Docs\readme.txt" />
+    <Text Include="Docs\todo.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\andromeda\Engine\config.cpp" />
+    <ClCompile Include="src\andromeda\Engine\engine.cpp" />
+    <ClCompile Include="src\andromeda\Engine\system.cpp" />
+    <ClCompile Include="src\andromeda\Graphics\buffer.cpp" />
+    <ClCompile Include="src\andromeda\Graphics\context.cpp" />
+    <ClCompile Include="src\andromeda\Graphics\geometry_builder.cpp" />
+    <ClCompile Include="src\andromeda\Graphics\renderer.cpp" />
+    <ClCompile Include="src\andromeda\Graphics\view.cpp" />
+    <ClCompile Include="src\andromeda\Input\keyboard.cpp" />
+    <ClCompile Include="src\andromeda\Input\mouse.cpp" />
+    <ClCompile Include="src\andromeda\Platform\platform.cpp" />
+    <ClCompile Include="src\andromeda\Utilities\log.cpp" />
+    <ClCompile Include="src\windows\andromeda_windows.cpp" />
+    <ClCompile Include="src\windows\Graphics\context_windows.cpp" />
+    <ClCompile Include="src\windows\Platform\platform_windows.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

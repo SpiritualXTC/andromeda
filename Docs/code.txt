@@ -1,0 +1,49 @@
+
+
+
+
+Define Coding Standards:
+
+HEADER:
+
+#ifndef _ANDROMEDA_DIRECTORIES_FILENAME_H_
+#define _ANDROMEDA_DIRECTORIES_FILENAME_H_
+
+/*
+	Description / purpose of file
+*/
+
+// Standard Libraries
+
+// Boost Libraries
+
+// 3rd Party Libraries
+
+// Andromeda Includes
+
+
+namespace andromeda
+{
+	// Forward Declarations
+
+	// Support Definitions (Needed Globabaly)
+
+	// Class Definition
+}
+
+#include [TEMPLATE_HPP]
+
+#endif
+
+
+
+SOURCE:
+// Include Core Header Definition for this Class
+
+// Additional Standard Libraries
+
+// Additional Boost Libraries
+
+// Additional 3rd Party Libraries
+
+// Additional Andromeda Includes

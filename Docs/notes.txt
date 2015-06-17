@@ -1,0 +1,47 @@
+   _____              .___                                .___       
+  /  _  \   ____    __| _/______  ____   _____   ____   __| _/____   
+ /  /_\  \ /    \  / __ |\_  __ \/  _ \ /     \_/ __ \ / __ |\__  \  
+/    |    \   |  \/ /_/ | |  | \(  <_> )  Y Y  \  ___// /_/ | / __ \_
+\____|__  /___|  /\____ | |__|   \____/|__|_|  /\___  >____ |(____  /
+        \/     \/      \/                    \/     \/     \/     \/ 
+
+ _______          __                 
+ \      \   _____/  |_  ____   ______
+ /   |   \ /  _ \   __\/ __ \ /  ___/
+/    |    (  <_> )  | \  ___/ \___ \ 
+\____|__  /\____/|__|  \___  >____  >
+        \/                 \/     \/ 
+                                     
+                                     
+Engine / System Modules:
+------------------------
+- A better system could be implemented for the core heirarchy :(
+- Module Events:
+	onPause():	Makes the System Inactive!	- WHen it is paused
+	onResume():	Reactivates the System		- When it resumes use
+	onStop():	Stops the System			- When it Gets removed from the sysem completely
+	onStart():	Starts the System			- When it Gets added to the system
+                                     
+                                     
+Platform / Context:
+-------------------
+Determine if this will be possible to completely remove all trace from teh Include Library :)
+
+OR
+
+Make some of the functions of the platforms protected, but still available to 'System' (Hide via an Interface?)
+
+Direct Access to Platform / Context could allow some undefined results :(
+
+
+
+
+
+src/windows/platform/platform_windows.cpp:
+ + WM_SIZING:	The Windows notification is the best one to use, however the better one (WM_WINDOWPOSCHANGED)
+				is sent at a time, that could:
+				 -	Worst Case: Cause an infinite loop
+				 -	Best Case: Cause changeDisplaySettings to get called twice and potentially 
+					filter down to the context resize. 
+					And also fire off the resize event twice.
+                                     
