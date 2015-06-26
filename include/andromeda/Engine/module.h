@@ -98,7 +98,7 @@ namespace andromeda
 			Critical = 1,	// Critical. Needs to be done first.	Timing, Operating System Interaction
 
 			Input,			// Input. Mouse, Keybaord, etc
-			Game,			// Game. Game logic
+			Update,			// Application logic
 			Render,			// Render. Rendering Code.
 
 			Idle,			// Everything Else. Threads [Checks / Messaging], Messaging, File I/O, Resources, etc.

@@ -4,6 +4,7 @@
 
 #include <andromeda/Engine/engine.h>
 #include <andromeda/Events/event_manager.h>
+#include <andromeda/Events/resize.h>
 #include <andromeda/Platform/platform.h>
 
 #include <andromeda/Utilities/log.h>
@@ -155,6 +156,10 @@ Boolean System::changeDisplaySettings(DisplayMode mode)
 }
 
 
+
+/*
+
+*/
 Boolean System::changeDisplaySettings(DisplayFormat format)
 {
 	DisplayParameters dp = _display;
@@ -199,6 +204,36 @@ Boolean System::updateDisplaySettings()
 }
 
 
+/*
+	
+*/
+Boolean System::run()
+{
+	std::shared_ptr<Platform> platform = getDependancyPtr<Platform>();
+
+	if (!platform)
+		return false;
+
+
+	// Show the Platform
+	platform->show();
+
+	// Send initial resize event!
+	dispatchResizeEvent();
+
+	return true;
+}
+
+
+/*
+
+*/
+Boolean System::quit()
+{
+	_engine->quit();
+	return true;
+}
+
 
 
 
@@ -210,18 +245,14 @@ Boolean System::close()
 	CloseEventArgs e;
 	e.cancel = false;
 
-
+	// Send the Close Event
 	dispatch<CloseEventArgs>(System::Close, e);
 
 
 	if (!e.cancel)
 	{
-		// Umm quit here!
-		log_err("Quitting....");
-		log_warn("Quitting, is not automatic yet... System Module needs someway to access the Engine.quit() function.");
-		
-		_engine->quit();
-			// Need to somehow retrieve a pointer to the engine to call quit automagically....
+		// Quit 
+		_engine->quit();		
 	}
 	else
 		log_warn("Quitting was cancelled");
@@ -235,10 +266,9 @@ Boolean System::close()
 */
 Boolean System::pause()
 {
-	log_warn("PAUSE");
+	log_warn("System::Pause()");
 
 	_engine->pause(false);
-
 
 	AppEventArgs e;
 	
@@ -252,8 +282,15 @@ Boolean System::pause()
 */
 Boolean System::resume()
 {
-	log_warn("RESUME");
+	log_warn("System::Resume()");
 	_engine->resume();
+
+
+
+	AppEventArgs e;
+
+	dispatch<AppEventArgs>(System::Resume, e);
+
 	return true;
 }
 

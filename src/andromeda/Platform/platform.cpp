@@ -115,3 +115,51 @@ void Platform::keyUp(Int8 key)
 	if (kb)
 		kb->keyUp(key);
 }
+
+
+
+
+/*
+
+*/
+void Platform::mouseDown(Int8 button, Int32 x, Int32 y)
+{
+	std::shared_ptr<Mouse> mouse = getDependancyPtr<Mouse>();
+
+	if (mouse)
+		mouse->mouseDown(button, x, y);
+}
+
+/*
+
+*/
+void Platform::mouseUp(Int8 button, Int32 x, Int32 y)
+{
+	std::shared_ptr<Mouse> mouse = getDependancyPtr<Mouse>();
+
+	if (mouse)
+		mouse->mouseUp(button, x, y);
+}
+
+
+/*
+
+*/
+void Platform::mouseMove(Int32 x, Int32 y)
+{
+	std::shared_ptr<Mouse> mouse = getDependancyPtr<Mouse>();
+
+	if (mouse)
+		mouse->mouseMove(x, y);
+}
+
+/*
+
+*/
+void Platform::mouseWheel(Int32 delta)
+{
+	std::shared_ptr<Mouse> mouse = getDependancyPtr<Mouse>();
+
+	if (mouse)
+		mouse->mouseWheel(delta);
+}

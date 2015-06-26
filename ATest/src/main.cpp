@@ -8,13 +8,17 @@
 
 #include <andromeda/andromeda.h>
 #include <andromeda/Engine/engine.h>
+#include <andromeda/Engine/system.h>
+#include <andromeda/Graphics/renderer.h>
+#include <andromeda/Utilities/timing.h>
 
+
+#include <andromeda/Utilities/io.h>
 #include <andromeda/Utilities/log.h>
 
 
 #include "app.h"
 #include "console.h"
-#include "test_event.h"
 #include "test_bounds.h"
 
 
@@ -52,20 +56,9 @@ void exit()
 */
 void printHeader()
 {
-	std::ifstream file("../res/andromeda.txt");
+	std::string contents = andromeda::LoadFile("../res/andromeda.txt");
 
-	if (!file.is_open())
-		return;
-
-
-	std::string line;
-	while (std::getline(file, line))
-	{
-		std::cout << line << "\n";
-	}
-	
-
-	file.close();
+	std::cout << contents;
 }
 
 
@@ -84,7 +77,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	// Create Log
 	andromeda::Log::instance();
 
-#if defined(_DEBUG)
+#if defined(_DEBUG) && defined(_WIN32)
 	// Create the Console Output
 	std::shared_ptr<Console> console = std::make_shared<Console>();
 #endif
@@ -92,16 +85,34 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	// Print the Header to Console
 	printHeader();
 
-	testBounds();
+	//testBounds();
 
 
-	/* If this isn't a pointer... it don't wanna compile. so it's unqiue ptr! */
+
+
+
+
+
+
 
 	// Create Engine
-	std::unique_ptr<App> app = std::make_unique<App>(std::move(andromeda::initialise(hInstance)));
+	std::unique_ptr<andromeda::Engine> engine = andromeda::initialise(hInstance);
 
-	// Run the Engine!
-	app->run();
+	// Create Application!
+	std::shared_ptr<App> app = std::make_shared<App>();
+
+	engine->addModule<App>(app);
+
+	engine->setDependancy<App, andromeda::Timing>();
+	engine->setDependancy<App, andromeda::System>();
+	engine->setDependancy<App, andromeda::Renderer>();
+
+	// Initialise Application
+	app->initialise();
+
+
+	// Run Engine
+	engine->run();
 
 	return 0;
 }

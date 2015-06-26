@@ -1,6 +1,7 @@
 #ifndef _ANDROMEDA_GRAPHICS_GEOMETRY_BUILDER_H_
 #define _ANDROMEDA_GRAPHICS_GEOMETRY_BUILDER_H_
 
+#include <memory>
 #include <string>
 #include <list>
 #include <vector>
@@ -12,22 +13,40 @@
 
 namespace andromeda
 {
+	// Forward Declarations
+	class Geometry;
+	class GeometryDescription;
+	class IndexBuffer;
+	class VertexBuffer;
+	
+
+
 	class GeometryBuilder
 	{
 	private:
-		struct _GeometryData
+		struct _VertexData
 		{
 			std::string id;
 
-			Size length;			// Number of elements in the array
-			Size elements;			// Number of elements in the structure
-			Size stride;			// Size of the structure
+			Size length;				// Number of elements in the array
+			Size elements;				// Number of elements in the structure
+			Size stride;				// Size of the structure
 
 			GLenum dataType;			// Data type
-			std::vector<Int8> data;		// Data, this copies rather than a pointer to arbituary data that could be created anywhere!... ((temporary))
+			std::vector<UInt8> data;	// Data, this copies rather than a pointer to arbituary data that could be created anywhere!... ((temporary))
 		};
 
+		
+
+
 	public:
+		enum _GenerateFlags
+		{
+			Normal = 0x01,
+			Texture = 0x01,
+		};
+
+
 		GeometryBuilder();
 		~GeometryBuilder();
 
@@ -73,20 +92,39 @@ namespace andromeda
 		/*
 			Interleave
 		*/
-		Boolean interleave();
+		Boolean interleave(std::shared_ptr<VertexBuffer> vb, std::shared_ptr<GeometryDescription> desc, std::shared_ptr<IndexBuffer> ib = nullptr);
+	
+		void setIndexData(const UInt32 * data, Size indices);
 
 	private:
+
+		//Boolean deindex();	// Removes indexing from the data
 
 		void addVertexData(const std::string & id, void * data, Size length, Size stride, Size elements, GLenum type);
 
 
-		Size _stride = 0;				// Size of the total structure 
-		Size _length = 0;				// Number of array elements in the array
+		Size _stride = 0;					// Size of the total structure 
+		Size _length = 0;					// Number of array elements in the array
 
 
-		std::list<_GeometryData> _geometry;
+		std::vector<UInt32> _indices;		// Face Data
 
+		std::list<_VertexData> _geometry;
 	};
+
+
+	// Builder Functions
+	std::shared_ptr<Geometry> CreateCube(Float width, Float height, Float depth, UInt32 genMask);
+	std::shared_ptr<Geometry> CreatePlane(Float width, Float height, UInt32 genMask);
+	std::shared_ptr<Geometry> CreateEllipse(Float width, Float height, Float depth, Int32 slices, Int32 stacks, UInt32 genMask);
+
+	inline std::shared_ptr<Geometry> CreateSphere(Float radius, Int32 slices, Int32 stacks, UInt32 genMask)
+	{
+		return CreateEllipse(radius * 2.0f, radius * 2.0f, radius * 2.0f, slices, stacks, genMask);
+	}
+
+	std::shared_ptr<Geometry> CreateTorus(Float radius, Float tubeRadius, Int32 segments, Int32 stacks, UInt32 genMask);
+
 }
 
 

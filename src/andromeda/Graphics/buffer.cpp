@@ -8,7 +8,7 @@ using namespace andromeda;
 /*
 
 */
-Buffer::Buffer(GLenum type)
+Buffer::Buffer(GLenum type) : _type(type)
 {
 	glGenBuffers(1, &_handle);
 }

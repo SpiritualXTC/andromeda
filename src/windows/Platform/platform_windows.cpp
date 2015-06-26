@@ -1,6 +1,10 @@
 #include "platform_windows.h"
 
+#include <windowsx.h>
+
 #include <andromeda/Engine/system.h>
+#include <andromeda/Input/mouse.h>
+
 
 #include <andromeda/Utilities/log.h>
 
@@ -47,8 +51,7 @@ PlatformWindows::PlatformWindows(std::weak_ptr<System> system, HINSTANCE hInstan
 
 	// Get NATIVE Screen Resolution: Used for restoring the resolution back upon quitting :)
 	getScreenResolution(_nativeWidth, _nativeHeight);
-	log_debug("Native Screen Resolution: ", _nativeWidth, _nativeHeight);
-
+	
 
 	// Flag indicating the display parameters were invalid, 
 	// And that the system should be notified of the update.
@@ -100,8 +103,6 @@ PlatformWindows::PlatformWindows(std::weak_ptr<System> system, HINSTANCE hInstan
 		Int32 scrHeight = 0;
 
 		getScreenResolution(scrWidth, scrHeight);
-
-		log_warn("Screen Resolution", scrWidth, scrHeight);
 
 		if (width > scrWidth)
 		{
@@ -160,11 +161,6 @@ PlatformWindows::PlatformWindows(std::weak_ptr<System> system, HINSTANCE hInstan
 		return;
 	}
 
-
-
-
-
-
 	/*
 		System Reconfigure!
 	*/
@@ -173,7 +169,6 @@ PlatformWindows::PlatformWindows(std::weak_ptr<System> system, HINSTANCE hInstan
 		log_warn("System Configuration Settings need to be adjusted");
 		sys->changeDisplaySettings(width, height, mode);
 	}
-	
 }
 
 /*
@@ -366,58 +361,46 @@ LRESULT PlatformWindows::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 			Mouse Events: Send Event to Engine
 		*/
 	case WM_MOUSEMOVE:
-		// Dispatch Temporary Mouse Events!
-		//dispatchMouseMoveEvent(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		mouseMove(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		break;
 
 	case WM_LBUTTONDOWN:
-		// Dispatch Temporary Mouse Events!
-		//dispatchMouseDownEvent(Mouse::MOUSE_BUTTON_LEFT, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		mouseDown(Mouse::Left, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		break;
 
 	case WM_LBUTTONUP:
-		// Dispatch Temporary Mouse Events!
-		//dispatchMouseUpEvent(Mouse::MOUSE_BUTTON_LEFT, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		mouseUp(Mouse::Left, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		break;
 
 	case WM_RBUTTONDOWN:
-		// Dispatch Temporary Mouse Events!
-		//dispatchMouseDownEvent(Mouse::MOUSE_BUTTON_RIGHT, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		mouseDown(Mouse::Right, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		break;
 
 	case WM_RBUTTONUP:
-		// Dispatch Temporary Mouse Events!
-		//dispatchMouseUpEvent(Mouse::MOUSE_BUTTON_RIGHT, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		mouseUp(Mouse::Right, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		break;
 
 	case WM_MBUTTONDOWN:
-		// Dispatch Temporary Mouse Events!
-		//dispatchMouseDownEvent(Mouse::MOUSE_BUTTON_MIDDLE, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		mouseDown(Mouse::Middle, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		break;
 
 	case WM_MBUTTONUP:
-		// Dispatch Temporary Mouse Events!
-		//dispatchMouseUpEvent(Mouse::MOUSE_BUTTON_MIDDLE, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		mouseUp(Mouse::Middle, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		break;
 
 	case WM_XBUTTONDOWN:
-		// Dispatch Temporary Mouse Events!
-#if 0
 		if (GET_XBUTTON_WPARAM(wParam) == XBUTTON1)
-			dispatchMouseDownEvent(Mouse::MOUSE_BUTTON_X0, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+			mouseDown(Mouse::XButton0, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		else  if (GET_XBUTTON_WPARAM(wParam) == XBUTTON2)
-			dispatchMouseDownEvent(Mouse::MOUSE_BUTTON_X1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-#endif
+			mouseDown(Mouse::XButton1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		break;
 
 	case WM_XBUTTONUP:
-		// Dispatch Temporary Mouse Events!
-#if 0
 		if (GET_XBUTTON_WPARAM(wParam) == XBUTTON1)
-			dispatchMouseUpEvent(Mouse::MOUSE_BUTTON_X0, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+			mouseUp(Mouse::XButton0, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		else  if (GET_XBUTTON_WPARAM(wParam) == XBUTTON2)
-			dispatchMouseUpEvent(Mouse::MOUSE_BUTTON_X1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-#endif
+			mouseUp(Mouse::XButton1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		break;
 		break;
 
 	case WM_MOUSEHWHEEL:
@@ -446,10 +429,6 @@ LRESULT PlatformWindows::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 void PlatformWindows::onResume()
 {
 	_paused = false;
-
-	// Show Window
-	ShowWindow(_hWnd, SW_SHOWNORMAL);
-	UpdateWindow(_hWnd);
 
 	return;
 }
@@ -799,4 +778,14 @@ Boolean PlatformWindows::enumerateDisplaySettings(std::set<DisplayFormat> & disp
 	}
 
 	return true;
+}
+
+
+void PlatformWindows::show()
+{
+	// Show Window
+	//| SW_SHOWNOACTIVATE
+	ShowWindow(_hWnd, SW_SHOWNORMAL);
+	UpdateWindow(_hWnd);
+
 }

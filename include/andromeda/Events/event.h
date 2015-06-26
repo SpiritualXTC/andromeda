@@ -11,6 +11,9 @@
 
 namespace andromeda
 {
+	/*
+	
+	*/
 	class IEvent
 	{
 	public:
@@ -19,6 +22,10 @@ namespace andromeda
 	};
 
 
+
+	/*
+	
+	*/
 	template <class EVENT>
 	class Event : public IEvent, public TemplateID<EVENT, IEvent>
 	{

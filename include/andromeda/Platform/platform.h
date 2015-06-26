@@ -8,6 +8,7 @@
 #include "../stddef.h"
 #include "../Engine/module.h"
 
+
 namespace andromeda
 {
 	// Forward Declarations
@@ -57,11 +58,27 @@ namespace andromeda
 
 
 
-		// Call Helpers: Tyically only pass to a dependant module
+
+
+		// Call Helpers: Tyically only pass to a dependant module :: These might be better being called directly from the platform implementation!
 		void keyDown(Int8 key);
 		void keyUp(Int8 key);
 
+		void mouseDown(Int8 button, Int32 x, Int32 y);
+		void mouseUp(Int8 button, Int32 x, Int32 y);
+		void mouseMove(Int32 x, Int32 y);
+		void mouseWheel(Int32 delta);
+
+
+
 		void resize(Int32 width, Int32 height);
+
+
+		/*
+			Bootstrap Initialiser
+		*/
+		virtual void show() = 0;
+
 
 
 

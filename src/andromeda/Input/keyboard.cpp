@@ -33,6 +33,12 @@ Keyboard::~Keyboard()
 }
 
 
+void Keyboard::onResume()
+{
+	for (Int32 i = 0; i < KEYS; ++i)
+		_keys[i] = 0;
+}
+
 
 /*
 

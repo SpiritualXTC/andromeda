@@ -24,6 +24,7 @@ include/andromeda/Events/						Event System
 include/andromeda/Graphics/						Graphics Classes
 include/andromeda/Input/						Input Classes
 include/andromeda/Math							"Math" Classes. Temporary Name :)
+include/andromeda/Math/glmx						Extension functionality for GLM							
 inlcude/andromeda/Platform/						Platform Classes
 include/andromeda/Resources/					Resources
 include/andromeda/Utilities/					General Utilities
@@ -35,84 +36,153 @@ include/andromeda/Utilities/					General Utilities
 
 FILES:
 ------
-Key: [Notes]
- - X : Cross Platform Requirements. [Custom Support Added]
- - B : Cross Platform Compatible. [Boost Supported]
- - C : Cross Platform Compatible. [C++ Standard Support]
- - I : Interface
- - A : Abstract
- - T : Template Class
- - P : Platform Restricted [w = Windows, l=Linux, ...]
- - D : Definitions Only
- - G : Global Namespace
- - U : Utility Singleton
- - S : Utility Static Class
- - E : Experimental
- - M : Multi-Thread-Safety (This hasn't been coded yet)
+Key: 
+Platform:
+ - X	: Cross Platform Requirements. [Custom Support Added]
+ - B	: Cross Platform Compatible. [Boost Supported]
+ - C	: Cross Platform Compatible. [C++ Standard Support]
+
+ Extra:
+ - -	: Nothing Extra
+ - I	: Interface
+ - A	: Abstract
+ - T	: Template Class
+ - P	: Platform Restricted [w = Windows, l=Linux, ...]
+ - D	: Definitions Only
+ - G	: Global Namespace functions
+ - U	: Utility Singleton
+ - S	: Utility Static Class
+ - E	: Experimental
+ - M	: Multi-Thread-Safety (This hasn't been coded yet - so this is REQUIRES MT Safety)
+ 
+ Status:
+ - N	: No Progress		: Class Definitions may exist, but that is about all.
+ - I	: Incomplete		: Class has working functionality, but is a far cry from complete
+ - F	: Feature Complete	: Class has all core features currently required. But isn't nessarily "complete"
+ - C	: Completed			: Class might be complete.... but probably isn't
+ - ?	: Unknown			: Class might be deleted. (Description will probably have reasoning)
 
 Currently is only listing CORE classes. Side classes (eg. EventArgs) are not listed.
 
 
 
-Files:											Notes				Description:							
-------											-----				------------
+Files:											Platform	Extra		Status		Description:							
+												[C/X/B]
+------											--------	-----		------		------------
 include/andromeda/
-	+ andromeda									X, G			Engine Initialisation
-	+ stddef.h									B, D			Definition for all standard types
+	+ andromeda									X			G			I			Engine Initialisation
+	+ stddef.h									B			D			I			Definition for all standard types
 	+ exception.h
-		Exception								C, E			Exception Class
+		Exception								C			E			N			Exception Class
 
 include/andromeda/Engine/
 	+ config.h
-		- Config								C				Configuration settings for the engine & application!
+		- Config								B			-			N			Configuration settings for the engine & application!
 	+ engine.h/.hpp
-		- Engine								C, M			Engine Management
-	+ module.h													System Components
-		- IModule								C, I			System Module
-		- Module<>								C, A, T			Templated System Component
+		- Engine								C			M			I			Engine Management
+	+ module.h															
+		- IModule								C			I			F			System Module
+		- Module<>								C			A, T		F			Templated System Component
 	+ system.h
-		- System								C, M			Running configuration of the engine
+		- System								C			M			I			Running configuration of the engine
 
 include/andromeda/Events/
 	+ event.h
-		- IEvent								C, I			Generalisation of an Event
-		- Event<>								C, T			Templated Event
+		- IEvent								C			I			F			Generalisation of an Event
+		- Event<>								C			T			F			Templated Event
 	+ event_manager.h/.hpp
-		- EventManager							C, U, M			Manages the Event Map
+		- EventManager							C			U,M			F			Manages the Event Map
+	+ resize.h
+		- ResizeListener						C			A			C			Define a resize listener, for easy event binding
+
+include/andromeda/Game
+	+ application.h								
+		- Application							C			A			I, ?		Not sure how this will be used in the end, for now it just a simple class to extend for the main application class. May also be better in /engine
+	+ component.h
+		- IComponent							C			I			N			Base Component to share a common type
+		- Component								C			A, T		N			Templated Abstract Component
+	+ dummy_component.h
+		- DummyComponent						C						I, ?		Temporary component purely for testing!
+	+ entity.h/.hpp
+		Entity									C						N			Component Container.
 	
 include/andromeda/Graphics/
+	+ buffer.h									
+		- Buffer								C			A			I			A buffer in video memory
+		- VertexBuffer							C			-			I			A vertex buffer
+		- IndexBuffer							C			-			I			An index buffer
+	+ camera.h
+		- ITarget								C			I			N			Interface for mapping a camera's target object
+		- IPath									C			I			N			Interface for mapping a camera's path
+		- Camera								C			-			I			Class for managing the camera
 	+ context.h
-		- Context								X, A			Graphics Context
-	+ opengl.h									X, D			Includes the platform specific header files for the OpenGL API.
+		- Context								X			A			I			Graphics Context
+	+ display.h									C			D			I			Defines Parameters for OpenGL initialisation / settings
+	+ geometry.h
+		- Geometry								C			-			I			Geometry Class. Might rename to mesh!
+	+ geometry_builder.h						C			G			N			Functions for building generic / algorithmic basic geometry. (Cube, Sphere, etc)
+		- GeometryBuilder						C			-			I			Easy construction of vertex/index data, and builds an interleaved vertex buffer out of it.
+	+ geometry_desc.h							
+		- GeometryDescription					C						I			Description of the geometry data for sending to OpenGL
+	+ material.h								C			D			N, ?		Defined as a struct. Should it be a class?
+	+ opengl.h									X			D			I			Includes the platform specific header files for the OpenGL API.
+	+ pass.h
+		- Pass									C			-			N			Defines a render pass. Configures the shader based from given config settings. [Rename to RenderPass, maybe]
+	+ render_list.h
+		- RenderList							c			-			I			List of renderables
+	+ renderable.h
+		- IRenderable							C			I			I			Interface for renderable objects
 	+ renderer.h								
-		- Renderer								C				Renderer
+		- Renderer								C			-			I			Renderer
+	+ scene_graph.h
+		- SceneGraph							C			-			N, ?		Don't know if this will be used and/or needed, too early to say :)
+	+ shader.h									C			G						Shader Loading Routines			
+		- Shader								C			-			I			OpenGL Shader
+	+ view.h
+		- View									C			-			I			Subsection of the screen that is to render
 
 include/andromeda/Input/			
+	+ action.h
+		- Action								C			-			N			Action mapping. Listens for Input events, and based on configured input rules, dispatches "action" events. Allows much deeper input configuration settings.
 	+ input.h
-		- Input									C, A			Common Input Functionality
+		- Input									C			A			F			Common Input Functionality
 	+ keyboard.h
-		- Keyboard								C				Input Device: Keyboard 
+		- Keyboard								C			-			I			Input Device: Keyboard. Keyboard is holding onto events until Module::Update()
+		- KeyboardListener						C			A			F			Simple class for binding keyboard events
 	+ mouse.h
-		- Mouse									C				Input Device: Mouse 
+		- Mouse									C			-			I			Input Device: Mouse. The mouse is dispatching events as soon as it recieves them. Module::Update() does nothing.
+		- MouseListener							C			A			F			Simple class for binding mouse events
+
+include/andromeda/Math
+	/glmx
+		+ glm_conversion
+			_Convert							C			S, T		I			Converts between different GLM Vector Types, allows defaulting dimension when converting "up" a dimension.
+		+ glm_extension							C			G			I			Defines a bunch of "operator" style functions for GLM Vectors. (They ARE NOT operators)
+		+ glm_infinity							C			D			I			Templated retrieval for min/max values for specific datatypes
+	+ matrix_stack.h
+		MatrixStack								C			-			I, ?		No idea if this will be needed! It would probably make rendering animation easier, but, depends on how it's done :)
+	+ region
+		Region									C			T			I			Defines a region. Utilises GLM vectors for 2/3/4 dimensional regions.
 
 include/andromeda/Platform
 	+ platform.h
-		- Platform								X, A			Platform Functionality
+		- Platform								X			A			I			Platform Functionality
 
 include/andromeda/Resources
 
 include/andromeda/Utilities
 	+ dependancy.h
-		- Dependancy<>							C, T			Manages a Class Instances Depandancy. Links to TemplateID<>
+		- Dependancy<>							C			T			F			Manages a Class Instances Depandancy. Links to TemplateID<>
+	+ io.h										C			G			I			Simple File / Directory Management
 	+ log.h	
-		- Log									C, U, M			Logging Class
+		- Log									C			U, M		I			Logging Class
 	+ obvserver.h
-		- IObserver<>							C, I, T			Class that observes and Observerable
-		- Observerable<>						C, T			Class that can be observered by external objects, and receive notification upon change!
+		- IObserver<>							C			I, T		F			Class that observes and Observerable
+		- Observerable<>						C			T			I			Class that can be observered by external objects, and receive notification upon change!
 	+ singleton.h
-		- Singleton<>							C, T, M			Singleton Class
+		- Singleton<>							C			T, M		F			Singleton Class
 	+ template.h
-		- TemplateID<>							C, T			Maps an ID to a class/interface pair.
-		- TemplateIdentifier<>					C, T, S			Support for TemplateID. Does the incrementing on the interface.
-
-
+		- TemplateID<>							C			T			F			Maps an ID to a class/interface pair.
+		- TemplateIdentifier<>					C			T, S		F			Support for TemplateID. Does the incrementing on the interface.
+	+ timing.h																		
+		- Timing								C			-			I			Game timing Loop. (Might be better in /Engine but can stay here for now)

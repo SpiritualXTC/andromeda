@@ -60,6 +60,12 @@ void testBounds()
 	log_info("2Df: ", b, glm::to_string(test2f.minimum), glm::to_string(test2f.maximum));
 	log_info("2Di: ", b, glm::to_string(test2i.minimum), glm::to_string(test2i.maximum));
 
-	log_info("4Dd: ", b, glm::to_string(test4d.minimum), glm::to_string(test4d.maximum));
+	//log_info("4Dd: ", b, glm::to_string(test4d.minimum), glm::to_string(test4d.maximum));
 
+
+	glm::fvec2 fv(7.5f, 2.4f);
+	glm::ivec2 iv(5, 6);
+
+	fv = iv;
+	log_info("glm Convert: ", b, glm::to_string(iv), glm::to_string(fv));
 }

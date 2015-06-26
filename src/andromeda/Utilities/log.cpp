@@ -1,8 +1,5 @@
 #include <andromeda/Utilities/log.h>
 
-#include <fstream>
-
-
 #include <andromeda/Events/event_manager.h>
 
 using namespace andromeda;

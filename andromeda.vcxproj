@@ -55,7 +55,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions);GLM_FORCE_RADIANS</PreprocessorDefinitions>
       <CompileAsManaged>false</CompileAsManaged>
     </ClCompile>
     <Link>
@@ -67,7 +67,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions);GLM_FORCE_RADIANS</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -85,11 +85,30 @@
     <ClInclude Include="include\andromeda\Events\event.h" />
     <ClInclude Include="include\andromeda\Events\event_manager.h" />
     <ClInclude Include="include\andromeda\Events\event_manager.hpp" />
+    <ClInclude Include="include\andromeda\Events\resize.h" />
     <ClInclude Include="include\andromeda\exception.h" />
+    <ClInclude Include="include\andromeda\Game\component.h" />
+    <ClInclude Include="include\andromeda\Game\dummy_component.h" />
+    <ClInclude Include="include\andromeda\Game\entity.h" />
+    <ClInclude Include="include\andromeda\Game\entity.hpp" />
+    <ClInclude Include="include\andromeda\Game\application.h" />
     <ClInclude Include="include\andromeda\Graphics\buffer.h" />
+    <ClInclude Include="include\andromeda\Graphics\camera.h" />
     <ClInclude Include="include\andromeda\Graphics\context.h" />
+    <ClInclude Include="include\andromeda\Graphics\display.h" />
+    <ClInclude Include="include\andromeda\Graphics\geometry.h" />
+    <ClInclude Include="include\andromeda\Graphics\geometry_desc.h" />
+    <ClInclude Include="include\andromeda\Graphics\material.h" />
+    <ClInclude Include="include\andromeda\Graphics\pass.h" />
+    <ClInclude Include="include\andromeda\Graphics\renderable.h" />
+    <ClInclude Include="include\andromeda\Graphics\render_list.h" />
+    <ClInclude Include="include\andromeda\Graphics\scene_graph.h" />
+    <ClInclude Include="include\andromeda\Graphics\shader.h" />
+    <ClInclude Include="include\andromeda\Input\action.h" />
+    <ClInclude Include="include\andromeda\Math\glmx\glm_conversion.h" />
     <ClInclude Include="include\andromeda\Math\glmx\glm_extension.h" />
     <ClInclude Include="include\andromeda\Math\glmx\glm_infinity.h" />
+    <ClInclude Include="include\andromeda\Math\matrix_stack.h" />
     <ClInclude Include="include\andromeda\Math\region.h" />
     <ClInclude Include="include\andromeda\Graphics\geometry_builder.h" />
     <ClInclude Include="include\andromeda\Graphics\opengl.h" />
@@ -101,6 +120,7 @@
     <ClInclude Include="include\andromeda\Platform\platform.h" />
     <ClInclude Include="include\andromeda\stddef.h" />
     <ClInclude Include="include\andromeda\Utilities\dependancy.h" />
+    <ClInclude Include="include\andromeda\Utilities\io.h" />
     <ClInclude Include="include\andromeda\Utilities\log.h" />
     <ClInclude Include="include\andromeda\Utilities\observer.h" />
     <ClInclude Include="include\andromeda\Utilities\singleton.h" />
@@ -119,14 +139,30 @@
     <ClCompile Include="src\andromeda\Engine\config.cpp" />
     <ClCompile Include="src\andromeda\Engine\engine.cpp" />
     <ClCompile Include="src\andromeda\Engine\system.cpp" />
+    <ClCompile Include="src\andromeda\Events\resize.cpp" />
+    <ClCompile Include="src\andromeda\Game\entity.cpp" />
+    <ClCompile Include="src\andromeda\Game\application.cpp" />
     <ClCompile Include="src\andromeda\Graphics\buffer.cpp" />
+    <ClCompile Include="src\andromeda\Graphics\camera.cpp" />
     <ClCompile Include="src\andromeda\Graphics\context.cpp" />
+    <ClCompile Include="src\andromeda\Graphics\geometry.cpp" />
+    <ClCompile Include="src\andromeda\Graphics\Geometry\geometry_cube.cpp" />
+    <ClCompile Include="src\andromeda\Graphics\Geometry\geometry_ellipse.cpp" />
+    <ClCompile Include="src\andromeda\Graphics\Geometry\geometry_plane.cpp" />
     <ClCompile Include="src\andromeda\Graphics\geometry_builder.cpp" />
+    <ClCompile Include="src\andromeda\Graphics\geometry_desc.cpp" />
+    <ClCompile Include="src\andromeda\Graphics\pass.cpp" />
+    <ClCompile Include="src\andromeda\Graphics\renderable.cpp" />
     <ClCompile Include="src\andromeda\Graphics\renderer.cpp" />
+    <ClCompile Include="src\andromeda\Graphics\render_list.cpp" />
+    <ClCompile Include="src\andromeda\Graphics\shader.cpp" />
     <ClCompile Include="src\andromeda\Graphics\view.cpp" />
     <ClCompile Include="src\andromeda\Input\keyboard.cpp" />
+    <ClCompile Include="src\andromeda\Input\keyboard_listener.cpp" />
     <ClCompile Include="src\andromeda\Input\mouse.cpp" />
+    <ClCompile Include="src\andromeda\Input\mouse_listener.cpp" />
     <ClCompile Include="src\andromeda\Platform\platform.cpp" />
+    <ClCompile Include="src\andromeda\Utilities\io.cpp" />
     <ClCompile Include="src\andromeda\Utilities\log.cpp" />
     <ClCompile Include="src\windows\andromeda_windows.cpp" />
     <ClCompile Include="src\windows\Graphics\context_windows.cpp" />

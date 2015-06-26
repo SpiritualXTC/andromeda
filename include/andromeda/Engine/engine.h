@@ -12,10 +12,12 @@ namespace andromeda
 {
 	// Forward Declarations
 	class IModule;
+
+
+
+	/*
 	
-
-
-
+	*/
 	class Engine
 	{
 	public:
@@ -41,9 +43,7 @@ namespace andromeda
 			Gets the System ID Mapped to T
 		*/
 		template <class T>
-		//const inline Int32 getModuleID() { return Module<T>::getTemplateID(); }
-		//const inline Int32 getModuleID() { return T::getTemplateID(); }
-		const inline Int32 getModuleID() { return TemplateID<T, IModule>::getTemplateID(); }
+		const inline Int32 getModuleID() const { return TemplateID<T, IModule>::getTemplateID(); }
 
 		/*
 			Determines if a System is installed
@@ -155,5 +155,7 @@ namespace andromeda
 // Include Template Functionality
 #include "engine.hpp"
 
+
+typedef andromeda::Engine aEngine;
 
 #endif

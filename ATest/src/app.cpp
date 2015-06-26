@@ -4,42 +4,79 @@
 
 #include <andromeda/Engine/engine.h>
 #include <andromeda/Events/event_manager.h>
+#include <andromeda/Events/resize.h>
 
 #include <andromeda/Engine/system.h>
 #include <andromeda/Platform/platform.h>
 
-#include <andromeda/Input/keyboard.h>
 
+#include <andromeda/Graphics/camera.h>
+#include <andromeda/Graphics/geometry_builder.h>
+#include <andromeda/Graphics/renderer.h>
+#include <andromeda/Graphics/shader.h>
 
 
 #include <andromeda/Utilities/log.h>
 
+#include <andromeda/Game/entity.h>
+#include <andromeda/Game/dummy_component.h>
 
 
+#include "test_renderable.h"
 
+/*
+
+*/
+App::App()
+{
+	log_verbose("App: Create");
+}
+
+/*
+
+*/
+App::~App()
+{
+	log_verbose("App: Destroy");
+}
 
 
 
 /*
 
 */
-App::App(std::unique_ptr<andromeda::Engine> engine) : _engine(std::move(engine))
+//App::App(std::unique_ptr<andromeda::Engine> engine) 
+//	: _engine(std::move(engine))
+void App::initialise()
 {
+
+	// Create Instance of Game... ?
+//	std::shared_ptr<Game> game = std::make_shared<Game>(_engine.get());
+
+	// Add Game Dependancies
+	// Timing
+	// Config
+	// System
+	// Renderer
+	// ResourceManager
+	
+
+	// add game to engine
+
 
 	// Bind Close Event!
 	andromeda::bind<andromeda::CloseEventArgs>(andromeda::System::Close, std::bind(&App::close, this, std::placeholders::_1));
 	andromeda::bind<andromeda::ResizeEventArgs>(andromeda::System::Resize, std::bind(&App::resize, this, std::placeholders::_1));
 
-	// Bind Keyboard Events
-	andromeda::bind<andromeda::KeyEventArgs>(andromeda::Keyboard::KeyDown, std::bind(&App::keyDown, this, std::placeholders::_1));
-	andromeda::bind<andromeda::KeyEventArgs>(andromeda::Keyboard::KeyUp, std::bind(&App::keyUp, this, std::placeholders::_1));
-	andromeda::bind<andromeda::KeyEventArgs>(andromeda::Keyboard::KeyRepeat, std::bind(&App::keyRepeat, this, std::placeholders::_1));
 
+#if 0
 	// Output Informations!
 	aInt32 scrWidth = 0;
 	aInt32 scrHeight = 0;
 	aInt32 cliWidth = 0;
 	aInt32 cliHeight = 0;
+
+
 
 	std::shared_ptr<aPlatform> platform = _engine->getModulePtr<aPlatform>();
 
@@ -49,7 +86,10 @@ App::App(std::unique_ptr<andromeda::Engine> engine) : _engine(std::move(engine))
 	log_info("Screen Resolution:", scrWidth, scrHeight);
 	log_info("Client Resolution:", cliWidth, cliHeight);
 
-	
+
+
+
+
 	// Retrieve list of supported displays
 	std::set<andromeda::DisplayFormat> displays;
 
@@ -59,18 +99,57 @@ App::App(std::unique_ptr<andromeda::Engine> engine) : _engine(std::move(engine))
 	{
 		log_verbose("Display: ", display.width, display.height);
 	}
+#endif
+
+
+
+
+	//std::shared_ptr<andromeda::Renderer> renderer = _engine->getModulePtr<andromeda::Renderer>();
+	std::shared_ptr<andromeda::Renderer> renderer = getDependancyPtr<andromeda::Renderer>();
+
+	// Create a View
+	_view = std::make_shared<andromeda::View>();
+
+	renderer->addView(_view);
+
+
+
+
+	std::shared_ptr<andromeda::IRenderable> cube = std::shared_ptr<andromeda::IRenderable>(new GeometryRenderable(andromeda::CreateCube(1.0f, 1.0f, 1.0f, 0)));
+	std::shared_ptr<andromeda::IRenderable> plane = std::shared_ptr<andromeda::IRenderable>(new GeometryRenderable(andromeda::CreatePlane(5.0f, 5.0f, 0)));
+
+
+	renderer->addRenderable(cube);
+	renderer->addRenderable(plane);
+
+
+
+
+	// Create entity
+	aEntity entity;
+
+
+	log_debug("Has Dummy Component:", entity.hasComponent<andromeda::DummyComponent>());
+	log_debug("Add Dummy Component:", entity.addComponent<andromeda::DummyComponent>());
+	log_debug("Has Dummy Component:", entity.hasComponent<andromeda::DummyComponent>());
+
+
+
 }
 
 
 /*
 
 */
-App::~App()
+void App::update(aDouble ft)
 {
 
 }
 
 
+
+
+#if 0
 /*
 
 */
@@ -78,8 +157,10 @@ void App::run()
 {
 	assert(_engine);
 
+	// Create Instance of Game!
 	_engine->run();
 }
+#endif
 
 
 /*
@@ -87,10 +168,6 @@ void App::run()
 */
 aBoolean App::close(andromeda::CloseEventArgs & e)
 {
-	// This should be an automatically called internally
-	// Unless e.cancel, is set to true!
-	//_engine->quit();
-
 	log_debug("Allowing Engine to Quit Automatically");
 
 	return true;
@@ -112,11 +189,19 @@ aBoolean App::resize(andromeda::ResizeEventArgs & e)
 */
 aBoolean App::keyUp(andromeda::KeyEventArgs & e)
 {
+	std::shared_ptr<aSystem> system = getDependancyPtr<andromeda::System>();
+
+	if (!system)
+		return false;
+
 	if (e.key == 27)
-		_engine->quit();
+	{
+	//	_engine->quit();
+		system->quit();
+	}
 	else if (e.key == 'F')
 	{
-		std::shared_ptr<aSystem> system = _engine->getModulePtr<aSystem>();
+		//std::shared_ptr<aSystem> system = _engine->getModulePtr<aSystem>();
 
 		andromeda::DisplayMode mode;
 
@@ -129,8 +214,7 @@ aBoolean App::keyUp(andromeda::KeyEventArgs & e)
 	}
 	else if (e.key >= '1' && e.key <= '9')
 	{
-		std::shared_ptr<aSystem> system = _engine->getModulePtr<aSystem>();
-
+		//std::shared_ptr<aSystem> system = _engine->getModulePtr<aSystem>();
 
 
 		// Seriously this is a bad idea! (at least, for anything that isn't windowed!)
@@ -160,7 +244,6 @@ aBoolean App::keyUp(andromeda::KeyEventArgs & e)
 				i++;
 			}
 
-	//		format = it;
 			if (i == index)
 				system->changeDisplaySettings(format.width, format.height);
 		}
@@ -189,5 +272,55 @@ aBoolean App::keyRepeat(andromeda::KeyEventArgs & e)
 {
 	//log_event("KeyRepeat:", e.key);
 
+	return true;
+}
+
+
+
+/*
+
+*/
+aBoolean App::mouseDown(andromeda::MouseButtonEventArgs & e)
+{
+	log_event("MouseDown:", e.button, e.x, e.y);
+
+	return true;
+}
+
+
+/*
+
+*/
+aBoolean App::mouseUp(andromeda::MouseButtonEventArgs & e)
+{
+	log_event("MouseUp:", e.button, e.x, e.y);
+
+	return true;
+}
+
+/*
+
+*/
+aBoolean App::mouseMove(andromeda::MouseMoveEventArgs & e)
+{
+	//log_event("MouseMove:", e.x, e.y, e.deltaX, e.deltaY, "Buttons:", e.state);
+
+	if (e.state & andromeda::Mouse::LeftBit)
+	{
+		std::shared_ptr<andromeda::Camera> camera = _view->camera();
+
+		camera->yaw(camera->yaw()  + e.deltaX * 0.005f);
+		camera->pitch(camera->pitch() +e.deltaY * 0.005f);
+	}
+
+	return true;
+}
+
+/*
+
+*/
+aBoolean App::mouseWheel(andromeda::MouseWheelEventArgs & e)
+{
+	log_event("MouseWheel:", e.delta);
 	return true;
 }

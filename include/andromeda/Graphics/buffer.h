@@ -66,4 +66,7 @@ namespace andromeda
 	};
 }
 
+typedef andromeda::VertexBuffer aVertexBuffer;
+typedef andromeda::IndexBuffer aIndexBuffer;
+
 #endif

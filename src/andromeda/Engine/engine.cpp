@@ -81,10 +81,12 @@ void Engine::quit()
 */
 void Engine::run()
 {
-	_running = true;
+	
 
 
 	log_verbose("Engine: Running");
+
+	
 
 	
 	// Additional Dependancies!
@@ -92,16 +94,35 @@ void Engine::run()
 	setDependancy<System, Context>();
 
 
+
+
+	// Bootstrap Initialisation!
+	getModulePtr<System>()->run();
+
+	// Engine::Run() -> System::Run() -> Platform::Show() -> System::Resume() -> Engine::Resume()
+	// Workaround Reason: 
+	/*
+		Windows:
+		the WM_ACTIVATEAPP message was sent when the window first gets shown, which in turn calls System::Resume() -> Engine::Resume()
+		irrespective of whether all the modules are added.
+
+		But then Engine::resume() gets called... recalling IModule<>::Resume()
+	*/
+	
+
 	// Start all System Components
-	resume();
+	//resume();
+
 
 	// Output all active modules!
 	for (auto it : _active)
 		log_verbose("Module: ", it->priority());
 	
 	// Loop
+	_running = true;
 	while (_running)
 	{
+		// Update the Module
 		for (auto module : _active)
 			module->update();	
 	}
@@ -135,10 +156,15 @@ Boolean Engine::isRunning(std::shared_ptr<IModule> system)
 */
 void Engine::resume()
 {
+	log_warn("Engine::Resume()");
+
+
 	// Loop through all Installed Modules
 	for (auto it : _modules)
 		resume(it.second);
 
+
+	
 	for (auto it : _modules)
 	{
 		log_warn("Module: ", it.second->priority(), isRunning(it.second));

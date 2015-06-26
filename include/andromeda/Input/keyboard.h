@@ -17,7 +17,31 @@ namespace andromeda
 
 
 	/*
+		This doesn't bind to KeyRepeat as well as KeyDown/KeyUp
+	*/
+	class KeyboardListener
+	{
+	public:
+		KeyboardListener();
+		virtual ~KeyboardListener();
+
+	protected:
+		virtual Boolean keyDown(KeyEventArgs & e) = 0;
+		virtual Boolean keyUp(KeyEventArgs & e) = 0;
+		virtual Boolean keyRepeat(KeyEventArgs & e) = 0;
+
+	private:
+		Int32 _hKeyDown = -1;
+		Int32 _hKeyUp = -1;
+		Int32 _hKeyRepeat = -1;
+	};
+
+
+
+	/*
 		Keyboard Class
+
+		The Keyboard is holding onto the events until it's loop
 	*/
 	class Keyboard : public Input<Keyboard>
 	{
@@ -58,17 +82,14 @@ namespace andromeda
 
 
 		void update() override;
-
-	protected:
+		void onResume() override;
+		
+	private:
 		void dispatchKeyDown(Int8 keyIndex);
 		void dispatchKeyUp(Int8 keyIndex);
 		void dispatchKeyRepeat(Int8 keyIndex);
 
-
-	private:
 		Int8 _keys[KEYS];
-
-
 	};
 }
 

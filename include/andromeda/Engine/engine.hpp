@@ -1,7 +1,9 @@
 #ifndef _ANDROMEDA_ENGINE_ENGINE_HPP_
 #define _ANDROMEDA_ENGINE_ENGINE_HPP_
 
-#include "../Utilities/log.h"
+//#include "../stddef.h"
+
+//#include "../Utilities/log.h"
 
 namespace andromeda
 {
@@ -14,9 +16,6 @@ namespace andromeda
 		// Component Installed Already!
 		if (isInstalled<T>())
 			return false;
-
-		// Get Module ID
-		Int32 modId = getModuleID<T>();
 
 		// Add System to Map
 		return addModule(std::make_shared<T>());
@@ -35,9 +34,15 @@ namespace andromeda
 
 		// Get Module ID
 		Int32 modId = getModuleID<T>();
-
+		
 		// Add System to Map
 		_modules[modId] = module;
+
+		// Is the Engine Running? Start Module
+		if (_running)
+		{
+			resume(_modules[modId]);
+		}
 
 		// In the Map?
 		return !!_modules[modId];

@@ -31,17 +31,17 @@ namespace andromeda
 		{
 			CHRONO::time_point time = CHRONO::now();
 
-			Double ft = (time - _last).count() / (Double)CHRONO::period::den;
+			_frametime = (time - _last).count() / (Double)CHRONO::period::den;
 
 			_last = time;
 
 			_frame++;
-			_timing += ft;
+			_timing += _frametime;
 			if (_timing > 1.0)
 			{
 				log_debug("FPS:", _frame);
 
-				
+				_fps = _frame;
 
 				_frame = 0;
 				_timing -= 1.0;
@@ -50,11 +50,15 @@ namespace andromeda
 
 
 
+		const inline Int32 fps() const { return _fps; }
+		const inline Double frametime() const { return _frametime; }
 
 	private:
+		Int32 _fps = 0;
+		Double _frametime = 0.0;
+
 
 		Int32 _frame = 0;
-
 		Double _timing = 0.0;
 
 		CHRONO::time_point _last;

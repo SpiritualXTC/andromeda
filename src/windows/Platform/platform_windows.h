@@ -68,7 +68,7 @@ namespace andromeda
 		
 		Boolean changeDisplaySettings(const DisplayParameters & dp) override;
 
-		
+		void show();
 
 	
 	private:

@@ -13,3 +13,15 @@ ___________   ________
   |____| \____/_______  /\____/ 
                       \/        
 
+TODO:
+
+Shaders:
+--------
+Geometry Shader for Rendering Vertex Normals
+ - Render the geometry as points.
+ - Geometry shader processes the points into lines representing the normal
+
+Geometry Shader for Rendering Face Normals
+ - Render the geometry as triangles.
+ - Geometry shader averages the 3 vertices to find the face center. 
+ - From the center draw a normal from the average of the normals

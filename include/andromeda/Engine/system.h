@@ -10,56 +10,15 @@
 #include <set>
 
 #include "module.h"
+#include "../Graphics/display.h"
 
 namespace andromeda
 {
+	// Forward Declarations
 	class Config;
 	class Engine;
 
-	/*
-		Display Structures
-
-		allt he display structures/enums should be moved to graphics/display.h
-	*/
-
-	enum class DisplayMode
-	{
-	//	Fullscreen,		// Fullscreen Exclusive Mode
-		Borderless,		// Fullscreen Borderless Window Mode
-		Windowed,		// Windowed Mode
-	};
-
-
-
-	struct DisplayFormat
-	{
-		Int32 width;
-		Int32 height;
-		//Int32 bitDepth;		// Is anything else other 32bit likely to be needed ??
-
-		/*
-			operators for the std::set.
-		*/
-		friend Boolean operator ==(const DisplayFormat & lhs, const DisplayFormat & rhs)
-		{
-			return lhs.width == rhs.width && lhs.height == rhs.height;// && lhs.bitDepth == rhs.bitDepth;
-		}
-		friend Boolean operator <(const DisplayFormat & lhs, const DisplayFormat & rhs)
-		{
-			return lhs.width < rhs.width || lhs.height < lhs.height;// || lhs.bitDepth < rhs.bitDepth;
-		}
-	};
-
-
-	struct DisplayParameters
-	{
-		//	Int32 width;
-		//	Int32 height;
-		DisplayFormat format;
-
-		DisplayMode mode;
-	};
-
+	
 
 	/*
 		System Events
@@ -69,15 +28,11 @@ namespace andromeda
 		Boolean cancel;
 	};
 
-	struct ResizeEventArgs
-	{
-		Int32 displayWidth;
-		Int32 displayHeight;
-	};
 
 	struct AppEventArgs
 	{
-
+		Int32 displayWidth;
+		Int32 displayHeight;
 	};
 
 	
@@ -92,8 +47,11 @@ namespace andromeda
 	class System : public Module < System >
 	{
 	public:
+		friend class Engine;
+
 		enum _SystemEvents
 		{
+		//	Initialise,
 			Close,
 			Resize,
 			Pause,
@@ -104,8 +62,6 @@ namespace andromeda
 	public:
 		System(Engine * engine, std::weak_ptr<Module<Config>> config);
 		virtual ~System();
-
-	
 
 		// Getters
 		const Int32 displayWidth() const { return _display.format.width; }
@@ -146,12 +102,13 @@ namespace andromeda
 
 
 
-
-
+		
 
 		/*
-			Close
+			
 		*/
+		Boolean quit();
+
 		Boolean close();
 		Boolean pause();
 		Boolean resume();
@@ -164,6 +121,15 @@ namespace andromeda
 		void update() override { return; }
 		
 	private:
+
+
+		/*
+			Bootstrap Initialisation!
+		*/
+		Boolean run();
+
+
+
 		Boolean changeDisplaySettings(const DisplayParameters & dp);
 
 		void dispatchResizeEvent();

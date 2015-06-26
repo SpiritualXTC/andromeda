@@ -42,4 +42,6 @@ namespace andromeda
 	};
 }
 
+typedef andromeda::Context aContext;
+
 #endif
