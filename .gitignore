@@ -15,7 +15,8 @@ Makefile
 *.cmake
 CMakeCache.txt
 
-
+# External Include Files
+extern/
 
 # Build results
 [Dd]ebug/
