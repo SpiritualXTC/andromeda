@@ -3,8 +3,13 @@
 
 #include <memory>
 #include <unordered_map>
+#include <vector>
 
 #include "../stddef.h"
+
+/*
+	This class could do with some optimizations!
+*/
 
 namespace andromeda
 {
@@ -50,7 +55,6 @@ namespace andromeda
 		*/
 		template <typename T>
 		Boolean removeComponent();
-
 
 		/*
 			Get the Component Pointer

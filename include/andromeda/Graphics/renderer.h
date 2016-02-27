@@ -20,6 +20,7 @@ namespace andromeda
 {
 	// Forward-Declarations
 	class RenderList;
+	class SceneGraph;
 
 
 	/*
@@ -36,8 +37,8 @@ namespace andromeda
 		Boolean removeView(std::shared_ptr<View> view);
 		Boolean clearViews();
 
-		Boolean addRenderable(std::shared_ptr<IRenderable> renderable);
-		Boolean removeRenderable(std::shared_ptr<IRenderable> renderable);
+		Boolean addRenderable(Int32 group, std::shared_ptr<IRenderable> renderable);
+		Boolean removeRenderable(Int32 group, std::shared_ptr<IRenderable> renderable);
 		Boolean clearRenderables();
 
 		
@@ -59,6 +60,9 @@ namespace andromeda
 
 		std::multiset<std::shared_ptr<View>> _views;
 		std::unordered_map<Int32, std::shared_ptr<RenderList>> _renderLists;
+
+
+		std::shared_ptr<SceneGraph> _sceneGraph;
 	};
 
 

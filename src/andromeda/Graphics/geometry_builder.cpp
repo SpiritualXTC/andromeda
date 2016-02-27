@@ -30,14 +30,8 @@ void GeometryBuilder::addVertexData(const std::string & id, void * data, Size le
 	// Copy everything to a vector
 	std::vector<UInt8> vector((UInt8*)data, (UInt8*)data + bytes);
 
-	log_warn("GeometryBuilder::addVertexData()", bytes);
-	log_warn("Length = ", length);
-	log_warn("Stride = ", stride);
-	log_warn("Elements = ", elements);
-
 	// Setup Geometry
 	_VertexData geometry;
-
 
 	// Move data to the structture
 	geometry.id = id;
@@ -62,25 +56,29 @@ void GeometryBuilder::addVertexData(const std::string & id, void * data, Size le
 }
 
 
+
+
+
 /*
 
 */
-void GeometryBuilder::setIndexData(const UInt32 * data, Size indices)
+Boolean GeometryBuilder::build(std::shared_ptr<VertexBuffer> vb, std::shared_ptr<GeometryDescription> desc, std::shared_ptr<IndexBuffer> ib)
 {
-	std::vector<UInt32> v(data, data + indices);
+	// Interleave Vertices
+	Boolean b = interleave(vb, desc);
 
-	// Clear Indices
-	_indices.clear();
 
-	// Move
-	_indices = std::move(v);
+
+
+
+	return b;
 }
 
 
 /*
 
 */
-Boolean GeometryBuilder::interleave(std::shared_ptr<VertexBuffer> vb, std::shared_ptr<GeometryDescription> desc, std::shared_ptr<IndexBuffer> ib)
+Boolean GeometryBuilder::interleave(std::shared_ptr<VertexBuffer> vb, std::shared_ptr<GeometryDescription> desc)
 {
 	assert(vb);
 
@@ -134,26 +132,10 @@ Boolean GeometryBuilder::interleave(std::shared_ptr<VertexBuffer> vb, std::share
 	// Set Vertex Data
 	vb->data(data, bytes);
 
+	delete data;
+
 	return true;
 }
 
 
 
-
-#if 0
-/*
-
-*/
-Boolean GeometryBuilder::interleave(std::shared_ptr<Geometry> geometry)
-{
-	assert(geometry);
-
-	Boolean b = true;
-
-
-
-
-
-	return b;
-}
-#endif

@@ -1,5 +1,5 @@
-#ifndef _ANDROMEDA_GAME_GAME_H_
-#define _ANDROMEDA_GAME_GAME_H_
+#ifndef _ANDROMEDA_ENGINE_APPLICATION_H_
+#define _ANDROMEDA_ENGINE_APPLICATION_H_
 
 /*
 	This entire file is fill with testing crap!

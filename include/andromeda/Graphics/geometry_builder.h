@@ -88,17 +88,20 @@ namespace andromeda
 		}
 
 
+		/*
+			Build
+		*/
+		Boolean build(std::shared_ptr<VertexBuffer> vb, std::shared_ptr<GeometryDescription> desc, std::shared_ptr<IndexBuffer> ib = nullptr);
+
+	private:
 
 		/*
 			Interleave
 		*/
-		Boolean interleave(std::shared_ptr<VertexBuffer> vb, std::shared_ptr<GeometryDescription> desc, std::shared_ptr<IndexBuffer> ib = nullptr);
-	
-		void setIndexData(const UInt32 * data, Size indices);
+		Boolean interleave(std::shared_ptr<VertexBuffer> vb, std::shared_ptr<GeometryDescription> desc);
 
-	private:
-
-		//Boolean deindex();	// Removes indexing from the data
+	//	Boolean index();	// Copies Indexing
+	//	Boolean deindex();	// Removes indexing from the data
 
 		void addVertexData(const std::string & id, void * data, Size length, Size stride, Size elements, GLenum type);
 
@@ -106,25 +109,8 @@ namespace andromeda
 		Size _stride = 0;					// Size of the total structure 
 		Size _length = 0;					// Number of array elements in the array
 
-
-		std::vector<UInt32> _indices;		// Face Data
-
 		std::list<_VertexData> _geometry;
 	};
-
-
-	// Builder Functions
-	std::shared_ptr<Geometry> CreateCube(Float width, Float height, Float depth, UInt32 genMask);
-	std::shared_ptr<Geometry> CreatePlane(Float width, Float height, UInt32 genMask);
-	std::shared_ptr<Geometry> CreateEllipse(Float width, Float height, Float depth, Int32 slices, Int32 stacks, UInt32 genMask);
-
-	inline std::shared_ptr<Geometry> CreateSphere(Float radius, Int32 slices, Int32 stacks, UInt32 genMask)
-	{
-		return CreateEllipse(radius * 2.0f, radius * 2.0f, radius * 2.0f, slices, stacks, genMask);
-	}
-
-	std::shared_ptr<Geometry> CreateTorus(Float radius, Float tubeRadius, Int32 segments, Int32 stacks, UInt32 genMask);
-
 }
 
 

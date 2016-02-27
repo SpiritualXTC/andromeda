@@ -8,6 +8,7 @@
 #include <andromeda/Graphics/opengl.h>
 #include <andromeda/Graphics/renderable.h>
 #include <andromeda/Graphics/render_list.h>
+#include <andromeda/Graphics/scene_graph.h>
 
 #include <andromeda/Utilities/log.h>
 
@@ -22,6 +23,7 @@ Renderer::Renderer() : Module(Module::Render)
 	log_verbose("Renderer: Create");
 
 	
+	_sceneGraph = std::make_shared<SceneGraph>();
 }
 
 
@@ -68,46 +70,21 @@ Boolean Renderer::clearViews()
 /*
 
 */
-Boolean Renderer::addRenderable(std::shared_ptr<IRenderable> renderable)
+Boolean Renderer::addRenderable(Int32 group, std::shared_ptr<IRenderable> renderable)
 {
 	assert(renderable);
 
-	Int32 group = renderable->group();
-
-	// Create the Render List
-	if (_renderLists[group] == nullptr)
-	{
-		_renderLists[group] = std::make_shared<RenderList>(group);
-	}
-
-	// Add the Renderable
-	return _renderLists[group]->addRenderable(renderable);
+	return _sceneGraph->addRenderable(group, renderable);
 }
 
 /*
 
 */
-Boolean Renderer::removeRenderable(std::shared_ptr<IRenderable> renderable)
+Boolean Renderer::removeRenderable(Int32 group, std::shared_ptr<IRenderable> renderable)
 {
 	assert(renderable);
 
-	Boolean b = false;
-	Int32 group = renderable->group();
-
-	// Group Doesn't Exist. Just Ignore It :)
-	if (_renderLists[group] == nullptr)
-		return false;
-
-	std::shared_ptr<RenderList> list = _renderLists[group];
-
-	// Remove Renderable
-	b = list->removeRenderable(renderable);
-
-	// Delete List ?
-	if (list->size() == 0)
-		_renderLists[group] = nullptr;
-
-	return b;
+	return _sceneGraph->removeRenderable(group, renderable);
 }
 
 
@@ -141,10 +118,13 @@ void Renderer::update()
 	for (auto view : _views)
 	{
 		// Render the View
-		view->render(_renderLists[view->group()]);
+		view->render(_sceneGraph);
 	}
 
 	// Swapping is handled by the context module :)
+
+
+	errorCheck();
 }
 
 
@@ -158,7 +138,7 @@ void Renderer::errorCheck()
 	while ((err = glGetError()) != GL_NO_ERROR)
 	{
 		// Send error message to log :)
-		log_warn("GL Error: ", gluErrorString(err));
+		log_err("GL Error: ", gluErrorString(err));
 	}
 }
 

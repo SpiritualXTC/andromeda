@@ -23,7 +23,15 @@ namespace andromeda
 		ITarget(){}
 		virtual ~ITarget() {}
 
-		virtual const glm::mat4 & matrix() = 0;
+	//	virtual const glm::mat4 & matrix() = 0;
+		virtual const glm::vec3 & position() const = 0;
+		
+		virtual const inline Float pitch() const = 0;
+		virtual const inline Float yaw() const = 0;
+		virtual const inline Float roll() const = 0;
+
+		// Temp
+		virtual void sync() = 0;
 	};
 
 
@@ -75,10 +83,17 @@ namespace andromeda
 
 
 		/* Getters */
-		const inline glm::vec3 & position() { return _position; }
+		const inline glm::vec3 & position() const { return _position; }
+		const inline Float distance() const { return _distance; }
 
-		const inline Boolean hasTarget() { return ! _target.expired(); }
+		const inline Boolean hasTarget() const { return ! _target.expired(); }
 	
+
+
+		/* Setters */
+		inline void position(Float x, Float y, Float z) { _position = glm::vec3(x, y, z); }
+		inline void distance(Float f) { _distance = f; }
+
 
 
 		/*
@@ -103,8 +118,8 @@ namespace andromeda
 		// Locks camera movement
 		Boolean _locked = false;
 
-
-		glm::vec3 _position{ 0.0f, 0.0f, -2.0f };
+		Float _distance = 2.0f;
+		glm::vec3 _position{ 0.0f, 0.0f, 0.0f };
 		glm::vec3 _rotation{ 0.0f };
 
 		// View Matrix

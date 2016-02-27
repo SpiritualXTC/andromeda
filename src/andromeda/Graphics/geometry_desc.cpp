@@ -6,9 +6,24 @@ using namespace andromeda;
 /*
 
 */
-GeometryDescription::GeometryDescription(const GLenum mode, const Int32 length)
-	: _length(length)
-	, _primitiveType(mode)
+GeometryDescription::GeometryDescription(const GLenum mode, const Int32 vertices)
+	: _primitiveType(mode)
+	, _vertices(vertices)
+	, _indices(0)
+	, _indexType(GL_NONE)
+{
+
+}
+
+
+/*
+
+*/
+GeometryDescription::GeometryDescription(const GLenum mode, const Int32 vertices, const Int32 indices, const GLenum indexType)
+	: _primitiveType(mode)
+	, _vertices(vertices)
+	, _indices(indices)
+	, _indexType(indexType)
 {
 
 }

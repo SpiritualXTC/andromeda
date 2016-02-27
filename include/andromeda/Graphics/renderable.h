@@ -11,7 +11,9 @@ namespace andromeda
 	class Shader;
 
 
-
+	/*
+	
+	*/
 	class IRenderable
 	{
 	private:
@@ -19,26 +21,31 @@ namespace andromeda
 
 
 	public:
-		IRenderable() : IRenderable(0){}	/* Should this be defaultable.... shouldn't even be here :) ??? */
-
-		IRenderable(UInt32 group)
+		/*
+		
+		*/
+		IRenderable()
 		{
 			_id = ++IRenderable::RENDERABLE_ID;
-			_group = group;
 		}
 
+		/*
+		
+		*/
 		virtual ~IRenderable(){}
 
-		virtual void render(const Int32 pass, const Shader * const shader, const glm::mat4 & modelView) = 0;
+		/*
+			Render!
+		*/
+		virtual void render(const Shader * const shader, const glm::mat4 & modelView) = 0;
 
+		/*
+			Get Unique ID of the Renderable
+		*/
 		inline const Int32 id() { return _id; }
-
-
-		inline const Int32 group() { return _group; }
 
 	private:
 		Int32 _id = 0;
-		Int32 _group = 0;
 	};
 
 }

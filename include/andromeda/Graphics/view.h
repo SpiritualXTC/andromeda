@@ -14,10 +14,11 @@ namespace andromeda
 	// Forward Declarations
 	class SceneGraph;
 	class Camera;
+	class RenderTarget;
 
-	class Pass;
+	class Effect;
 	class IRenderable;
-	class RenderList;
+
 
 
 
@@ -49,7 +50,7 @@ namespace andromeda
 	public:
 		View(Int32 layer = View::Default);
 		View(Float x, Float y, Float width, Float height, Int32 layer = View::Default);
-		
+		View(std::shared_ptr<RenderTarget> target);
 
 		virtual ~View();
 
@@ -61,7 +62,7 @@ namespace andromeda
 		/*
 		
 		*/
-		void render(std::shared_ptr<RenderList> renderables);
+		void render(std::shared_ptr<SceneGraph> scene);
 
 		/*
 		
@@ -71,8 +72,6 @@ namespace andromeda
 
 
 
-		Boolean addRenderPass(Int32 passId);
-		Boolean removeRenderPass(Int32 passId);
 
 	private:
 		Int32 _layer = 0;
@@ -84,8 +83,10 @@ namespace andromeda
 
 		glm::mat4 _projection;
 
-		std::list<std::shared_ptr<Pass>> _passes;
+		std::shared_ptr<Effect> _effect;
 		std::shared_ptr<Camera> _camera;
+
+		std::shared_ptr<RenderTarget> _target;
 	};
 }
 

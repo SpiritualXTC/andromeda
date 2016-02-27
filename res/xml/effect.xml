@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<effect>
+	<technique id="entities">
+		<pass id="test">
+			<vertexshader filename="shader.vs" />
+			<fragmentshader filename="shader.fs" />
+		</pass>
+		<!--
+		<pass id="amb_depth">
+			<vertexshader filename="uber_depth.vs" />
+			<fragmentshader filename="uber_depth.fs" />
+		</pass>
+		
+		<pass id="shadow">
+			<vertexshader filename="uber_shadow.vs" />
+			<fragmentshader filename="uber_shadow.fs" />
+		</pass>
+		
+		<pass id="final">
+			<vertexshader filename="uber_final.vs" />
+			<fragmentshader filename="uber_final.fs" />
+		</pass>	
+		-->
+	</technique>
+	
+	
+	<technique id="particles" group="1">
+		<!-- <COMMENT>http://www.gamasutra.com/view/feature/130535/building_a_millionparticle_system.php?print=1</COMMENT> -->
+	
+		<pass id="vel_update">
+			
+		</pass>
+		<pass id="pos_update">
+		
+		</pass>
+		<pass id="render">
+			<vertexshader filename="particle_draw.vs" />
+			<geometryshader filename="particle_draw.gs" />
+			<fragmentshader filename="particle_draw.fs" />
+		</pass>
+	
+	</technqiue>
+</effect>
+		

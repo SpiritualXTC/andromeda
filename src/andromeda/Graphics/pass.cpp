@@ -10,7 +10,10 @@ using namespace andromeda;
 /*
 
 */
-Pass::Pass(std::shared_ptr<Shader> shader) : _shader(shader)
+//Pass::Pass(std::shared_ptr<Shader> shader) : _shader(shader)
+Pass::Pass(const std::string & name, std::shared_ptr<Shader> shader) 
+	: _name(name)
+	, _shader(shader)
 {
 	assert(_shader);
 }
@@ -30,11 +33,17 @@ Pass::~Pass()
 
 	Set OpenGL Configuration Settings
 */
-void Pass::begin()
+Boolean Pass::begin()
 {
+	assert(_shader);
 	
+	if (! _enabled)
+		return _enabled;
+
 	// Bind the Shader
 	_shader->bind();
+
+	return _enabled;
 }
 
 
@@ -44,9 +53,16 @@ void Pass::begin()
 
 	Set OpenGL Configuration Settings
 */
-void Pass::end()
+Boolean Pass::end()
 {
+	assert(_shader);
+
+	// Disabled
+	//if (!_enabled)
+	//	return _enabled;
 
 	// Unbind the Shader
 	_shader->unbind();
+
+	return _enabled;
 }

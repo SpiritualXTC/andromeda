@@ -1,9 +1,15 @@
 #ifndef _ANDROMEDA_GAME_COMPONENT_H_
 #define _ANDROMEDA_GAME_COMPONENT_H_
 
+#include <vector>
+#include <cassert>
+
 #include "../stddef.h"
+#include "../Containers/vector.h"
+
 
 #include "../Utilities/dependancy.h"
+#include "../Utilities/template.h"
 
 namespace andromeda
 {
@@ -26,7 +32,6 @@ namespace andromeda
 	private:
 
 	};
-
 }
 
 #endif

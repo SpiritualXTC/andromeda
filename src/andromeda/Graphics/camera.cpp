@@ -42,24 +42,43 @@ const glm::mat4 & Camera::calcMatrix()
 	// Reset View Matrix
 	_view = matrix;
 
-	// Calculate Free Form Matrix
-	matrix = glm::translate(matrix, _position);
-	
-	matrix = glm::rotate(matrix, _rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-	matrix = glm::rotate(matrix, _rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-	matrix = glm::rotate(matrix, _rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
 
-	// Track Target
-	if (hasTarget())
+
+
+
+	// Distance camera is from view point
+	matrix = glm::translate(matrix, glm::vec3(0, 0, -_distance));
+	
+	if (!hasTarget())
+	{
+		// Camera Rotation
+		matrix = glm::rotate(matrix, _rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+		matrix = glm::rotate(matrix, _rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+		matrix = glm::rotate(matrix, _rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+
+		// Camera Translation
+		matrix = glm::translate(matrix, -_position);
+	}
+	else
 	{
 		// Get Target Matrix
 		std::shared_ptr<ITarget> target = _target.lock();
+
+		// Sync the target camera [Temporary]
+		target->sync();
+
+		// Camera Rotation
+		matrix = glm::rotate(matrix, _rotation.x - target->pitch(), glm::vec3(1.0f, 0.0f, 0.0f));
+		matrix = glm::rotate(matrix, _rotation.y - target->yaw(), glm::vec3(0.0f, 1.0f, 0.0f));
+		matrix = glm::rotate(matrix, _rotation.z - target->roll(), glm::vec3(0.0f, 0.0f, 1.0f));
+
+		// Camera Translation
+		matrix = glm::translate(matrix, -_position - target->position());
 	}
 
 	// Calculate Final View Matrix
 	_view *= matrix;
 	
-
 	return _view;
 }
 

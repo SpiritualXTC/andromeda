@@ -52,15 +52,19 @@ void Geometry::render()
 
 	if (_indexBuffer)
 	{
+		// Bind IB
 		_indexBuffer->bind();
 
-		// Draw Elements Call
+		// Draw Indexed Primitives
+		glDrawElements(_description->mode(), _description->indices(), _description->indexType(), 0);
 
+		// Unbind IB
 		_indexBuffer->unbind();
 	}
 	else
 	{
-		glDrawArrays(_description->mode(), 0, _description->length());
+		// Draw Primitives
+		glDrawArrays(_description->mode(), 0, _description->vertices());
 	}
 
 	// Unset Attribute Options

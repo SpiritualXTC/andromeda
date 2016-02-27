@@ -45,7 +45,7 @@ Boolean Config::load(const std::string & filename)
 	}
 	catch (boost::exception & e)
 	{
-		//log_err("failed: ", e.)
+		//log_err("failed: ", e.get());
 	}
 	return true;
 }

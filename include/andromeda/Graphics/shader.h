@@ -13,21 +13,39 @@
 
 namespace andromeda
 {
+	/*
+	
+	*/
+	class ShaderPartial
+	{
+	private:
+		friend class Shader;
+
+	public:
+		ShaderPartial(const std::string & source, const GLenum type);
+		virtual ~ShaderPartial();
+
+
+		const inline GLenum type() const { return _type; }
+	protected:
+		const inline GLuint handle() const { return _handle; }
+
+	private:
+		GLenum _type = 0;
+		GLuint _handle = 0;
+	};
+
+
+	/*
+	
+	*/
 	class Shader
 	{
-	public:
-		// Static
-		static std::shared_ptr<Shader> LoadShader(const std::string & vsFilename, const std::string & fsFilename);
-
-	protected:
-		static GLuint CompileShader(const std::string & filename, GLenum type);
-
-
 	public:
 		Shader();
 		virtual ~Shader();
 
-		const inline Boolean isLinked() { return _linked; }
+		const inline Boolean isLinked() const { return _linked; }
 
 
 		void bind();
@@ -53,15 +71,17 @@ namespace andromeda
 			glUniform4fv(getUniformLocation(name), 1, glm::value_ptr(v));
 		}
 
+		const inline void setUniformTexture(const std::string &name, UInt32 bindIndex)const
+		{
+			glUniform1i(getUniformLocation(name), bindIndex);
+		}
 
 
 
-	protected:
-		void create();
-		void destroy();
+
+		Boolean attach(std::shared_ptr<ShaderPartial> partial);
 		Boolean attach(GLuint handle, GLenum type);
 		Boolean link();
-
 
 
 	private:
@@ -82,12 +102,18 @@ namespace andromeda
 		}
 
 
+		void destroy();
 		void dumpLocations(GLenum locs);
 
 
 		Boolean _linked = false;
 		GLuint _program = 0;
 	};
+
+
+
+	std::shared_ptr<Shader> LoadShader(const std::string & vsFilename, const std::string & fsFilename);
+	GLuint CompileShader(const std::string & filename, GLenum type);
 }
 
 
