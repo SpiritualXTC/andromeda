@@ -59,7 +59,7 @@ void RenderComponent::render(const andromeda::Shader * const shader, const glm::
 
 
 	// TEMP
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	
 
 
 	// Render ALL Geometry

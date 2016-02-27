@@ -15,6 +15,7 @@ namespace andromeda
 	class SceneGraph;
 	class Camera;
 	class RenderTarget;
+	class IRenderTarget;
 
 	class Effect;
 	class IRenderable;
@@ -50,7 +51,7 @@ namespace andromeda
 	public:
 		View(Int32 layer = View::Default);
 		View(Float x, Float y, Float width, Float height, Int32 layer = View::Default);
-		View(std::shared_ptr<RenderTarget> target);
+		View(std::shared_ptr<IRenderTarget> target);
 
 		virtual ~View();
 
@@ -86,7 +87,7 @@ namespace andromeda
 		std::shared_ptr<Effect> _effect;
 		std::shared_ptr<Camera> _camera;
 
-		std::shared_ptr<RenderTarget> _target;
+		std::shared_ptr<IRenderTarget> _target;
 	};
 }
 

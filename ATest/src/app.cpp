@@ -107,29 +107,34 @@ void App::initialise()
 
 
 
-
+	// Create the Renderer : This should be done by the engine :)
 	//std::shared_ptr<andromeda::Renderer> renderer = _engine->getModulePtr<andromeda::Renderer>();
 	std::shared_ptr<andromeda::Renderer> renderer = getDependancyPtr<andromeda::Renderer>();
 
-	// Create a View
+
+	// Load textures
+	std::shared_ptr<aTexture> tex = andromeda::LoadTexture("../res/textures/test.png");
+
+
+	// Create the Standard View
 	_view = std::make_shared<andromeda::View>();
 	renderer->addView(_view);
 
-	// Test Render Target
-	_target = std::make_shared<andromeda::RenderTarget>(128, 128);
+
+	// Create a Renderable View
+	_target = std::make_shared<andromeda::RenderTarget2>(512, 512, 4);
 	_dynView = std::make_shared<andromeda::View>(_target);
 
-
+	// Add the Renderable View
 	renderer->addView(_dynView);
 
 
-	std::shared_ptr<aTexture> tex = andromeda::LoadTexture("../res/textures/test.png");
-
-	std::shared_ptr<andromeda::IRenderable> cube = std::shared_ptr<andromeda::IRenderable>(new GeometryRenderable(andromeda::CreateCube(1.0f, 1.0f, 1.0f, andromeda::GEN_TEXTURE | andromeda::GEN_NORMALS), _target));
+	// Create a Cube
+	GeometryRenderable * geomRend = new GeometryRenderable(andromeda::CreateCube(1.0f, 1.0f, 1.0f, andromeda::GEN_TEXTURE | andromeda::GEN_NORMALS), _target);
+	std::shared_ptr<andromeda::IRenderable> cube = std::shared_ptr<andromeda::IRenderable>(geomRend);
 
 	
-
-
+	// Create Ground Surface
 	std::shared_ptr<andromeda::IRenderable> surface = std::shared_ptr<andromeda::IRenderable>(new GeometryRenderable(andromeda::CreateSurface(-5.0f, -5.0f, 5.0f, 5.0f, 100, 100, andromeda::GEN_TEXTURE | andromeda::GEN_NORMALS, [](aFloat x, aFloat y, const void*){return glm::vec3(x, cosf(x) * 0.25f - 1.0f, y); }, nullptr), tex));
 	//std::shared_ptr<andromeda::IRenderable> grid = std::shared_ptr<andromeda::IRenderable>(new GeometryRenderable(andromeda::CreateSurface(-5.0f, -5.0f, 5.0f, 5.0f, 100, 100, 0, nullptr)));
 
@@ -157,7 +162,7 @@ void App::initialise()
 	// Create Particle System
 	_particles = std::make_shared<andromeda::ParticleSystem>();
 
-	renderer->addRenderable(1, _particles);
+//	renderer->addRenderable(1, _particles);
 }
 
 
@@ -195,7 +200,10 @@ aBoolean App::resize(andromeda::ResizeEventArgs & e)
 */
 aBoolean App::keyUp(andromeda::KeyEventArgs & e)
 {
+	// Get System Module
 	std::shared_ptr<aSystem> system = getDependancyPtr<andromeda::System>();
+
+	assert(system);
 
 	if (!system)
 		return false;
@@ -316,6 +324,11 @@ aBoolean App::mouseMove(andromeda::MouseMoveEventArgs & e)
 	if (e.state & andromeda::Mouse::LeftBit)
 	{
 		std::shared_ptr<andromeda::Camera> camera = _view->camera();
+
+		camera->yaw(camera->yaw() + e.deltaX * sensitivity);
+		camera->pitch(camera->pitch() + e.deltaY * sensitivity);
+
+		camera = _dynView->camera();
 
 		camera->yaw(camera->yaw() + e.deltaX * sensitivity);
 		camera->pitch(camera->pitch() + e.deltaY * sensitivity);

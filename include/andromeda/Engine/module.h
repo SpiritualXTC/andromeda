@@ -11,6 +11,9 @@
 
 namespace andromeda
 {
+	// Forward declarations
+	class Engine;
+
 	class IModule
 	{
 	public:
@@ -133,6 +136,16 @@ namespace andromeda
 		*/
 		const inline Boolean isSystem() const override { return _system; }
 
+
+
+
+
+
+		
+
+		
+
+
 		/*
 			Temporary
 		*/
@@ -151,10 +164,36 @@ namespace andromeda
 		}
 		*/
 
+	protected:
+	//	const Engine * engine() const { return _engine; }
+		
+
+		/* 
+			Called when added to the Engine 
+		*/
+		virtual void onAdd(Engine * engine) 
+		{
+		//	_engine = engine;
+		}
+
+		/* 
+			Called when removed from the Engine 
+		*/
+		virtual void onRemove(Engine * engine) 
+		{
+		//	_engine = nullptr;
+		}
+
+
 	private:
 		Boolean _system = false;
 		_Class _class = Module::Idle;
-		_Priority _priority = Module::Highest;
+		_Priority _priority = Module::Normal;
+
+
+
+
+	//	Engine * _engine = nullptr;
 	};
 
 }

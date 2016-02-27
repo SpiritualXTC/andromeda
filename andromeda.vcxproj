@@ -173,6 +173,7 @@
     <ClCompile Include="src\andromeda\Graphics\renderer.cpp" />
     <ClCompile Include="src\andromeda\Graphics\render_list.cpp" />
     <ClCompile Include="src\andromeda\Graphics\render_target.cpp" />
+    <ClCompile Include="src\andromeda\Graphics\render_target2.cpp" />
     <ClCompile Include="src\andromeda\Graphics\scene_graph.cpp" />
     <ClCompile Include="src\andromeda\Graphics\scene_node.cpp" />
     <ClCompile Include="src\andromeda\Graphics\shader.cpp" />

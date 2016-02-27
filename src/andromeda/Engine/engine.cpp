@@ -72,6 +72,7 @@ Engine::~Engine()
 */
 void Engine::quit()
 {
+	log_debug("Engine: Quit");
 	_running = false;
 }
 
@@ -219,7 +220,9 @@ Boolean Engine::resume(std::shared_ptr<IModule> module)
 }
 
 /*
-	Stops the Module
+	pause():
+
+	Stops the Module.
 */
 Boolean Engine::pause(std::shared_ptr<IModule> module, Boolean stop)
 {

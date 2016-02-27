@@ -24,6 +24,7 @@ namespace andromeda
 	struct KeyEventArgs;
 
 	class RenderTarget;
+	class RenderTarget2;
 	class ParticleSystem;
 }
 
@@ -78,7 +79,7 @@ private:
 	std::shared_ptr<andromeda::View> _view;
 	std::shared_ptr<andromeda::View> _dynView;
 
-	std::shared_ptr<andromeda::RenderTarget> _target;
+	std::shared_ptr<andromeda::RenderTarget2> _target;
 	std::shared_ptr<andromeda::ParticleSystem> _particles;
 
 

@@ -22,6 +22,9 @@ namespace andromeda
 		virtual void bind() = 0;
 		virtual void unbind() = 0;
 
+		virtual const Int32 width() const = 0;
+		virtual const Int32 height() const = 0;
+
 	private:
 	};
 

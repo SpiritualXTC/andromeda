@@ -51,6 +51,12 @@ void GeometryRenderable::render(const andromeda::Shader * const shader, const gl
 
 	
 
+	// TEMP
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	// Render ALL Geometry
+	_geometry->render();
+
+
 	// Material
 
 
@@ -65,7 +71,7 @@ void GeometryRenderable::render(const andromeda::Shader * const shader, const gl
 
 	// TEMP
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
+	
 
 	// Render ALL Geometry
 	_geometry->render();
@@ -73,6 +79,9 @@ void GeometryRenderable::render(const andromeda::Shader * const shader, const gl
 
 	if (_texture)
 		_texture->unbind();
+
+
+
 }
 
 

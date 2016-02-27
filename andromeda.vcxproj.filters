@@ -353,5 +353,8 @@
     <ClCompile Include="src\andromeda\Resources\texture_resource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\andromeda\Graphics\render_target2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

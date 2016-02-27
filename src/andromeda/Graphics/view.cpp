@@ -57,7 +57,7 @@ View::View(Float x, Float y, Float width, Float height, Int32 layer)
 
 
 
-View::View(std::shared_ptr<RenderTarget> target)
+View::View(std::shared_ptr<IRenderTarget> target)
 	: View(0, 0, 1, 1, View::Target)
 {
 	_target = target;

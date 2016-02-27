@@ -2,10 +2,7 @@
 #define _ANDROMEDA_ENGINE_SYSTEM_H_
 
 /*
-	System:
-	Controls the running configuration of the engine :)
 
-	This would be the central "controller", if you were to associate as an MVC application :)
 */
 #include <set>
 
@@ -42,7 +39,10 @@ namespace andromeda
 
 
 	/*
-	
+		System:
+		Controls the running configuration of the engine :)
+
+		This would be a central "controller", if you were to associate as an MVC application :)
 	*/
 	class System : public Module < System >
 	{

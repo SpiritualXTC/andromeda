@@ -457,7 +457,7 @@ void PlatformWindows::update()
 	if (!_paused)
 	{
 		// Game Loop : Can I Haz Moar Hertz?
-		while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		while (PeekMessage(&msg, _hWnd, 0, 0, PM_REMOVE))
 		{
 			// Could Pre-Process Keyboard Events here, and not have them dispatched
 			// Worry about it later :)
@@ -471,7 +471,7 @@ void PlatformWindows::update()
 	{
 		// Minimal Loop : When application isn't in focus it can idle
 		// It does still need to process things. otherwise you will never get it back!
-		if (GetMessage(&msg, NULL, 0, 0))
+		if (GetMessage(&msg, _hWnd, 0, 0))
 		{
 			// Translate and dispatch message
 			TranslateMessage(&msg);

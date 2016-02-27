@@ -28,6 +28,8 @@ namespace andromeda
 	template<class T>
 	Boolean Engine::addModule(std::shared_ptr<T> module)
 	{
+		static_assert(std::is_base_of<andromeda::IModule, T>::value, "Derived not derived from BaseClass");
+
 		// Component Installed Already!
 		if (isInstalled<T>())
 			return false;

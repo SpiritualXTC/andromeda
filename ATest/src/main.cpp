@@ -19,6 +19,7 @@
 
 #include "app.h"
 #include "console.h"
+#include "debugger.h"
 #include "test_bounds.h"
 #include "test_xml.h"
 
@@ -126,10 +127,13 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 #if defined(_DEBUG) && defined(_WIN32)
 	// Create the Console Output
 	std::shared_ptr<Console> console = std::make_shared<Console>();
+
+
+//	Debugger::instance();
 #endif
 
 	// Print the Header to Console
-	printHeader();
+	//printHeader();
 
 	//testBounds();
 	//testVector();
