@@ -5,20 +5,26 @@
 
 #include <andromeda/stddef.h>
 
-#include <andromeda/Game/application.h>
+#include <andromeda/Engine/application.h>
 
 #include <andromeda/Input/keyboard.h>
 #include <andromeda/Input/mouse.h>
 
+#include "game.h"
+
 // Forward Declarations
 namespace andromeda
 {
+	class Entity;
 	class Engine;
 	class View;
 
 	struct CloseEventArgs;
 	struct ResizeEventArgs;
 	struct KeyEventArgs;
+
+	class RenderTarget;
+	class ParticleSystem;
 }
 
 
@@ -45,6 +51,9 @@ public:
 	*/
 	void update(aDouble ft) override;
 
+
+	void createEntity();
+
 protected:
 	aBoolean close(andromeda::CloseEventArgs & e);
 	aBoolean resize(andromeda::ResizeEventArgs & e);
@@ -67,6 +76,19 @@ protected:
 
 private:
 	std::shared_ptr<andromeda::View> _view;
+	std::shared_ptr<andromeda::View> _dynView;
+
+	std::shared_ptr<andromeda::RenderTarget> _target;
+	std::shared_ptr<andromeda::ParticleSystem> _particles;
+
+
+	std::list<std::shared_ptr<andromeda::Entity>> _entities;
+
+
+	
+
+
+	Game _game;
 };
 
 #endif

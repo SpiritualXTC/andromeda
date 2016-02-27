@@ -20,12 +20,16 @@
 #include "app.h"
 #include "console.h"
 #include "test_bounds.h"
+#include "test_xml.h"
+
+#include <andromeda/Containers/vector.h>
 
 
 // Libraries
 #pragma comment(lib,"opengl32.lib")
 #pragma comment(lib,"glu32.lib")
 #pragma comment(lib, "glew32.lib")
+#pragma comment(lib, "soil.lib")
 
 #pragma comment(lib, "andromeda.lib")
 
@@ -64,6 +68,48 @@ void printHeader()
 
 
 
+#include <boost/container/vector.hpp>
+#include <algorithm>
+
+void testVector()
+{
+	//boost::container::vector<aInt32> ints;
+	//std::vector<aInt32> ints;
+	andromeda::vector<aInt32> ints;
+
+	for (aInt32 i = 0; i < 10; ++i)
+	{
+		//ints.push_back(i);
+		ints.push(i);
+	}
+	
+	std::cout << "----" << std::endl;
+	for (auto i : ints)
+	{
+		std::cout << i << std::endl;
+	}
+	std::cout << "----" << std::endl;
+
+//	std::vector<aInt32>::iterator it = std::remove(ints.begin(), ints.end(), 5);
+//	ints.erase(it);
+
+
+	//ints.erase(ints.begin() + 7);
+	ints.erase(7);
+
+
+	for (auto i : ints)
+	{
+		std::cout << i << std::endl;
+	}
+	std::cout << "----" << std::endl;
+
+
+	andromeda::vector<aInt32> bints;
+
+}
+
+
 
 
 /*
@@ -86,12 +132,10 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	printHeader();
 
 	//testBounds();
+	//testVector();
 
 
-
-
-
-
+	//testXML("../res/xml/scene.xml");
 
 
 

@@ -11,18 +11,26 @@
 
 
 #include <andromeda/Graphics/camera.h>
-#include <andromeda/Graphics/geometry_builder.h>
+#include <andromeda/Graphics/geometry_generate.h>
+#include <andromeda/Graphics/geometry_surface.h>
+#include <andromeda/Graphics/particle_system.h>
 #include <andromeda/Graphics/renderer.h>
+#include <andromeda/Graphics/render_target.h>
 #include <andromeda/Graphics/shader.h>
+#include <andromeda/Graphics/texture.h>
 
 
 #include <andromeda/Utilities/log.h>
 
 #include <andromeda/Game/entity.h>
-#include <andromeda/Game/dummy_component.h>
-
+#include <andromeda/Game/camera_component.h>
+#include <andromeda/Game/transform_component.h>
+#include <andromeda/Game/render_component.h>
 
 #include "test_renderable.h"
+
+
+
 
 /*
 
@@ -40,13 +48,9 @@ App::~App()
 	log_verbose("App: Destroy");
 }
 
-
-
 /*
 
 */
-//App::App(std::unique_ptr<andromeda::Engine> engine) 
-//	: _engine(std::move(engine))
 void App::initialise()
 {
 
@@ -109,58 +113,60 @@ void App::initialise()
 
 	// Create a View
 	_view = std::make_shared<andromeda::View>();
-
 	renderer->addView(_view);
 
+	// Test Render Target
+	_target = std::make_shared<andromeda::RenderTarget>(128, 128);
+	_dynView = std::make_shared<andromeda::View>(_target);
+
+
+	renderer->addView(_dynView);
+
+
+	std::shared_ptr<aTexture> tex = andromeda::LoadTexture("../res/textures/test.png");
+
+	std::shared_ptr<andromeda::IRenderable> cube = std::shared_ptr<andromeda::IRenderable>(new GeometryRenderable(andromeda::CreateCube(1.0f, 1.0f, 1.0f, andromeda::GEN_TEXTURE | andromeda::GEN_NORMALS), _target));
+
+	
+
+
+	std::shared_ptr<andromeda::IRenderable> surface = std::shared_ptr<andromeda::IRenderable>(new GeometryRenderable(andromeda::CreateSurface(-5.0f, -5.0f, 5.0f, 5.0f, 100, 100, andromeda::GEN_TEXTURE | andromeda::GEN_NORMALS, [](aFloat x, aFloat y, const void*){return glm::vec3(x, cosf(x) * 0.25f - 1.0f, y); }, nullptr), tex));
+	//std::shared_ptr<andromeda::IRenderable> grid = std::shared_ptr<andromeda::IRenderable>(new GeometryRenderable(andromeda::CreateSurface(-5.0f, -5.0f, 5.0f, 5.0f, 100, 100, 0, nullptr)));
 
 
 
-	std::shared_ptr<andromeda::IRenderable> cube = std::shared_ptr<andromeda::IRenderable>(new GeometryRenderable(andromeda::CreateCube(1.0f, 1.0f, 1.0f, 0)));
-	std::shared_ptr<andromeda::IRenderable> plane = std::shared_ptr<andromeda::IRenderable>(new GeometryRenderable(andromeda::CreatePlane(5.0f, 5.0f, 0)));
 
+	// Create a sphere at the camera position
+	std::shared_ptr<GeometryRenderable> sphere = std::make_shared<GeometryRenderable>(andromeda::CreateEllipse(0.25f, 0.25f, 0.25f, 8, 8, 0));
+	sphere->posiiton(_view->camera()->position());
 
-	renderer->addRenderable(cube);
-	renderer->addRenderable(plane);
+	renderer->addRenderable(0, cube);
+	renderer->addRenderable(0, surface);
+	//renderer->addRenderable(0, grid);
 
-
-
-
-	// Create entity
-	aEntity entity;
-
-
-	log_debug("Has Dummy Component:", entity.hasComponent<andromeda::DummyComponent>());
-	log_debug("Add Dummy Component:", entity.addComponent<andromeda::DummyComponent>());
-	log_debug("Has Dummy Component:", entity.hasComponent<andromeda::DummyComponent>());
+	//renderer->addRenderable(0, sphere);
 
 
 
+
+	// Create Entities!
+	createEntity();
+
+
+	
+	// Create Particle System
+	_particles = std::make_shared<andromeda::ParticleSystem>();
+
+	renderer->addRenderable(1, _particles);
 }
 
 
 /*
 
 */
-void App::update(aDouble ft)
-{
-
-}
 
 
 
-
-#if 0
-/*
-
-*/
-void App::run()
-{
-	assert(_engine);
-
-	// Create Instance of Game!
-	_engine->run();
-}
-#endif
 
 
 /*
@@ -305,12 +311,14 @@ aBoolean App::mouseMove(andromeda::MouseMoveEventArgs & e)
 {
 	//log_event("MouseMove:", e.x, e.y, e.deltaX, e.deltaY, "Buttons:", e.state);
 
+	aFloat sensitivity = 0.01f;	// Pull this from engine<Config>
+
 	if (e.state & andromeda::Mouse::LeftBit)
 	{
 		std::shared_ptr<andromeda::Camera> camera = _view->camera();
 
-		camera->yaw(camera->yaw()  + e.deltaX * 0.005f);
-		camera->pitch(camera->pitch() +e.deltaY * 0.005f);
+		camera->yaw(camera->yaw() + e.deltaX * sensitivity);
+		camera->pitch(camera->pitch() + e.deltaY * sensitivity);
 	}
 
 	return true;
@@ -323,4 +331,102 @@ aBoolean App::mouseWheel(andromeda::MouseWheelEventArgs & e)
 {
 	log_event("MouseWheel:", e.delta);
 	return true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+*/
+void App::createEntity()
+{
+	/*
+		This can be pulled from an XML / Pre-Parsed XML
+	*/
+
+	// Create Entity
+	std::shared_ptr<aEntity> entity = std::make_shared<aEntity>();
+
+	// Create Transform Component
+	entity->addComponent<andromeda::TransformComponent>();
+
+
+	// Create Render Component
+	aBoolean render = true;
+
+	if (render)
+	{
+		//std::shared_ptr<andromeda::Geometry> geometry = andromeda::CreateEllipse(0.5f, 0.5f, 0.5f, 8, 8, 0);
+		std::shared_ptr<andromeda::Geometry> geometry = andromeda::CreateCube(0.25f, 0.25f, 0.25f, 0);
+		std::shared_ptr<andromeda::RenderComponent> renderable = std::make_shared<andromeda::RenderComponent>(geometry, entity->getComponentPtr<andromeda::TransformComponent>());
+
+		entity->addComponent(renderable);
+
+		// Add Renderable
+		getDependancyPtr<andromeda::Renderer>()->addRenderable(0, renderable);
+	}
+
+
+	// Add Camera Module (ONLY TO THE FIRST ENTITY! LOL)
+	if (_entities.size() == 0)
+	{
+		// Create Component
+		std::shared_ptr<andromeda::CameraComponent> camera = std::make_shared<andromeda::CameraComponent>(entity->getComponentPtr<andromeda::TransformComponent>());
+
+		entity->addComponent<andromeda::CameraComponent>(camera);
+
+		// Set Camera to View
+		_view->camera()->setTarget(entity->getComponentPtr<andromeda::CameraComponent>());
+
+		_dynView->camera()->setTarget(entity->getComponentPtr<andromeda::CameraComponent>());
+	}
+
+
+	// Add Entity
+	_entities.push_back(entity);
+
+
+	glEnable(GL_DEPTH_TEST);
+}
+
+
+
+
+/*
+
+*/
+void App::update(aDouble ft)
+{
+	static aFloat angle = 0.0f;
+	static aFloat speed = 0.25f;
+
+	// Crappy Game Logic!
+	for (auto entity : _entities)
+	{
+		std::shared_ptr<andromeda::TransformComponent> transform = entity->getComponentPtr<andromeda::TransformComponent>();
+
+		if (transform)
+		{
+			transform->position(cosf(angle), 0.0f, sinf(angle));
+			transform->yaw(-angle);
+			
+			transform->calculate();
+		}
+	}
+
+
+	angle += (aFloat)ft * glm::pi<aFloat>() * speed;
+
+
+	// Update the Game... that doesn't do anything!
+	_game.update((aFloat)ft);
 }
