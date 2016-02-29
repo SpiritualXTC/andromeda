@@ -15,6 +15,7 @@
 // Forward Declarations
 namespace andromeda
 {
+	
 	class Entity;
 	class Engine;
 	class View;
@@ -23,6 +24,7 @@ namespace andromeda
 	struct ResizeEventArgs;
 	struct KeyEventArgs;
 
+	class Texture;
 	class RenderTarget;
 	class RenderTarget2;
 	class ParticleSystem;
@@ -79,6 +81,8 @@ private:
 	std::shared_ptr<andromeda::View> _view;
 	std::shared_ptr<andromeda::View> _dynView;
 
+
+	std::shared_ptr<andromeda::Texture> _texture;
 	std::shared_ptr<andromeda::RenderTarget2> _target;
 	std::shared_ptr<andromeda::ParticleSystem> _particles;
 

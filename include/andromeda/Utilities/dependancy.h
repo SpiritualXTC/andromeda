@@ -4,10 +4,9 @@
 #include <unordered_map>
 #include <memory>
 
-#include "../stddef.h"
+#include <andromeda/stddef.h>
 
 #include "template.h"
-#include "log.h"
 
 namespace andromeda
 {

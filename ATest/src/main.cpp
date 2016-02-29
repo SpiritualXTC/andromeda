@@ -9,7 +9,7 @@
 #include <andromeda/andromeda.h>
 #include <andromeda/Engine/engine.h>
 #include <andromeda/Engine/system.h>
-#include <andromeda/Graphics/renderer.h>
+#include <andromeda/Renderer/renderer.h>
 #include <andromeda/Utilities/timing.h>
 
 
@@ -19,8 +19,8 @@
 
 #include "app.h"
 #include "console.h"
-#include "debugger.h"
 #include "test_bounds.h"
+#include "test_fs.h"
 #include "test_xml.h"
 
 #include <andromeda/Containers/vector.h>
@@ -33,6 +33,8 @@
 #pragma comment(lib, "soil.lib")
 
 #pragma comment(lib, "andromeda.lib")
+
+// Boost may Auto Link ?? 
 
 
 #if defined(_DEBUG)
@@ -59,57 +61,12 @@ void exit()
 /*
 	Prints a Header
 */
-void printHeader()
+void printHeader(std::shared_ptr<Console> console)
 {
 	std::string contents = andromeda::LoadFile("../res/andromeda.txt");
 
-	std::cout << contents;
+	console->print(contents);
 }
-
-
-
-
-#include <boost/container/vector.hpp>
-#include <algorithm>
-
-void testVector()
-{
-	//boost::container::vector<aInt32> ints;
-	//std::vector<aInt32> ints;
-	andromeda::vector<aInt32> ints;
-
-	for (aInt32 i = 0; i < 10; ++i)
-	{
-		//ints.push_back(i);
-		ints.push(i);
-	}
-	
-	std::cout << "----" << std::endl;
-	for (auto i : ints)
-	{
-		std::cout << i << std::endl;
-	}
-	std::cout << "----" << std::endl;
-
-//	std::vector<aInt32>::iterator it = std::remove(ints.begin(), ints.end(), 5);
-//	ints.erase(it);
-
-
-	//ints.erase(ints.begin() + 7);
-	ints.erase(7);
-
-
-	for (auto i : ints)
-	{
-		std::cout << i << std::endl;
-	}
-	std::cout << "----" << std::endl;
-
-
-	andromeda::vector<aInt32> bints;
-
-}
-
 
 
 
@@ -128,23 +85,21 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	// Create the Console Output
 	std::shared_ptr<Console> console = std::make_shared<Console>();
 
-
-//	Debugger::instance();
+	// Print the Header to Console
+	printHeader(console);
 #endif
 
-	// Print the Header to Console
-	//printHeader();
-
-	//testBounds();
-	//testVector();
 
 
-	//testXML("../res/xml/scene.xml");
 
+	
 
 
 	// Create Engine
 	std::unique_ptr<andromeda::Engine> engine = andromeda::initialise(hInstance);
+
+	// Test File System
+	testFS();
 
 	// Create Application!
 	std::shared_ptr<App> app = std::make_shared<App>();
@@ -157,7 +112,6 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 
 	// Initialise Application
 	app->initialise();
-
 
 	// Run Engine
 	engine->run();

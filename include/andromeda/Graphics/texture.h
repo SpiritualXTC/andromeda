@@ -6,8 +6,7 @@
 
 #include "../stddef.h"
 
-#include "opengl.h"
-
+#include <andromeda/opengl.h>
 namespace andromeda
 {
 	/*

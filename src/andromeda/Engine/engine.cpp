@@ -8,14 +8,14 @@
 #include <andromeda/Engine/config.h>
 #include <andromeda/Engine/module.h>
 #include <andromeda/Engine/system.h>
-#include <andromeda/Graphics/renderer.h>
+#include <andromeda/Renderer/renderer.h>
 #include <andromeda/Utilities/timing.h>
 
 
 #include <andromeda/Utilities/log.h>
 
 // These are only here so, the engine can assign dependancies to the sytem automagically.
-#include <andromeda/Graphics/context.h>
+#include <andromeda/Renderer/context.h>
 #include <andromeda/Platform/platform.h>
 
 

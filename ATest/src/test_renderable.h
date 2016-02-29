@@ -3,7 +3,11 @@
 
 #include <memory>
 
-#include <andromeda/Graphics/renderable.h>
+#include <andromeda/Renderer/renderable.h>
+
+/*
+	REMIOVE MEH
+*/
 
 // Forward Declarations
 namespace andromeda
@@ -16,6 +20,10 @@ namespace andromeda
 }
 
 
+
+/*
+	Temporary Renderer
+*/
 class GeometryRenderable : public andromeda::IRenderable
 {
 public:

@@ -5,24 +5,31 @@
 
 // Most Basic of Basic!
 
-uniform sampler2D u_texture;
+
+// Color
 uniform vec4 u_color;
+//uniform Material u_material;
+
+// Texture
+uniform sampler2D u_texture;
 
 
-varying vec2 v_texture;
 
+// Passed Along the Pipe
+in vec2 v_texture;
+in vec3 v_normal;
 
-
+// Output
 out vec4 o_color;
 
+
+// Entry Point
 void main()
 {
-	//gl_FragColor = u_color;
+	// Get Texture Color
+	vec4 texColor = texture2D(u_texture, v_texture);
 	
-	vec4 c = texture2D(u_texture, v_texture);
 	
-	
-	o_color = c * vec4(1.0, 1.0, 1.0, 1.0);
-	
-	//gl_FragColor = c * vec4(1.0, 1.0, 1.0, 1.0);
+	// Set Output Color
+	o_color = texColor * vec4(1.0, 1.0, 1.0, 1.0);
 }

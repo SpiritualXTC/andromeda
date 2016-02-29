@@ -28,6 +28,8 @@ std::string andromeda::LoadFile(const std::string & filename)
 
 	
 
+	
+
 	// Load all of the file
 	std::string line;
 	while (std::getline(file, line))

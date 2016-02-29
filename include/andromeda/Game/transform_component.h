@@ -1,13 +1,15 @@
 #ifndef _ANDROMEDA_GAME_TRANSFORM_COMPONENT_H_
 #define _ANDROMEDA_GAME_TRANSFORM_COMPONENT_H_
 
-#include "component.h"
+
+#include <andromeda/Game/component.h>
+#include <andromeda/Game/transform.h>
 
 #include <glm/glm.hpp>
 
 namespace andromeda
 {
-	class TransformComponent : public Component < TransformComponent >
+	class TransformComponent : public Component < TransformComponent >, public ITransform
 	{
 	public:
 		TransformComponent();
@@ -26,15 +28,15 @@ namespace andromeda
 
 
 		/* Getters */
-		const inline glm::vec3 & position() const { return _position; }
+		const inline glm::vec3 & position() const override { return _position; }
 
-		const inline Float x() const { return _position.x; }
-		const inline Float y() const { return _position.y; }
-		const inline Float z() const { return _position.z; }
+		const inline Float x() const override { return _position.x; }
+		const inline Float y() const override { return _position.y; }
+		const inline Float z() const override { return _position.z; }
 
-		const inline Float pitch() const { return _rotation.x; }
-		const inline Float yaw() const { return _rotation.y; }
-		const inline Float roll() const { return _rotation.z; }
+		const inline Float pitch() const override { return _rotation.x; }
+		const inline Float yaw() const override { return _rotation.y; }
+		const inline Float roll() const override { return _rotation.z; }
 
 
 

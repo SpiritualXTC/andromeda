@@ -1,7 +1,7 @@
 #ifndef _ANDROMEDA_GRAPHICS_BUFFER_H_
 #define _ANDROMEDA_GRAPHICS_BUFFER_H_
 
-#include "opengl.h"
+#include <andromeda/opengl.h>
 
 namespace andromeda
 {

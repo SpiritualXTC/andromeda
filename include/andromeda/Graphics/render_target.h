@@ -4,10 +4,10 @@
 #include <memory>
 #include <vector>
 
-#include "../stddef.h"
+#include <andromeda/stddef.h>
 
 #include "texture.h"
-#include "opengl.h"
+#include <andromeda/opengl.h>
 
 namespace andromeda
 {

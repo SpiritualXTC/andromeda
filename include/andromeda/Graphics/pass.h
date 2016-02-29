@@ -4,9 +4,8 @@
 #include <memory>
 #include <string>
 
-#include "../stddef.h"
-
-#include "opengl.h"
+#include <andromeda/stddef.h>
+#include <andromeda/opengl.h>
 
 namespace andromeda
 {

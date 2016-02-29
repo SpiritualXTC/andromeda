@@ -10,22 +10,26 @@
 #include <andromeda/Platform/platform.h>
 
 
-#include <andromeda/Graphics/camera.h>
-#include <andromeda/Graphics/geometry_generate.h>
-#include <andromeda/Graphics/geometry_surface.h>
+#include <andromeda/Game/camera.h>
+#include <andromeda/Game/entity.h>
+#include <andromeda/Game/transform_component.h>
+#include <andromeda/Game/render_component.h>
+
+#include <andromeda/Geometry/geometry_generate.h>
+#include <andromeda/Geometry/geometry_surface.h>
+
 #include <andromeda/Graphics/particle_system.h>
-#include <andromeda/Graphics/renderer.h>
 #include <andromeda/Graphics/render_target.h>
 #include <andromeda/Graphics/shader.h>
 #include <andromeda/Graphics/texture.h>
 
 
+#include <andromeda/Renderer/renderer.h>
+
+
 #include <andromeda/Utilities/log.h>
 
-#include <andromeda/Game/entity.h>
-#include <andromeda/Game/camera_component.h>
-#include <andromeda/Game/transform_component.h>
-#include <andromeda/Game/render_component.h>
+
 
 #include "test_renderable.h"
 
@@ -113,7 +117,7 @@ void App::initialise()
 
 
 	// Load textures
-	std::shared_ptr<aTexture> tex = andromeda::LoadTexture("../res/textures/test.png");
+	_texture = andromeda::LoadTexture("../res/textures/test.png");
 
 
 	// Create the Standard View
@@ -135,7 +139,7 @@ void App::initialise()
 
 	
 	// Create Ground Surface
-	std::shared_ptr<andromeda::IRenderable> surface = std::shared_ptr<andromeda::IRenderable>(new GeometryRenderable(andromeda::CreateSurface(-5.0f, -5.0f, 5.0f, 5.0f, 100, 100, andromeda::GEN_TEXTURE | andromeda::GEN_NORMALS, [](aFloat x, aFloat y, const void*){return glm::vec3(x, cosf(x) * 0.25f - 1.0f, y); }, nullptr), tex));
+	std::shared_ptr<andromeda::IRenderable> surface = std::shared_ptr<andromeda::IRenderable>(new GeometryRenderable(andromeda::CreateSurface(-5.0f, -5.0f, 5.0f, 5.0f, 100, 100, andromeda::GEN_TEXTURE | andromeda::GEN_NORMALS, [](aFloat x, aFloat y, const void*){return glm::vec3(x, cosf(x) * 0.25f - 1.0f, y); }, nullptr), _texture));
 	//std::shared_ptr<andromeda::IRenderable> grid = std::shared_ptr<andromeda::IRenderable>(new GeometryRenderable(andromeda::CreateSurface(-5.0f, -5.0f, 5.0f, 5.0f, 100, 100, 0, nullptr)));
 
 
@@ -372,6 +376,9 @@ void App::createEntity()
 	// Create Transform Component
 	entity->addComponent<andromeda::TransformComponent>();
 
+	// Get Transformation Component
+	std::weak_ptr<andromeda::TransformComponent> transform = entity->getComponentPtr<andromeda::TransformComponent>();
+
 
 	// Create Render Component
 	aBoolean render = true;
@@ -379,8 +386,14 @@ void App::createEntity()
 	if (render)
 	{
 		//std::shared_ptr<andromeda::Geometry> geometry = andromeda::CreateEllipse(0.5f, 0.5f, 0.5f, 8, 8, 0);
-		std::shared_ptr<andromeda::Geometry> geometry = andromeda::CreateCube(0.25f, 0.25f, 0.25f, 0);
-		std::shared_ptr<andromeda::RenderComponent> renderable = std::make_shared<andromeda::RenderComponent>(geometry, entity->getComponentPtr<andromeda::TransformComponent>());
+		//std::shared_ptr<andromeda::Geometry> geometry = andromeda::CreateCube(0.25f, 0.25f, 0.25f, andromeda::GEN_TEXTURE);
+		std::shared_ptr<andromeda::Geometry> geometry = andromeda::CreateSphere(0.2f, 8, 4, andromeda::GEN_NORMALS | andromeda::GEN_TEXTURE);
+		std::shared_ptr<andromeda::RenderComponent> renderable = std::make_shared<andromeda::RenderComponent>(geometry, transform);
+		
+		renderable->setTexture(_texture)
+			.setAmbient(glm::vec4(1, 0, 0, 1))
+			.setDiffuse(glm::vec4(0, 1, 0, 1))
+			.setSpecular(glm::vec4(0, 0, 1, 1));
 
 		entity->addComponent(renderable);
 
@@ -389,18 +402,14 @@ void App::createEntity()
 	}
 
 
-	// Add Camera Module (ONLY TO THE FIRST ENTITY! LOL)
+	// Setup Camera Tracking
 	if (_entities.size() == 0)
 	{
-		// Create Component
-		std::shared_ptr<andromeda::CameraComponent> camera = std::make_shared<andromeda::CameraComponent>(entity->getComponentPtr<andromeda::TransformComponent>());
+		
 
-		entity->addComponent<andromeda::CameraComponent>(camera);
-
-		// Set Camera to View
-		_view->camera()->setTarget(entity->getComponentPtr<andromeda::CameraComponent>());
-
-		_dynView->camera()->setTarget(entity->getComponentPtr<andromeda::CameraComponent>());
+		// Set View Camera's Target
+		_view->camera()->setTarget(transform);
+		_dynView->camera()->setTarget(transform);
 	}
 
 

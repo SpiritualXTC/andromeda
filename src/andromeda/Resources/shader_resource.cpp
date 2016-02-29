@@ -1,6 +1,6 @@
 #include <andromeda/Graphics/shader.h>
 
-#include <andromeda/Graphics/opengl.h>
+#include <andromeda/opengl.h>
 
 #include <andromeda/Utilities/io.h>
 #include <andromeda/Utilities/log.h>

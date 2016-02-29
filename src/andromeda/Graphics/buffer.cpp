@@ -52,7 +52,7 @@ void Buffer::data(const GLvoid * ptr, const GLsizeiptr length)
 	bind();
 
 	glBufferData(_type, length, ptr, GL_STATIC_DRAW);
-
+	
 	unbind();
 }
 

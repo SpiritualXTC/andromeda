@@ -3,10 +3,10 @@
 
 #include <string>
 
-#include "../stddef.h"
+#include <andromeda/stddef.h>
 
-#include "../Utilities/dependancy.h"
-#include "../Utilities/template.h"
+#include <andromeda/Utilities/dependancy.h>
+#include <andromeda/Utilities/template.h>
 
 
 namespace andromeda

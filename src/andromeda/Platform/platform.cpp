@@ -10,6 +10,8 @@
 
 #include <andromeda/Platform/platform.h>
 
+#include <andromeda/Utilities/log.h>
+
 using namespace andromeda;
 
 

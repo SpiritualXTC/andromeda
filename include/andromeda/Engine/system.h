@@ -7,7 +7,7 @@
 #include <set>
 
 #include "module.h"
-#include "../Graphics/display.h"
+#include "display.h"
 
 namespace andromeda
 {

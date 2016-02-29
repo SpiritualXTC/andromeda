@@ -8,8 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "../stddef.h"
-
-#include "opengl.h"
+#include <andromeda/opengl.h>
 
 namespace andromeda
 {

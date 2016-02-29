@@ -4,7 +4,7 @@
 
 #include <andromeda/Engine/engine.h>
 #include <andromeda/Engine/system.h>
-#include <andromeda/Graphics/renderer.h>
+#include <andromeda/Renderer/renderer.h>
 #include <andromeda/Utilities/timing.h>
 
 using namespace andromeda;

@@ -5,8 +5,8 @@
 
 #include <glm/glm.hpp>
 
-#include "opengl.h"
-#include "renderable.h"
+#include <andromeda/opengl.h>
+#include <andromeda/Renderer/renderable.h>
 
 namespace andromeda
 {

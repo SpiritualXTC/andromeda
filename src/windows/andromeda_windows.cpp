@@ -1,23 +1,29 @@
 #include <andromeda/andromeda.h>
 
+// Platform Includes
 #include <Windows.h>
 
+// Library Includes
 #include <andromeda/Engine/engine.h>
 #include <andromeda/Engine/system.h>
 
-#include <andromeda/Graphics/context.h>
-#include <andromeda/Graphics/renderer.h>
+#include <andromeda/Renderer/context.h>
+#include <andromeda/Renderer/renderer.h>
 
 #include <andromeda/Input/keyboard.h>
 #include <andromeda/Input/mouse.h>
 
-#include "Graphics/context_windows.h"
-#include "Platform/platform_windows.h"
-
+#include <andromeda/Resources/resource_manager.h>
 #include <andromeda/Utilities/log.h>
 
+// Platform Dependant Library Includes
+#include "Renderer/context_windows.h"
+#include "Platform/platform_windows.h"
+#include "../common/Resources/resource_search_common.h"
 
-#include <andromeda/Engine/system.h>
+
+
+
 
 using namespace andromeda;
 
@@ -52,6 +58,14 @@ std::unique_ptr<Engine> andromeda::initialise(HINSTANCE hInstance)
 	// Assign Platform Dependancies
 	engine->setDependancy<Platform, Keyboard>();
 	engine->setDependancy<Platform, Mouse>();
+
+
+	
+
+	// Create File System Search
+	std::shared_ptr<CommonResourceScan> search = std::make_shared<CommonResourceScan>();
+	ResourceManager::instance()->addSearch(search);
+
 
 	
 

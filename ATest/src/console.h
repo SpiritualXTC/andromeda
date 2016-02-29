@@ -15,6 +15,7 @@ public:
 	virtual ~Console();
 
 	aBoolean log(andromeda::LogMessage & message);
+	aBoolean print(std::string & string);
 
 private:
 	HANDLE _stdout = nullptr;

@@ -5,7 +5,7 @@
 
 
 #include <andromeda/Graphics/buffer.h>
-#include <andromeda/Graphics/geometry.h>
+#include <andromeda/Geometry/geometry.h>
 #include <andromeda/Graphics/shader.h>
 #include <andromeda/Graphics/texture.h>
 
@@ -79,9 +79,6 @@ void GeometryRenderable::render(const andromeda::Shader * const shader, const gl
 
 	if (_texture)
 		_texture->unbind();
-
-
-
 }
 
 
