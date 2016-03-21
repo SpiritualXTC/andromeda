@@ -60,7 +60,7 @@ Game::Game(std::shared_ptr<andromeda::Renderer> renderer)
 
 	// Create Some Objects
 
-	createEntity("test1");
+	createEntity("test_1");
 	//createEntity("test2");
 	//createEntity("test3");
 
