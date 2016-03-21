@@ -1,97 +1,146 @@
-#ifndef _ANDROMEDA_GRAPHICS_EFFECT_H_
-#define _ANDROMEDA_GRAPHICS_EFFECT_H_
+#pragma once
 
-#include <memory>
+/*
+	This file needs to be redone once knowledge has been attained as to how the fucking nvFX library works... :D
+*/
+
 #include <string>
-#include <unordered_map>
+#include <cstdio>
 
-#include "../stddef.h"
-#include "technique.h"
+#include <andromeda/glm.h>
+#include <glm/gtc/type_ptr.hpp>
+
+#include <andromeda/stddef.h>
+
+
+
+
+#include <nvfx/FxParser.h>
 
 namespace andromeda
 {
-	// Forward Declaration
-	class Pass;
-	class Technique;
-	class Shader;
-
-
-
-	/*
-		Note:
-
-		A lot of functionality CANNOT be done, while a pass is active
-	*/
-	class Effect
+	class IEffect
 	{
 	public:
-		typedef std::unordered_map<std::string, std::shared_ptr<Technique>>::iterator iterator;
-		typedef std::unordered_map<std::string, std::shared_ptr<Technique>>::const_iterator const_iterator;
-		
-	public:
-		Effect();
-		virtual ~Effect();
+		IEffect() {}
+		virtual ~IEffect() {}
 
-		// Technique
-		Boolean addTechnique(const std::string & technique, const Int32 group = 0);
-		Boolean removeTechnique(const std::string & technique);
+		virtual const inline void setUniformMat4(const std::string & name, glm::mat4 &m) const = 0;
+		virtual const inline void setUniformVec2(const std::string &name, const glm::vec2 &v)const = 0;
+		virtual const inline void setUniformVec3(const std::string &name, const glm::vec3 &v)const = 0;
+		virtual const inline void setUniformVec4(const std::string &name, const glm::vec4 &v)const = 0;
+		virtual const inline void setUniformTexture(const std::string &name, UInt32 bindIndex)const = 0;
 
-		Boolean setActiveTechnique(const std::string & technique);
-
-		Boolean hasTechnique(const std::string & technique);
-
-		const inline Boolean hasActiveTechnique() const { return !!_curTechnique; }
-		
-
-		// Pass
-	//	Boolean addPass(const std::string & technique, const std::string & pass);
-	//	Boolean addPass(const std::string & pass);
-		Boolean addPass(const std::string & technique, std::shared_ptr<Pass> pass);
-
-		Boolean removePass(const std::string & technique, const std::string & pass);
-		Boolean removePass(const std::string & pass);
-
-
-		Int32 numPasses();
-		Boolean beingPass(Int32 index);
-		Boolean endPass();
-
-		Boolean isActive();
-
-		// BAD!
-		// Shortcut to Shader..... (TEMPORARY FOR NOW)
-		const std::shared_ptr<Shader> shader() const { return _curTechnique == nullptr ? nullptr : _curTechnique->shader(); }
-
-
-		iterator begin() { return _techniques.begin(); }
-		iterator end() { return _techniques.end(); }
-
-		const_iterator cbegin() { return _techniques.cbegin(); }
-		const_iterator cend() { return _techniques.cend(); }
-
-
-	private:
-		std::shared_ptr<Pass> getPass(std::shared_ptr<Technique> technique, const std::string & pass);
-		std::shared_ptr<Pass> getPass(std::shared_ptr<Technique> technique, Int32 index);
-
-		Boolean addPass(std::shared_ptr<Technique> technique, std::shared_ptr<Pass> pass);
-		Boolean removePass(std::shared_ptr<Technique> technique, const std::string & pass);
-
-
-		std::shared_ptr<Technique> _curTechnique = nullptr;
-	//	std::shared_ptr<Pass> _curPass = nullptr;
-
-		std::unordered_map<std::string, std::shared_ptr<Technique>> _techniques;
+		virtual const inline void updateUniformMat4(const std::string & name, glm::mat4 &m) const = 0;
+		virtual const inline void updateUniformVec2(const std::string &name, const glm::vec2 &v)const = 0;		
+		virtual const inline void updateUniformVec3(const std::string &name, const glm::vec3 &v)const = 0;		
+		virtual const inline void updateUniformVec4(const std::string &name, const glm::vec4 &v)const = 0;
+		virtual const inline void updatetUniformTexture(const std::string &name, UInt32 bindIndex)const = 0;
 	};
 
 
 
-	/*
-		Loads an Effect from File
-	*/
-	std::shared_ptr<Effect> LoadEffect(const std::string & filename);
+	class Effect : public IEffect
+	{
+	public:
+		Effect();
+		virtual ~Effect();
+
+
+		Boolean setActiveTechnique(const std::string & technique);
+
+		Boolean beginTechnique(const std::string & technique);
+		Boolean beginTechnique();
+		Boolean endTechnique();
+
+
+		Boolean beginPass(Int32 pass);
+		Boolean endPass();
+
+
+		/*
+		
+		*/
+		const inline Int32 getNumPasses() const
+		{
+			assert(_active);
+			return _active->getNumPasses();
+		}
+
+
+
+
+		const inline void setUniformMat4(const std::string & name, glm::mat4 &m) const
+		{
+			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
+			uniform->setMatrix4f(glm::value_ptr(m));
+		}
+		const inline void setUniformVec2(const std::string &name, const glm::vec2 &v)const
+		{
+			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
+			uniform->setValue2f(v.x, v.y);
+		}
+		const inline void setUniformVec3(const std::string &name, const glm::vec3 &v)const
+		{
+			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
+			uniform->setValue3f(v.x, v.y, v.z);
+		}
+		const inline void setUniformVec4(const std::string &name, const glm::vec4 &v)const
+		{
+			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
+			uniform->setValue4f(v.x, v.y, v.z, v.w);
+		}
+
+		const inline void setUniformTexture(const std::string &name, UInt32 bindIndex)const
+		{
+			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
+			uniform->setValue1i(bindIndex);	// NOT SURE ABOUT THIS
+		}
+
+
+
+
+		const inline void updateUniformMat4(const std::string & name, glm::mat4 &m) const
+		{
+			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
+			uniform->updateMatrix4f(glm::value_ptr(m), _activePass);
+		}
+		const inline void updateUniformVec2(const std::string &name, const glm::vec2 &v)const
+		{
+			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
+			uniform->updateValue2f(v.x, v.y, _activePass);
+		}
+		const inline void updateUniformVec3(const std::string &name, const glm::vec3 &v)const
+		{
+			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
+			uniform->updateValue3f(v.x, v.y, v.z, _activePass);
+		}
+		const inline void updateUniformVec4(const std::string &name, const glm::vec4 &v)const
+		{
+			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
+			uniform->updateValue4f(v.x, v.y, v.z, v.w, _activePass);
+		}
+
+		const inline void updatetUniformTexture(const std::string &name, UInt32 bindIndex)const
+		{
+			
+			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
+			uniform->updateValue1i(bindIndex, _activePass);	// NOT SURE ABOUT THIS
+		}
+
+
+
+
+
+	private:
+		void infoOutput();
+		void shaderHack();
+
+		nvFX::IContainer * _effect = nullptr;
+		
+
+		nvFX::ITechnique * _active = nullptr;
+		nvFX::IPass * _activePass = nullptr;
+	};
 }
 
-typedef andromeda::Effect aEffect;
-
-#endif

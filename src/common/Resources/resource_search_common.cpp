@@ -116,5 +116,5 @@ std::shared_ptr<ResourceStream> CommonResourceScan::load(const std::string & loc
 	std::string fullPath = location + "/" + localPath + "/" + filename;
 
 	// Make a Resource Stream
-	return std::make_shared<CommonResourceStream>(fullPath, true);
+	return std::make_shared<CommonResourceStream>(fullPath, false);
 }

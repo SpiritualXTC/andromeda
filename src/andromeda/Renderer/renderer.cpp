@@ -7,8 +7,9 @@
 
 #include <andromeda/opengl.h>
 #include <andromeda/Renderer/renderable.h>
-#include <andromeda/Renderer/render_list.h>
-#include <andromeda/Renderer/scene_graph.h>
+#include <andromeda/Renderer/scene.h>
+#include <andromeda/Renderer/scene_graph.h>\
+
 
 #include <andromeda/Utilities/log.h>
 
@@ -24,8 +25,6 @@ Renderer::Renderer() : Module(Module::Render)
 
 	// Default States
 	glEnable(GL_DEPTH_TEST);	
-
-	_sceneGraph = std::make_shared<SceneGraph>();
 }
 
 
@@ -38,12 +37,14 @@ Renderer::~Renderer()
 	log_verbose("Renderer: Destroy");
 }
 
-
+#if 0
 /*
 	addView():
 */
 Boolean Renderer::addView(std::shared_ptr<View> view)
 {
+	
+
 	// Create some Dummy Views	
 	_views.insert(view);
 
@@ -67,38 +68,86 @@ Boolean Renderer::clearViews()
 	_views.clear();
 	return true;
 }
-
-
-/*
-
-*/
-Boolean Renderer::addRenderable(Int32 group, std::shared_ptr<IRenderable> renderable)
-{
-	assert(renderable);
-
-	return _sceneGraph->addRenderable(group, renderable);
-}
-
-/*
-
-*/
-Boolean Renderer::removeRenderable(Int32 group, std::shared_ptr<IRenderable> renderable)
-{
-	assert(renderable);
-
-	return _sceneGraph->removeRenderable(group, renderable);
-}
+#endif
 
 
 
 /*
-
+	addScene():
 */
-Boolean Renderer::clearRenderables()
+Boolean Renderer::addScene(std::shared_ptr<Scene> scene)
 {
-//	_renderLists.clear();
-	return true;
+	assert(scene);
+
+	// Check if a scene with the matching name exists already
+	if (hasScene(scene->getName()))
+		return false;
+
+	// Add Scene
+	_scenes[scene->getName()] = scene;
+
+
+	// Check whether it was added
+	return hasScene(scene->getName());
 }
+
+
+/*
+	removeScene():
+*/
+Boolean Renderer::removeScene(const std::string & name)
+{
+	
+	// Check if a Scene with the matching name exists 
+	if (!hasScene(name))
+		return false;
+
+	// Remove Scene
+	_scenes.erase(name);
+
+	// Check whether it was removed
+	return hasScene(name);
+}
+
+/*
+	removeScene():
+*/
+Boolean Renderer::removeScene(std::shared_ptr<Scene> scene)
+{
+	assert(scene);
+
+	return removeScene(scene->getName());
+}
+
+
+
+
+/*
+	hasScene():
+
+	The Renderer Has the Scene
+*/
+Boolean Renderer::hasScene(const std::string & name)
+{ 
+	return _scenes.find(name) != _scenes.end(); 
+}
+
+
+/*
+	getScene():
+
+	Gets the scene with the matching name
+*/
+std::shared_ptr<Scene> Renderer::getScene(const std::string & name)
+{
+	// Check for the Scene
+	if (!hasScene(name))
+		return nullptr;
+
+	// Return the Scene
+	return _scenes[name];
+}
+
 
 
 
@@ -115,16 +164,11 @@ void Renderer::update()
 	//GL_STENCIL_BUFFER_BIT
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-	// Loop through all views!
-	for (auto view : _views)
-	{
-		// Render the View
-		view->render(_sceneGraph);
-	}
+	// Render All Scenes
+	for (const auto scene : _scenes)
+		scene.second->render();
 
 	// Swapping is handled by the context module :)
-
 
 	errorCheck();
 }
@@ -145,18 +189,3 @@ void Renderer::errorCheck()
 }
 
 
-/*
-
-*/
-Boolean Renderer::onResize(ResizeEventArgs & e)
-{
-	//glViewport(0, 0, e.displayWidth, e.displayHeight);
-
-	// Send resize info to views
-	for (auto view : _views)
-		view->resize(e.displayWidth, e.displayHeight);
-
-	log_event("ON_RESIZE: ", e.displayWidth, e.displayHeight);
-
-	return true;
-}

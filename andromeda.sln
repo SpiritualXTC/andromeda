@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "andromeda", "andromeda.vcxproj", "{7D55DF3C-9EA7-4638-A283-F46ED6760B47}"
 EndProject
@@ -13,17 +13,23 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
 		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{7D55DF3C-9EA7-4638-A283-F46ED6760B47}.Debug|Win32.ActiveCfg = Debug|Win32
 		{7D55DF3C-9EA7-4638-A283-F46ED6760B47}.Debug|Win32.Build.0 = Debug|Win32
+		{7D55DF3C-9EA7-4638-A283-F46ED6760B47}.Debug|x64.ActiveCfg = Debug|Win32
 		{7D55DF3C-9EA7-4638-A283-F46ED6760B47}.Release|Win32.ActiveCfg = Release|Win32
 		{7D55DF3C-9EA7-4638-A283-F46ED6760B47}.Release|Win32.Build.0 = Release|Win32
+		{7D55DF3C-9EA7-4638-A283-F46ED6760B47}.Release|x64.ActiveCfg = Release|Win32
 		{1D42A567-4A1A-4E58-AAC0-DFCE4FE3BF4E}.Debug|Win32.ActiveCfg = Debug|Win32
 		{1D42A567-4A1A-4E58-AAC0-DFCE4FE3BF4E}.Debug|Win32.Build.0 = Debug|Win32
+		{1D42A567-4A1A-4E58-AAC0-DFCE4FE3BF4E}.Debug|x64.ActiveCfg = Debug|Win32
 		{1D42A567-4A1A-4E58-AAC0-DFCE4FE3BF4E}.Release|Win32.ActiveCfg = Release|Win32
 		{1D42A567-4A1A-4E58-AAC0-DFCE4FE3BF4E}.Release|Win32.Build.0 = Release|Win32
+		{1D42A567-4A1A-4E58-AAC0-DFCE4FE3BF4E}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

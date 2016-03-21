@@ -64,7 +64,7 @@ namespace andromeda
 		/*
 			Get Current Position in Stream
 		*/
-		virtual UInt64 tell() = 0;
+		virtual const UInt64 tell() = 0;
 
 		/*
 			Set Current Position in Stream
@@ -75,6 +75,11 @@ namespace andromeda
 			Get Length of Stream
 		*/
 		virtual const UInt64 length() const = 0;
+
+		/*
+			Read Entire File as Text
+		*/
+		virtual std::string read() = 0;
 
 	private:
 		

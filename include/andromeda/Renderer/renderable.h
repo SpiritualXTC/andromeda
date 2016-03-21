@@ -1,53 +1,55 @@
 #ifndef _ANDROMEDA_GRAPHICS_RENDERABLE_H_
 #define _ANDROMEDA_GRAPHICS_RENDERABLE_H_
 
-#include "../stddef.h"
+#include <memory>
 
-#include <glm/glm.hpp>
+#include <andromeda/stddef.h>
+
+#include <andromeda/glm.h>
 
 namespace andromeda
 {
 	// Forward Declarations
+	class IEffect;
 	class Shader;
+	class MatrixStack;
+
 
 
 	/*
-	
+		First Gen of the new Renderable Class
 	*/
 	class IRenderable
 	{
 	private:
 		static Int32 RENDERABLE_ID;
 
-
 	public:
-		/*
-		
-		*/
-		IRenderable()
+		IRenderable() 
 		{
 			_id = ++IRenderable::RENDERABLE_ID;
 		}
+		virtual ~IRenderable() {}
+
+
+		//virtual const glm::mat4 & matrix() const = 0;
+
 
 		/*
-		
+			Render
 		*/
-		virtual ~IRenderable(){}
+		virtual void render(const std::shared_ptr<IEffect> effect, MatrixStack & ms) = 0;
 
-		/*
-			Render!
-		*/
-		virtual void render(const Shader * const shader, const glm::mat4 & modelView) = 0;
+
 
 		/*
 			Get Unique ID of the Renderable
 		*/
-		inline const Int32 id() { return _id; }
+		inline const Int32 id() const { return _id; }
 
 	private:
 		Int32 _id = 0;
 	};
-
 }
 
 #endif

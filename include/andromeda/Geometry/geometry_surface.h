@@ -2,7 +2,8 @@
 #define _ANDROMEDA_GRAPHICS_GEOMETRY_SURFACE_H_
 
 #include <functional>
-#include <glm/glm.hpp>
+
+#include <andromeda/glm.h>
 
 
 #include "geometry_builder.h"

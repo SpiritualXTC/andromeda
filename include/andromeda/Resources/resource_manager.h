@@ -90,7 +90,7 @@ namespace andromeda
 	*/
 	class ResourceManager : public Singleton<ResourceManager>
 	{
-	public:
+	private:
 		struct _Scan
 		{
 			std::shared_ptr<IResourceScan> search;

@@ -9,21 +9,6 @@
 #include <andromeda/Engine/system.h>
 #include <andromeda/Platform/platform.h>
 
-
-#include <andromeda/Game/camera.h>
-#include <andromeda/Game/entity.h>
-#include <andromeda/Game/transform_component.h>
-#include <andromeda/Game/render_component.h>
-
-#include <andromeda/Geometry/geometry_generate.h>
-#include <andromeda/Geometry/geometry_surface.h>
-
-#include <andromeda/Graphics/particle_system.h>
-#include <andromeda/Graphics/render_target.h>
-#include <andromeda/Graphics/shader.h>
-#include <andromeda/Graphics/texture.h>
-
-
 #include <andromeda/Renderer/renderer.h>
 
 
@@ -31,7 +16,6 @@
 
 
 
-#include "test_renderable.h"
 
 
 
@@ -110,19 +94,33 @@ void App::initialise()
 #endif
 
 
+	
+
+
+
 
 	// Create the Renderer : This should be done by the engine :)
 	//std::shared_ptr<andromeda::Renderer> renderer = _engine->getModulePtr<andromeda::Renderer>();
 	std::shared_ptr<andromeda::Renderer> renderer = getDependancyPtr<andromeda::Renderer>();
 
 
+	// Create Game Instance
+	_game = std::make_shared<Game>(renderer);
+
+
+#if 0
 	// Load textures
 	_texture = andromeda::LoadTexture("../res/textures/test.png");
 
 
 	// Create the Standard View
 	_view = std::make_shared<andromeda::View>();
-	renderer->addView(_view);
+	//renderer->addView(_view);
+
+
+	// TEMP :: Hack implementation
+	_view->setScene(_game->getScene());
+
 
 
 	// Create a Renderable View
@@ -130,7 +128,7 @@ void App::initialise()
 	_dynView = std::make_shared<andromeda::View>(_target);
 
 	// Add the Renderable View
-	renderer->addView(_dynView);
+	//renderer->addView(_dynView);
 
 
 	// Create a Cube
@@ -160,11 +158,10 @@ void App::initialise()
 
 	// Create Entities!
 	createEntity();
-
+#endif
 
 	
-	// Create Particle System
-	_particles = std::make_shared<andromeda::ParticleSystem>();
+	
 
 //	renderer->addRenderable(1, _particles);
 }
@@ -323,21 +320,6 @@ aBoolean App::mouseMove(andromeda::MouseMoveEventArgs & e)
 {
 	//log_event("MouseMove:", e.x, e.y, e.deltaX, e.deltaY, "Buttons:", e.state);
 
-	aFloat sensitivity = 0.01f;	// Pull this from engine<Config>
-
-	if (e.state & andromeda::Mouse::LeftBit)
-	{
-		std::shared_ptr<andromeda::Camera> camera = _view->camera();
-
-		camera->yaw(camera->yaw() + e.deltaX * sensitivity);
-		camera->pitch(camera->pitch() + e.deltaY * sensitivity);
-
-		camera = _dynView->camera();
-
-		camera->yaw(camera->yaw() + e.deltaX * sensitivity);
-		camera->pitch(camera->pitch() + e.deltaY * sensitivity);
-	}
-
 	return true;
 }
 
@@ -359,7 +341,7 @@ aBoolean App::mouseWheel(andromeda::MouseWheelEventArgs & e)
 
 
 
-
+#if 0
 
 /*
 
@@ -385,6 +367,7 @@ void App::createEntity()
 
 	if (render)
 	{
+#if 0
 		//std::shared_ptr<andromeda::Geometry> geometry = andromeda::CreateEllipse(0.5f, 0.5f, 0.5f, 8, 8, 0);
 		//std::shared_ptr<andromeda::Geometry> geometry = andromeda::CreateCube(0.25f, 0.25f, 0.25f, andromeda::GEN_TEXTURE);
 		std::shared_ptr<andromeda::Geometry> geometry = andromeda::CreateSphere(0.2f, 8, 4, andromeda::GEN_NORMALS | andromeda::GEN_TEXTURE);
@@ -397,8 +380,10 @@ void App::createEntity()
 
 		entity->addComponent(renderable);
 
+
 		// Add Renderable
 		getDependancyPtr<andromeda::Renderer>()->addRenderable(0, renderable);
+#endif
 	}
 
 
@@ -420,7 +405,7 @@ void App::createEntity()
 	glEnable(GL_DEPTH_TEST);
 }
 
-
+#endif
 
 
 /*
@@ -431,6 +416,8 @@ void App::update(aDouble ft)
 	static aFloat angle = 0.0f;
 	static aFloat speed = 0.25f;
 
+
+#if 0
 	// Crappy Game Logic!
 	for (auto entity : _entities)
 	{
@@ -438,17 +425,20 @@ void App::update(aDouble ft)
 
 		if (transform)
 		{
-			transform->position(cosf(angle), 0.0f, sinf(angle));
-			transform->yaw(-angle);
+		//	transform->position(cosf(angle), 0.0f, sinf(angle));
+		//	transform->yaw(-angle);
 			
 			transform->calculate();
 		}
 	}
+#endif
 
 
-	angle += (aFloat)ft * glm::pi<aFloat>() * speed;
+	//angle += (aFloat)ft * glm::pi<aFloat>() * speed;
 
 
 	// Update the Game... that doesn't do anything!
-	_game.update((aFloat)ft);
+
+	if (_game)
+		_game->update((aFloat)ft);
 }

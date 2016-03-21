@@ -14,6 +14,8 @@ Camera::Camera()
 
 }
 
+
+#if 0
 /*
 
 */
@@ -21,7 +23,7 @@ Camera::Camera(std::weak_ptr<ITransform> target)
 {
 	setTarget(target);
 }
-
+#endif
 
 
 /*
@@ -51,6 +53,15 @@ const glm::mat4 & Camera::calcMatrix()
 	// Distance camera is from view point
 	matrix = glm::translate(matrix, glm::vec3(0, 0, -_distance));
 	
+#if 1
+	// Camera Rotation
+	matrix = glm::rotate(matrix, _rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+	matrix = glm::rotate(matrix, _rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+	matrix = glm::rotate(matrix, _rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+
+	// Camera Translation
+	matrix = glm::translate(matrix, -_position);
+#else
 	if (!hasTarget())
 	{
 		// Camera Rotation
@@ -77,6 +88,7 @@ const glm::mat4 & Camera::calcMatrix()
 		// Camera Translation
 		matrix = glm::translate(matrix, -_position - target->position());
 	}
+#endif
 
 	// Calculate Final View Matrix
 	_view *= matrix;

@@ -1,31 +1,33 @@
 #ifndef _ANDROMEDA_GAME_ENTITY_HPP_
 #define _ANDROMEDA_GAME_ENTITY_HPP_
 
-//#include "../stddef.h"
+#include <cassert>
 
 namespace andromeda
 {
 	/*
-	
+		Create and add a component
 	*/
-	template <typename T>
-	Boolean Entity::addComponent()
+	template <typename T, typename ... Args>
+	Boolean Entity::addComponent(const Args& ... args)
 	{
 		// Component Already Exists
 		if (hasComponent<T>())
 			return false;
 
 		// Create  & Add Component
-		return addComponent<T>(std::make_shared<T>());
+		return addComponent<T>(std::make_shared<T>(args));
 	}
 
 
 	/*
-
+		Add a component from existing pointer
 	*/
 	template <typename T>
 	Boolean Entity::addComponent(std::shared_ptr<T> component)
 	{
+		assert(component);
+
 		// Component Exists ?
 		if (hasComponent<T>())
 			return false;
@@ -42,7 +44,7 @@ namespace andromeda
 
 
 	/*
-	
+		Remove a component
 	*/
 	template <typename T>
 	Boolean Entity::removeComponent()
@@ -63,10 +65,10 @@ namespace andromeda
 
 
 	/*
-	
+		Obtain a pointer to the component
 	*/
 	template <typename T>
-	std::shared_ptr<T> Entity::getComponentPtr()
+	const std::shared_ptr<T> Entity::getComponentPtr()
 	{
 		// Component Doesn't Exist
 		if (!hasComponent<T>())
@@ -83,7 +85,7 @@ namespace andromeda
 	}
 
 	/*
-	
+		Obtain a RAW pointer to the component
 	*/
 	template <typename T>
 	const T * Entity::getComponent() const

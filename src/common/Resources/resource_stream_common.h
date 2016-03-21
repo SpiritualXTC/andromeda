@@ -12,6 +12,8 @@ namespace andromeda
 	class CommonResourceStream : public ResourceStream
 	{
 	public:
+		CommonResourceStream();
+		CommonResourceStream(std::string & fullPath);
 		CommonResourceStream(std::string & fullPath, Boolean binary);
 		virtual ~CommonResourceStream();
 
@@ -48,14 +50,30 @@ namespace andromeda
 		void close() override;
 
 
-
+		/*
+			Move to Beginning of Stream
+		*/
 		void begin() override;
 
+		/*
+			Move to End of Stream
+		*/
 		void end() override;
 
-		UInt64 tell() override;
+		/*
+			Get Current Position in Stream
+		*/
+		const UInt64 tell() override;
 
+		/*
+			Move to a position in Stream
+		*/
 		void seek(UInt64 pos) override;
+
+		/*
+			Read Entire Stream
+		*/
+		std::string read() override;
 
 	private:
 

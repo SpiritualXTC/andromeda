@@ -2,7 +2,8 @@
 #define _ANDROMEDA_MATH_MATRIX_STACK_H_
 
 #include <stack>
-#include <glm/glm.hpp>
+
+#include <andromeda/glm.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "../andromeda.h"
@@ -145,6 +146,7 @@ namespace andromeda
 
 		inline const glm::mat4 & top() const { return _top; }
 
+		inline glm::mat4 & top() { return _top; }
 
 
 

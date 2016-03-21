@@ -4,9 +4,10 @@
 #include <memory>
 #include <unordered_map>
 #include <vector>
+#include <algorithm>
+#include <functional>
 
-
-#include <glm/glm.hpp>
+#include <andromeda/glm.h>
 
 #include <andromeda/stddef.h>
 
@@ -15,118 +16,46 @@
 namespace andromeda
 {
 	// Forward Declarations
-	//class IRenderable;
-	class Shader;
-
-
-	/*
-		// List of Cameras
-		// List of Lights
-		// List of Entities
-	*/
-
-
-
-
-	class SceneNode
-	{
-	public:
-		SceneNode();
-		SceneNode(std::shared_ptr<IRenderable> renderable);
-		virtual ~SceneNode();
-
-		Boolean addNode(std::shared_ptr<IRenderable> renderable);
-		Boolean removeNode(std::shared_ptr<IRenderable> renderable);
-
-
-		// Shortcut to renderable ID
-		const inline Int32 id() const { return _renderable == nullptr ? -1 : _renderable->id(); }
-
-		// TEMPORARY
-		Boolean render(Shader * shader, glm::mat4 & modelView);
-
-	private:
-		std::shared_ptr<IRenderable> _renderable;
-		std::vector<SceneNode> _nodes;
-	};
-
-	/*
-		Render Group Interface
-	*/
-	class ISceneGroup
-	{
-	public:
-		ISceneGroup(){}
-		virtual ~ISceneGroup(){}
-
-		virtual Boolean addRenderable(std::shared_ptr<IRenderable> renderable) = 0;
-		virtual Boolean removeRenderable(std::shared_ptr<IRenderable> renderable) = 0;
-
-		// TEMPORARY
-		virtual Boolean render(Shader * shader, glm::mat4 & modelView) = 0;
-
-	};
-
-	/*
-		Test SceneGroup
-	*/
-	class SceneGroup : public ISceneGroup
-	{
-	public:
-		SceneGroup(){}
-		virtual ~SceneGroup(){}
-
-		inline Boolean addRenderable(std::shared_ptr<IRenderable> renderable)
-		{
-			return _root.addNode(renderable);
-		}
-		Boolean removeRenderable(std::shared_ptr<IRenderable> renderable)
-		{
-			return _root.removeNode(renderable);
-		}
-
-
-		// TEMPORARY
-		Boolean render(Shader * shader, glm::mat4 & modelView)
-		{
-			return _root.render(shader, modelView);
-		}
-
-	private:
-		SceneNode _root;
-	};
-
-
-
-
-
+	class ITransform;
+	class GameObject;
 
 
 	/*
 	
 	*/
-	class SceneGraph
+	class ISceneGraph
 	{
 	public:
-		SceneGraph();
-		virtual ~SceneGraph();
+		ISceneGraph() {}
+		virtual ~ISceneGraph() {}
 
-		Boolean addRenderable(Int32 group, std::shared_ptr<IRenderable> renderable);
-		Boolean removeRenderable(Int32 group, std::shared_ptr<IRenderable> renderable);
+		virtual std::shared_ptr<GameObject> getGameObject(const std::string & name) = 0;
+
+		virtual Boolean hasObject(const std::string & name) = 0;
+		virtual Boolean hasObject(std::shared_ptr<GameObject> object) = 0;
+
+
+		virtual Boolean addGameObject(std::shared_ptr<GameObject> object) = 0;
+		virtual Boolean removeGameObject(const std::string & name) = 0;
+		virtual Boolean removeGameObject(std::shared_ptr<GameObject> object) = 0;
+
+		virtual const Int32 getObjectCount() const = 0;
+
 	
 
+		virtual std::shared_ptr<GameObject> operator[](const char * const name) = 0;
 
-		// TEMPORARY
-		Boolean render(Int32 group, Shader * shader, glm::mat4 & modelView);
 
-	private:
-		Boolean addGroup(Int32 group);
+		virtual void for_each(std::function<void(std::shared_ptr<GameObject>)> cb) = 0;
 
-		const inline Boolean hasGroup(Int32 group) { return !! _groups[group]; }
-		const inline std::shared_ptr<ISceneGroup> getGroup(Int32 group) { return _groups[group]; }
 
-		std::unordered_map<Int32, std::shared_ptr<ISceneGroup>> _groups;		// Make 'SceneNode' abstract :)
+		// TEMP
+		//	virtual Boolean process(std::shared_ptr<ITransform> transform, std::shared_ptr<ISceneGraph> sgCache) = 0;
 	};
+
+
+
+
 }
 
 

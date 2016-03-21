@@ -5,7 +5,7 @@
 #include <andromeda/Game/component.h>
 #include <andromeda/Game/transform.h>
 
-#include <glm/glm.hpp>
+#include <andromeda/glm.h>
 
 namespace andromeda
 {
@@ -15,11 +15,15 @@ namespace andromeda
 		TransformComponent();
 		virtual ~TransformComponent();
 
-		const glm::mat4 & matrix() const { return _matrix; }
+		const inline glm::mat4 & matrix() const override { return _matrix; }
 
 
 		/* Setters */
 		inline void position(Float x, Float y, Float z) { _position = glm::vec3(x, y, z); }
+
+		inline void x(Float x) { _position.y = x; }
+		inline void y(Float y) { _position.x = y; }
+		inline void z(Float z) { _position.z = z; }
 
 		inline void yaw(Float f) { _rotation.y = f; }
 		inline void pitch(Float f){ _rotation.x = f; }

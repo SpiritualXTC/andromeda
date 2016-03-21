@@ -6,6 +6,8 @@
 #include <sstream>
 #include <cstdarg>
 
+#include <boost/format.hpp>
+
 #include "../stddef.h"
 
 #include "../Utilities/observer.h"
@@ -23,10 +25,20 @@
 #define log_trace(...) andromeda::Log::instance()->log(andromeda::Log::Trace, __VA_ARGS__)
 
 
+#define log_errp(...) andromeda::Log::instance()->logp(andromeda::Log::Error, __VA_ARGS__)
+#define log_warnp(...) andromeda::Log::instance()->logp(andromeda::Log::Warning, __VA_ARGS__)
+#define log_infop(...) andromeda::Log::instance()->logp(andromeda::Log::Information, __VA_ARGS__)
+#define log_debugp(...) andromeda::Log::instance()->logp(andromeda::Log::Debug, __VA_ARGS__)
+#define log_verbosep(...) andromeda::Log::instance()->logp(andromeda::Log::Verbose, __VA_ARGS__)
+
+#define log_eventp(...) andromeda::Log::instance()->logp(andromeda::Log::Event, __VA_ARGS__)
+
+#define log_tracep(...) andromeda::Log::instance()->logp(andromeda::Log::Trace, __VA_ARGS__)
+
+
+
 namespace andromeda
 {
-	// This is currently running through the event system :: For now. but it works, has global access, and allows it to be customised.
-	// It also allows multiple logging implementations to react to log events :)
 	struct LogMessage
 	{
 		Int32 level;
@@ -35,9 +47,7 @@ namespace andromeda
 
 
 	/*
-		This would be better using a observer pattern than tapping into the event manager .. but yolo :)
-
-		The Log will probably be a singleton anyway.... being a utility class....
+		
 	*/
 	class Log : public Singleton<Log>, public Observable<Log>
 	{
@@ -85,7 +95,42 @@ namespace andromeda
 		}
 
 
+		/*
+			Better way of logging supported by BOOOOOOST
+		*/
+		template <typename ... Args>
+		void logp(LogLevel level, const std::string & format, Args const & ... args) noexcept
+		{
+			boost::format fmt = boost::format(format);
+
+			int a[] = { 0, ((void)(fmt % argument(args)), 0) ... };
+
+			log(level, boost::str(fmt));
+		}
+
 	private:
+
+		/*
+			Passes the argument straight though
+		*/
+		template <typename T>
+		T argument(T value) noexcept
+		{
+			return value;
+		}
+
+
+		/*
+			Converts std::basic_string to [w]char* pointer 
+		*/
+		template <typename T>
+		T const * argument(std::basic_string<T> const & value) noexcept
+		{
+			return value.c_str();
+		}
+
+
+
 	};
 
 

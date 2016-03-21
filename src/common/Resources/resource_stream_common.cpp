@@ -8,13 +8,30 @@
 using namespace andromeda;
 using namespace boost;
 
+
+/*
+
+*/
+CommonResourceStream::CommonResourceStream()
+{
+
+}
+
+/*
+
+*/
+CommonResourceStream::CommonResourceStream(std::string & fullPath) 
+	: CommonResourceStream(fullPath, false)
+{
+
+}
+
 /*
 
 */
 CommonResourceStream::CommonResourceStream(std::string & fullPath, Boolean binary)
 {
-
-
+	open(fullPath, binary);
 }
 
 /*
@@ -30,6 +47,9 @@ CommonResourceStream::~CommonResourceStream()
 */
 void CommonResourceStream::open(const std::string & fullPath, const Boolean binary)
 {
+	// Close File
+	close();
+
 	// Length of File [Required for Binary]
 	_length = filesystem::file_size(fullPath);
 	
@@ -93,8 +113,41 @@ void CommonResourceStream::seek(UInt64 pos)
 /*
 
 */
-UInt64 CommonResourceStream::tell()
+const UInt64 CommonResourceStream::tell()
 {
 	// Virtual Files will require an offset
 	return _file.tellg();
+}
+
+/*
+	
+*/
+std::string CommonResourceStream::read()
+{
+	std::stringstream contents;
+
+	// Validate
+	if (!isOpen() && isBinary())
+	{
+		// Throw Exception
+		return "";
+	}
+
+	// Get Current position
+	UInt64 pos = tell();
+
+	// Move to Beginning
+	begin();
+
+	// Load all of the file
+	std::string line;
+	while (std::getline(_file, line))
+	{
+		contents << line << std::endl;
+	}
+
+	// Move to Previous Position
+	seek(pos);
+
+	return contents.str();
 }

@@ -1,0 +1,150 @@
+// GLSL Globals : Define for all Shaders
+//////////////////////////////
+#extension GL_ARB_separate_shader_objects : enable
+
+
+	
+
+GLSLShader
+{
+
+}
+	
+
+// Normal Rendering Mode
+////////////////////////////
+RasterizationState rasterStateNormal
+{
+    LINE_WIDTH = 1;
+    POLYGON_MODE = {FRONT_AND_BACK, FILL};
+}
+
+
+// Wireframe Rendering Mode
+////////////////////////////
+RasterizationState rasterStateWireframe
+{
+    LINE_WIDTH = 1;
+    POLYGON_MODE = {FRONT_AND_BACK, LINE};
+}
+
+
+
+// Matrix Constants
+uniform mat4 u_projection;		// Projection Matrix
+uniform mat4 u_modelview;		// ModelView Matrix
+
+// Color
+uniform vec4 u_color;
+
+// Texture
+uniform sampler2D u_texture;
+
+
+
+
+ConstantBuffer global MATERIAL
+{
+	uniform vec3     ambient;
+    uniform vec3     diffuse;
+    uniform vec3     specular;
+	
+//    uniform float    specexp;
+//    uniform float    reflectivity;
+//    uniform vec3     transparency;
+//    uniform float    translucency;
+};
+
+
+//#include "section.glslfx"
+
+
+// Vertex Shader
+/////////////////
+GLSLShader vertShader
+{
+
+
+	// Vertex Data
+	layout(location=0) in vec4 a_position;
+	layout(location=1) in vec3 a_normal;
+	layout(location=2) in vec2 a_texture;
+
+	// Pass along the Pipeline
+    out gl_PerVertex 
+	{
+        vec4 gl_Position;
+    };
+	
+	out vec2 v_texture;
+	out vec3 v_normal;
+
+	// Entry Point
+	void main()
+	{
+		// Setup Varying Interpolation
+		v_texture = a_texture;
+		
+		// Calculate Position
+		gl_Position = u_projection * u_modelview * a_position;	
+	}
+}
+
+
+// Fragment Shader
+//////////////////////
+GLSLShader fragShaderFill
+{
+	// Passed Along the Pipe
+	in vec2 v_texture;
+	in vec3 v_normal;
+
+	// Output
+	out vec4 o_color;
+
+	void main(void)
+	{
+		// Get Texture Color
+	//	vec4 texColor = texture2D(u_texture, v_texture);
+	
+	
+		// Set Output Color
+		//o_color = texColor * vec4(1.0, 1.0, 1.0, 1.0);
+		o_color = vec4(1.0, 0.0, 1.0, 1.0);
+	}
+}
+
+GLSLShader fragShaderWireframe
+{
+	// Output
+	out vec4 o_color;
+
+	void main(void)
+	{
+		// Set Output Color
+		o_color = vec4(0.0, 1.0, 0.0, 1.0);
+	}
+}
+
+
+
+
+
+Technique DEFAULT
+{
+	Pass FILL_PASS
+	{
+	//	DEPTH_TEST = 1;
+		RasterizationState = rasterStateNormal;
+		VertexProgram = vertShader;
+		FragmentProgram = fragShaderFill;
+	}
+	
+	Pass WIREFRAME_PASS
+	{
+	//	DEPTH_TEST = 0;
+		RasterizationState = rasterStateWireframe;
+		VertexProgram = vertShader;
+		FragmentProgram = fragShaderWireframe;	
+	}
+}

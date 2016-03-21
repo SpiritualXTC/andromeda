@@ -61,11 +61,12 @@ std::unique_ptr<Engine> andromeda::initialise(HINSTANCE hInstance)
 
 
 	
-
+#if 0
 	// Create File System Search
+	// This is being done directly by the ResourceManager itself
 	std::shared_ptr<CommonResourceScan> search = std::make_shared<CommonResourceScan>();
 	ResourceManager::instance()->addSearch(search);
-
+#endif
 
 	
 

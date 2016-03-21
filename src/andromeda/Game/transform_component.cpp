@@ -44,8 +44,6 @@ void TransformComponent::calculate()
 	matrix = glm::rotate(matrix, _rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
 	matrix = glm::rotate(matrix, _rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 
-	
-
 	// Copy.
 	_matrix = matrix;
 }

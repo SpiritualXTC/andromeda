@@ -1,7 +1,7 @@
 #ifndef _ANDROMEDA_MATH_GLMX_GLM_CONVERSION_H_
 #define _ANDROMEDA_MATH_GLMX_GLM_CONVERSION_H_
 
-#include <glm/glm.hpp>
+#include <andromeda/glm.h>
 
 namespace andromeda
 {

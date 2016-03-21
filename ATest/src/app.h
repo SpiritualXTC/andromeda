@@ -27,7 +27,6 @@ namespace andromeda
 	class Texture;
 	class RenderTarget;
 	class RenderTarget2;
-	class ParticleSystem;
 }
 
 
@@ -35,7 +34,7 @@ namespace andromeda
 /*
 
 */
-class App : public andromeda::Application, andromeda::KeyboardListener, andromeda::MouseListener
+class App : public andromeda::Application, public andromeda::KeyboardListener, public andromeda::MouseListener
 {
 public:
 	App();
@@ -55,7 +54,7 @@ public:
 	void update(aDouble ft) override;
 
 
-	void createEntity();
+	//void createEntity();
 
 protected:
 	aBoolean close(andromeda::CloseEventArgs & e);
@@ -78,22 +77,18 @@ protected:
 	void onResume(){}
 
 private:
-	std::shared_ptr<andromeda::View> _view;
-	std::shared_ptr<andromeda::View> _dynView;
+	//std::shared_ptr<andromeda::View> _view;
+	//std::shared_ptr<andromeda::View> _dynView;
 
 
-	std::shared_ptr<andromeda::Texture> _texture;
-	std::shared_ptr<andromeda::RenderTarget2> _target;
-	std::shared_ptr<andromeda::ParticleSystem> _particles;
-
-
-	std::list<std::shared_ptr<andromeda::Entity>> _entities;
-
-
+	//std::shared_ptr<andromeda::Texture> _texture;
+	//std::shared_ptr<andromeda::RenderTarget2> _target;
 	
 
+	//std::list<std::shared_ptr<andromeda::Entity>> _entities;
 
-	Game _game;
+
+	std::shared_ptr<Game> _game;
 };
 
 #endif

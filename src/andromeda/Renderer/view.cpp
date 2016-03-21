@@ -4,68 +4,45 @@
 
 #include <andromeda/Game/camera.h>
 
-#include <andromeda/Graphics/effect.h>
-#include <andromeda/Graphics/pass.h>
-#include <andromeda/Graphics/render_target.h>
-#include <andromeda/Graphics/shader.h>
 
+#include <andromeda/graphics.h>
+
+#include <andromeda/Renderer/layer.h>
+#include <andromeda/Renderer/projection.h>
 #include <andromeda/Renderer/renderable.h>
-#include <andromeda/Renderer/render_list.h>
-#include <andromeda/Renderer/scene_graph.h>
-
-
-#include <andromeda/Math/matrix_stack.h>
+#include <andromeda/Renderer/scene_graph_cache.h>
 
 #include <andromeda/Utilities/log.h>
 
 using namespace andromeda;
 
-
 /*
 
 */
-View::View(Int32 layer) : View(0.0f, 0.0f, 1.0f, 1.0f, layer)
+View::View(const std::shared_ptr<ISceneGraph> sceneGraph, std::shared_ptr<IProjection> projection, Float x, Float y, Float width, Float height, Int32 order)
+	: _sceneGraph(sceneGraph)
+	, _projection(projection)
+	, _zOrder(order)
 {
+	assert(_sceneGraph);
 
-}
-
-
-/*
-
-*/
-View::View(Float x, Float y, Float width, Float height, Int32 layer)
-	: _layer(layer)
-{
+	// Create Region
 	_view = Region2f({ x, y }, { width + x, height + y });
 
+	// Create Default Projection
+	if (! _projection)
+		_projection = std::make_shared<ProjectionPerspective>();
 
-	_projection = glm::mat4(1.0f);
-
-	// Create Camera
+	// Create a Camera
 	_camera = std::shared_ptr<Camera>(new Camera());
 
-	/*
-		TEMPORARY
-	*/
-	// Create a Shader
-	//std::shared_ptr<andromeda::Shader> shader = andromeda::Shader::LoadShader("../res/shader/shader.vs", "../res/shader/shader.fs");
+	// Create a default Layer [Temporary]
+	log_warn("Creating default layer");
+	_layers["default"] = std::make_unique<Layer>("");
 
-	// Create a Default Pass
-	//std::shared_ptr<Pass> p = std::make_shared<Pass>(shader);
-	//_passes.push_back(p);
-	_effect = LoadEffect("../res/xml/effect.xml");
+	// Create Scene Graph Cache
+	_sceneGraphCache = std::make_shared<SceneGraphCache>(this);
 }
-
-
-
-View::View(std::shared_ptr<IRenderTarget> target)
-	: View(0, 0, 1, 1, View::Target)
-{
-	_target = target;
-
-}
-
-
 
 /*
 
@@ -76,148 +53,118 @@ View::~View()
 }
 
 
+
+
 /*
 
 */
-void View::resize(const Int32 width, const Int32 height)
+Boolean View::addRenderable(const std::string & layer, IRenderable * renderable)
 {
+	// TODO: ReWrite this function
 	
-	if (!_target)
-	{
-		// Recalculate Screen Region
-		glm::fvec2 dim(width, height);
-
-		_screen.minimum = _view.minimum * dim;
-		_screen.maximum = _view.maximum * dim;
-	}
-	else
-	{
-		// This shouldn't change... but... shrugs!
-		glm::fvec2 dim(_target->width(), _target->height());
-
-		_screen.minimum = _view.minimum * dim;
-		_screen.maximum = _view.maximum * dim;
-	}
+	// ADD TO ALL LAYERS
+	for (const auto & layer : _layers)
+		layer.second->addRenderable(renderable);
 
 
-	// Recalculate Projection Matrix
-	glm::ivec2 scrDim = _screen.size();
+	return false;
+}
 
-	Float aspect = (Float)scrDim.x / (Float)scrDim.y;
+/*
 
-	_projection = glm::perspectiveFov(glm::pi<Float>() / 4.0f, (Float)scrDim.x, (Float)scrDim.y, 0.0001f, 100.0f);
+*/
+Boolean View::removeRenderable(const std::string & layer, IRenderable * renderable)
+{
+	// TODO: ReWrite this function
 
+	// ADD TO ALL LAYERS
+	for (const auto & layer : _layers)
+		layer.second->removeRenderable(renderable);
 
-	//	_projection = glm::ortho(-aspect, aspect, -1.0f, 1.0f, -100.0f, 100.0f);
-
-	return;
+	return false;
 }
 
 
 
 /*
+	resize():
 
+	Resize the Viewport
 */
-//void View::render(std::shared_ptr<RenderList> renderables)
-void View::render(std::shared_ptr<SceneGraph> scene)
+void View::resize(const Int32 width, const Int32 height)
 {
-	assert(scene);
-	assert(_effect);
+	// Must have projection matrix
+	assert(_projection);
 
-	// Nothing to render....
-//	if (!renderables)
-//		return;
-	
-	// View Matrix
-//	
+	// Set Screen Dimensions
+	_screen.minimum = glm::ivec2(0, 0);
+	_screen.maximum = glm::ivec2(width, height);
 
-	// Bind the RenderTarget if it exists
-	if (_target)
-	{
-		_target->bindFrame();
-	}
+	// Recalculate Screen Region
+	glm::fvec2 screen(width, height);
 
+	_display.minimum = _view.minimum * screen;
+	_display.maximum = _view.maximum * screen;
 
-	Int32 passIndex = 0;
+	// Recalculate Projection
+	glm::fvec2 display(_display.size());
+
+	_projection->calculate(display.x, display.y);
+
+	return;
+}
+
+/*
+	render():
+
+	Render the View
+*/
+void View::render()
+{
+	// Viewport Attributes
+	Int32 left = _display.minimum.x;
+	Int32 top = _display.minimum.y;
+	Int32 width = _display.maximum.x - _display.minimum.x;
+	Int32 height = _display.maximum.y - _display.minimum.y;
+
+	// Flip Top to Bottom, offset by height
+	Int32 bottom = _screen.maximum.y - top;
+	bottom -= height;
 
 	// Set Viewport
-	glViewport(_screen.minimum.x, _screen.minimum.y, _screen.maximum.x, _screen.maximum.y);
+	glViewport(left, bottom, width, height);
+
+	// Render the Scene from this View
+	// The view does need to pass some information to the scene, such as target object.
+	// Target Object
 
 
-	// Clear the RenderTarget if it exists
-	if (_target)
-		_target->clear();
+	// THE RENDER TARGET NEEDS TO DO SHIT HERE
 
 
-	// Loop through all techniques!
-	for (auto it : *_effect)
+
+	// Process the SceneGraph. Nullptr here is bad! lol
+	// But Current scenerio, it doesn't matter
+	//_scene->process(nullptr, _sceneGraphCache);
+	_sceneGraphCache->process(nullptr, _sceneGraph);
+
+
+	// Loop through layers
+	for (const auto & layer : _layers)
 	{
-		std::shared_ptr<Technique> technique = it.second;
+		// Get Active Technique Name : Should the View or the Scene manage the active technique?
+		// As multiple view points may manage a scene....probably the view should
+		std::string technique = "default";// view->getActiveTechniqueName();
 
 
-
-
-
-	//	if (_effect && _effect->hasActiveTechnique())
-	//	{
-			// Get Render Group ID.
-
-			// Pre-process the Render Group (No Idea what this will entail. Probs just building matices)
-			// Pull a List from the SceneGraph ?
-
-			// FOR_EACH Pass
-			//	 Render the Group!
-
-
-
-			Int32 count = technique->numPasses();
-			for (Int32 i = 0; i < count; ++i)
-			{
-				// Begin Pass
-				if (technique->beginPass(i))
-				{
-
-					// Get Shader : THIS IS A HACK!
-					std::shared_ptr<Shader> shader = technique->shader();
-
-					// Get View Matrix
-					glm::mat4 view = _camera->calcMatrix();
-
-					// Set Projection Matrix
-					shader->setUniformMat4("u_projection", _projection);
-
-					// Set ModelView Matrix [This should be different for every object. Matrix Stack :)
-					//shader->setUniformMat4("u_modelview", _camera->matrix());
-
-					// shader->setProjectMatrix(_projection); ??
-					// shader->setViewMatrix(_view);
-
-
-					// Set up Lighting
-
-
-					scene->render(technique->group(), shader.get(), view);
-
-					// Iterate through Renderables
-					//		for (auto renderable : *renderables)
-					//		{
-					// Render the Renderable
-					//			renderable->render(passIndex, shader.get(), view);
-
-					//		}
-
-
-
-					// End Pass
-					technique->endPass();
-				}
-//			}
-		}
+		// Render the Layer
+		layer.second->render(_projection, _camera, technique);
 	}
 
 
-	if (_target)
-		_target->unbindFrame();
+
+	// THE RENDER TARGET NEEDS TO CLEAN SHIT UP HERE
+
 }
 
 

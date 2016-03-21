@@ -43,6 +43,7 @@ namespace andromeda
 		*/
 		void remove(std::weak_ptr<IObserver<T>> observer)
 		{
+			// Remove the Observer from the list
 			_observers.erase(observer);
 		}
 

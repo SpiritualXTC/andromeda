@@ -5,7 +5,6 @@
 	Includes common graphics headers
 */
 #include "Graphics/buffer.h"
-#include "Graphics/shader.h"
 #include "Graphics/texture.h"
 
 

@@ -4,6 +4,11 @@
 
 #include <andromeda/Utilities/log.h>
 
+
+
+// TEMP
+#include "../../common/Resources/resource_search_common.h"
+
 using namespace andromeda;
 
 
@@ -12,7 +17,10 @@ using namespace andromeda;
 */
 ResourceManager::ResourceManager()
 {
-
+	// Create File System Search
+	log_warn("Temporary Creation of search method for VFS");
+	
+	addSearch(std::make_shared<CommonResourceScan>());
 }
 
 

@@ -10,38 +10,44 @@
 #include <andromeda/Engine/module.h>
 #include <andromeda/Engine/system.h>
 
-#include <andromeda/Events/resize.h>
 
-#include "view.h"
 
 
 
 namespace andromeda
 {
 	// Forward-Declarations
-//	class RenderList;
-	class SceneGraph;
-
+	class Scene;
+	
+	
 
 	/*
 
 	*/
-	class Renderer : public Module < Renderer >, virtual ResizeListener
+	class Renderer : public Module < Renderer >
 	{
 	public:
 		Renderer();
 		virtual ~Renderer();
 
+		/*
+			Add Scene
+		*/
+		Boolean addScene(std::shared_ptr<Scene> scene);
 
-		Boolean addView(std::shared_ptr<View> view);
-		Boolean removeView(std::shared_ptr<View> view);
-		Boolean clearViews();
+		/*
+			Remove Scene
+		*/
+		Boolean removeScene(const std::string & name);
+		Boolean removeScene(std::shared_ptr<Scene> scene);
 
-		Boolean addRenderable(Int32 group, std::shared_ptr<IRenderable> renderable);
-		Boolean removeRenderable(Int32 group, std::shared_ptr<IRenderable> renderable);
-		Boolean clearRenderables();
+		/*
+			Has Scene
+		*/
+		Boolean hasScene(const std::string & name);
+		std::shared_ptr<Scene> getScene(const std::string & name);
 
-		
+
 
 		// IModule
 		void onPause(){}
@@ -49,20 +55,14 @@ namespace andromeda
 
 		void update();
 	private:
-		// ResizeListener
-		Boolean onResize(ResizeEventArgs & e) override;
 
 
 
 		void errorCheck();
 
 
-
-		std::multiset<std::shared_ptr<View>> _views;
-		//std::unordered_map<Int32, std::shared_ptr<RenderList>> _renderLists;
-
-
-		std::shared_ptr<SceneGraph> _sceneGraph;
+		// Scenes
+		std::unordered_map<std::string, std::shared_ptr<Scene>> _scenes;
 	};
 
 

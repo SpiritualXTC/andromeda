@@ -14,7 +14,7 @@ camera.h
 
 #include <andromeda/stddef.h>
 
-#include <glm/glm.hpp>
+#include <andromeda/glm.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace andromeda
@@ -30,14 +30,14 @@ namespace andromeda
 	{
 	public:
 		Camera();
-		Camera(std::weak_ptr<ITransform> target);
-		~Camera();
+		//Camera(std::weak_ptr<ITransform> target);
+		virtual ~Camera();
 
 		//const glm::mat4 & matrix() const { return _view; }
 
 		const glm::mat4 & calcMatrix();
 
-
+#if 0
 		/*
 		
 		*/
@@ -45,6 +45,7 @@ namespace andromeda
 		{
 			_target = target;
 		}
+#endif
 
 	
 
@@ -77,7 +78,7 @@ namespace andromeda
 		const inline glm::vec3 & position() const { return _position; }
 		const inline Float distance() const { return _distance; }
 
-		const inline Boolean hasTarget() const { return ! _target.expired(); }
+		//const inline Boolean hasTarget() const { return ! _target.expired(); }
 	
 
 
@@ -117,7 +118,7 @@ namespace andromeda
 		glm::mat4 _view;
 
 		// Pointer to the target being tracked by the camera!
-		std::weak_ptr<ITransform> _target;
+		//std::weak_ptr<ITransform> _target;
 	};
 
 }

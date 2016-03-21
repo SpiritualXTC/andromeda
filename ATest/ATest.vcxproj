@@ -72,20 +72,24 @@
   <ItemGroup>
     <ClCompile Include="src\app.cpp" />
     <ClCompile Include="src\console.cpp" />
+    <ClCompile Include="src\framework.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\test_engine.cpp" />
     <ClCompile Include="src\test_bounds.cpp" />
+    <ClCompile Include="src\test_effect.cpp" />
     <ClCompile Include="src\test_fs.cpp" />
-    <ClCompile Include="src\test_renderable.cpp" />
     <ClCompile Include="src\test_xml.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\app.h" />
     <ClInclude Include="src\console.h" />
+    <ClInclude Include="src\framework.h" />
     <ClInclude Include="src\game.h" />
     <ClInclude Include="src\test_bounds.h" />
+    <ClInclude Include="src\test_effect.h" />
+    <ClInclude Include="src\test_engine.h" />
     <ClInclude Include="src\test_fs.h" />
-    <ClInclude Include="src\test_renderable.h" />
     <ClInclude Include="src\test_xml.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

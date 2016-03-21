@@ -10,21 +10,12 @@
 
 #include "../Platform/platform_windows.h"
 
-
-// Libraries
-#pragma comment(lib,"opengl32.lib")
-#pragma comment(lib,"glu32.lib")
-#pragma comment(lib, "glew32.lib")
-
-
-
 using namespace andromeda;
 
 ContextWindows::ContextWindows(std::weak_ptr<System> system, std::weak_ptr<PlatformWindows> platWin) : Context(system)
 {
 	log_verbose("Context: Windows OpenGL");
 	
-
 	assert(! platWin.expired());
 
 	_hDC = platWin.lock()->getHDC();
@@ -41,7 +32,6 @@ ContextWindows::ContextWindows(std::weak_ptr<System> system, std::weak_ptr<Platf
 	pfd.cColorBits = 24;
 	pfd.cDepthBits = 24;
 	pfd.iLayerType = PFD_MAIN_PLANE;
-
 
 	// Choose Pixel Format
 	Int32 format = ChoosePixelFormat(_hDC, &pfd);

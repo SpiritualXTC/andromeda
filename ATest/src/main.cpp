@@ -6,20 +6,18 @@
 #include <conio.h>
 
 
-#include <andromeda/andromeda.h>
-#include <andromeda/Engine/engine.h>
-#include <andromeda/Engine/system.h>
-#include <andromeda/Renderer/renderer.h>
-#include <andromeda/Utilities/timing.h>
 
 
 #include <andromeda/Utilities/io.h>
 #include <andromeda/Utilities/log.h>
 
 
-#include "app.h"
+
 #include "console.h"
+#include "framework.h"
 #include "test_bounds.h"
+#include "test_effect.h"
+#include "test_engine.h"
 #include "test_fs.h"
 #include "test_xml.h"
 
@@ -29,10 +27,24 @@
 // Libraries
 #pragma comment(lib,"opengl32.lib")
 #pragma comment(lib,"glu32.lib")
-#pragma comment(lib, "glew32.lib")
+#pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "soil.lib")
 
 #pragma comment(lib, "andromeda.lib")
+
+// nvFX Library
+#if defined(_DEBUG) 
+#pragma comment(lib, "fxLibD.lib")
+#pragma comment(lib, "fxLibGLD.lib")
+#pragma comment(lib, "fxParserD.lib")
+#pragma comment(lib, "nvFxcc.lib")
+#else
+#pragma comment(lib, "fxLib.lib")
+#pragma comment(lib, "fxLibGL.lib")
+#pragma comment(lib, "fxParser.lib")
+#pragma comment(lib, "nvFxcc.lib")
+#endif
+
 
 // Boost may Auto Link ?? 
 
@@ -51,7 +63,7 @@ void exit()
 {
 #if defined(LOCK_CONSOLE)
 	// Everything else will be out of scope by now :P
-	std::cout << "\n\nPress any Key to Continue:";
+	//std::cout << "\n\nPress any Key to Continue:";
 	_getch();
 #endif
 }
@@ -67,7 +79,6 @@ void printHeader(std::shared_ptr<Console> console)
 
 	console->print(contents);
 }
-
 
 
 /*
@@ -89,32 +100,25 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	printHeader(console);
 #endif
 
+	// Create Framework Pointer
 
+//#define FRAMEWORK
 
+#if defined(FRAMEWORK)
+	std::shared_ptr<IFramework> framework = std::make_shared<IFramework>();
+#else
+	std::shared_ptr<IFramework> framework = nullptr;
+#endif
 
-	
-
-
-	// Create Engine
-	std::unique_ptr<andromeda::Engine> engine = andromeda::initialise(hInstance);
-
-	// Test File System
-	testFS();
-
-	// Create Application!
-	std::shared_ptr<App> app = std::make_shared<App>();
-
-	engine->addModule<App>(app);
-
-	engine->setDependancy<App, andromeda::Timing>();
-	engine->setDependancy<App, andromeda::System>();
-	engine->setDependancy<App, andromeda::Renderer>();
-
-	// Initialise Application
-	app->initialise();
-
-	// Run Engine
-	engine->run();
+	// Test the Engine
+	if (!framework)
+		testEngine(hInstance);
+	else
+	{
+		std::shared_ptr<Framework> fw = std::make_shared<Framework>(framework);
+		if (fw->initialise(1650, 900))
+			fw->loop();
+	}
 
 	return 0;
 }

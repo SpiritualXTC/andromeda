@@ -1,87 +1,208 @@
 #include <andromeda/Graphics/effect.h>
 
-#include <cassert>
+#include <andromeda/Resources/resource_manager.h>
 
-#include <andromeda/Graphics/pass.h>
-#include <andromeda/Graphics/technique.h>
+#include <andromeda/Utilities/log.h>
 
 using namespace andromeda;
+
+
+void errorCallbackFunc(const char *errMsg)
+{
+	log_err(errMsg);
+}
+
+void msgCallbackFunc(const char *msg)
+{
+	log_info(msg);
+}
+
+void includeCallbackFunc(const char *incName, FILE *&fp, const char *&buf)
+{
+	log_warn("NVFX:: Include = ", incName);
+
+	// Load File
+	std::shared_ptr<andromeda::ResourceStream> res = ResourceManager::instance()->load(incName);
+
+	std::string contents = res->read();
+
+	//log_debug(contents.c_str());
+
+	if (buf == nullptr)
+		log_debug("BUFFER IS NULL");
+	else
+		log_debug(buf);
+
+
+	
+	
+	buf = new char[contents.length() + 2];
+
+
+	const char * buffer = buf;
+
+	memcpy((void*)buffer, contents.c_str(), contents.length());
+
+	buffer += contents.length();
+	memcpy((void*)&buffer[0], "\0", 1);
+	
+	log_info(buf);
+
+
+	// BUG ???
+	fp = fopen("../res/shader/empty.txt", "r");
+}
+
 
 /*
 
 */
 Effect::Effect()
 {
+	// Load File
+	std::shared_ptr<andromeda::ResourceStream> res = ResourceManager::instance()->load("shader.glslfx");
+
+	// Read Entire Contents
+	std::string contents = res->read();
+	//log_info("File:", contents.c_str());
+
+
+	// This should prolly go "elsewhere"
+	nvFX::setErrorCallback(errorCallbackFunc);
+	nvFX::setMessageCallback(msgCallbackFunc);
+	nvFX::setIncludeCallback(includeCallbackFunc);
+	
+
+
+	// Create the Container
+	_effect = nvFX::IContainer::create("test");
+
+	nvFX::IContainerEx * effect = _effect->getExInterface();
+
+	//log_infop("----\n%1%\n----", contents);
+
+	
+	
+	// Load Effect
+	Boolean result = nvFX::loadEffect(_effect, contents.c_str());
+	//Boolean result = nvFX::loadEffectFromFile(_effect, "../res/shader/shader.glslfx");
+	//Boolean result = nvFX::loadEffectFromFile(_effect, "../res/shader/simpleEffect1.glslfx");
+
+	if (result)
+	{
+		log_debug("Effect Loaded");
+	}
+	else
+		log_err("Failed to load effect");
+
+
+	// HACKITY-HACK
+	shaderHack();
+
+
+	// Validate Everything!
+	nvFX::ITechnique * technique = nullptr;
+	for (aInt t = 0; technique = _effect->findTechnique(t); t++)
+	{
+		Boolean bt = technique->validate();
+
+		result &= bt;
+
+		log_debug("Technique =", technique->getName());
+		log_debug("-> Valid=", bt);
+		log_debug("-> Passes = ", technique->getNumPasses());
+		
+		if (!bt)
+			log_warn("Technique:", technique->getName(), "Failed Validation");
+
+		nvFX::IPass * pass = nullptr;
+		for (aInt p = 0; pass = technique->getPass(p); ++p)
+		{
+			Boolean bp = pass->validate();
+
+			log_debug("--> Pass =", pass->getName());
+			if (!bp)
+				log_warn("Technique:", technique->getName(), "Pass:", pass->getName(), "Failed Validation");
+
+			result &= bp;
+
+		}
+	}
+
+
+	
+
+	
+	// Show Output information
+	infoOutput();
+
+
+
+	if (!result)
+	{
+		nvFX::IContainer::destroy(_effect);
+		_effect = nullptr;
+	}
+
 
 }
-
 
 /*
 
 */
 Effect::~Effect()
 {
-
+	if (_effect)
+		nvFX::IContainer::destroy(_effect);
+	_effect = nullptr;
 }
 
 
 /*
+	shaderHack():
 
+	A Hack that forces the version to GLSL/OpenGL 4.0, while allowing global GLSLShader blocks
+	to be appended into shaders during compilation.
+
+	Without this here, Error: "EC0408" will occur.
+		#Version defined multiple times or not on first line
+
+	ONLY WHEN LOADING FROM SOURCE. 
+	WHEN LOADING FROM FILE THIS ISN'T REQUIRED.
+
+	Bug in the nvFX Library (?)
+		
 */
-Boolean Effect::addTechnique(const std::string & technique, Int32 group)
+void Effect::shaderHack()
 {
-	// Must NOT be Active
-	assert(!isActive());
+	// BUGFIX WHEN LOADING FROM SOURCE
+	// HACKITY-HACK
 
-	// Technique Exists ?
-	if (hasTechnique(technique))
-		return false;
+	// The First unamed shader (global) shader has header information appended
+	// This shader is then appended to every shader used.
+	Boolean version = false;
+	nvFX::IShader * shader = nullptr;
+	for (aInt32 s = 0; shader = _effect->findShader(s); ++s)
+	{
+		log_info("-> Shader =", shader->getName());
+		nvFX::IShaderEx * sh = shader->getExInterface();
 
-	// Create Technique
-	_techniques[technique] = std::make_shared<Technique>(group);
+		const char* name = shader->getName();
+		if ((*name == '\0') && (shader->getType() == nvFX::TGLSL) && !version)
+		{
+			log_warn("Addition Shader Header Information appended to First 'Global' Shader...\n");
 
-	// Set as Current Technique
-	if (!_curTechnique)
-		_curTechnique = _techniques[technique];
+			sh->addHeaderCode("#extension GL_ARB_separate_shader_objects : enable");
+			sh->addHeaderCode("#version 420");
 
-	// Technique Addded
-	return hasTechnique(technique);
-}
-
-/*
-
-*/
-Boolean Effect::removeTechnique(const std::string & technique)
-{
-	// Must NOT be Active
-	assert(!isActive());
-
-	// Technique Exists ?
-	if (! hasTechnique(technique))
-		return false;
-
-	// Unset Current Technique
-	if (_curTechnique == _techniques[technique] && _techniques.begin() != _techniques.end())
-		_curTechnique = _techniques.begin()->second;
-	else
-		_curTechnique = nullptr;
-
-	// Erase Technique
-	_techniques.erase(technique);
-
-	// Technique Removed
-	return !hasTechnique(technique);
+			version = true;
+		}
+	}
 }
 
 
 
-/*
 
-*/
-Boolean Effect::hasTechnique(const std::string & technique)
-{
-	return !!_techniques[technique];
-}
 
 
 
@@ -90,104 +211,38 @@ Boolean Effect::hasTechnique(const std::string & technique)
 */
 Boolean Effect::setActiveTechnique(const std::string & technique)
 {
-	// Must NOT be Active
-	assert(!isActive());
+	_active = _effect->findTechnique(technique.c_str());
+	return !_active;
+}
 
-	if (hasTechnique(technique))
+
+
+
+
+/*
+
+*/
+Boolean Effect::beginTechnique(const std::string & technique)
+{
+	return setActiveTechnique(technique) & beginTechnique();
+}
+
+
+/*
+
+*/
+Boolean Effect::beginTechnique()
+{
+	assert(_effect);
+
+	// Select Default Technique
+	if (_active == nullptr)
 	{
-		_curTechnique = _techniques[technique];
-		return true;
+		_active = _effect->findTechnique(0);
 	}
 
-	return false;
-}
 
-
-
-
-
-
-
-
-Boolean Effect::isActive()
-{
-	if (! _curTechnique)
-		return false;
-
-	return _curTechnique->isActive();;
-}
-
-
-
-#if 0
-/*
-
-*/
-Boolean Effect::addPass(const std::string & technique, const std::string & pass)
-{
-	return addPass(_techniques[technique], pass);
-}
-
-/*
-
-*/
-Boolean Effect::addPass(const std::string & pass)
-{
-	return addPass(_curTechnique, pass);
-}
-#endif
-
-
-/*
-
-*/
-Boolean Effect::addPass(const std::string & technique, std::shared_ptr<Pass> pass)
-{
-	return addPass(_techniques[technique], pass);
-}
-
-/*
-
-*/
-Boolean Effect::addPass(std::shared_ptr<Technique> technique, std::shared_ptr<Pass> pass)
-{
-	// Technique Must be Valid
-	assert(technique);
-
-	technique->addPass(pass);
-
-	return false;
-}
-
-
-
-
-
-/*
-
-*/
-Boolean Effect::removePass(const std::string & technique, const std::string & pass)
-{
-	return removePass(_techniques[technique], pass);;
-}
-
-/*
-
-*/
-Boolean Effect::removePass(const std::string & pass)
-{
-	return removePass(_curTechnique, pass);;
-}
-
-/*
-
-*/
-Boolean Effect::removePass(std::shared_ptr<Technique> technique, const std::string & pass)
-{
-	// Technique Must be Valid
-	assert(technique);
-
-	return false;
+	return ! _active;
 }
 
 
@@ -196,71 +251,89 @@ Boolean Effect::removePass(std::shared_ptr<Technique> technique, const std::stri
 /*
 
 */
-std::shared_ptr<Pass> getPass(std::shared_ptr<Technique> technique, const std::string & pass)
+Boolean Effect::endTechnique()
 {
-	return nullptr;
-}
-
-/*
-
-*/
-std::shared_ptr<Pass> getPass(std::shared_ptr<Technique> technique, Int32 index)
-{
-	return nullptr;
-}
-
-
-
-
-/*
-
-*/
-Int32 Effect::numPasses()
-{
-	// Must have a current Technique
-	assert(_curTechnique);
-
-	return _curTechnique->numPasses();
+	// Do Nothing
+	return true;
 }
 
 
 /*
 
 */
-Boolean Effect::beingPass(Int32 index)
+Boolean Effect::beginPass(Int32 pass)
 {
-	// Must have a current Technique
-	assert(_curTechnique);
+	assert(! _activePass); /* Should be nullptr */
 
-	// Begin the Pass
-	return _curTechnique->beginPass(index);;
+	//nvFX::PassInfo info;
+	//nvFX::IPass * p = _active->getPass(pass, &info);
+
+	// Get Pass
+	_activePass = _active->getPass(pass);
+
+	// Execute Pass
+	_activePass->execute();
+	
+	return true;
 }
-
 
 /*
 
 */
 Boolean Effect::endPass()
 {
-	// Must have a current Technique
-	assert(_curTechnique);
+	assert(_activePass);
+	_activePass = nullptr;
 
-	// End the Pass
-	return _curTechnique->endPass();;
+	return true;
 }
 
 
+/*
 
+*/
+void Effect::infoOutput()
+{
+	assert(_effect);
 
+	log_debug(_effect->getName());
 
+	nvFX::ITechnique * technique = nullptr;
+	for (aInt t = 0; technique = _effect->findTechnique(t); t++)
+	{
+		log_info("Technique =", technique->getName(), ", Passes=", technique->getNumPasses());
 
+		nvFX::IPass * pass = nullptr;
+		for (aInt p = 0; pass = technique->getPass(p); ++p)
+		{
+			log_info("-> Pass =", pass->getName());
+		}
+	}
 
+	nvFX::IShader * shader = nullptr;
+	for (aInt32 s = 0; shader = _effect->findShader(s); ++s)
+	{
+		log_info("-> Shader =", shader->getName());
+		nvFX::IShaderEx * sh = shader->getExInterface();
+		//log_info(sh->getShaderCode());
+	}
 
+	nvFX::IUniform * uniform = nullptr;
+	for (aInt u = 0; uniform = _effect->findUniform(u); ++u)
+	{
+		log_info("-> Uniforms =", uniform->getName());
 
+		
+	}
 
+	
 
-
-
-
+	nvFX::ICstBuffer * buffer = nullptr;
+	for (aInt c = 0; buffer = _effect->findCstBuffer(c); ++c)
+	{
+		log_info("-> Buffer = ", buffer->getName());
+	}
+	
+}
 
 

@@ -9,7 +9,7 @@
 #include <andromeda/stddef.h>
 #include <andromeda/opengl.h>
 
-#include <glm/glm.hpp>
+#include <andromeda/glm.h>
 
 namespace andromeda
 {

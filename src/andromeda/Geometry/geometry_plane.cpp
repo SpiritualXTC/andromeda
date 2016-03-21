@@ -5,8 +5,7 @@
 #include <andromeda/Geometry/geometry_builder.h>
 #include <andromeda/Geometry/geometry_desc.h>
 
-
-#include <glm/glm.hpp>
+#include <andromeda/glm.h>
 
 
 using namespace andromeda;

@@ -1,0 +1,29 @@
+
+
+Renderer Notes:
+---------------
+
+Relevant Classes:
+Renderer:
+	The renderer "configures" the context and clears the buffer.
+	Only a single renderer is needed.
+	A rendererd contains multiple views/viewports
+
+View:
+	Viewport dimensions (as a weight [0, 1])
+	Each view contains knownledge about the active camera in the scene
+
+SceneGraph:
+	Contains all of the objects in a scene including lights, cameras, objects.
+
+
+- A View has a reference to a SceneGraph
+- A SceneGraph contains a list of objects, camera, lights. Essenstially a complete list of all objects that comprise a scene
+	- The basic implementation will be non hierarchical SceneGraph.
+	- However it is also an interface so could (in theory) contain hierarchy with a different implementation
+
+
+
+1. The renderer is updated (drawn).
+2. FOREACH view.
+3.  Determine what objects in the scene need to be displayed

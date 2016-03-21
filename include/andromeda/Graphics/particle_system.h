@@ -3,8 +3,7 @@
 
 #include "../stddef.h"
 
-#include <glm/glm.hpp>
-
+#include <andromeda/glm.h>
 #include <andromeda/opengl.h>
 #include <andromeda/Renderer/renderable.h>
 

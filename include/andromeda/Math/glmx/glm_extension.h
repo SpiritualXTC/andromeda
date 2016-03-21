@@ -4,9 +4,7 @@
 /*
 	GLM Extension Methods
 */
-
-
-#include <glm/glm.hpp>
+#include <andromeda/glm.h>
 
 #include "../../stddef.h"
 
