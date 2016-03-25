@@ -2,6 +2,7 @@
 #define _ANDROMEDA_GAME_CAMERA_COMPONENT_H_
 
 #include "component.h"
+#include "camera.h"
 
 namespace andromeda
 {
@@ -28,10 +29,13 @@ namespace andromeda
 			
 		.... Or the Camera modified are child classes and this just acts as a wrapper
 	*/
-	class CameraComponent : public Component<CameraComponent>
+	class CameraComponent : public Component<CameraComponent>, virtual public ICamera
 	{
 	public:
+		CameraComponent() {}
+		virtual ~CameraComponent() {}
 
+		
 	};
 }
 

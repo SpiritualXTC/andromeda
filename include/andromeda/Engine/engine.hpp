@@ -1,10 +1,6 @@
 #ifndef _ANDROMEDA_ENGINE_ENGINE_HPP_
 #define _ANDROMEDA_ENGINE_ENGINE_HPP_
 
-//#include "../stddef.h"
-
-//#include "../Utilities/log.h"
-
 namespace andromeda
 {
 	/*
@@ -14,6 +10,7 @@ namespace andromeda
 	Boolean Engine::addModule()
 	{
 		// Component Installed Already!
+		// This saves creating an instance of the module
 		if (isInstalled<T>())
 			return false;
 
@@ -21,7 +18,7 @@ namespace andromeda
 		return addModule(std::make_shared<T>());
 	}
 
-
+#if 0
 	/*
 		Adds the System
 	*/
@@ -35,7 +32,7 @@ namespace andromeda
 			return false;
 
 		// Get Module ID
-		Int32 modId = getModuleID<T>();
+		Int32 modId = getModuleId<T>();
 		
 		// Add System to Map
 		_modules[modId] = module;
@@ -89,12 +86,74 @@ namespace andromeda
 		}
 
 		// Get Module ID
-		Int32 modId = getModuleID<T>();
+		Int32 modId = getModuleId<T>();
 
 		// Retrieve the Module
 		return std::static_pointer_cast<T>(_modules[modId]);
 	}
+#endif
 
+	/*
+		Adds the System
+	*/
+	template<class T>
+	Boolean Engine::addModule(std::shared_ptr<T> module)
+	{
+		static_assert(std::is_base_of<andromeda::IModule, T>::value, "Module is NOT an IModule");
+
+		assert(module);
+		
+		// Insert 
+		Boolean inserted = _map.insert<T>(module);
+
+		// Validate
+		if (!inserted) return false;
+		
+		// Start Module :: If the engine is running
+		if (_running)
+			resume(module);
+
+		return inserted;
+
+	}
+
+
+	/*
+		Removes the System
+	*/
+	template <class T>
+	Boolean Engine::removeModule()
+	{
+		// Get Module
+		std::shared_ptr<T> module = getModulePtr<T>();
+
+		// Validate
+		if (!module) return false;
+
+		// Stop Component
+		pause(module, true);
+		
+		// Erase the Module
+		return _map.erase<T>();
+	}
+
+
+	/*
+		Gets the Module
+	*/
+	template <class T>
+	std::shared_ptr<T> Engine::getModulePtr()
+	{
+		if (!_map.exists<T>()) return nullptr;
+
+		return _map.at<T>();
+	}
+
+
+
+
+
+#if 0
 	/*
 		Gets the RAW Module Pointer
 	*/
@@ -107,6 +166,7 @@ namespace andromeda
 		// Retrieve RAW Pointer
 		return ! module ? nullptr : static_cast<T*>(module.get());
 	}
+#endif
 
 
 
@@ -119,8 +179,6 @@ namespace andromeda
 	{
 		if (! isInstalled<T>())
 			return false;
-	//	if (! isInstalled<DEPENDANCY>())
-	//		return false;
 
 		// Sets the Dependancy
 		getModule<T>()->addDependancy<DEPENDANCY>(getModulePtr<DEPENDANCY>());

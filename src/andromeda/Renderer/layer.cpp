@@ -68,7 +68,7 @@ Boolean Layer::removeRenderable(IRenderable * renderable)
 /*
 
 */
-Boolean Layer::render(std::shared_ptr<IProjection> projection, const std::shared_ptr<Camera> camera, const std::string & technique)
+Boolean Layer::render(std::shared_ptr<IProjection> projection, const std::shared_ptr<ICamera> camera, const std::string & technique)
 {
 	// Get Effect
 //	std::shared_ptr<Effect> effect = _effect.lock();
@@ -87,7 +87,7 @@ Boolean Layer::render(std::shared_ptr<IProjection> projection, const std::shared
 
 	// Setup Matrix Stack :: Initialise with Camera View Matrix 
 	// Camera needs to be Rewritten
-	MatrixStack ms(camera->calcMatrix());
+	MatrixStack ms(camera->matrix());
 	
 	
 

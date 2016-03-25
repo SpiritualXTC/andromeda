@@ -27,7 +27,7 @@ namespace andromeda
 	
 	*/
 	template <class EVENT>
-	class Event : public IEvent, public TemplateID<EVENT, IEvent>
+	class Event : public IEvent//, public TemplateIndex<EVENT, IEvent>
 	{
 	private:
 		struct Listener

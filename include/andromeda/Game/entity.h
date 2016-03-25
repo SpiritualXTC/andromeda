@@ -5,7 +5,10 @@
 #include <unordered_map>
 #include <vector>
 
-#include "../stddef.h"
+
+#include <andromeda/stddef.h>
+#include <andromeda/Containers/template_multimap.h>
+#include <andromeda/Utilities/template.h>
 
 /*
 	This class could do with some optimizations!
@@ -19,7 +22,7 @@ namespace andromeda
 	/*
 	
 	*/
-	class Entity
+	class Entity : public TemplateContainer<IComponent>
 	{
 	private:
 		typedef std::unordered_map<Int32, std::shared_ptr<IComponent>> ComponentMap;
@@ -32,16 +35,15 @@ namespace andromeda
 			Gets the Component ID
 		*/
 		template <class T>
-		const inline Int32 getComponentID() const { return TemplateID<T, IComponent>::getTemplateID(); }
+		const inline Int32 getComponentId() const { return getTemplateId<T>(); }
+		//const inline Int32 getComponentID() const { return TemplateIndex<T, IComponent>::getTemplateID(); }
+		
 
 		/*
 			Determine whether a component type exists
-			:: May be a bug here. That Syntax may actually add a dummy component
-			:: Use .exists() (or .find() or whatever :)
 		*/
 		template <class T>
-		//const inline Boolean hasComponent() { return !!_components[getComponentID<T>()]; }
-		const inline Boolean hasComponent() { return _components.find(getComponentID<T>()) != _components.end(); }
+		const inline Boolean hasComponent() { return _components.find(getComponentId<T>()) != _components.end(); }
 
 
 		/*

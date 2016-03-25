@@ -2,8 +2,7 @@
 
 #include <vector>
 
-#define GLM_FORCE_RADIANS
-#include <glm/glm.hpp>
+#include <andromeda/glm.h>
 #include <glm/gtx/string_cast.hpp>
 
 

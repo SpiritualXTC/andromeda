@@ -13,7 +13,7 @@
 	IT WAS DEVELOPED FOR AN EXPERIMENTAL Entity-Component-System THAT 
 	ULTIMATELY FAILED! LOL
 */
-
+#if 0
 #include "../stddef.h"
 
 #include <stdexcept>
@@ -255,5 +255,6 @@ namespace andromeda
 		T * _elements = nullptr;
 	};
 }
+#endif
 
 #endif

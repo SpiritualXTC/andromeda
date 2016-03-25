@@ -25,8 +25,6 @@ namespace andromeda
 	typedef unsigned int UInt;
 	typedef unsigned long ULong;
 
-
-
 	typedef float Float, Float32;
 	typedef double Double, Float64;
 

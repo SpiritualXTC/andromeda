@@ -77,12 +77,16 @@
   <ItemGroup>
     <ClInclude Include="Docs\docs.txt" />
     <ClInclude Include="include\andromeda\andromeda.h" />
-    <ClInclude Include="include\andromeda\Containers\vector.h" />
+    <ClInclude Include="include\andromeda\Containers\template_map.h" />
+    <ClInclude Include="include\andromeda\Containers\Deprecated\vector.h" />
+    <ClInclude Include="include\andromeda\Containers\template_multimap.h" />
+    <ClInclude Include="include\andromeda\debug.h" />
     <ClInclude Include="include\andromeda\Engine\application.h" />
     <ClInclude Include="include\andromeda\Engine\config.h" />
     <ClInclude Include="include\andromeda\Engine\engine.h" />
     <ClInclude Include="include\andromeda\Engine\engine.hpp" />
     <ClInclude Include="include\andromeda\Game\camera_component.h" />
+    <ClInclude Include="include\andromeda\Game\camera_static.h" />
     <ClInclude Include="include\andromeda\Game\game_object.h" />
     <ClInclude Include="include\andromeda\Game\geometry_component.h" />
     <ClInclude Include="include\andromeda\Game\render_component.h" />
@@ -190,7 +194,7 @@
     <ClCompile Include="src\andromeda\Events\resize.cpp" />
     <ClCompile Include="src\andromeda\Game\transform_component.cpp" />
     <ClCompile Include="src\andromeda\Graphics\buffer.cpp" />
-    <ClCompile Include="src\andromeda\Game\camera.cpp" />
+    <ClCompile Include="src\andromeda\Game\camera_static.cpp" />
     <ClCompile Include="src\andromeda\Renderer\context.cpp" />
     <ClCompile Include="src\andromeda\Geometry\geometry.cpp" />
     <ClCompile Include="src\andromeda\Geometry\geometry_cube.cpp" />

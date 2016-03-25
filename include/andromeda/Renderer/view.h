@@ -21,11 +21,10 @@
 namespace andromeda
 {
 	// Forward Declarations
-	class Camera;
+	class ICamera;
 	class IProjection;
 
 	class Layer;
-	//class Scene;	// Remove
 	class IRenderable;
 	class ISceneGraph;
 	class SceneGraphCache;
@@ -72,10 +71,6 @@ namespace andromeda
 		*/
 		const inline Int32 zOrder() const { return _zOrder; }
 
-		/*
-			Gets the Views Camera
-		*/
-		const inline std::shared_ptr<Camera> camera() const { return _camera; }
 
 		/*
 		
@@ -100,6 +95,32 @@ namespace andromeda
 		Boolean removeRenderable(const std::string & layer, IRenderable * renderable);
 
 
+
+
+		/*
+			Set Camera Target using a default Camera
+		*/
+		Boolean setCameraTarget();
+
+		/*
+			Set Camera Target using a GameObject. GameObject must be in the SceneGraph
+		*/
+		Boolean setCameraTarget(const std::string & name);
+
+		/*
+			Set Camera Target using a Custom Camera
+		*/
+		Boolean setCameraTarget(std::shared_ptr<ICamera> & camera);
+
+
+
+
+		/*
+			Gets the Views Camera
+		*/
+		const inline std::shared_ptr<ICamera> camera() const { return _camera; }
+
+
 	private:
 		// ResizeListener Event
 		/*Boolean onResize(ResizeEventArgs & e) override;*/
@@ -120,7 +141,7 @@ namespace andromeda
 
 
 		// Camera Implementations May be up for as massive flexibility change....
-		std::shared_ptr<Camera> _camera;				// Camera for the View
+		std::shared_ptr<ICamera> _camera;				// Camera for the View
 
 
 

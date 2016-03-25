@@ -22,7 +22,7 @@ namespace andromeda
 	class IRenderable;
 	class IProjection;
 
-	class Camera;
+	class ICamera;
 
 
 	/*
@@ -64,7 +64,7 @@ namespace andromeda
 		Boolean addRenderable(IRenderable * renderable);
 		Boolean removeRenderable(IRenderable * renderable);
 
-		Boolean render(std::shared_ptr<IProjection> projection, const std::shared_ptr<Camera> camera, const std::string & technique);
+		Boolean render(std::shared_ptr<IProjection> projection, const std::shared_ptr<ICamera> camera, const std::string & technique);
 
 	private:
 		std::shared_ptr<Effect> _effect;	// Should it be a weak pointer ?

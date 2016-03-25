@@ -79,7 +79,7 @@ namespace andromeda
 		Abstract Module
 	*/
 	template <class T>
-	class Module : public IModule, public Dependancy <T, IModule>
+	class Module : public IModule, virtual public Dependancy <T, IModule>
 	{
 		static const Int32 PRIORITY_MULTIPLIER = 10;
 
@@ -98,7 +98,7 @@ namespace andromeda
 		// Module Class
 		enum  _Class
 		{
-			Critical = 1,	// Critical. Needs to be done first.	Timing, Operating System Interaction
+			Critical = 1,	// Critical. Needs to be done first. Timing, Operating System Interaction
 
 			Input,			// Input. Mouse, Keybaord, etc
 			Update,			// Application logic
@@ -112,7 +112,10 @@ namespace andromeda
 		/*
 		
 		*/
-		Module(_Class c, _Priority p = Module::Normal, Boolean system = false) : _class(c), _priority(p), _system(system)
+		Module(_Class c, _Priority p = Module::Normal, Boolean system = false) 
+			: _class(c)
+			, _priority(p)
+			, _system(system)
 		{
 
 		}

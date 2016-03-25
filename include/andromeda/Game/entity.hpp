@@ -33,7 +33,7 @@ namespace andromeda
 			return false;
 
 		// Get ID
-		Int32 id = getComponentID<T>();
+		Int32 id = getComponentId<T>();
 
 		// Add Component
 		_components[id] = component;
@@ -54,7 +54,7 @@ namespace andromeda
 			return false;
 
 		// Get ID
-		Int32 id = getComponentID<T>();
+		Int32 id = getComponentId<T>();
 
 		// Erase
 		_components.erase(id);
@@ -78,7 +78,7 @@ namespace andromeda
 		}
 
 		// Get Module ID
-		Int32 id = getComponentID<T>();
+		Int32 id = getComponentId<T>();
 
 		// Retrieve the Module
 		return std::static_pointer_cast<T>(_components[id]);

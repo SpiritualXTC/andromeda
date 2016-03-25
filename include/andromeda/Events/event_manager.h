@@ -10,8 +10,9 @@
 #include <functional>
 #include <unordered_map>
 
-#include "../stddef.h"
-#include "../Utilities/singleton.h"
+#include <andromeda/stddef.h>
+#include <andromeda/Utilities/singleton.h>
+#include <andromeda/Utilities/template.h>
 
 #include "event.h"
 
@@ -20,7 +21,7 @@ namespace andromeda
 	/*
 	
 	*/
-	class EventManager : public Singleton<EventManager>
+	class EventManager : public Singleton<EventManager>, public TemplateContainer<IEvent>
 	{
 	public:
 		EventManager(){}
@@ -64,8 +65,8 @@ namespace andromeda
 		template <class EVENT>
 		inline Int32 getEventId(Int32 id)
 		{
-			return (TemplateID<EVENT, IEvent>::getTemplateID() << 16) | id;
-			//return (Event<EVENT>::getTemplateID() << 16) | id;
+			return (getTemplateId<EVENT>() << 16) | id;
+			//return (TemplateIndex<EVENT, IEvent>::getTemplateID() << 16) | id;
 		}
 
 		/*

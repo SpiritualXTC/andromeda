@@ -21,9 +21,6 @@
 #include "test_fs.h"
 #include "test_xml.h"
 
-#include <andromeda/Containers/vector.h>
-
-
 // Libraries
 #pragma comment(lib,"opengl32.lib")
 #pragma comment(lib,"glu32.lib")

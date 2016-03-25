@@ -11,7 +11,7 @@ namespace andromeda
 	*/
 
 	/*
-	Register the Event
+		Register the Event
 	*/
 	template<class EVENT>
 	Boolean EventManager::registerEvent(Int32 id)
@@ -27,11 +27,11 @@ namespace andromeda
 		_events[uid] = std::make_unique<Event<EVENT>>();
 
 		// Success ?
-		return !!_events[uid];
+		return _events.find(uid) != _events.end();
 	}
 
 	/*
-	Unregister the Event
+		Unregister the Event
 	*/
 	template <class EVENT>
 	Boolean EventManager::unregisterEvent(Int32 id)
@@ -47,11 +47,11 @@ namespace andromeda
 		_events.erase(uid);
 
 		// Success ?
-		return !_events[uid];
+		return _events.find(uid) == _events.end();
 	}
 
 	/*
-	Bind Listener: Binds a listener to the Event
+		Bind Listener: Binds a listener to the Event
 	*/
 	template <class EVENT>
 	Int32 EventManager::bind(Int32 id, std::function<Boolean(EVENT)> callback)
@@ -62,7 +62,7 @@ namespace andromeda
 	}
 
 	/*
-	Unbind Listener: Unbinds a listener to the Event
+		Unbind Listener: Unbinds a listener to the Event
 	*/
 	template <class EVENT>
 	Boolean EventManager::unbind(Int32 id, Int32 listenerId)
@@ -73,7 +73,7 @@ namespace andromeda
 	}
 
 	/*
-	Dispatch Event: Dispatches an Event
+		Dispatch Event: Dispatches an Event
 	*/
 	template<class EVENT>
 	Boolean EventManager::dispatch(Int32 id, EVENT & e)

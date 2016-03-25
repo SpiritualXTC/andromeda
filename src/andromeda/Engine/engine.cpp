@@ -59,9 +59,8 @@ Engine::~Engine()
 	pause(true);
 
 	_active.clear();
-	_modules.clear();
-
-
+	_map.clear();
+	
 
 	log_verbose("Engine: Destroyed");
 }
@@ -82,9 +81,6 @@ void Engine::quit()
 */
 void Engine::run()
 {
-	
-
-
 	log_verbose("Engine: Running");
 
 	
@@ -161,12 +157,12 @@ void Engine::resume()
 
 
 	// Loop through all Installed Modules
-	for (auto it : _modules)
+	for (auto it : _map)
 		resume(it.second);
 
 
 	
-	for (auto it : _modules)
+	for (auto it : _map)
 	{
 		log_warn("Module: ", it.second->priority(), isRunning(it.second));
 	}

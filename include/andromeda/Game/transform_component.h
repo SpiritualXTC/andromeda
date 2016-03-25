@@ -48,7 +48,7 @@ namespace andromeda
 		/*
 			Temporary!
 		*/
-		void calculate();
+		void calculate() override;
 		
 
 	private:

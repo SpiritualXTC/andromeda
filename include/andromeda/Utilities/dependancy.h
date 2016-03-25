@@ -13,8 +13,8 @@ namespace andromeda
 	/*
 		
 	*/
-	template <class _CONCRETE_, class _INTERFACE_>
-	class Dependancy : public TemplateID<_CONCRETE_, _INTERFACE_>
+	template <class _CLASS_, class _INTERFACE_>
+	class Dependancy : virtual public TemplateIndex<_CLASS_, _INTERFACE_>
 	{
 	public:
 		Dependancy() {}
@@ -24,7 +24,7 @@ namespace andromeda
 			Get Dependancy ID
 		*/
 		template <class T>
-		inline Int32 getDependancyID() { return TemplateID<T, _INTERFACE_>::getTemplateID(); }
+		inline Int32 getDependancyID() { return TemplateIndex<T, _INTERFACE_>::getTemplateId(); }
 								
 		
 		/*

@@ -3,7 +3,10 @@
 #include <glm/gtc/constants.hpp>
 
 #include <andromeda/Game/camera.h>
-
+#include <andromeda/Game/camera_static.h>
+#include <andromeda/Game/camera_component.h>
+#include <andromeda/Game/game_object.h>
+#include <andromeda/Game/transform_component.h>
 
 #include <andromeda/graphics.h>
 
@@ -33,15 +36,15 @@ View::View(const std::shared_ptr<ISceneGraph> sceneGraph, std::shared_ptr<IProje
 	if (! _projection)
 		_projection = std::make_shared<ProjectionPerspective>();
 
-	// Create a Camera
-	_camera = std::shared_ptr<Camera>(new Camera());
-
 	// Create a default Layer [Temporary]
 	log_warn("Creating default layer");
 	_layers["default"] = std::make_unique<Layer>("");
 
 	// Create Scene Graph Cache
 	_sceneGraphCache = std::make_shared<SceneGraphCache>(this);
+
+	// Create the Camera
+	setCameraTarget();
 }
 
 /*
@@ -131,6 +134,14 @@ void View::render()
 	Int32 bottom = _screen.maximum.y - top;
 	bottom -= height;
 
+	// Create a Default Camera
+	if (!_camera)
+		setCameraTarget();
+
+	// Camera
+	assert(_camera);
+	_camera->calculate();
+
 	// Set Viewport
 	glViewport(left, bottom, width, height);
 
@@ -167,4 +178,58 @@ void View::render()
 
 }
 
+
+
+
+
+
+/*
+	Set Camera Target using a default Camera
+*/
+Boolean View::setCameraTarget()
+{
+	// Create a Camera
+	_camera = std::shared_ptr<CameraStatic>(new CameraStatic());
+
+	return !! _camera;
+}
+
+/*
+	Set Camera Target using a GameObject. GameObject must be in the SceneGraph
+*/
+Boolean View::setCameraTarget(const std::string & name)
+{
+	// Look for the Object in the SceneGraph
+	std::shared_ptr<GameObject> go = _sceneGraph->getGameObject(name);
+
+	// Validate
+	if (!go) return false;
+
+	// Look for CameraComponent
+	std::shared_ptr<ICamera> camera = go->getComponentPtr<CameraComponent>();
+
+	if (camera)
+		return setCameraTarget(camera);
+
+	// Look for TransformComponent
+	std::shared_ptr<ITransform> transform = go->getComponentPtr<TransformComponent>();
+
+	if (transform)
+	{
+		return false;
+	}
+
+
+	return true;
+}
+
+/*
+	Set Camera Target using a Custom Camera
+*/
+Boolean View::setCameraTarget(std::shared_ptr<ICamera> & camera)
+{
+	_camera = camera;
+
+	return !!_camera;
+}
 

@@ -116,7 +116,7 @@ void Game::createView(aFloat x, aFloat y, aFloat w, aFloat h)
 	std::string name = "view_" + (_views.size() + 1);
 	std::shared_ptr<andromeda::View> view = _scene->addScreenView(name, x, y, w, h);
 
-	view->camera()->distance(5.0f);
+	view->camera()->distance(8.0f);
 
 	// Add View to temp list
 	_views.push_back(view);
@@ -209,39 +209,6 @@ void Game::update(aFloat ft)
 
 
 
-#if 0
-
-/*
-	Test Crap
-*/
-void Game::testInsert(std::shared_ptr<andromeda::GameObject> object)
-{
-	aBoolean b = _sceneGraph->addGameObject(object);
-
-	log_info("Game Object", object->getName(), "...", (b ? "inserted" : "failed to insert"));
-}
-void Game::testRemove(std::shared_ptr<andromeda::GameObject> object)
-{
-	aBoolean b = _sceneGraph->removeGameObject(object);
-
-	log_info("Game Object", object->getName(), "...", (b ? "removed" : "failed to remove"));
-}
-void Game::testExists(std::shared_ptr<andromeda::GameObject> object)
-{
-	aBoolean b = _sceneGraph->hasObject(object->getName());
-	
-	log_info("Game Object", object->getName(), "...", (b ? "found" : "not found"));
-}
-
-void Game::testRetrieve(std::shared_ptr<andromeda::GameObject> object)
-{
-	std::shared_ptr<andromeda::GameObject> p = _sceneGraph->getGameObject(object->getName());
-
-	log_info("Game Object", object->getName(), "...", (p ? "found" : "not found"));
-	if (p != object)
-		log_warn("Game object is different");
-}
-#endif
 
 
 
@@ -262,7 +229,7 @@ aBoolean Game::mouseMove(andromeda::MouseMoveEventArgs & e)
 		{
 			if (view->getDisplayRegion().contains(glm::vec2(e.x, e.y)))
 			{
-				std::shared_ptr<andromeda::Camera> camera = view->camera();
+				std::shared_ptr<andromeda::ICamera> camera = view->camera();
 
 				camera->yaw(camera->yaw() + e.deltaX * sensitivity);
 				camera->pitch(camera->pitch() + e.deltaY * sensitivity);

@@ -4,40 +4,47 @@
 /*
 	Special class for indexing template classes :)
 
-	This makes it easy to access different implementations of an interface, in a map (for example)
+	This makes it easy to access different implementations of an interface, in a hashmap (for example)
 */
-
+#include <cassert>
 
 #include <andromeda/stddef.h>
 
 namespace andromeda
 {
-	/*
-		Increments a counter of all matching interfaces.
+	typedef Int32 TemplateID;
 
-		For some reason... some arsehole as Macro Defined INTERFACE to something else. Stopping potential confusion and/or error before it becomes possible :)
+
+	/*
+		Increments a counter for all matching interfaces.
+
+		For some reason... some arsehole has Macro Defined INTERFACE to something else. Stopping potential confusion and/or error before it becomes possible :)
+
+		Indexes template classes by incrementing a counter, for the given interface.
+		Classes that share an association with a common class/interface share a counter.
 	*/
 	template <typename _INTERFACE_>
-	class TemplateIdentifier
+	class TemplateIndexer
 	{
 	private:
-		TemplateIdentifier() {}
-		virtual ~TemplateIdentifier(){}
+		TemplateIndexer() {}
+		virtual ~TemplateIndexer(){}
 
 	public:
-		// Generate the Index
-		static Int32 generateTemplateID() { return ++_id; }
+		// Generate a new Index
+		static TemplateID generateTemplateId() { return ++_id; }
 
-
-		// This should work now!
-		template <typename _CONCRETE_>
-		static inline Int32 getTemplateID() { return TemplateID<_CONCRETE_, _INTERFACE_>::getTemplateID(); }
+		/*
+			Gets the Template ID for the association between the passed class and this counters interface.
+		*/
+		template <typename _CLASS_>
+		static inline const TemplateID getTemplateId() { return TemplateIndex<_CLASS_, _INTERFACE_>::getTemplateId(); }
 
 	private:
-		static Int32 _id;
+		static TemplateID _id;
 	};
 	template <typename _INTERFACE_>
-	Int32 TemplateIdentifier<_INTERFACE_>::_id = 0;
+	TemplateID TemplateIndexer<_INTERFACE_>::_id = 0;
 
 
 
@@ -45,22 +52,38 @@ namespace andromeda
 		Handles the Automagically Identification of template classes that need to be accessed by ID (eg: in a map)
 	*/
 	template <typename _CLASS_, typename _INTERFACE_>
-	class TemplateID
+	class TemplateIndex
 	{
 	public:
-		static inline const Int32 getTemplateID() { return _id; }
+		static inline const TemplateID getTemplateId() { return _id; }
 
 	private:
-		static const Int32 _id;
+		static const TemplateID _id;
 
 	protected:
-		// Should only be instantiated by derived classes.
-		TemplateID() {}
-		virtual ~TemplateID(){}
+		// Should only be instantiated by derived classes :: Except that isn't even true :O
+		TemplateIndex() { }
+		virtual ~TemplateIndex(){}
 	};
 
 	template <typename _CLASS_, typename _INTERFACE_>
-	const Int32 TemplateID<_CLASS_, _INTERFACE_>::_id = TemplateIdentifier<_INTERFACE_>::generateTemplateID();
+	const TemplateID TemplateIndex<_CLASS_, _INTERFACE_>::_id = TemplateIndexer<_INTERFACE_>::generateTemplateId();
+
+
+
+
+	/*
+		Gives a slightly less "human" error prone method for obtaining the Template ID
+
+		Might not need this class, if the generic template containers work :)
+	*/
+	template <typename _INTERFACE_>
+	class TemplateContainer
+	{
+	public:
+		template <typename _CLASS_>
+		inline const TemplateID getTemplateId() const { return TemplateIndex<_CLASS_, _INTERFACE_>::getTemplateId(); }
+	};
 }
 
 

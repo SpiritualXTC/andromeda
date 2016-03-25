@@ -16,12 +16,22 @@ namespace andromeda
 		ITransform() {}
 		virtual ~ITransform() {}
 
+
+		/* Temporary */
+		virtual void calculate() = 0;
+
+
+
+
+
 		/* Get Matrix */
 		virtual const glm::mat4 & matrix() const = 0;
 
 		/* Get Position */
 		virtual const glm::vec3 & position() const = 0;
 
+		
+		
 		/* Get X-Axis Position */
 		virtual const inline Float x() const = 0;
 
@@ -31,6 +41,14 @@ namespace andromeda
 		/* Get Z-Axis Position */
 		virtual const inline Float z() const = 0;
 
+		virtual inline void x(Float x) = 0;
+		virtual inline void y(Float y) = 0;
+		virtual inline void z(Float z) = 0;
+
+
+
+		
+
 		/* Get Pitch */
 		virtual const inline Float pitch() const = 0;
 		
@@ -39,6 +57,13 @@ namespace andromeda
 
 		/* Get Roll */
 		virtual const inline Float roll() const = 0;
+
+
+
+		virtual inline void yaw(Float f) = 0;
+		virtual inline void pitch(Float f) = 0;
+		virtual inline void roll(Float f) = 0;
+
 	};
 
 }

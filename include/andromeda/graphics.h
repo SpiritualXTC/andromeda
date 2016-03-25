@@ -4,8 +4,12 @@
 /*
 	Includes common graphics headers
 */
+
+#include "opengl.h"
+
 #include "Graphics/buffer.h"
 #include "Graphics/texture.h"
+
 
 
 

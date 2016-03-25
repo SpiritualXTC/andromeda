@@ -6,7 +6,11 @@
 #include <memory>
 
 
-#include "../stddef.h"
+#include <andromeda/stddef.h>
+
+#include <andromeda/Containers/template_map.h>
+#include <andromeda/Utilities/template.h>
+
 
 namespace andromeda
 {
@@ -18,7 +22,7 @@ namespace andromeda
 	/*
 	
 	*/
-	class Engine
+	class Engine : public TemplateContainer<IModule>
 	{
 	public:
 		Engine();
@@ -35,28 +39,19 @@ namespace andromeda
 		*/
 		void quit();
 
-		
-
+	
+		/*
+			Determines if a System is installed :: Potential Bug
+		*/
+		template <class T>
+		const inline Boolean isInstalled() { return _map.exists<T>(); }
 
 
 		/*
-			Gets the System ID Mapped to T
+			Is the System Active? :: Potential Bug
 		*/
 		template <class T>
-		const inline Int32 getModuleID() const { return TemplateID<T, IModule>::getTemplateID(); }
-
-		/*
-			Determines if a System is installed
-		*/
-		template <class T>
-		const inline Boolean isInstalled() { return !!_modules[getModuleID<T>()]; }
-
-
-		/*
-			Is the System Active?
-		*/
-		template <class T>
-		const inline Boolean isRunning() { return isRunning(getModuleID<T>()); }
+		const inline Boolean isRunning() { return isRunning(getModuleId<T>()); }
 
 
 		/*
@@ -91,7 +86,11 @@ namespace andromeda
 			Gets the Module as a raw pointer
 		*/
 		template <class T>
-		T * getModule();
+		inline T * getModule()
+		{
+			std::shared_ptr<T> p = getModulePtr<T>();
+			return p.get();
+		}
 
 
 		/*
@@ -148,7 +147,12 @@ namespace andromeda
 		Boolean _running = false;											// Is the System Running ?
 
 		std::multiset<std::shared_ptr<IModule>> _active;					// Running Modules
-		std::unordered_map<Int32, std::shared_ptr<IModule>> _modules;		// All Installed Modules
+//		std::unordered_map<Int32, std::shared_ptr<IModule>> _modules;		// All Installed Modules
+
+
+
+
+		TemplateMap<IModule> _map;
 	};
 }
 
