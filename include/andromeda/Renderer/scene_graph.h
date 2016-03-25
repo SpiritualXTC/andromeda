@@ -49,6 +49,11 @@ namespace andromeda
 		virtual void for_each(std::function<void(std::shared_ptr<GameObject>)> cb) = 0;
 
 
+
+
+		virtual void update(const Float timeStep) = 0;
+
+
 		// TEMP
 		//	virtual Boolean process(std::shared_ptr<ITransform> transform, std::shared_ptr<ISceneGraph> sgCache) = 0;
 	};

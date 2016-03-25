@@ -12,27 +12,24 @@ void CameraStatic::calculate()
 {
 	glm::mat4 matrix(1.0f);
 
-	// Reset View Matrix
-	_view = matrix;
-
 	// Distance camera is from view point
-	matrix = glm::translate(matrix, glm::vec3(0, 0, -_distance));
-	
+	matrix = glm::translate(matrix, glm::vec3(0, 0, -distance()));
+
 	// Camera Rotation
-	matrix = glm::rotate(matrix, _rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-	matrix = glm::rotate(matrix, _rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-	matrix = glm::rotate(matrix, _rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	matrix = glm::rotate(matrix, pitch(), glm::vec3(1.0f, 0.0f, 0.0f));
+	matrix = glm::rotate(matrix, yaw(), glm::vec3(0.0f, 1.0f, 0.0f));
+	matrix = glm::rotate(matrix, roll(), glm::vec3(0.0f, 0.0f, 1.0f));
 
 	// Camera Translation
-	matrix = glm::translate(matrix, -_position);
+	matrix = glm::translate(matrix, -position());
 
 	// Calculate Final View Matrix
-	_view *= matrix;
+	_view = matrix;
 	
 	return;
 }
 
-
+#if 0
 /*
 	Set Camera Translation
 */
@@ -58,7 +55,7 @@ void CameraStatic::translate(const glm::vec3 & position)
 
 
 /*
-
+	Set X-Axis Position
 */
 void CameraStatic::x(Float x)
 {
@@ -69,7 +66,7 @@ void CameraStatic::x(Float x)
 }
 
 /*
-
+	Set Y-Axis Position
 */
 void CameraStatic::y(Float y)
 {
@@ -80,7 +77,7 @@ void CameraStatic::y(Float y)
 }
 
 /*
-
+	Set Z-Axis Position
 */
 void CameraStatic::z(Float z)
 {
@@ -123,3 +120,5 @@ void CameraStatic::pitch(Float pitch)
 
 	_rotation.x = pitch;
 }
+
+#endif

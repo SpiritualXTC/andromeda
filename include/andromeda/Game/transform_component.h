@@ -9,7 +9,7 @@
 
 namespace andromeda
 {
-	class TransformComponent : public Component < TransformComponent >, public ITransform
+	class TransformComponent : public Component < TransformComponent >, public virtual ITransform
 	{
 	public:
 		TransformComponent();
@@ -19,7 +19,7 @@ namespace andromeda
 
 
 		/* Setters */
-		inline void position(Float x, Float y, Float z) { _position = glm::vec3(x, y, z); }
+		inline void position(Float x, Float y, Float z) override { _position = glm::vec3(x, y, z); }
 
 		inline void x(Float x) { _position.y = x; }
 		inline void y(Float y) { _position.x = y; }
@@ -44,12 +44,22 @@ namespace andromeda
 
 
 
+		/*
+			Update the Component
+		*/
+		inline void update(const Float timeStep)
+		{
+			calculate();
+		}
+
+
 
 		/*
 			Temporary!
 		*/
 		void calculate() override;
 		
+
 
 	private:
 	

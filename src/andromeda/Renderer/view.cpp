@@ -3,8 +3,9 @@
 #include <glm/gtc/constants.hpp>
 
 #include <andromeda/Game/camera.h>
-#include <andromeda/Game/camera_static.h>
 #include <andromeda/Game/camera_component.h>
+#include <andromeda/Game/camera_static.h>
+#include <andromeda/Game/camera_target.h>
 #include <andromeda/Game/game_object.h>
 #include <andromeda/Game/transform_component.h>
 
@@ -208,19 +209,19 @@ Boolean View::setCameraTarget(const std::string & name)
 	// Look for CameraComponent
 	std::shared_ptr<ICamera> camera = go->getComponentPtr<CameraComponent>();
 
-	if (camera)
-		return setCameraTarget(camera);
-
-	// Look for TransformComponent
-	std::shared_ptr<ITransform> transform = go->getComponentPtr<TransformComponent>();
-
-	if (transform)
+	if (!camera)
 	{
-		return false;
+		// Look for TransformComponent
+		std::shared_ptr<ITransform> transform = go->getComponentPtr<TransformComponent>();
+
+		if (transform)
+		{
+			// Create a Target Camera
+			camera = std::make_shared<CameraTarget>(transform);
+		}
 	}
 
-
-	return true;
+	return setCameraTarget(camera);
 }
 
 /*

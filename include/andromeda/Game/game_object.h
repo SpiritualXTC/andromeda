@@ -59,6 +59,9 @@ namespace andromeda
 
 
 
+		void update(const Float timeStep);
+
+
 		// EXTREMELY FUCKING TEMPORARY
 		// TEMP
 		//virtual const std::shared_ptr<IRenderable> getRenderable() const = 0;

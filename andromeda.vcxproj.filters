@@ -231,9 +231,6 @@
     <ClInclude Include="include\andromeda\Game\Deprecated\render_component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\andromeda\Game\scene_component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\andromeda\Game\camera_component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -283,6 +280,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\andromeda\Game\camera_static.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Game\camera_target.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -434,6 +434,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Game\camera_static.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Game\camera_target.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Game\camera_default.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

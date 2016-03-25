@@ -32,7 +32,7 @@ namespace andromeda
 	/*
 
 	*/
-	class View //: public ResizeListener
+	class View
 	{
 	public:
 		enum _ZOrder		// Make this an Enum Class
@@ -70,7 +70,6 @@ namespace andromeda
 			Gets the Z-Order
 		*/
 		const inline Int32 zOrder() const { return _zOrder; }
-
 
 		/*
 		
@@ -122,26 +121,22 @@ namespace andromeda
 
 
 	private:
-		// ResizeListener Event
-		/*Boolean onResize(ResizeEventArgs & e) override;*/
+
+		Int32 _zOrder = 0;									// View Order
+
+		Region2f _view;										// Weighted View Region
+		Region2i _display;									// View Display Region
+		Region2i _screen;									// Screen Region
 
 
-		Int32 _zOrder = 0;								// View Order
-
-		Region2f _view;									// Weighted View Region
-		Region2i _display;								// View Display Region
-		Region2i _screen;								// Screen Region
-
-
-		std::shared_ptr<IProjection> _projection;		// Projection Matrix
+		std::shared_ptr<IProjection> _projection;			// Projection Matrix
 		
 
 		std::shared_ptr<ISceneGraph> _sceneGraph;			// Reference to the SceneGraph for this View :: May Remove This. and Pass Through Render()
 		std::shared_ptr<SceneGraphCache> _sceneGraphCache;	// Reference to the "visible" scene
 
 
-		// Camera Implementations May be up for as massive flexibility change....
-		std::shared_ptr<ICamera> _camera;				// Camera for the View
+		std::shared_ptr<ICamera> _camera;					// Camera for the View :: Make this a weak pointer :: Add another Camera for a default camera
 
 
 

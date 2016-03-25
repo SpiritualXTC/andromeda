@@ -4,7 +4,6 @@
 #include <cassert>
 
 #include <andromeda/Game/game_object.h>
-#include <andromeda/Game/scene_component.h>
 
 using namespace andromeda;
 

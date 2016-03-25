@@ -46,6 +46,12 @@ namespace andromeda
 		void for_each(std::function<void(std::shared_ptr<GameObject>)> cb) override;
 
 
+		/*
+			Update all the objects in the scene
+		*/
+		void update(const Float timeStep) override;
+
+
 	private:
 		std::unordered_map<std::string, std::shared_ptr<GameObject>> _objects;
 	};

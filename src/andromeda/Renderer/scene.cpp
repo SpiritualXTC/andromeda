@@ -98,8 +98,32 @@ Boolean Scene::clearViews()
 
 
 
-/*
 
+/*
+	update():
+*/
+void Scene::update(const Float timeStep)
+{
+	assert(_sceneGraph);
+
+	_sceneGraph->update(timeStep);
+}
+
+
+
+/*
+	sync():
+*/
+void Scene::sync()
+{
+	assert(_sceneGraph);
+
+}
+
+
+
+/*
+	render():
 */
 void Scene::render()
 {

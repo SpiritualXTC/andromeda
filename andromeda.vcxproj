@@ -87,10 +87,10 @@
     <ClInclude Include="include\andromeda\Engine\engine.hpp" />
     <ClInclude Include="include\andromeda\Game\camera_component.h" />
     <ClInclude Include="include\andromeda\Game\camera_static.h" />
+    <ClInclude Include="include\andromeda\Game\camera_target.h" />
     <ClInclude Include="include\andromeda\Game\game_object.h" />
     <ClInclude Include="include\andromeda\Game\geometry_component.h" />
     <ClInclude Include="include\andromeda\Game\render_component.h" />
-    <ClInclude Include="include\andromeda\Game\scene_component.h" />
     <ClInclude Include="include\andromeda\Game\view_component.h" />
     <ClInclude Include="include\andromeda\glm.h" />
     <ClInclude Include="include\andromeda\Graphics\effect.h" />
@@ -178,6 +178,8 @@
     <ClCompile Include="src\andromeda\Engine\application.cpp" />
     <ClCompile Include="src\andromeda\Engine\config.cpp" />
     <ClCompile Include="src\andromeda\Engine\engine.cpp" />
+    <ClCompile Include="src\andromeda\Game\camera_default.cpp" />
+    <ClCompile Include="src\andromeda\Game\camera_target.cpp" />
     <ClCompile Include="src\andromeda\Game\game_object.cpp" />
     <ClCompile Include="src\andromeda\Game\geometry_component.cpp" />
     <ClCompile Include="src\andromeda\Game\render_component.cpp" />

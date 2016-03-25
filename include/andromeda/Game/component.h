@@ -43,12 +43,20 @@ namespace andromeda
 			Deactivation that occurs when a SPECIFIC view activates the object
 		*/
 		virtual inline void onViewDeactivate(View * view) = 0;
+
+
+		/*
+			Update.... Updates the Component
+		*/
+		virtual inline void update(const Float timeStep) = 0;
 	};
 
 
 
 	/*
 		I Dont think this really needs the Dependancy Chain :P
+		...
+		However it may allow building a tree dynamically so that any components that are dependants end up earlier in the list
 	*/
 	template <typename T>
 	class Component : public IComponent, public Dependancy <T, IComponent>
@@ -69,11 +77,19 @@ namespace andromeda
 		}
 
 
+
 		virtual inline void onViewActivate(View * view) override
 		{
 			// Do Nothing
 		}
 		virtual inline void onViewDeactivate(View * view) override
+		{
+			// Do Nothing
+		}
+
+
+
+		virtual inline void update(const Float timeStep)
 		{
 			// Do Nothing
 		}

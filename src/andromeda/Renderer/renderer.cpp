@@ -37,40 +37,6 @@ Renderer::~Renderer()
 	log_verbose("Renderer: Destroy");
 }
 
-#if 0
-/*
-	addView():
-*/
-Boolean Renderer::addView(std::shared_ptr<View> view)
-{
-	
-
-	// Create some Dummy Views	
-	_views.insert(view);
-
-	return true;
-}
-
-/*
-	removeView():
-*/
-Boolean Renderer::removeView(std::shared_ptr<View> view)
-{
-	_views.erase(view);
-	return true;
-}
-
-/*
-	clearViews():
-*/
-Boolean Renderer::clearViews()
-{
-	_views.clear();
-	return true;
-}
-#endif
-
-
 
 /*
 	addScene():
@@ -85,7 +51,6 @@ Boolean Renderer::addScene(std::shared_ptr<Scene> scene)
 
 	// Add Scene
 	_scenes[scene->getName()] = scene;
-
 
 	// Check whether it was added
 	return hasScene(scene->getName());

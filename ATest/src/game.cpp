@@ -1,8 +1,9 @@
 #include "game.h"
 
 #include <andromeda/Game/camera.h>
-#include <andromeda/Game/transform_component.h>
+#include <andromeda/Game/game_object.h>
 #include <andromeda/Game/geometry_component.h>
+#include <andromeda/Game/transform_component.h>
 
 #include <andromeda/Geometry/geometry.h>
 #include <andromeda/Geometry/geometry_generate.h>
@@ -16,7 +17,7 @@
 #include <andromeda/Utilities/log.h>
 
 
-
+#include "random_path_component.h"
 
 
 
@@ -40,7 +41,7 @@ Game::Game(std::shared_ptr<andromeda::Renderer> renderer)
 
 
 	// Create the Views
-	aInt32 players = 1;
+	aInt32 players = 2;
 
 	if (players == 1)
 		createView(0, 0, 1, 1);
@@ -60,7 +61,7 @@ Game::Game(std::shared_ptr<andromeda::Renderer> renderer)
 
 	// Create Some Objects
 
-	createEntity("test_1");
+	//createEntity("test_1");
 	//createEntity("test2");
 	//createEntity("test3");
 
@@ -74,6 +75,7 @@ Game::Game(std::shared_ptr<andromeda::Renderer> renderer)
 		std::stringstream name;
 		name << "entity_" << i;
 
+		// Create Entity
 		std::shared_ptr<andromeda::GameObject> go = createEntity(name.str());
 
 		std::shared_ptr<andromeda::TransformComponent> transform = go->getComponentPtr<andromeda::TransformComponent>();
@@ -86,8 +88,37 @@ Game::Game(std::shared_ptr<andromeda::Renderer> renderer)
 	}
 
 
-	
 
+	// Create some cameras..... if it's NOT a single viewport -- this is only cos (lazy)
+	if (players > 1)
+	{
+		aInt32 i = 0;
+
+		//for (aInt32 i = 0; i < _views.size(); ++i)
+		for (const auto view : _views)
+		{
+			std::stringstream name;
+			name << "camera_" << i;
+
+			// Create Camera
+			std::shared_ptr<andromeda::GameObject> go = createCamera(name.str());
+
+			std::shared_ptr<andromeda::TransformComponent> transform = go->getComponentPtr<andromeda::TransformComponent>();
+
+			aFloat angle = i / (aFloat)_views.size() * glm::pi<aFloat>() * 2.0f;
+			aFloat radius = 0.5f;
+
+			transform->position(cosf(angle) * radius, 0.0f, sinf(angle) * radius);
+			transform->calculate();
+
+
+			// Assign the View to the Target
+			view->setCameraTarget(name.str());
+			view->camera()->distance(5.0f);
+
+			++i;
+		}
+	}
 
 }
 
@@ -159,6 +190,47 @@ std::shared_ptr<andromeda::GameObject> Game::createEntity(const std::string & na
 		std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, transform);
 		obj->addComponent<andromeda::RenderComponent>(render);
 	}
+	else
+		return nullptr;
+
+	// Add Game Object to Scene
+	_scene->getSceneGraph()->addGameObject(obj);
+
+	return obj;
+}
+
+
+/*
+
+*/
+std::shared_ptr<andromeda::GameObject> Game::createCamera(const std::string & name)
+{
+	// Create Game Object
+	std::shared_ptr<andromeda::GameObject> obj = std::make_shared<andromeda::GameObject>(name);
+	
+	// Create Standard Components
+	std::shared_ptr<andromeda::TransformComponent> transform = std::make_shared<andromeda::TransformComponent>();
+
+	// Add Components
+	obj->addComponent<andromeda::TransformComponent>(transform);
+
+	// Add/Create Simple Component
+	obj->addComponent<RandomPathComponent>(std::make_shared<RandomPathComponent>(transform));
+
+
+
+
+	// Create Geometry
+	std::shared_ptr<andromeda::Geometry> geometry = andromeda::CreateCube(0.25f, 0.25f, 0.25f, 0);
+
+	// Add RenderComponent
+	if (geometry)
+	{
+		std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, transform);
+		obj->addComponent<andromeda::RenderComponent>(render);
+	}
+	else
+		return nullptr;
 
 	// Add Game Object to Scene
 	_scene->getSceneGraph()->addGameObject(obj);
@@ -171,18 +243,15 @@ std::shared_ptr<andromeda::GameObject> Game::createEntity(const std::string & na
 
 
 
-
-
-
-
 /*
 
 */
-void Game::update(aFloat ft)
+void Game::update(aFloat timeStep)
 {
-	aFloat ft2 = ft * 0.5f;
-
 #if 0
+	aFloat ft2 = timeStep * 0.5f;
+
+
 	// Physics Update
 	for (aInt32 i = 0; i < _entities.size; ++i)
 	{
@@ -195,6 +264,10 @@ void Game::update(aFloat ft)
 		_entities.pos[i] += _entities.acc[i] * ft2 + _entities.vel[i] * ft;
 	}
 #endif
+
+	// Update the Scene
+	_scene->update(timeStep);
+
 
 	// Collision Detection
 

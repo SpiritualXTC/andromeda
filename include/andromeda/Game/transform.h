@@ -27,8 +27,12 @@ namespace andromeda
 		/* Get Matrix */
 		virtual const glm::mat4 & matrix() const = 0;
 
+
+
 		/* Get Position */
 		virtual const glm::vec3 & position() const = 0;
+		virtual inline void position(Float x, Float y, Float z) = 0;
+
 
 		
 		

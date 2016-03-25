@@ -9,9 +9,6 @@
 
 #include <andromeda/stddef.h>
 
-#include <andromeda/Game/game_object.h>
-#include <andromeda/Game/transform_component.h>	//TEMP
-#include <andromeda/Game/render_component.h> //TEMP
 
 #include <andromeda/Math/matrix_stack.h>
 #include <andromeda/Graphics/effect.h>
@@ -25,7 +22,7 @@ namespace andromeda
 	class Scene;
 	class View;
 
-	class IRenderable;
+	class GameObject;
 	class Geometry;
 
 	class Renderer;
@@ -58,24 +55,13 @@ private:
 
 	void createView(aFloat x, aFloat y, aFloat w, aFloat h);
 	std::shared_ptr<andromeda::GameObject> createEntity(const std::string & name);
-
-
-	std::weak_ptr<andromeda::Renderer> _renderer;
-
-
-	//std::shared_ptr<andromeda::ISceneGraph> _sceneGraph;
-	std::shared_ptr<andromeda::Scene> _scene;
-
-
-#if 0
-	void testInsert(std::shared_ptr<andromeda::GameObject> object);
-	void testRemove(std::shared_ptr<andromeda::GameObject> object);
-	void testExists(std::shared_ptr<andromeda::GameObject> object);
-	void testRetrieve(std::shared_ptr<andromeda::GameObject> object);
-#endif
+	std::shared_ptr<andromeda::GameObject> createCamera(const std::string & name);
 
 
 
+	
+	std::weak_ptr<andromeda::Renderer> _renderer;	// Reference to the Renderer
+	std::shared_ptr<andromeda::Scene> _scene;		// Scene
 
 
 	// TEMPORARY :: Need a way of pulling views from the Renderer

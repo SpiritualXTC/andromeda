@@ -126,6 +126,19 @@ void BasicSceneGraph::for_each(std::function<void(std::shared_ptr<GameObject>)> 
 
 
 
+
+/*
+
+*/
+void BasicSceneGraph::update(const Float timeStep)
+{
+	for (const auto & p : _objects)
+		p.second->update(timeStep);
+}
+
+
+
+
 #if 0
 /*
 

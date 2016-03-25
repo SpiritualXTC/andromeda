@@ -8,13 +8,11 @@ namespace andromeda
 	/*
 
 	*/
-	class CameraStatic : public ICamera
+	class CameraStatic : public CameraDefault
 	{
 	public:
 		CameraStatic() {}
 		virtual ~CameraStatic() {}
-
-		const inline glm::mat4 & matrix() const { return _view; }
 
 
 		/*
@@ -22,17 +20,10 @@ namespace andromeda
 		*/
 		void calculate() override;
 
+#if 0
+		const inline glm::mat4 & matrix() const { return _view; }
 
-		/*
-			Position
-		*/
-		const inline Float x() const override { return _position.x; }
-		const inline Float y() const override { return _position.y; }
-		const inline Float z() const override { return _position.z; }
 
-		void x(Float) override;
-		void y(Float) override;
-		void z(Float) override;
 
 
 
@@ -47,15 +38,35 @@ namespace andromeda
 		void translate(const glm::vec3 & position);
 
 		/*
+			Position
+		*/
+		const inline Float x() const override { return _position.x; }
+		const inline Float y() const override { return _position.y; }
+		const inline Float z() const override { return _position.z; }
+
+		/*
+			Rotation
+		*/
+		const inline Float pitch() const override { return _rotation.x; }
+		const inline Float yaw() const override { return _rotation.y; }
+		const inline Float roll() const override { return _rotation.z; }
+
+
+		void x(Float) override;
+		void y(Float) override;
+		void z(Float) override;
+
+
+
+
+		/*
 			Rotate the Camera
 		*/
 		void yaw(Float) override;
 		void pitch(Float) override;
 		void roll(Float) override;
 
-		const inline Float pitch() const override { return _rotation.x; }
-		const inline Float yaw() const override { return _rotation.y; }
-		const inline Float roll() const override { return _rotation.z; }
+
 
 
 
@@ -97,6 +108,7 @@ namespace andromeda
 
 		// View Matrix
 		glm::mat4 _view;
+#endif
 	};
 }
 

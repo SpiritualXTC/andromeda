@@ -75,6 +75,7 @@
     <ClCompile Include="src\framework.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\random_path_component.cpp" />
     <ClCompile Include="src\test_engine.cpp" />
     <ClCompile Include="src\test_bounds.cpp" />
     <ClCompile Include="src\test_effect.cpp" />
@@ -86,6 +87,7 @@
     <ClInclude Include="src\console.h" />
     <ClInclude Include="src\framework.h" />
     <ClInclude Include="src\game.h" />
+    <ClInclude Include="src\random_path_component.h" />
     <ClInclude Include="src\test_bounds.h" />
     <ClInclude Include="src\test_effect.h" />
     <ClInclude Include="src\test_engine.h" />

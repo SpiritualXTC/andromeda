@@ -51,7 +51,7 @@ namespace andromeda
 		std::shared_ptr<View> addScreenView(const std::string & name, Float x, Float y, Float width, Float height, Int32 order = View::Normal);
 
 
-
+		// NOT SUPPORTED YET
 		Boolean addTextureView(const std::string & name, const Int32 texWidth, const Int32 texHeight);
 
 
@@ -60,16 +60,31 @@ namespace andromeda
 		*/
 		const std::string & getName() { return _name; }
 
+
 		/*
 			Gets the SceneGraph
 		*/
 		std::shared_ptr<ISceneGraph> getSceneGraph() { return _sceneGraph; }
+
 
 		/*
 			Gets Constant Reference to the SceneGraph
 		*/
 		const std::shared_ptr<ISceneGraph> & getSceneGraph() const { return _sceneGraph; }
 
+
+		/*
+			Update the Scene
+		*/
+		void update(const Float timeStep);
+
+
+		/*
+			Syncs the Update Data with the Render Data
+			SHOULD BE VERY LIGHTWEIGHT.
+			Minimal processing needed.
+		*/
+		void sync();
 
 
 		/*

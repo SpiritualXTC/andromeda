@@ -77,3 +77,19 @@ void GameObject::onViewDeactivate(View * view)
 		p.second->onViewDeactivate(view);
 	}
 }
+
+
+/*
+	Updates all the components
+*/
+void GameObject::update(const Float timeStep)
+{
+	// 2 Update functions may be useful, one does a full update - the other a partial update
+	// Full Update only occur IFF _viewReferenceCount > 1
+	// EG: 
+	//	AABB will need to be updated every frame... for physics & Collision Detection
+	//	However animation matrices only need to be recalculated if the object is going to be drawn
+
+	for (const auto & p : components())
+		p.second->update(timeStep);
+}
