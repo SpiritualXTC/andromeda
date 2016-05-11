@@ -5,7 +5,6 @@
 using namespace andromeda;
 
 ResourceCache::ResourceCache()
-	: Module(Module::Idle, Module::Lowest, true)
 {
 
 }

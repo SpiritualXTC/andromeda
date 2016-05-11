@@ -19,7 +19,7 @@
 
 namespace andromeda
 {
-	class Config : public Module<Config>
+	class Config
 	{
 	public:
 		Config();
@@ -28,11 +28,6 @@ namespace andromeda
 
 		Boolean load(const std::string & filename);
 		Boolean save();
-
-
-		void onResume() override { return; }
-		void onPause() override { return; }
-		void update() override { return; }
 
 	private:
 

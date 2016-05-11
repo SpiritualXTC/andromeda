@@ -2,21 +2,10 @@
 
 #include <cassert>
 #include <algorithm>
-#include <chrono>
 
-
-#include <andromeda/Engine/config.h>
 #include <andromeda/Engine/module.h>
-#include <andromeda/Engine/system.h>
-#include <andromeda/Renderer/renderer.h>
-#include <andromeda/Utilities/timing.h>
-
 
 #include <andromeda/Utilities/log.h>
-
-// These are only here so, the engine can assign dependancies to the sytem automagically.
-#include <andromeda/Renderer/context.h>
-#include <andromeda/Platform/platform.h>
 
 
 
@@ -29,23 +18,7 @@ using namespace andromeda;
 */
 Engine::Engine()
 {
-	log_verbose("Engine: Created");
-
-	// Create Configuration Module
-	addModule<Config>();
-	
-	// Create System Module : (Running Configuration)
-	addModule<System>(std::make_shared<System>(this, getModulePtr<Config>()));
-
-	// Create Timing
-	addModule<Timing>();
-
-	// Create ResourceManager
-
-
-
-	// Add the Renderer
-	addModule<Renderer>();
+	log_verbose("Engine :: <init>()");
 }
 
 
@@ -62,16 +35,16 @@ Engine::~Engine()
 	_map.clear();
 	
 
-	log_verbose("Engine: Destroyed");
+	log_debugp("Engine :: <destroy>()");
 }
 
 
 /*
 
 */
-void Engine::quit()
+void Engine::stop()
 {
-	log_debug("Engine: Quit");
+	log_debugp("Engine :: quit()");
 	_running = false;
 }
 
@@ -81,39 +54,10 @@ void Engine::quit()
 */
 void Engine::run()
 {
-	log_verbose("Engine: Running");
+	log_debugp("Engine :: run()");
 
-	
-
-	
-	// Additional Dependancies!
-	setDependancy<System, Platform>();
-	setDependancy<System, Context>();
-
-
-
-
-	// Bootstrap Initialisation!
-	getModulePtr<System>()->run();
-
-	// Engine::Run() -> System::Run() -> Platform::Show() -> System::Resume() -> Engine::Resume()
-	// Workaround Reason: 
-	/*
-		Windows:
-		the WM_ACTIVATEAPP message was sent when the window first gets shown, which in turn calls System::Resume() -> Engine::Resume()
-		irrespective of whether all the modules are added.
-
-		But then Engine::resume() gets called... recalling IModule<>::Resume()
-	*/
-	
-
-	// Start all System Components
-	//resume();
-
-
-	// Output all active modules!
-	for (auto it : _active)
-		log_verbose("Module: ", it->priority());
+	// Debug Output
+	debugOutput();
 	
 	// Loop
 	_running = true;
@@ -124,12 +68,15 @@ void Engine::run()
 			module->update();	
 	}
 
-	log_verbose("Engine: Stopping");
+	log_verbose("Engine :: run() :: Stopping");
 
-	// Stop all System Components
+	// Stop all Modules
 	pause(true);
 
-	log_verbose("Engine: Stopped");
+	// Debug Output
+	debugOutput();
+
+	log_verbose("Engine :: run() :: Stopped");
 }
 
 
@@ -153,42 +100,17 @@ Boolean Engine::isRunning(std::shared_ptr<IModule> system)
 */
 void Engine::resume()
 {
-	log_warn("Engine::Resume()");
+	log_warn("Engine :: resume()");
 
 
 	// Loop through all Installed Modules
 	for (auto it : _map)
 		resume(it.second);
-
-
-	
-	for (auto it : _map)
-	{
-		log_warn("Module: ", it.second->priority(), isRunning(it.second));
-	}
 }
 
 
 
-/*
-	Pause all the Modules
-*/
-void Engine::pause(Boolean stop)
-{
-	/*
-		This is to stop a crash while trying to remove elements from the list during an iteration!
-	*/
 
-	// Duplicate the Array
-	std::multiset<std::shared_ptr<IModule>> copy = _active;
-
-	// Loop through all Active Modules in the duplicate array
-	for (auto it : copy)
-		pause(it, stop);
-
-	// Clear duplicate array
-	copy.clear();
-}
 
 
 
@@ -201,7 +123,8 @@ Boolean Engine::resume(std::shared_ptr<IModule> module)
 	assert(module);
 
 	// The module is already running. Don't resume it :)
-//	if (isRunning(module))
+	// This option doesn't really work well as System Modules, once added are ALWAYS running until they are stopped
+//	if (isRunning(module) && ! module->isSystem())
 //		return false;
 
 	// Resume the Component
@@ -215,6 +138,31 @@ Boolean Engine::resume(std::shared_ptr<IModule> module)
 	return isRunning(module);
 }
 
+
+
+/*
+Pause all the Modules
+*/
+void Engine::pause(Boolean stop)
+{
+	log_infop("Engine :: pause() :: Stop = %1%", stop);
+
+	/*
+		This is to stop a crash while removing elements from the list while iterating
+	*/
+
+	// Duplicate the Active Array
+	std::multiset<std::shared_ptr<IModule>> copy = _active;
+
+	// Loop through all Active Modules in the duplicated array
+	for (auto it : copy)
+		pause(it, stop);
+
+	// Clear duplicate array
+	copy.clear();
+}
+
+
 /*
 	pause():
 
@@ -223,7 +171,7 @@ Boolean Engine::resume(std::shared_ptr<IModule> module)
 Boolean Engine::pause(std::shared_ptr<IModule> module, Boolean stop)
 {
 	assert(module);
-
+	
 	// The module isn't running. Don't try to pause it :)
 	if (!isRunning(module))
 		return false;
@@ -236,8 +184,27 @@ Boolean Engine::pause(std::shared_ptr<IModule> module, Boolean stop)
 	if (!module->isSystem() || stop)
 		_active.erase(module);
 
+	// Stop the Module
+	if (stop)
+	{
+		module->onStop();
+	}
+
 	// Is it in the Running List?
+	// System Modules will return false on this call...
 	return !isRunning(module);
 }
 
+
+/*
+
+*/
+void Engine::debugOutput()
+{
+	log_infop("All Modules");
+	for (auto it : _map)
+	{
+		log_warnp("Module :: Priority = %1%, Running = %2%", it.second->priority(), isRunning(it.second));
+	}
+}
 

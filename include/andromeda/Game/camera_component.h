@@ -1,8 +1,10 @@
 #ifndef _ANDROMEDA_GAME_CAMERA_COMPONENT_H_
 #define _ANDROMEDA_GAME_CAMERA_COMPONENT_H_
 
+#include <andromeda/Renderer/camera.h>
+
 #include "component.h"
-#include "camera.h"
+
 
 namespace andromeda
 {
@@ -15,7 +17,8 @@ namespace andromeda
 		Examples: 
 			FreeLook		: Includes Objects Translation, uses its own rotation													[Debug Camera]
 			Static			: Uses Objects Translation and Rotation data, but has none of its own									[Survellience Camera, remote Viewing]
-			Dynamic			: Uses Objects Translation and Rotation Data, and has it's own rotation data added for a final matrix.	[3rd Person]
+			Dynamic			: Uses Objects Translation and Rotation data, and has it's own rotation data added for a final matrix.	[3rd Person]
+			Interpolated	: Uses Objects Translation and Rotation data, interpolates the rotation data for smoother camera angles
 		
 		Hybrid Examples
 			FPSCamera		: Includes Objects Translation and Y-Axis rotation, but has it's own Pitch								[1st Person]

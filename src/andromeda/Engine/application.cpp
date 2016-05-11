@@ -2,6 +2,7 @@
 
 #include <cassert>
 
+#include <andromeda/andromeda.h>
 #include <andromeda/Engine/engine.h>
 #include <andromeda/Engine/system.h>
 #include <andromeda/Renderer/renderer.h>
@@ -37,7 +38,8 @@ Application::~Application()
 */
 void Application::update()
 {
-	std::shared_ptr<Timing> timing = getDependancyPtr<Timing>();
+	//std::shared_ptr<Timing> timing = getDependancyPtr<Timing>();
+	std::shared_ptr<Timing> & timing = Andromeda::instance()->getTiming();
 
 	assert(timing);
 

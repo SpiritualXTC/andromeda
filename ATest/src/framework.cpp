@@ -39,8 +39,9 @@ Framework::Framework(std::shared_ptr<IFramework> framework)
 	srand((aUInt32)time(0));
 
 
-
+#if 0
 	// Initialise Virtual File System
+	// Need to load files here manually
 	andromeda::ResourceManager * fs = andromeda::ResourceManager::instance();
 
 	// Add Search Paths & Filters
@@ -52,6 +53,7 @@ Framework::Framework(std::shared_ptr<IFramework> framework)
 	fs->addLocation("../res");
 
 	std::shared_ptr<andromeda::ResourceStream> stream = fs->load("shader.glslfx");
+#endif
 }
 
 

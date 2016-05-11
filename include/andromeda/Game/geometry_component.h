@@ -7,7 +7,7 @@ namespace andromeda
 {
 	class Geometry;
 	class ITransform;
-	class TransformComponent;
+	
 
 
 	class GeometryRenderComponent : public RenderComponent

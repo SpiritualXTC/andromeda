@@ -9,9 +9,18 @@
 namespace andromeda
 {
 	/*
+	std::shared_ptr<GameObject> operator ()(std::pair<std::string, std::shared_ptr<GameObject>> & pair)
+	{
+		return pair.second;
+	}
+	*/
+
+
+
+	/*
 		A Very basic Scene Graph
 	*/
-	class BasicSceneGraph : public ISceneGraph
+	class BasicSceneGraph : public SceneGraph
 	{
 	public:
 		BasicSceneGraph();
@@ -32,8 +41,10 @@ namespace andromeda
 		}
 
 
-
-//		Boolean process(std::shared_ptr<ITransform> transform, std::shared_ptr<ISceneGraph> sgCache);
+		/*
+			Process the Scene in relation to the view
+		*/
+		Boolean process(std::shared_ptr<SceneGraphCache> sgCache);
 
 
 		// OBJECT RETRIEVAL :: TESTING
@@ -43,7 +54,6 @@ namespace andromeda
 		}
 
 
-		void for_each(std::function<void(std::shared_ptr<GameObject>)> cb) override;
 
 
 		/*

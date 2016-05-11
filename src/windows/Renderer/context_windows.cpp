@@ -11,16 +11,17 @@
 #include "../Platform/platform_windows.h"
 
 using namespace andromeda;
+using namespace andromeda::windows;
 
-ContextWindows::ContextWindows(std::weak_ptr<System> system, std::weak_ptr<PlatformWindows> platWin) : Context(system)
+
+/*
+
+*/
+ContextWindows::ContextWindows(HDC hDC)
+	: _hDC(hDC)
 {
-	log_verbose("Context: Windows OpenGL");
+	log_debugp("Context :: <init>() :: Windows OpenGL");
 	
-	assert(! platWin.expired());
-
-	_hDC = platWin.lock()->getHDC();
-
-
 	// Select a Pixel Format
 	PIXELFORMATDESCRIPTOR pfd;
 	memset((void*)&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
@@ -43,27 +44,26 @@ ContextWindows::ContextWindows(std::weak_ptr<System> system, std::weak_ptr<Platf
 	_hGL = wglCreateContext(_hDC);
 	if (!_hGL)
 	{
-		//A_LOGD(": GL Failure\n");
+		log_errp("Context :: <init>() :: Failed to initalise OpenGL\n");
 	}
 
 	wglMakeCurrent(_hDC, _hGL);
 
-
 	// Initialise GLEW
 	if (glewInit() != GLEW_OK)
 	{
-		//A_LOGD("> Failed to initalise GLEW\n");
+		log_errp("Context :: <init>() :: Failed to initalise GLEW\n");
 	}
 
-
-
 	// OpenGL Version
-
-	//A_LOGD("> OpenGL Version: %s\n", oglv);
 	const GLubyte *oglv = glGetString(GL_VERSION);
+
+	log_debugp("Context :: <init>() :: OpenGL Version %1%", oglv);
 }
 
+/*
 
+*/
 ContextWindows::~ContextWindows()
 {
 	// Disable Open GL
@@ -74,10 +74,12 @@ ContextWindows::~ContextWindows()
 
 	_hGL = NULL;
 
-	log_verbose("Windows OpenGL Context Destroyed");
+	log_verbosep("Context :: <destroy>() :: Windows OpenGL Context Destroyed");
 }
 
+/*
 
+*/
 void ContextWindows::swap()
 {
 	SwapBuffers(_hDC);

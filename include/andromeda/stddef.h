@@ -3,6 +3,8 @@
 
 /*
 	Standard Include File for all of Andromeda
+
+
 */
 
 
@@ -10,7 +12,7 @@
 
 // Boost
 #include <boost/cstdint.hpp>
-
+#include <boost/predef.h>
 
 namespace andromeda
 {
@@ -30,7 +32,7 @@ namespace andromeda
 
 	typedef bool Bool, Boolean;
 	typedef char Char;
-	typedef unsigned char Byte;
+	typedef unsigned char UChar, Byte;
 
 
 	/*
@@ -46,13 +48,14 @@ namespace andromeda
 	typedef boost::uint32_t UInt32;
 	typedef boost::uint64_t UInt64;
 
-
-
+	typedef boost::intmax_t IntMax;
+	typedef boost::uintmax_t UIntMax;
+	
 	/*
 		Special Types
 	*/
-	typedef size_t Size;
-	typedef errno_t Error;
+	typedef size_t Size;			// TODO:: Minor Inconsistancies with this, and some other locations! Change "Size" references in a few places so they actually match this type
+	typedef errno_t Error;			// TODO:: Don't know if needed.
 }
 
 
@@ -62,6 +65,7 @@ namespace andromeda
 */
 typedef andromeda::Boolean aBoolean, aBool;
 typedef andromeda::Char aChar;
+typedef andromeda::UChar aUChar;
 typedef andromeda::Byte aByte;
 
 typedef andromeda::Float aFloat, aFloat32;

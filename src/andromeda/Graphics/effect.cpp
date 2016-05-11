@@ -1,10 +1,19 @@
 #include <andromeda/Graphics/effect.h>
 
+
+#include <andromeda/andromeda.h>	//temp
+
 #include <andromeda/Resources/resource_manager.h>
 
 #include <andromeda/Utilities/log.h>
 
 using namespace andromeda;
+
+/*
+	TODO:
+	Fix Logging methods
+*/
+
 
 
 void errorCallbackFunc(const char *errMsg)
@@ -21,10 +30,15 @@ void includeCallbackFunc(const char *incName, FILE *&fp, const char *&buf)
 {
 	log_warn("NVFX:: Include = ", incName);
 
-	// Load File
-	std::shared_ptr<andromeda::ResourceStream> res = ResourceManager::instance()->load(incName);
+	// Load File :: This won't load from the shader directory
+	std::shared_ptr<andromeda::File> file = Andromeda::instance()->getResourceManager()->loadFile(incName, false);
 
-	std::string contents = res->read();
+	if (!file)
+		log_errp("Unable to load Resource %1%", incName);
+
+
+	// Read File
+	//std::string contents = res->read();
 
 	//log_debug(contents.c_str());
 
@@ -34,22 +48,28 @@ void includeCallbackFunc(const char *incName, FILE *&fp, const char *&buf)
 		log_debug(buf);
 
 
+	Size length = file->length();
 	
 	
-	buf = new char[contents.length() + 2];
+	// Allocate :: Deallocation occurs in nvFX ???
+	buf = new char[length + 2];
 
+	// Assign Pointer
+	const char * pbuf = buf;
 
-	const char * buffer = buf;
+	// Copy Memory
+	memcpy((void*)pbuf, file->data(), file->length());
 
-	memcpy((void*)buffer, contents.c_str(), contents.length());
+	// Increment Pointer to end
+	pbuf += file->length();
 
-	buffer += contents.length();
-	memcpy((void*)&buffer[0], "\0", 1);
+	// Append NTC
+	memcpy((void*)&pbuf[0], "\0", 1);
 	
+
 	log_info(buf);
 
-
-	// BUG ???
+	// BUG ??? This hack isn't needed when loading directly via a file
 	fp = fopen("../res/shader/empty.txt", "r");
 }
 
@@ -59,12 +79,29 @@ void includeCallbackFunc(const char *incName, FILE *&fp, const char *&buf)
 */
 Effect::Effect()
 {
-	// Load File
-	std::shared_ptr<andromeda::ResourceStream> res = ResourceManager::instance()->load("shader.glslfx");
+	// Load File :: This is temporarily here
+	//std::shared_ptr<andromeda::ResourceStream> res = ResourceManager::instance()->load("shader.glslfx");
+	std::shared_ptr<andromeda::File> file = Andromeda::instance()->getResourceManager()->loadFile("shader/shader.glslfx", false);
+
+	if (file)
+	{
+		log_warnp("Effect Loaded. Length = %1%", file->length());
+	}
+	else
+		log_errp("File Reference is NULL");
+	
+
+
 
 	// Read Entire Contents
-	std::string contents = res->read();
+	//std::string contents = res->read();
 	//log_info("File:", contents.c_str());
+
+	if (!file)
+	{
+		log_errp("Unable to load Effect");
+		return;
+	}
 
 
 	// This should prolly go "elsewhere"
@@ -72,21 +109,11 @@ Effect::Effect()
 	nvFX::setMessageCallback(msgCallbackFunc);
 	nvFX::setIncludeCallback(includeCallbackFunc);
 	
-
-
 	// Create the Container
 	_effect = nvFX::IContainer::create("test");
-
-	nvFX::IContainerEx * effect = _effect->getExInterface();
-
-	//log_infop("----\n%1%\n----", contents);
-
-	
 	
 	// Load Effect
-	Boolean result = nvFX::loadEffect(_effect, contents.c_str());
-	//Boolean result = nvFX::loadEffectFromFile(_effect, "../res/shader/shader.glslfx");
-	//Boolean result = nvFX::loadEffectFromFile(_effect, "../res/shader/simpleEffect1.glslfx");
+	Boolean result = nvFX::loadEffect(_effect, file->data());
 
 	if (result)
 	{
@@ -95,47 +122,14 @@ Effect::Effect()
 	else
 		log_err("Failed to load effect");
 
-
 	// HACKITY-HACK
 	shaderHack();
 
-
 	// Validate Everything!
-	nvFX::ITechnique * technique = nullptr;
-	for (aInt t = 0; technique = _effect->findTechnique(t); t++)
-	{
-		Boolean bt = technique->validate();
-
-		result &= bt;
-
-		log_debug("Technique =", technique->getName());
-		log_debug("-> Valid=", bt);
-		log_debug("-> Passes = ", technique->getNumPasses());
-		
-		if (!bt)
-			log_warn("Technique:", technique->getName(), "Failed Validation");
-
-		nvFX::IPass * pass = nullptr;
-		for (aInt p = 0; pass = technique->getPass(p); ++p)
-		{
-			Boolean bp = pass->validate();
-
-			log_debug("--> Pass =", pass->getName());
-			if (!bp)
-				log_warn("Technique:", technique->getName(), "Pass:", pass->getName(), "Failed Validation");
-
-			result &= bp;
-
-		}
-	}
-
-
-	
-
+	result &= validate();
 	
 	// Show Output information
-	infoOutput();
-
+	//infoOutput();
 
 
 	if (!result)
@@ -143,8 +137,6 @@ Effect::Effect()
 		nvFX::IContainer::destroy(_effect);
 		_effect = nullptr;
 	}
-
-
 }
 
 /*
@@ -155,6 +147,48 @@ Effect::~Effect()
 	if (_effect)
 		nvFX::IContainer::destroy(_effect);
 	_effect = nullptr;
+}
+
+
+/*
+	validate():
+
+	Validates the shader
+*/
+Boolean Effect::validate()
+{
+	Boolean result = true;
+
+	nvFX::ITechnique * technique = nullptr;
+	for (aInt t = 0; technique = _effect->findTechnique(t); t++)
+	{
+		// Validate the Technique
+		Boolean bt = technique->validate();
+
+		result &= bt;
+
+//		log_debug("Technique =", technique->getName());
+//		log_debug("-> Valid=", bt);
+//		log_debug("-> Passes = ", technique->getNumPasses());
+
+		if (!bt)
+			log_warn("Technique:", technique->getName(), "Failed Validation");
+
+		nvFX::IPass * pass = nullptr;
+		for (aInt p = 0; pass = technique->getPass(p); ++p)
+		{
+			Boolean bp = pass->validate();
+			
+//			log_debug("--> Pass =", pass->getName());
+			if (!bp)
+				log_warn("Technique:", technique->getName(), "Pass:", pass->getName(), "Failed Validation");
+
+			result &= bp;
+
+		}
+	}
+
+	return result;
 }
 
 
@@ -171,7 +205,6 @@ Effect::~Effect()
 	WHEN LOADING FROM FILE THIS ISN'T REQUIRED.
 
 	Bug in the nvFX Library (?)
-		
 */
 void Effect::shaderHack()
 {
@@ -184,7 +217,7 @@ void Effect::shaderHack()
 	nvFX::IShader * shader = nullptr;
 	for (aInt32 s = 0; shader = _effect->findShader(s); ++s)
 	{
-		log_info("-> Shader =", shader->getName());
+//		log_info("-> Shader =", shader->getName());
 		nvFX::IShaderEx * sh = shader->getExInterface();
 
 		const char* name = shader->getName();
@@ -322,8 +355,6 @@ void Effect::infoOutput()
 	for (aInt u = 0; uniform = _effect->findUniform(u); ++u)
 	{
 		log_info("-> Uniforms =", uniform->getName());
-
-		
 	}
 
 	

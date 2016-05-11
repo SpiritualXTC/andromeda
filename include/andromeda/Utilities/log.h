@@ -8,10 +8,11 @@
 
 #include <boost/format.hpp>
 
-#include "../stddef.h"
+#include <andromeda/stddef.h>
+#include <andromeda/glm.h>
 
-#include "../Utilities/observer.h"
-#include "../Utilities/singleton.h"
+#include <andromeda/Utilities/observer.h>
+#include <andromeda/Utilities/singleton.h>
 
 
 #define log_err(...) andromeda::Log::instance()->log(andromeda::Log::Error, __VA_ARGS__)
@@ -128,6 +129,20 @@ namespace andromeda
 		{
 			return value.c_str();
 		}
+
+		/*
+			Converts Boolean to string representation of true/false
+		*/
+		char * argument(Boolean b) noexcept
+		{
+			return (b) ? "true" : "false";
+		}
+
+		/*
+			TODO: Representations of numerous "common" formats.
+
+			glm types, etc
+		*/
 
 
 

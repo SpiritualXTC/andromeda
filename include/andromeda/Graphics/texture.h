@@ -35,13 +35,18 @@ namespace andromeda
 	class Texture : public ITexture
 	{
 	public:
-		Texture();
+	//	Texture();
+		Texture(Int32 width, Int32 height);
 		virtual ~Texture();
 
 		void bind();
 		void unbind();
-		void data(const UInt8 * ptr, Int32 width, Int32 height);
 
+
+		void resize(const UInt8 * ptr, Int32 width, Int32 height);
+
+		void data(const UInt8 * ptr);
+		void data(const UInt8 * ptr, Int32 xOffset, Int32 yOffset, Int32 width, Int32 height);
 
 
 		const inline GLuint handle() const { return _handle; }

@@ -141,9 +141,6 @@
     <ClInclude Include="include\andromeda\Game\transform_component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\andromeda\Game\camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\andromeda\graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -166,9 +163,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\andromeda\opengl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\andromeda\Game\transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\andromeda\Renderer\context.h">
@@ -216,21 +210,6 @@
     <ClInclude Include="include\andromeda\Renderer\scene_graph_basic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\andromeda\Graphics\Deprecated\shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\andromeda\Graphics\Deprecated\pass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\andromeda\Graphics\Deprecated\technique.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\andromeda\Graphics\Deprecated\effect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\andromeda\Game\Deprecated\render_component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\andromeda\Game\camera_component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -247,12 +226,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\andromeda\Renderer\scene_graph_cache.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\andromeda\Renderer\Deprecated\scene_graph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\andromeda\Renderer\Deprecated\scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\andromeda\Renderer\scene.h">
@@ -279,10 +252,70 @@
     <ClInclude Include="include\andromeda\Containers\template_multimap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\andromeda\Game\camera_static.h">
+    <ClInclude Include="include\andromeda\Renderer\camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\andromeda\Game\camera_target.h">
+    <ClInclude Include="include\andromeda\Renderer\camera_target.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Renderer\camera_static.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Renderer\transform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Renderer\visibility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Renderer\view_builder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Renderer\camera_builder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Graphics\mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Game\mesh_component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Graphics\font.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Resources\mesh_resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Resources\texture_resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Resources\resource_type.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Resources\resource_loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows\andromeda_windows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\andromeda\andromeda_config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\andromeda\andromeda.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Resources\xml_resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Resources\effect_resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows\Engine\display_windows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Platform\file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Resources\resource_location_filesystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -433,13 +466,67 @@
     <ClCompile Include="src\andromeda\Game\geometry_component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\andromeda\Game\camera_static.cpp">
+    <ClCompile Include="src\andromeda\Game\entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\andromeda\Game\camera_target.cpp">
+    <ClCompile Include="src\andromeda\Renderer\camera_default.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\andromeda\Game\camera_default.cpp">
+    <ClCompile Include="src\andromeda\Renderer\camera_static.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\camera_target.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\camera_builder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\visibility_region.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\view_builder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Graphics\mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Resources\mesh_resource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Game\mesh_component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Graphics\font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Graphics\material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Graphics\effect_material_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Resources\resource_loader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\andromeda.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windows\Engine\display_windows.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Engine\display.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Platform\file.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Resources\resource_location_filesystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Platform\file_binary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Platform\file_text.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

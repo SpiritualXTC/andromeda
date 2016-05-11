@@ -43,7 +43,6 @@ void App::initialise()
 {
 
 	// Create Instance of Game... ?
-//	std::shared_ptr<Game> game = std::make_shared<Game>(_engine.get());
 
 	// Add Game Dependancies
 	// Timing
@@ -101,78 +100,16 @@ void App::initialise()
 
 	// Create the Renderer : This should be done by the engine :)
 	//std::shared_ptr<andromeda::Renderer> renderer = _engine->getModulePtr<andromeda::Renderer>();
-	std::shared_ptr<andromeda::Renderer> renderer = getDependancyPtr<andromeda::Renderer>();
+	std::shared_ptr<andromeda::Renderer> renderer = andromeda::Andromeda::instance()->getRenderer();
 
 
 	// Create Game Instance
 	_game = std::make_shared<Game>(renderer);
 
-
-#if 0
-	// Load textures
-	_texture = andromeda::LoadTexture("../res/textures/test.png");
-
-
-	// Create the Standard View
-	_view = std::make_shared<andromeda::View>();
-	//renderer->addView(_view);
-
-
-	// TEMP :: Hack implementation
-	_view->setScene(_game->getScene());
-
-
-
-	// Create a Renderable View
-	_target = std::make_shared<andromeda::RenderTarget2>(512, 512, 4);
-	_dynView = std::make_shared<andromeda::View>(_target);
-
-	// Add the Renderable View
-	//renderer->addView(_dynView);
-
-
-	// Create a Cube
-	GeometryRenderable * geomRend = new GeometryRenderable(andromeda::CreateCube(1.0f, 1.0f, 1.0f, andromeda::GEN_TEXTURE | andromeda::GEN_NORMALS), _target);
-	std::shared_ptr<andromeda::IRenderable> cube = std::shared_ptr<andromeda::IRenderable>(geomRend);
-
-	
-	// Create Ground Surface
-	std::shared_ptr<andromeda::IRenderable> surface = std::shared_ptr<andromeda::IRenderable>(new GeometryRenderable(andromeda::CreateSurface(-5.0f, -5.0f, 5.0f, 5.0f, 100, 100, andromeda::GEN_TEXTURE | andromeda::GEN_NORMALS, [](aFloat x, aFloat y, const void*){return glm::vec3(x, cosf(x) * 0.25f - 1.0f, y); }, nullptr), _texture));
-	//std::shared_ptr<andromeda::IRenderable> grid = std::shared_ptr<andromeda::IRenderable>(new GeometryRenderable(andromeda::CreateSurface(-5.0f, -5.0f, 5.0f, 5.0f, 100, 100, 0, nullptr)));
-
-
-
-
-	// Create a sphere at the camera position
-	std::shared_ptr<GeometryRenderable> sphere = std::make_shared<GeometryRenderable>(andromeda::CreateEllipse(0.25f, 0.25f, 0.25f, 8, 8, 0));
-	sphere->posiiton(_view->camera()->position());
-
-	renderer->addRenderable(0, cube);
-	renderer->addRenderable(0, surface);
-	//renderer->addRenderable(0, grid);
-
-	//renderer->addRenderable(0, sphere);
-
-
-
-
-	// Create Entities!
-	createEntity();
-#endif
-
-	
-	
-
-//	renderer->addRenderable(1, _particles);
+	log_warnp("===========================");
+	log_errp("====== Game Disabled ======");
+	log_warnp("===========================");
 }
-
-
-/*
-
-*/
-
-
-
 
 
 /*
@@ -184,6 +121,7 @@ aBoolean App::close(andromeda::CloseEventArgs & e)
 
 	return true;
 }
+
 
 /*
 
@@ -202,7 +140,7 @@ aBoolean App::resize(andromeda::ResizeEventArgs & e)
 aBoolean App::keyUp(andromeda::KeyEventArgs & e)
 {
 	// Get System Module
-	std::shared_ptr<aSystem> system = getDependancyPtr<andromeda::System>();
+	std::shared_ptr<aSystem> system = andromeda::Andromeda::instance()->getSystem();
 
 	assert(system);
 
@@ -211,41 +149,56 @@ aBoolean App::keyUp(andromeda::KeyEventArgs & e)
 
 	if (e.key == 27)
 	{
-	//	_engine->quit();
-		system->quit();
+		andromeda::Andromeda::instance()->quit();
 	}
 	else if (e.key == 'F')
 	{
-		//std::shared_ptr<aSystem> system = _engine->getModulePtr<aSystem>();
+		log_eventp("Changing Display Mode");
 
-		andromeda::DisplayMode mode;
+		andromeda::DisplayParameters params = system->getDisplay()->getDisplayParameters();
 
-		if (system->displayMode() == andromeda::DisplayMode::Windowed)
-			mode = andromeda::DisplayMode::Borderless;
-		else
-			mode = andromeda::DisplayMode::Windowed;
-
-		system->changeDisplaySettings(mode);
-	}
-	else if (e.key >= '1' && e.key <= '9')
-	{
-		//std::shared_ptr<aSystem> system = _engine->getModulePtr<aSystem>();
-
-
-		// Seriously this is a bad idea! (at least, for anything that isn't windowed!)
-		if (system->displayMode() == andromeda::DisplayMode::Windowed)
+		if (params.mode == andromeda::DisplayMode::Windowed)
 		{
-			aInt32 size = e.key - '1' + 1;
-			system->changeDisplaySettings(size * 100, size * 75);
+			params.mode = andromeda::DisplayMode::Borderless;
+			params.resolution.width = 0;
+			params.resolution.height = 0;
 		}
 		else
 		{
+			params.resolution.width = 800;
+			params.resolution.height = 600;
+			params.mode = andromeda::DisplayMode::Windowed;
+		}
+
+		system->changeDisplaySettings(params);
+
+	}
+	else if (e.key >= '1' && e.key <= '9')
+	{
+
+		log_eventp("Changing Screen Resolution");
+
+		andromeda::DisplayParameters params = system->getDisplay()->getDisplayParameters();
+
+
+		// Seriously this is a bad idea! (at least, for anything that isn't windowed!)
+		if (params.mode == andromeda::DisplayMode::Windowed)
+		{
+			aInt32 size = e.key - '1' + 1;
+
+			params.resolution.width = size * 100;
+			params.resolution.height = size * 100;
+
+			system->changeDisplaySettings(params);
+		}
+		else if (params.mode == andromeda::DisplayMode::Borderless)
+		{
+#if 0
+			// This is actually for exclusive fullscreen
 			aInt32 i = 0;
 			aInt32 index = e.key - '1';
-			
-			std::set<andromeda::DisplayFormat> displays;
-		
-			system->enumerateDisplaySettings(displays);
+
+			std::set<andromeda::DisplayFormat> displays = system->getDisplay()->enumDisplaySettings();
 
 			andromeda::DisplayFormat format;
 
@@ -260,7 +213,15 @@ aBoolean App::keyUp(andromeda::KeyEventArgs & e)
 			}
 
 			if (i == index)
-				system->changeDisplaySettings(format.width, format.height);
+			{
+				andromeda::DisplayParameters params = system->getDisplay()->getDisplayParameters();
+
+				params.resolution = format;
+				params.mode = andromeda::DisplayMode::Borderless;
+
+				system->changeDisplaySettings(params);
+			}
+#endif
 		}
 	}
 
@@ -341,71 +302,6 @@ aBoolean App::mouseWheel(andromeda::MouseWheelEventArgs & e)
 
 
 
-#if 0
-
-/*
-
-*/
-void App::createEntity()
-{
-	/*
-		This can be pulled from an XML / Pre-Parsed XML
-	*/
-
-	// Create Entity
-	std::shared_ptr<aEntity> entity = std::make_shared<aEntity>();
-
-	// Create Transform Component
-	entity->addComponent<andromeda::TransformComponent>();
-
-	// Get Transformation Component
-	std::weak_ptr<andromeda::TransformComponent> transform = entity->getComponentPtr<andromeda::TransformComponent>();
-
-
-	// Create Render Component
-	aBoolean render = true;
-
-	if (render)
-	{
-#if 0
-		//std::shared_ptr<andromeda::Geometry> geometry = andromeda::CreateEllipse(0.5f, 0.5f, 0.5f, 8, 8, 0);
-		//std::shared_ptr<andromeda::Geometry> geometry = andromeda::CreateCube(0.25f, 0.25f, 0.25f, andromeda::GEN_TEXTURE);
-		std::shared_ptr<andromeda::Geometry> geometry = andromeda::CreateSphere(0.2f, 8, 4, andromeda::GEN_NORMALS | andromeda::GEN_TEXTURE);
-		std::shared_ptr<andromeda::RenderComponent> renderable = std::make_shared<andromeda::RenderComponent>(geometry, transform);
-		
-		renderable->setTexture(_texture)
-			.setAmbient(glm::vec4(1, 0, 0, 1))
-			.setDiffuse(glm::vec4(0, 1, 0, 1))
-			.setSpecular(glm::vec4(0, 0, 1, 1));
-
-		entity->addComponent(renderable);
-
-
-		// Add Renderable
-		getDependancyPtr<andromeda::Renderer>()->addRenderable(0, renderable);
-#endif
-	}
-
-
-	// Setup Camera Tracking
-	if (_entities.size() == 0)
-	{
-		
-
-		// Set View Camera's Target
-		_view->camera()->setTarget(transform);
-		_dynView->camera()->setTarget(transform);
-	}
-
-
-	// Add Entity
-	_entities.push_back(entity);
-
-
-	glEnable(GL_DEPTH_TEST);
-}
-
-#endif
 
 
 /*
@@ -413,32 +309,6 @@ void App::createEntity()
 */
 void App::update(aDouble ft)
 {
-	static aFloat angle = 0.0f;
-	static aFloat speed = 0.25f;
-
-
-#if 0
-	// Crappy Game Logic!
-	for (auto entity : _entities)
-	{
-		std::shared_ptr<andromeda::TransformComponent> transform = entity->getComponentPtr<andromeda::TransformComponent>();
-
-		if (transform)
-		{
-		//	transform->position(cosf(angle), 0.0f, sinf(angle));
-		//	transform->yaw(-angle);
-			
-			transform->calculate();
-		}
-	}
-#endif
-
-
-	//angle += (aFloat)ft * glm::pi<aFloat>() * speed;
-
-
-	// Update the Game... that doesn't do anything!
-
 	if (_game)
 		_game->update((aFloat)ft);
 }

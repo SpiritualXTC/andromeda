@@ -41,7 +41,9 @@ namespace andromeda
 	/*
 		Keyboard Class
 
-		The Keyboard is holding onto the events until it's loop
+		The Keyboard is holding onto the events until it's loop.
+
+		This is a generic Keyboard class. It doesn't interface with a keyboard device, only dispatches the events and stores states.
 	*/
 	class Keyboard : public Input<Keyboard>
 	{

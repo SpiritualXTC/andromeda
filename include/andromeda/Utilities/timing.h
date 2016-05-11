@@ -27,6 +27,9 @@ namespace andromeda
 			_last = CHRONO::now();
 		}
 
+		void onStop() override {}
+
+
 		void update() override
 		{
 			CHRONO::time_point time = CHRONO::now();

@@ -5,11 +5,6 @@
 
 	
 
-GLSLShader
-{
-
-}
-	
 
 // Normal Rendering Mode
 ////////////////////////////
@@ -30,41 +25,50 @@ RasterizationState rasterStateWireframe
 
 
 
+
+
+
 // Matrix Constants
 uniform mat4 u_projection;		// Projection Matrix
 uniform mat4 u_modelview;		// ModelView Matrix
-
-// Color
-uniform vec4 u_color;
 
 // Texture
 uniform sampler2D u_texture;
 
 
+uniform vec3 g_ambient;
+uniform vec3 g_diffuse;
+uniform vec3 g_specular;
+uniform float g_opacity;
 
 
-ConstantBuffer global MATERIAL
+ConstantBuffer MATERIAL
 {
-	uniform vec3     ambient;
-    uniform vec3     diffuse;
-    uniform vec3     specular;
+	uniform vec3 ambient;
+    uniform vec3 diffuse;
+    uniform vec3 specular;
+	uniform float opacity;
+	
+	
+//	uniform sampler2D diffuseTexture;
 	
 //    uniform float    specexp;
 //    uniform float    reflectivity;
-//    uniform vec3     transparency;
 //    uniform float    translucency;
 };
 
 
-//#include "section.glslfx"
+
+
+
+
+
 
 
 // Vertex Shader
 /////////////////
 GLSLShader vertShader
 {
-
-
 	// Vertex Data
 	layout(location=0) in vec4 a_position;
 	layout(location=1) in vec3 a_normal;
@@ -91,7 +95,11 @@ GLSLShader vertShader
 }
 
 
-// Fragment Shader
+
+
+
+
+// Filled Fragment Shader
 //////////////////////
 GLSLShader fragShaderFill
 {
@@ -104,16 +112,18 @@ GLSLShader fragShaderFill
 
 	void main(void)
 	{
-		// Get Texture Color
-	//	vec4 texColor = texture2D(u_texture, v_texture);
-	
-	
+
+		vec3 col = diffuse;
+
 		// Set Output Color
-		//o_color = texColor * vec4(1.0, 1.0, 1.0, 1.0);
-		o_color = vec4(1.0, 0.0, 1.0, 1.0);
+		o_color = vec4(g_diffuse, 1);
+		//o_color = vec4(diffuse, 1);//vec4(1.0, 1.0, 0.0, 1.0);
 	}
 }
 
+
+// Wireframe Fragment Shader
+//////////////////////
 GLSLShader fragShaderWireframe
 {
 	// Output

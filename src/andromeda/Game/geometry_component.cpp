@@ -1,10 +1,10 @@
 #include <andromeda/Game/geometry_component.h>
 
-#include <andromeda/Game/transform.h>
+
 #include <andromeda/Geometry/geometry.h>
 #include <andromeda/Graphics/effect.h>
 #include <andromeda/Math/matrix_stack.h>
-
+#include <andromeda/Renderer/transform.h>
 
 using namespace andromeda;
 
@@ -29,7 +29,9 @@ GeometryRenderComponent::~GeometryRenderComponent()
 
 
 
+/*
 
+*/
 void GeometryRenderComponent::render(const std::shared_ptr<andromeda::IEffect> effect, andromeda::MatrixStack & ms)
 {
 
@@ -45,7 +47,7 @@ void GeometryRenderComponent::render(const std::shared_ptr<andromeda::IEffect> e
 	/* Effect: Set Materials, Textures, Colors */
 	/* Effect: Set Transformations */
 	
-
+	//effect->
 
 	// Push Matrix
 	ms.push();

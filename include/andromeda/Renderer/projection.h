@@ -1,6 +1,12 @@
 #ifndef _ANDROMEDA_RENDERER_PROJECTION_H_
 #define _ANDROMEDA_RENDERER_PROJECTION_H_
 
+/*
+	TODO:
+
+	Add aspect ratio to interface
+*/
+
 #include <andromeda/glm.h>
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -39,7 +45,7 @@ namespace andromeda
 		{
 			Float aspect = width / height;
 			
-			_matrix = glm::ortho(aspect, -aspect, -1.0f, 1.0f, 0.1f, 100.0f);
+			_matrix = glm::ortho(aspect, -aspect, -1.0f, 1.0f, 0.1f, 10000.0f);
 		}
 
 		inline glm::mat4 & matrix() override {return _matrix;}
@@ -68,7 +74,7 @@ namespace andromeda
 
 		void calculate(const Float width, const Float height)
 		{
-			_matrix = glm::perspectiveFov(glm::pi<Float>() / 4.0f, width, height, 0.0001f, 100.0f);
+			_matrix = glm::perspectiveFov(glm::pi<Float>() / 4.0f, width, height, 0.0001f, 10000.0f);
 		}
 
 		inline glm::mat4 & matrix() override { return _matrix; }

@@ -129,7 +129,7 @@ std::string CommonResourceStream::read()
 	// Validate
 	if (!isOpen() && isBinary())
 	{
-		// Throw Exception
+		// TODO: Throw Exception
 		return "";
 	}
 

@@ -13,7 +13,9 @@ using namespace andromeda;
 
 /*
 	This is not the final plane code.
-	It should support axis selection
+	It is going to be converted to using a proper plane equation, alongside the dimensions.
+
+	Also needs to add texture/normal information
 */
 std::shared_ptr<Geometry> andromeda::CreatePlane(Float width, Float height, UInt32 genMask)
 {
@@ -22,13 +24,27 @@ std::shared_ptr<Geometry> andromeda::CreatePlane(Float width, Float height, UInt
 
 	glm::vec3 position[] =
 	{
-		// Pos Y
 		{ -w, 0.0f, -d }, 
 		{ w, 0.0f, -d }, 
 		{ -w, 0.0f, d },
 		{ w, 0.0f, d },
 	};
 
+	glm::vec2 texture[] = 
+	{
+		{0, 0},
+		{1, 0},
+		{0, 1},
+		{1, 1}
+	};
+
+	glm::vec3 normals[] = 
+	{
+		{ 0, 1, 0 },
+		{ 0, 1, 0 },
+		{ 0, 1, 0 },
+		{ 0, 1, 0 }
+	};
 
 
 	UInt32 indices[] =
@@ -37,23 +53,22 @@ std::shared_ptr<Geometry> andromeda::CreatePlane(Float width, Float height, UInt
 		2, 1, 3
 	};
 
+	// Multiply into plane equation ...
+
 
 	// Add Vertex Data
 	GeometryBuilder gb;
-	gb.addVertexData("pos", position, 4);
+	gb.addVertexData("pos", position, 4, GeometryLocation::Position);
 
-	// Create Buffers
-	std::shared_ptr<VertexBuffer> vb = std::make_shared<VertexBuffer>();
-	std::shared_ptr<IndexBuffer> ib = std::make_shared<IndexBuffer>();
+	if (genMask & GEN_NORMALS)
+		gb.addVertexData("norm", normals, 4, GeometryLocation::Normal);
+
+	if (genMask & GEN_TEXTURE)
+		gb.addVertexData("tex", texture, 4, GeometryLocation::Texture0);
 	
-	std::shared_ptr<GeometryDescription> desc = std::make_shared<GeometryDescription>(GL_TRIANGLES, 4, 6, GL_UNSIGNED_INT);
+	// Set Index Data
+	gb.setIndexData(indices, 6);
 
-
-	ib->data(indices, 6 * sizeof(UInt32));
-	
-	// Interleave Data amongst buffers
-	gb.build(vb, desc);
-
-	// Create Geometry Object
-	return std::make_shared<Geometry>(vb, desc, ib);
+	// Build Geometry
+	return gb.build();
 }

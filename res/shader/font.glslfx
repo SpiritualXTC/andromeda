@@ -1,0 +1,18 @@
+// GLSL Globals : Define for all Shaders
+//////////////////////////////
+#extension GL_ARB_separate_shader_objects : enable
+
+
+
+
+
+Technique DEFAULT
+{
+	Pass DRAW_CHARACTER
+	{
+	//	DEPTH_TEST = 1;
+	//	RasterizationState = rasterStateNormal;
+	//	VertexProgram = vertShader;
+	//	FragmentProgram = fragShaderFill;
+	}
+}

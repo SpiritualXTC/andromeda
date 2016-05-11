@@ -15,7 +15,7 @@ namespace andromeda
 		IObserver() {}
 		virtual ~IObserver() {}
 
-		virtual void notify(T *) = 0;
+		virtual void notify(const T * const) = 0;
 	};
 
 
@@ -51,16 +51,24 @@ namespace andromeda
 		/*
 			Generic Notification
 		*/
-		void notify(T * p)
+		void notify(const T * const p)
 		{
-			//T* p = static_cast<T*>(this);
-
-			// Remove any ... weak links!
-			_observers.remove_if([](std::weak_ptr<IObserver<T>> observer){return observer.expired(); });
+			// Are their any weak pointers that need to be removed?
+			Boolean weak = false;
 
 			// Notify Observers
 			for (auto it : _observers)
-				it.lock()->notify(p);
+			{
+				std::shared_ptr<IObserver<T>> ptr = it.lock();
+				if (ptr)
+					ptr->notify(p);
+				else
+					weak = true;
+			}
+
+			// Remove any ... weak links!
+			if (weak)
+				_observers.remove_if([](std::weak_ptr<IObserver<T>> observer) {return observer.expired(); });
 		}
 
 	private:

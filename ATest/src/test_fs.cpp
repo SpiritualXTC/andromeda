@@ -13,6 +13,7 @@
 
 void testFS()
 {
+#if 0
 	log_info("Test File System");
 
 
@@ -31,7 +32,7 @@ void testFS()
 	fs->addLocation("../res");
 
 	std::shared_ptr<andromeda::ResourceStream> stream = fs->load("particle_draw.gs");
-
+#endif
 
 	// Text Works. Binary not Implemented Yet
 	//std::string contents = stream->read();

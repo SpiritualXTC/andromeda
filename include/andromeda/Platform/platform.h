@@ -5,72 +5,65 @@
 #include <set>
 
 
-#include "../stddef.h"
-#include "../Engine/module.h"
+#include <andromeda/stddef.h>
+#include <andromeda/Engine/module.h>
 
+#include <andromeda/Utilities/observer.h>
 
 namespace andromeda
 {
 	// Forward Declarations
+
 	class System;
 	struct DisplayFormat;
 	struct DisplayParameters;
 
 
 
-
+	class Mouse;
+	class Keyboard;
 
 	/*
 	
 	*/
-	class Platform : public Module<Platform>
+	class Platform : public Module<Platform>, virtual public Observable<Platform>
 	{
 	public:
 		friend class System;
 
 
 	public:
-		Platform(std::weak_ptr<System> system);
+		//Platform(std::weak_ptr<System> system);
+		Platform();
 		virtual ~Platform();
 
 
+
+
 		/*
-			Get Resolution of the Screen
+			Change Window Settings
+
+			TODO: Rename, maybe pass screen resolution into the function as well
 		*/
-		virtual Boolean getScreenResolution(Int32 & width, Int32 & height) = 0;
+		virtual Boolean changeWindowSettings(const DisplayParameters & dp, const Int32 screenWidth, const Int32 screenHeight) = 0;
 
 		/*
 			Get Resolution of the only the Display Area
 		*/
-		virtual Boolean getClientResolution(Int32 & width, Int32 & height) = 0;
+		virtual Boolean getClientResolution(Int32 & width, Int32 & height) const = 0;	// THIS IS NEEDED
 
-		/*
-			Enumerate Displays
-		*/
-		virtual Boolean enumerateDisplaySettings(std::set<DisplayFormat> & displayModes) = 0;
+
+
+		// TEMP
+		// TODO: Require a way to retrieve a list of Input Devices
+		virtual inline std::shared_ptr<Mouse> getMouse() { return nullptr; }
+		virtual inline std::shared_ptr<Keyboard> getKeyboard() { return nullptr; }
 
 	protected:
 	
 		/*
-			Change Display Settings: This is called by system (friend class)
+			Window is resized by OS, dispatches notification to observers
 		*/
-		virtual Boolean changeDisplaySettings(const DisplayParameters & dp) = 0;
-
-
-
-
-
-		// Call Helpers: Tyically only pass to a dependant module :: These might be better being called directly from the platform implementation!
-		void keyDown(Int8 key);
-		void keyUp(Int8 key);
-
-		void mouseDown(Int8 button, Int32 x, Int32 y);
-		void mouseUp(Int8 button, Int32 x, Int32 y);
-		void mouseMove(Int32 x, Int32 y);
-		void mouseWheel(Int32 delta);
-
-
-
 		void resize(Int32 width, Int32 height);
 
 
@@ -81,16 +74,24 @@ namespace andromeda
 
 
 
-
+		/*
+		
+		*/
 		void close();
+
+		/*
+		
+		*/
 		void activate();
+
+		/*
+		
+		*/
 		void deactivate();
 
-	//	void start();
-	//	void stop();
 		
 	private:
-
+		
 	};
 
 }

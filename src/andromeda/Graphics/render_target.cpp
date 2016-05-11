@@ -4,6 +4,7 @@
 
 using namespace andromeda;
 
+#if 0
 /*
 
 */
@@ -65,3 +66,4 @@ void RenderTarget::unbindFrame()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
+#endif

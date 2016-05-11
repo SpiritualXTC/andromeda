@@ -1,7 +1,7 @@
 #include <andromeda/Graphics/texture.h>
 
 using namespace andromeda;
-
+#if 0
 /*
 
 */
@@ -25,6 +25,22 @@ Texture::Texture()
 	// Unbind
 	unbind();
 }
+#endif
+
+/*
+
+*/
+Texture::Texture(Int32 width, Int32 height)
+{
+	// Generate Handle
+	glGenTextures(1, &_handle);
+
+	// Resize Texture
+	resize(nullptr, width, height);
+}
+
+
+
 
 
 /*
@@ -41,18 +57,56 @@ Texture::~Texture()
 /*
 
 */
-void Texture::data(const UInt8 * ptr, Int32 width, Int32 height)
+void Texture::resize(const UInt8 * ptr, Int32 width, Int32 height)
 {
+	// Set Dimensions
 	_width = width;
 	_height = height;
 
+	// Bind
 	bind();
 
 	// Send Image Data to GPU
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, ptr);
 
+	// Set Texture Parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	// Unbind
 	unbind();
 }
+
+
+/*
+
+*/
+void Texture::data(const UInt8 * ptr)
+{
+	bind();
+
+	// Send Image Data to GPU
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _width, _height, GL_RGBA, GL_UNSIGNED_BYTE, ptr);
+
+	unbind();
+}
+
+/*
+
+*/
+void Texture::data(const UInt8 * ptr, Int32 xOffset, Int32 yOffset, Int32 width, Int32 height)
+{
+	bind();
+
+	// Send Image Data to GPU
+	glTexSubImage2D(GL_TEXTURE_2D, 0, xOffset, yOffset, width, height, GL_RGBA, GL_UNSIGNED_BYTE, ptr);
+
+	unbind();
+}
+
+
+
+
 
 /*
 

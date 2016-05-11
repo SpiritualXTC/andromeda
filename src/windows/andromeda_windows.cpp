@@ -1,9 +1,7 @@
-#include <andromeda/andromeda.h>
-
-// Platform Includes
-#include <Windows.h>
+#include "andromeda_windows.h"
 
 // Library Includes
+#include <andromeda/Engine/display.h>
 #include <andromeda/Engine/engine.h>
 #include <andromeda/Engine/system.h>
 
@@ -16,60 +14,118 @@
 #include <andromeda/Resources/resource_manager.h>
 #include <andromeda/Utilities/log.h>
 
+
+
+
 // Platform Dependant Library Includes
+#include "Engine/display_windows.h"
 #include "Renderer/context_windows.h"
 #include "Platform/platform_windows.h"
+
 #include "../common/Resources/resource_search_common.h"
 
 
 
 
 
+
+
+#include <andromeda/Graphics/effect.h>
+#include <andromeda/Graphics/mesh.h>
+#include <andromeda/Graphics/texture.h>
+
+
 using namespace andromeda;
+using namespace andromeda::windows;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*
-	Initialise the Engine Under Windows:
-	This way the entire creation process is windows-centric, rather than a shit tonne of crappy functions linking everywhere with return values :)
+	Initialise the Engine Under Windows
 */
-std::unique_ptr<Engine> andromeda::initialise(HINSTANCE hInstance)
+Boolean andromeda::initialise(HINSTANCE hInstance)
 {
-	// Create Engine:
-	std::unique_ptr<Engine> engine = std::make_unique<Engine>();
+	// Setup the Platform Config
+	AndromedaConfigWindows config(hInstance);
 
-	// Get the System Module
-	std::weak_ptr<System> system = engine->getModulePtr<System>();
+	// Initialise Andromeda
+	Andromeda::initialise(&config);
+
+	return true;
+}
 
 
-	// Create Platform and Graphics Context
-	std::shared_ptr<PlatformWindows> platform = std::make_shared<PlatformWindows>(system, hInstance);
-	std::shared_ptr<ContextWindows> context = std::make_shared<ContextWindows>(system, platform);
+
+
+
+
+/*
+
+*/
+AndromedaConfigWindows::AndromedaConfigWindows(HINSTANCE hInstance)
+	: _hInstance(hInstance)
+{
+
+}
+
+
+/*
+	Configure the resource management
+*/
+void AndromedaConfigWindows::init()
+{
+	// Old Method
+//	std::shared_ptr<CommonResourceScan> search = std::make_shared<CommonResourceScan>();
+//	resources->addSearch(search);
+
+	// TODO: Clean this up
+	// Add Root Directory as a location ?
+}
+
+
+/*
+
+*/
+std::shared_ptr<Display> AndromedaConfigWindows::initDisplay(const DisplayParameters & dp)
+{
+	return std::make_shared<DisplayWindows>(dp);
+}
+
+
+/*
+	Create Platform
+*/
+std::shared_ptr<Platform> AndromedaConfigWindows::initPlatform()
+{
+	_platform = std::make_shared<PlatformWindows>(_hInstance);
+
+	_hWnd = _platform->getHWND();
+	_hDC = _platform->getHDC();
 	
-	
-	engine->addModule<Platform>(std::static_pointer_cast<Platform>(platform));
-	engine->addModule<Context>(std::static_pointer_cast<Context>(context));
+	return _platform;
+}
 
 
-	// Create Input Devices!
-	engine->addModule<Keyboard>();
-	engine->addModule<Mouse>();
-
-
-	// Assign Platform Dependancies
-	engine->setDependancy<Platform, Keyboard>();
-	engine->setDependancy<Platform, Mouse>();
-
-
-	
-#if 0
-	// Create File System Search
-	// This is being done directly by the ResourceManager itself
-	std::shared_ptr<CommonResourceScan> search = std::make_shared<CommonResourceScan>();
-	ResourceManager::instance()->addSearch(search);
-#endif
-
-	
-
-	return std::move(engine);
+/*
+	Create Context
+*/
+std::shared_ptr<Context> AndromedaConfigWindows::initContext()
+{
+	return std::make_shared<ContextWindows>(_hDC);
 }
 

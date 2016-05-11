@@ -2,7 +2,10 @@
 
 #include <fstream>
 #include <sstream>
-#include <assert.h>
+#include <cassert>
+
+using namespace andromeda;
+
 
 /*
 	LoadFile();
@@ -40,4 +43,63 @@ std::string andromeda::LoadFile(const std::string & filename)
 	file.close();
 
 	return contents.str();
+}
+
+
+
+/*
+
+*/
+std::string andromeda::GetDirectory(const std::string & filepath)
+{
+	// TODO: Allow both directions of slashes
+
+	Size pos = filepath.find_last_of('/');
+
+	if (pos != std::string::npos)
+	{
+		return filepath.substr(0, pos);
+	}
+
+	// No slashes? No Directory information
+	return "";
+}
+
+
+/*
+
+*/
+std::string andromeda::GetFilename(const std::string & filepath)
+{
+	// TODO: Allow both directions of slashes
+
+	Size pos = filepath.find_last_of('/');
+
+	if (pos != std::string::npos)
+	{
+		return filepath.substr(pos + 1);
+	}
+
+	// No slashes? Assume it is only the filename
+	return filepath;
+}
+
+
+
+
+/*
+
+*/
+std::string andromeda::GetFileExtension(const std::string & filepath)
+{
+	// Get Position of Dot
+	Size pos = filepath.find_last_of('.');
+
+	if (pos != std::string::npos)
+	{
+		return filepath.substr(pos + 1);
+	}
+
+	// No dot? No Extension
+	return "";
 }

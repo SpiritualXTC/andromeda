@@ -66,6 +66,21 @@ void GeometryBuilder::addVertexData(const std::string & id, void * data, Size le
 
 
 
+/*
+	Set Index Data
+*/
+void GeometryBuilder::setIndexData(UInt32 * indices, Size length)
+{
+	// Copy Everything to a Vector
+	std::vector<UInt32> vector(indices, indices + length);
+
+
+	_indices = std::move(vector);
+
+	return;
+}
+
+
 
 
 /*
@@ -76,11 +91,29 @@ Boolean GeometryBuilder::build(std::shared_ptr<VertexBuffer> vb, std::shared_ptr
 	// Interleave Vertices
 	Boolean b = interleave(vb, desc);
 
-	
-
-
+	// Copy Index Data :: If their is any to copy
+	if (ib && _indices.size() > 0)
+		ib->data((void*)&_indices[0], _indices.size() * sizeof(UInt32));
 
 	return b;
+}
+
+
+/*
+
+*/
+std::shared_ptr<Geometry> GeometryBuilder::build()
+{
+	// Create Buffers
+	std::shared_ptr<VertexBuffer> vb = std::make_shared<VertexBuffer>();
+	std::shared_ptr<IndexBuffer> ib = _indices.size() == 0 ? nullptr : std::make_shared<IndexBuffer>();
+	std::shared_ptr<GeometryDescription> desc = std::make_shared<GeometryDescription>(GL_TRIANGLES, _length, _indices.size(), GL_UNSIGNED_INT);
+
+	// Build
+	build(vb, desc, ib);
+
+	// Create Geometry
+	return std::make_shared<Geometry>(vb, desc, ib);
 }
 
 

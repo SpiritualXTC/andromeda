@@ -36,12 +36,12 @@ namespace andromeda
 			Start the Module
 		*/
 		virtual void onStart() = 0;
-
+#endif
 		/*
 			Stop the Module
 		*/
 		virtual void onStop() = 0;
-#endif
+
 		/*
 			Resume the Module
 		*/
@@ -79,7 +79,7 @@ namespace andromeda
 		Abstract Module
 	*/
 	template <class T>
-	class Module : public IModule, virtual public Dependancy <T, IModule>
+	class Module : public IModule, virtual public TemplateIndex <T, IModule>
 	{
 		static const Int32 PRIORITY_MULTIPLIER = 10;
 

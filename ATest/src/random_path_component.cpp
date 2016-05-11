@@ -1,6 +1,8 @@
 #include "random_path_component.h"
 
-#include <andromeda/Game/transform.h>
+#include <andromeda/glm.h>
+
+#include <andromeda/Renderer/transform.h>
 
 #include <andromeda/Utilities/log.h>
 
@@ -64,9 +66,18 @@ void RandomPathComponent::update(const aFloat timeStep)
 */
 void RandomPathComponent::setDestination()
 {
-	aFloat x = ((rand() % 100) - 50) / 50.0f;
-	aFloat y = ((rand() % 100) - 50) / 50.0f;
-	aFloat z = ((rand() % 100) - 50) / 50.0f;
+	aFloat radius = (rand() % 40) / 40.0f + 2.0f;
+	aFloat angle = (rand() % 100) / 100.0f * glm::pi<aFloat>() * 2.0f;
+
+	
+
+//	aFloat x = ((rand() % 100) - 50) / 50.0f;
+//	aFloat y = ((rand() % 100) - 50) / 50.0f;
+//	aFloat z = ((rand() % 100) - 50) / 50.0f;
+
+	aFloat x = glm::cos(angle) * radius;
+	aFloat y = 0.0f;
+	aFloat z = glm::sin(angle) * radius;
 
 	_destination = glm::vec3(x, y, z);
 }

@@ -55,10 +55,10 @@ namespace andromeda
 	class TemplateIndex
 	{
 	public:
-		static inline const TemplateID getTemplateId() { return _id; }
+		static inline const TemplateID getTemplateId() { return _templateId; }
 
 	private:
-		static const TemplateID _id;
+		static const TemplateID _templateId;
 
 	protected:
 		// Should only be instantiated by derived classes :: Except that isn't even true :O
@@ -67,7 +67,7 @@ namespace andromeda
 	};
 
 	template <typename _CLASS_, typename _INTERFACE_>
-	const TemplateID TemplateIndex<_CLASS_, _INTERFACE_>::_id = TemplateIndexer<_INTERFACE_>::generateTemplateId();
+	const TemplateID TemplateIndex<_CLASS_, _INTERFACE_>::_templateId = TemplateIndexer<_INTERFACE_>::generateTemplateId();
 
 
 

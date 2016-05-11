@@ -4,7 +4,10 @@
 
 using namespace andromeda;
 
+Int32 GameObject::GAME_OBJECT_COUNTER = 0;
 const std::string GameObject::GAME_OBJECT_GENERIC_NAME = "obj_";
+
+
 
 
 /*

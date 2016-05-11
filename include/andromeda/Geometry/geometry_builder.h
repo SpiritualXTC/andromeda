@@ -96,19 +96,39 @@ namespace andromeda
 
 
 		/*
-			Generic Version!
+			Template Version!
 		*/
 		template <typename T>
 		void addVertexData(const std::string & id, T * data, Size length, Size elements, GLenum type, const GeometryLocation location = GeometryLocation::Auto)
 		{
-			addVertexData(id, location, (void*)data, length, size(T), elements, type);
+			addVertexData(id, (void*)data, length, sizeof(T), elements, type, location);
 		}
+
+
+		/*
+			Generic Version
+		*/
+		void addVertexData(const std::string & id, void * data, Size length, Size stride, Size elements, GLenum type, const GeometryLocation location = GeometryLocation::Auto);
+
+
+
+
+		/*
+			Indices
+		*/
+		void setIndexData(UInt32 * indices, Size length);
+
 
 
 		/*
 			Build
 		*/
 		Boolean build(std::shared_ptr<VertexBuffer> vb, std::shared_ptr<GeometryDescription> desc, std::shared_ptr<IndexBuffer> ib = nullptr);
+
+		/*
+			Build
+		*/
+		std::shared_ptr<Geometry> build();
 
 	private:
 
@@ -120,13 +140,15 @@ namespace andromeda
 	//	Boolean index();	// Copies Indexing
 	//	Boolean deindex();	// Removes indexing from the data
 
-		void addVertexData(const std::string & id, void * data, Size length, Size stride, Size elements, GLenum type, const GeometryLocation location = GeometryLocation::Auto);
+		
 
 
 		Size _stride = 0;					// Size of the total structure 
 		Size _length = 0;					// Number of array elements in the array
 
 		std::list<_VertexData> _geometry;
+
+		std::vector<UInt32> _indices;
 	};
 }
 

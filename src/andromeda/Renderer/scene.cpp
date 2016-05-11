@@ -4,6 +4,7 @@
 
 #include <andromeda/Renderer/scene_graph.h>
 #include <andromeda/Renderer/view.h>
+#include <andromeda/Renderer/visibility.h>
 
 using namespace andromeda;
 
@@ -11,7 +12,7 @@ using namespace andromeda;
 /*
 
 */
-Scene::Scene(const std::string & name, std::shared_ptr<ISceneGraph> sceneGraph)
+Scene::Scene(const std::string & name, std::shared_ptr<SceneGraph> sceneGraph)
 	: _name(name)
 	, _sceneGraph(sceneGraph)
 {
@@ -36,8 +37,11 @@ Scene::~Scene()
 */
 std::shared_ptr<View> Scene::addScreenView(const std::string & name, Float x, Float y, Float width, Float height, Int32 order)
 {
+	// Create the Visibility Object :: TEMP
+	std::shared_ptr<IVisibility> visibility = std::make_shared<VisibilityRegion>();
+
 	// Create the View
-	std::shared_ptr<View> view = std::make_shared<ScreenView>(_sceneGraph, x, y, width, height, order);
+	std::shared_ptr<View> view = std::make_shared<ScreenView>(_sceneGraph, nullptr, visibility, x, y, width, height, order);
 
 	// Add the View
 	Boolean b = addView(view);

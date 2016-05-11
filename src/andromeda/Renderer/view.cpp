@@ -2,19 +2,15 @@
 
 #include <glm/gtc/constants.hpp>
 
-#include <andromeda/Game/camera.h>
-#include <andromeda/Game/camera_component.h>
-#include <andromeda/Game/camera_static.h>
-#include <andromeda/Game/camera_target.h>
-#include <andromeda/Game/game_object.h>
-#include <andromeda/Game/transform_component.h>
-
 #include <andromeda/graphics.h>
 
+#include <andromeda/Renderer/camera.h>
+#include <andromeda/Renderer/camera_builder.h>
 #include <andromeda/Renderer/layer.h>
 #include <andromeda/Renderer/projection.h>
-#include <andromeda/Renderer/renderable.h>
+#include <andromeda/Renderer/scene_graph.h>
 #include <andromeda/Renderer/scene_graph_cache.h>
+#include <andromeda/Renderer/visibility.h>
 
 #include <andromeda/Utilities/log.h>
 
@@ -23,12 +19,14 @@ using namespace andromeda;
 /*
 
 */
-View::View(const std::shared_ptr<ISceneGraph> sceneGraph, std::shared_ptr<IProjection> projection, Float x, Float y, Float width, Float height, Int32 order)
+View::View(const std::shared_ptr<SceneGraph> sceneGraph, std::shared_ptr<IProjection> projection, std::shared_ptr<IVisibility> visibility, Float x, Float y, Float width, Float height, Int32 order)
 	: _sceneGraph(sceneGraph)
 	, _projection(projection)
+	, _visibility(visibility)
 	, _zOrder(order)
 {
 	assert(_sceneGraph);
+	assert(_zOrder != View::_ZOrder::Target);
 
 	// Create Region
 	_view = Region2f({ x, y }, { width + x, height + y });
@@ -42,7 +40,7 @@ View::View(const std::shared_ptr<ISceneGraph> sceneGraph, std::shared_ptr<IProje
 	_layers["default"] = std::make_unique<Layer>("");
 
 	// Create Scene Graph Cache
-	_sceneGraphCache = std::make_shared<SceneGraphCache>(this);
+	_sceneGraphCache = std::make_shared<SceneGraphCache>(this, _visibility.get());
 
 	// Create the Camera
 	setCameraTarget();
@@ -125,6 +123,8 @@ void View::resize(const Int32 width, const Int32 height)
 */
 void View::render()
 {
+	assert(_sceneGraph);
+
 	// Viewport Attributes
 	Int32 left = _display.minimum.x;
 	Int32 top = _display.minimum.y;
@@ -135,47 +135,45 @@ void View::render()
 	Int32 bottom = _screen.maximum.y - top;
 	bottom -= height;
 
-	// Create a Default Camera
-	if (!_camera)
-		setCameraTarget();
+
+
+	// THE RENDER TARGET NEEDS TO DO SHIT HERE
+	// IViewTarget Interface
+	//IViewTarget->begin();
+
+	// Set Viewport
+	glViewport(left, bottom, width, height);
 
 	// Camera
 	assert(_camera);
 	_camera->calculate();
 
-	// Set Viewport
-	glViewport(left, bottom, width, height);
-
-	// Render the Scene from this View
-	// The view does need to pass some information to the scene, such as target object.
-	// Target Object
-
-
-	// THE RENDER TARGET NEEDS TO DO SHIT HERE
+	if (_visibility)
+		_visibility->update(_projection, _camera);
 
 
 
-	// Process the SceneGraph. Nullptr here is bad! lol
-	// But Current scenerio, it doesn't matter
-	//_scene->process(nullptr, _sceneGraphCache);
-	_sceneGraphCache->process(nullptr, _sceneGraph);
 
 
-	// Loop through layers
+
+
+
+	// Process the SceneGraph :: With respect to the Camera and the SceneGraphCache
+	_sceneGraph->process(_sceneGraphCache);
+
+
+	// Render layers
 	for (const auto & layer : _layers)
 	{
-		// Get Active Technique Name : Should the View or the Scene manage the active technique?
-		// As multiple view points may manage a scene....probably the view should
-		std::string technique = "default";// view->getActiveTechniqueName();
-
-
 		// Render the Layer
-		layer.second->render(_projection, _camera, technique);
+		layer.second->render(_projection, _camera);
 	}
 
 
 
 	// THE RENDER TARGET NEEDS TO CLEAN SHIT UP HERE
+	// IViewTarget Interface
+	//IViewTarget->end();
 
 }
 
@@ -189,10 +187,7 @@ void View::render()
 */
 Boolean View::setCameraTarget()
 {
-	// Create a Camera
-	_camera = std::shared_ptr<CameraStatic>(new CameraStatic());
-
-	return !! _camera;
+	return setCameraTarget(CameraBuilder().create());
 }
 
 /*
@@ -203,25 +198,16 @@ Boolean View::setCameraTarget(const std::string & name)
 	// Look for the Object in the SceneGraph
 	std::shared_ptr<GameObject> go = _sceneGraph->getGameObject(name);
 
-	// Validate
-	if (!go) return false;
+	if (!go)
+		return false;
 
-	// Look for CameraComponent
-	std::shared_ptr<ICamera> camera = go->getComponentPtr<CameraComponent>();
+	// Create the Camera
+	std::shared_ptr<ICamera> camera = CameraBuilder().create(go);
 
-	if (!camera)
-	{
-		// Look for TransformComponent
-		std::shared_ptr<ITransform> transform = go->getComponentPtr<TransformComponent>();
+	if (camera)
+		return setCameraTarget(camera);
 
-		if (transform)
-		{
-			// Create a Target Camera
-			camera = std::make_shared<CameraTarget>(transform);
-		}
-	}
-
-	return setCameraTarget(camera);
+	return false;
 }
 
 /*
@@ -229,6 +215,8 @@ Boolean View::setCameraTarget(const std::string & name)
 */
 Boolean View::setCameraTarget(std::shared_ptr<ICamera> & camera)
 {
+	assert(camera);
+
 	_camera = camera;
 
 	return !!_camera;

@@ -8,8 +8,7 @@
 #include <andromeda/opengl.h>
 #include <andromeda/Renderer/renderable.h>
 #include <andromeda/Renderer/scene.h>
-#include <andromeda/Renderer/scene_graph.h>\
-
+#include <andromeda/Renderer/scene_graph.h>
 
 #include <andromeda/Utilities/log.h>
 

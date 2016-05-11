@@ -4,9 +4,9 @@
 
 #if ! defined(GLM_FORCE_RADIANS)
 #define GLM_FORCE_RADIANS
-#else
-#include <glm/glm.hpp>
 #endif
-
+#include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #endif

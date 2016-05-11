@@ -17,6 +17,15 @@
 
 #include <nvfx/FxParser.h>
 
+
+/*
+	TODO:
+	Separate nvFX from Effect
+	Rename Effect to NVEffect
+	Rename IEffect to Effect
+	Move NVEffect to src/ directory
+*/
+
 namespace andromeda
 {
 	class IEffect
@@ -39,7 +48,9 @@ namespace andromeda
 	};
 
 
-
+	/*
+	
+	*/
 	class Effect : public IEffect
 	{
 	public:
@@ -135,6 +146,8 @@ namespace andromeda
 	private:
 		void infoOutput();
 		void shaderHack();
+
+		Boolean validate();
 
 		nvFX::IContainer * _effect = nullptr;
 		

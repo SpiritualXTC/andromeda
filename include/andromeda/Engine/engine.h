@@ -16,7 +16,7 @@ namespace andromeda
 {
 	// Forward Declarations
 	class IModule;
-
+	class System;
 
 
 	/*
@@ -30,14 +30,16 @@ namespace andromeda
 
 
 		/*
-			Run the Engine
+			Run the Engine 
+			
+			TODO Rename :: start();
 		*/
 		void run();
 
 		/*
-			Quit the Engine
+			Stop the Engine, after the next completed update cycle
 		*/
-		void quit();
+		void stop();
 
 	
 		/*
@@ -96,8 +98,8 @@ namespace andromeda
 		/*
 			Sets a Module as a Dependancy
 		*/
-		template <class T, class DEPENDANCY>
-		Boolean setDependancy();
+//		template <class T, class DEPENDANCY>
+//		Boolean setDependancy();
 
 
 		/*
@@ -124,6 +126,12 @@ namespace andromeda
 		void pause(Boolean stop);
 
 
+
+		/*
+			Debug Output
+		*/
+		void debugOutput();
+
 	private:
 		
 		
@@ -146,13 +154,11 @@ namespace andromeda
 
 		Boolean _running = false;											// Is the System Running ?
 
+
+
 		std::multiset<std::shared_ptr<IModule>> _active;					// Running Modules
-//		std::unordered_map<Int32, std::shared_ptr<IModule>> _modules;		// All Installed Modules
 
-
-
-
-		TemplateMap<IModule> _map;
+		TemplateMap<IModule> _map;											// All Modules
 	};
 }
 

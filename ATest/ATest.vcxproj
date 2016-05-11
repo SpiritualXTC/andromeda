@@ -71,6 +71,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\app.cpp" />
+    <ClCompile Include="src\circular_path_component.cpp" />
     <ClCompile Include="src\console.cpp" />
     <ClCompile Include="src\framework.cpp" />
     <ClCompile Include="src\game.cpp" />
@@ -84,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\app.h" />
+    <ClInclude Include="src\circular_path_component.h" />
     <ClInclude Include="src\console.h" />
     <ClInclude Include="src\framework.h" />
     <ClInclude Include="src\game.h" />

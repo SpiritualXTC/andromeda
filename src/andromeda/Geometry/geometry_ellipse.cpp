@@ -138,21 +138,16 @@ std::shared_ptr<Geometry> andromeda::CreateEllipse(Float width, Float height, Fl
 	gb.addVertexData("pos", position, vertex_count, GeometryLocation::Position);
 
 	if (genMask & GEN_NORMALS)
-		gb.addVertexData("norm", normal, 24, GeometryLocation::Normal);
+		gb.addVertexData("norm", normal, vertex_count, GeometryLocation::Normal);
 
 	if (genMask & GEN_TEXTURE)
-		gb.addVertexData("tex", texture, 24, GeometryLocation::Texture0);
+		gb.addVertexData("tex", texture, vertex_count, GeometryLocation::Texture0);
 
-	// Create Buffers
-	std::shared_ptr<VertexBuffer> vb = std::make_shared<VertexBuffer>();
-	std::shared_ptr<IndexBuffer> ib = std::make_shared<IndexBuffer>();
-	std::shared_ptr<GeometryDescription> desc = std::make_shared<GeometryDescription>(GL_TRIANGLES, vertex_count, index_count, GL_UNSIGNED_INT);
+	// Set Index Data
+	gb.setIndexData(indices, index_count);
 
-	// Copy Index Data
-	ib->data(indices, index_count * sizeof(UInt32));
-
-	// Interleave Data amongst buffers
-	gb.build(vb, desc);
+	// Build Geometry
+	std::shared_ptr<Geometry> geometry = gb.build();
 
 	// Delete Buffers
 	if (indices)
@@ -166,6 +161,6 @@ std::shared_ptr<Geometry> andromeda::CreateEllipse(Float width, Float height, Fl
 	if (position)
 		delete[] position;
 
-	// Create Geometry Object
-	return std::make_shared<Geometry>(vb, desc, ib);
+	// Return 
+	return geometry;
 }

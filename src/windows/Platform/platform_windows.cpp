@@ -3,12 +3,14 @@
 #include <windowsx.h>
 
 #include <andromeda/Engine/system.h>
+#include <andromeda/Input/keyboard.h>
 #include <andromeda/Input/mouse.h>
 
 
 #include <andromeda/Utilities/log.h>
 
 using namespace andromeda;
+using namespace andromeda::windows;
 
 
 
@@ -39,18 +41,18 @@ const std::wstring PlatformWindows::WINDOW_CLASS_TITLE = L"andromeda";
 /*
 
 */
-PlatformWindows::PlatformWindows(std::weak_ptr<System> system, HINSTANCE hInstance) : Platform(system)
+PlatformWindows::PlatformWindows(HINSTANCE hInstance) 
 {
-	log_verbose("Platform = Windows");
+	log_debugp("Platform :: Windows");
 
 	_hInstance = hInstance;
 
 	// Get Dependancy
-	std::shared_ptr<System> sys = getDependancyPtr<System>();
+	//std::shared_ptr<System> sys = getSystem();// getDependancyPtr<System>();
 
 
 	// Get NATIVE Screen Resolution: Used for restoring the resolution back upon quitting :)
-	getScreenResolution(_nativeWidth, _nativeHeight);
+//	getScreenResolution(_nativeWidth, _nativeHeight);
 	
 
 	// Flag indicating the display parameters were invalid, 
@@ -59,17 +61,23 @@ PlatformWindows::PlatformWindows(std::weak_ptr<System> system, HINSTANCE hInstan
 	Boolean reconfigure = false;	
 
 
-
+	log_warnp("Display Parameters need to be passed into the Platform Initialisation");
 
 	// Window Mode
-	DisplayMode mode = sys->displayMode();
+	DisplayMode mode = DisplayMode::Windowed;// sys->displayMode();
 
 	// Screen Width / Height
-	Int32 width = sys->displayWidth();
-	Int32 height = sys->displayHeight();
+	Int32 width = 800;// sys->displayWidth();
+	Int32 height = 600;// sys->displayHeight();
+
+
+	// Create Mouse and Keyboard
+	_mouse = std::make_shared<Mouse>();
+	_keyboard = std::make_shared<Keyboard>();
+
 
 	// Needs to be reactive, depending on whether its fullscreen/borderless/windowed.
-	// Fullscreen & Borderless will need to call changeScreenResolution. for example!
+	// Fullscreen and Borderless will need to call changeScreenResolution. for example!
 
 	if (mode != DisplayMode::Windowed)
 	{
@@ -77,7 +85,7 @@ PlatformWindows::PlatformWindows(std::weak_ptr<System> system, HINSTANCE hInstan
 		// It is entirely possible that an invalid resolution has been passed in. [Invalid Configuration Data, etc]
 		
 		// If it is invalid.... or it fails...
-		// Change the internal display mode here to mode
+		// Change the internal display mode here to windowed
 
 		Boolean result = true; //changeDisplaySettings();
 		
@@ -98,11 +106,12 @@ PlatformWindows::PlatformWindows(std::weak_ptr<System> system, HINSTANCE hInstan
 	*/
 	if (mode == DisplayMode::Windowed)
 	{
+#if 0
 		// Window can't be bigger than the screen resolution :)
 		Int32 scrWidth = 0;
 		Int32 scrHeight = 0;
 
-		getScreenResolution(scrWidth, scrHeight);
+//		getScreenResolution(scrWidth, scrHeight);
 
 		if (width > scrWidth)
 		{
@@ -114,31 +123,24 @@ PlatformWindows::PlatformWindows(std::weak_ptr<System> system, HINSTANCE hInstan
 			height = scrHeight;
 			reconfigure = true;
 		}
+#endif
 	}
 
 
 
+
+
+
+
+
+
+	// Register the Window
+	registerWindow();
+
+	// Create Window
 	DWORD style = (mode == DisplayMode::Windowed) ? PlatformWindows::WINDOW_STYLE_WINDOWED : PlatformWindows::WINDOW_STYLE_FULLSCREEN;
 	DWORD styleEx = WS_EX_APPWINDOW;
 
-	// Register Window
-	WNDCLASSEX wdc;
-	memset((void*)&wdc, 0, sizeof(WNDCLASSEX));
-
-	wdc.cbSize = sizeof(WNDCLASSEX);
-	wdc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-	wdc.lpfnWndProc = _WndProc;
-	wdc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	wdc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wdc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-	wdc.lpszMenuName = NULL;
-	wdc.lpszClassName = PlatformWindows::WINDOW_CLASS_NAME.c_str();
-	wdc.hInstance = _hInstance;
-	wdc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
-
-	RegisterClassEx(&wdc);
-
-	// Create Window
 	_hWnd = CreateWindowEx(PlatformWindows::WINDOW_STYLEEX, PlatformWindows::WINDOW_CLASS_NAME.c_str(), PlatformWindows::WINDOW_CLASS_TITLE.c_str(),
 		style, 0, 0, width, height,
 		NULL, NULL, _hInstance, NULL);
@@ -149,10 +151,8 @@ PlatformWindows::PlatformWindows(std::weak_ptr<System> system, HINSTANCE hInstan
 		return;
 	}
 
-
 	// Set Pointer to Window!
 	SetWindowLongPtr(_hWnd, GWLP_USERDATA, (LONG_PTR)this);
-
 
 	// Get Device Context
 	_hDC = GetDC(_hWnd);
@@ -166,8 +166,8 @@ PlatformWindows::PlatformWindows(std::weak_ptr<System> system, HINSTANCE hInstan
 	*/
 	if (reconfigure)
 	{
-		log_warn("System Configuration Settings need to be adjusted");
-		sys->changeDisplaySettings(width, height, mode);
+		log_warn("System Display Settings need to be adjusted :: Unable to adjust");
+		//sys->changeDisplaySettings(width, height, mode);
 	}
 }
 
@@ -192,233 +192,37 @@ PlatformWindows::~PlatformWindows()
 	UnregisterClass(PlatformWindows::WINDOW_CLASS_NAME.c_str(), NULL);
 
 	// Restore Original Screen Resolution
-	restoreScreenResolution();
+//	restoreScreenResolution();
 
 	log_verbose("Windows Platform Destroyed");
 }
 
 
-
 /*
-	Window Procedure.
+	registerWindow():
 
-	Seriously. Need a cleaner way of writing this horrible function :P
+	Registers the Window Class
 */
-LRESULT PlatformWindows::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+Boolean PlatformWindows::registerWindow()
 {
-	LRESULT result = 0;
+	// Register Window
+	WNDCLASSEX wdc;
+	memset((void*)&wdc, 0, sizeof(WNDCLASSEX));
 
-	/*
-		Might be easier to setup a map.
+	wdc.cbSize = sizeof(WNDCLASSEX);
+	wdc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+	wdc.lpfnWndProc = _WndProc;
+	wdc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	wdc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wdc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	wdc.lpszMenuName = NULL;
+	wdc.lpszClassName = PlatformWindows::WINDOW_CLASS_NAME.c_str();
+	wdc.hInstance = _hInstance;
+	wdc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 
-		WM_ACTION <-> Callback
-	*/
-	switch (uMsg)
-	{
-		/*
-			OS Actions.
-			Window Activity.
-		*/
-	case WM_CREATE:
-		/* This will never be received! - Creation happens before the class pointer is assigned to the window */
-		log_debug("Windows Event = WM_CREATE");
-		break;
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		log_debug("Windows Event = WM_DESTROY");
-		break;
+	RegisterClassEx(&wdc);
 
-	//case WM_ACTIVATE:
-	case WM_ACTIVATEAPP:
-		if (LOWORD(wParam))
-		{
-			// Activate
-			log_debug("Windows Event = WM_ACTIVATEAPP (true)");
-			activate();
-		}
-		else
-		{
-			// Deactivate
-			log_debug("Windows Event = WM_ACTIVATEAPP (false)");
-			deactivate();
-		}
-		break;
-
-	case WM_CLOSE:
-		log_debug("Windows Event = WM_CLOSE");
-		close();
-		break;
-
-	case WM_SETFOCUS:
-		log_debug("Windows Event = WM_SETFOCUS");
-
-		break;
-
-	case WM_KILLFOCUS:
-		log_debug("Windows Event = WM_KILLFOCUS");
-
-		break;
-
-
-	case WM_SIZE:
-	{
-		// This is fired during Minimum/Maximum style events!
-		log_debug("Windows Event = WM_SIZE");
-		break;
-	}
-
-	case WM_SIZING:		
-	{
-		// This is fired, when the user is resizing the window.
-		// However it is called, before the window size is recalcuated.
-		// Therefore the rectangle dimensions passed through, as parameters are unreliable to use.
-		// Causes a size mismatch, when Platform::changeDisplaySettings(...) gets called
-		// as it scans the current window size to determine if its the same... if it isn't, it resizes the window.
-
-		// HACK:
-		// Currently grabbing the last dimensions for the window and using those to call resize.
-		// Cake and eat it too... even though the cake is technically a teeny bit stale :P
-
-		
-		// Retrieve the DRAG Rectangle. Do NOT remove the following line
-		// The DRAG Rectangle is slightly different to the Window Dimensions, retrieved below.
-		//RECT * lp = (RECT*)lParam;
-	
-		// Get the dimensions of the window, in it's last calculated position
-		Int32 winWidth = 0;
-		Int32 winHeight = 0;
-
-		getWindowSize(winWidth, winHeight);
-
-		// Resize.
-		resize(winWidth, winHeight);
-
-		// Set Result
-		result = TRUE;
-		break;
-	}
-		
-	case WM_EXITSIZEMOVE:
-	{
-		// This is being used in conjuction with WM_SIZING
-		// However it is only called at the very end, and WM_SIZING has a hack to make it work for now
-		log_debug("Windows Event = WM_EXITSIZEMOVE");
-		Int32 winWidth = 0;
-		Int32 winHeight = 0;
-
-		getWindowSize(winWidth, winHeight);
-
-		resize(winWidth, winHeight);
-		break;
-	}
-
-		
-
-	case WM_WINDOWPOSCHANGED:
-	{
-		// This would be the best to use for Resize!... 
-		// However it is ALSO called, during a resize via an API call.
-		// Whether some logic can be used to decide whether to allow/disallow calling resize()
-		// Depending on whether it's a user or API resize.
-
-
-	//	WINDOWPOS* wp = (WINDOWPOS*)lParam;
-	//	RECT r;
-
-	//	GetClientRect(hWnd, &r);
-
-		//A_LOGD("> (%dx%d) -> (%dx%d)\n", wp->cx, wp->cy, (r.right - r.left), (r.bottom - r.top));
-		//log_info("Changed:", wp->cx, wp->cy, (r.right - r.left), (r.bottom - r.top));
-		
-		//dispatchResizeEvent((r.right - r.left), (r.bottom - r.top));
-		//log_debug("Windows Event = WM_WINDOWPOSCHANGED");
-
-		break;
-	}
-
-	case WM_WINDOWPOSCHANGING:
-	//	log_debug("Windows Event = WM_WINDOWPOSCHANGING");
-		break;
-
-
-
-
-
-
-		/*
-			Keyboard Events: Send Event to Engine
-		*/
-	case WM_KEYDOWN:
-		keyDown((Int8)wParam);
-		break;
-
-	case WM_KEYUP:
-		keyUp((Int8)wParam);
-		break;
-
-
-		/*
-			Mouse Events: Send Event to Engine
-		*/
-	case WM_MOUSEMOVE:
-		mouseMove(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-		break;
-
-	case WM_LBUTTONDOWN:
-		mouseDown(Mouse::Left, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-		break;
-
-	case WM_LBUTTONUP:
-		mouseUp(Mouse::Left, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-		break;
-
-	case WM_RBUTTONDOWN:
-		mouseDown(Mouse::Right, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-		break;
-
-	case WM_RBUTTONUP:
-		mouseUp(Mouse::Right, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-		break;
-
-	case WM_MBUTTONDOWN:
-		mouseDown(Mouse::Middle, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-		break;
-
-	case WM_MBUTTONUP:
-		mouseUp(Mouse::Middle, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-		break;
-
-	case WM_XBUTTONDOWN:
-		if (GET_XBUTTON_WPARAM(wParam) == XBUTTON1)
-			mouseDown(Mouse::XButton0, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-		else  if (GET_XBUTTON_WPARAM(wParam) == XBUTTON2)
-			mouseDown(Mouse::XButton1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-		break;
-
-	case WM_XBUTTONUP:
-		if (GET_XBUTTON_WPARAM(wParam) == XBUTTON1)
-			mouseUp(Mouse::XButton0, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-		else  if (GET_XBUTTON_WPARAM(wParam) == XBUTTON2)
-			mouseUp(Mouse::XButton1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-		break;
-		break;
-
-	case WM_MOUSEHWHEEL:
-		//A_LOGD("> Mouse WHeeeeeeeeeeeeeeeeeee.......l\n");
-		// Dispatch Temporary Mouse Events!
-		//dispatchMouseWheelEvent(GET_WHEEL_DELTA_WPARAM(wParam), GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-		break;
-
-		 
-
-		/* Default Actions */
-	default:
-		return DefWindowProc(hWnd, uMsg, wParam, lParam);
-		break;
-	}
-
-
-	return result;
+	return true;
 }
 
 
@@ -444,6 +248,23 @@ void PlatformWindows::onPause()
 	return;
 }
 
+/*
+
+*/
+void PlatformWindows::onStop()
+{
+	// Release Window & Handle
+	if (_hWnd)
+	{
+	//	if (_hDC)
+	//		ReleaseDC(_hWnd, _hDC);
+	//	_hDC = NULL;
+
+		CloseWindow(_hWnd);
+		DestroyWindow(_hWnd);
+	}
+	_hWnd = NULL;
+}
 
 
 
@@ -456,7 +277,7 @@ void PlatformWindows::update()
 
 	if (!_paused)
 	{
-		// Game Loop : Can I Haz Moar Hertz?
+		// Iterate though messages : Can I Haz Moar Hertz?
 		while (PeekMessage(&msg, _hWnd, 0, 0, PM_REMOVE))
 		{
 			// Could Pre-Process Keyboard Events here, and not have them dispatched
@@ -470,7 +291,7 @@ void PlatformWindows::update()
 	else
 	{
 		// Minimal Loop : When application isn't in focus it can idle
-		// It does still need to process things. otherwise you will never get it back!
+		// It does still need to process things. Otherwise you will never get it back!
 		if (GetMessage(&msg, _hWnd, 0, 0))
 		{
 			// Translate and dispatch message
@@ -484,11 +305,11 @@ void PlatformWindows::update()
 
 
 
-
+#if 0
 /*
 	Gets the Current Screen Resolution
 */
-Boolean PlatformWindows::getScreenResolution(Int32 & width, Int32 & height)
+Boolean PlatformWindows::getScreenResolution(Int32 & width, Int32 & height) const
 {
 	// Nearest Moniter
 	HMONITOR monitor = MonitorFromWindow(_hWnd, MONITOR_DEFAULTTOPRIMARY);
@@ -504,7 +325,7 @@ Boolean PlatformWindows::getScreenResolution(Int32 & width, Int32 & height)
 
 	return true;
 }
-
+#endif
 
 
 /*
@@ -513,7 +334,7 @@ Boolean PlatformWindows::getScreenResolution(Int32 & width, Int32 & height)
 	This should be the same if fullscreen/borderless as the screen resolution.
 	Currently it is just pulling the client area of the window.
 */
-Boolean PlatformWindows::getClientResolution(Int32 & width, Int32 & height)
+Boolean PlatformWindows::getClientResolution(Int32 & width, Int32 & height) const
 {
 	assert(_hWnd);
 
@@ -546,6 +367,46 @@ Boolean PlatformWindows::getWindowSize(Int32 & width, Int32 & height)
 
 
 /*
+
+*/
+Boolean PlatformWindows::changeWindowSettings(const DisplayParameters & dp, const Int32 screenWidth, const Int32 screenHeight)
+{
+	// This may also need to update the STYLE of a window
+	// If switching from Windowed to FullScreen or Borderless
+
+
+	// Update Window Style
+	DWORD style = (dp.mode == DisplayMode::Windowed) ? PlatformWindows::WINDOW_STYLE_WINDOWED : PlatformWindows::WINDOW_STYLE_FULLSCREEN;
+	SetWindowLong(_hWnd, GWL_STYLE, style);
+
+	// Update Window Size/Position
+	Int32 px = 0, py = 0;
+	Int32 pw = 0, ph = 0;
+
+	aInt32 flags = SWP_SHOWWINDOW | SWP_FRAMECHANGED;
+
+	if (dp.mode != DisplayMode::Windowed)
+	{
+		pw = screenWidth;
+		ph = screenHeight;
+	}
+	else
+	{
+		// Adjust Window Position [Leave as is for now]
+		// TODO: Center Window
+
+	}
+
+	// Update Window
+	SetWindowPos(_hWnd, HWND_TOP, px, py, dp.resolution.width, dp.resolution.height, flags);
+
+	return false;
+}
+
+
+
+#if 0
+/*
 	Change Display Settings
 
 	This function gets called when the display settings need to be changed!
@@ -561,13 +422,13 @@ Boolean PlatformWindows::changeDisplaySettings(const DisplayParameters & dp)
 	// Windowed Mode.
 	if (dp.mode == DisplayMode::Windowed)
 	{
-		return changeDisplaySettingWindows(dp.format);
+		return changeDisplaySettingWindows(dp.resolution);
 	}
 
 	// Borderless Mode
 	if (dp.mode == DisplayMode::Borderless)
 	{
-		return changeDisplaySettingBorderless(dp.format);
+		return changeDisplaySettingBorderless(dp.resolution);
 	}
 
 #if 0
@@ -575,7 +436,7 @@ Boolean PlatformWindows::changeDisplaySettings(const DisplayParameters & dp)
 	if (dp.mode == DisplayMode::Fullscreen)
 	{
 		// Change Native Screen Resolution
-		return changeDisplaySettingFullscreen(dp.format);
+		return changeDisplaySettingFullscreen(dp.resolution);
 	}
 #endif
 
@@ -662,7 +523,7 @@ Boolean PlatformWindows::changeDisplaySettingBorderless(const DisplayFormat & df
 Boolean PlatformWindows::changeDisplaySettingFullscreen(const DisplayFormat & df)
 {
 	// Fullscreen mode not supported.
-	// May not be a difference b/w Fullscreen & Borderless in OpenGL :)
+	// May not be a difference b/w Fullscreen & Borderless in OpenGL
 	return true;
 }
 
@@ -674,7 +535,7 @@ Boolean PlatformWindows::changeDisplaySettingFullscreen(const DisplayFormat & df
 
 	Change Native Screen Resolution.
 	Might add support for BPP changes, but for now assuming 32bit support is fairly safe...
-	Not like its going to be running on a Win95 box or anything
+	Not like its going to be running on a Win95 box or anything (I Hope)
 */
 Boolean PlatformWindows::changeScreenResolution(const Int32 width, const Int32 height)
 {
@@ -701,11 +562,9 @@ Boolean PlatformWindows::changeScreenResolution(const Int32 width, const Int32 h
 	dm.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL;
 
 
-
 	// Not sure if this matters or not :P
 	Boolean exclusive = false;
 	Int32 flags = exclusive ? CDS_FULLSCREEN : 0;
-
 
 	// Test Screen Resolution
 	if (ChangeDisplaySettings(&dm, flags | CDS_TEST) != DISP_CHANGE_SUCCESSFUL)
@@ -749,38 +608,12 @@ Boolean PlatformWindows::restoreScreenResolution()
 	return changeScreenResolution(_nativeWidth, _nativeHeight);;
 }
 
+#endif
 
 
 /*
-	Returns the Unaltered enumeration.
+
 */
-Boolean PlatformWindows::enumerateDisplaySettings(std::set<DisplayFormat> & displayModes)
-{
-	DEVMODE mode;
-
-	Int32 i = 0;
-
-	// Loop through all Display Settings
-	while (EnumDisplaySettings(NULL, i++, &mode))
-	{
-		// Test Support
-		if (ChangeDisplaySettings(&mode, CDS_TEST) == DISP_CHANGE_SUCCESSFUL)
-		{
-			DisplayFormat format;
-
-			format.width = mode.dmPelsWidth;
-			format.height = mode.dmPelsHeight;
-//			format.bitDepth = mode.dmBitsPerPel;
-			
-			// Add the Display Mode
-			displayModes.insert(format);
-		}
-	}
-
-	return true;
-}
-
-
 void PlatformWindows::show()
 {
 	// Show Window
@@ -788,4 +621,285 @@ void PlatformWindows::show()
 	ShowWindow(_hWnd, SW_SHOWNORMAL);
 	UpdateWindow(_hWnd);
 
+}
+
+
+
+
+
+/*
+
+*/
+void PlatformWindows::keyDown(Int8 key)
+{
+	if (_keyboard)
+		_keyboard->keyDown(key);
+
+}
+
+/*
+
+*/
+void PlatformWindows::keyUp(Int8 key)
+{
+	if (_keyboard)
+		_keyboard->keyUp(key);
+}
+
+/*
+
+*/
+void PlatformWindows::mouseDown(Int8 button, Int32 x, Int32 y)
+{
+	if (_mouse)
+		_mouse->mouseDown(button, x, y);
+}
+
+/*
+
+*/
+void PlatformWindows::mouseUp(Int8 button, Int32 x, Int32 y)
+{
+	if (_mouse)
+		_mouse->mouseUp(button, x, y);
+}
+
+/*
+
+*/
+void PlatformWindows::mouseMove(Int32 x, Int32 y)
+{
+	if (_mouse)
+		_mouse->mouseMove(x, y);
+}
+
+/*
+
+*/
+void PlatformWindows::mouseWheel(Int32 delta)
+{
+	if (_mouse)
+		_mouse->mouseWheel(delta);
+}
+
+
+
+/*
+	Window Procedure.
+
+	Seriously. Need a cleaner way of writing this horrible function :P
+*/
+LRESULT PlatformWindows::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	LRESULT result = 0;
+
+	/*
+		Might be cleaner to setup a map.
+
+		WM_ACTION <-> Callback
+	*/
+	switch (uMsg)
+	{
+		/*
+			OS Actions.
+			Window Activity.
+		*/
+	case WM_CREATE:
+		/* This will never be received! - Creation happens before the class pointer is assigned to the window */
+		log_debug("Windows Event = WM_CREATE");
+		break;
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		log_debug("Windows Event = WM_DESTROY");
+		break;
+
+		//case WM_ACTIVATE:
+	case WM_ACTIVATEAPP:
+		if (LOWORD(wParam))
+		{
+			// Activate
+			log_debug("Windows Event = WM_ACTIVATEAPP (true)");
+			activate();
+		}
+		else
+		{
+			// Deactivate
+			log_debug("Windows Event = WM_ACTIVATEAPP (false)");
+			deactivate();
+		}
+		break;
+
+	case WM_CLOSE:
+		log_debug("Windows Event = WM_CLOSE");
+		close();
+		break;
+
+	case WM_SETFOCUS:
+		log_debug("Windows Event = WM_SETFOCUS");
+
+		break;
+
+	case WM_KILLFOCUS:
+		log_debug("Windows Event = WM_KILLFOCUS");
+
+		break;
+
+
+	case WM_SIZE:
+	{
+		// This is fired during Minimum/Maximum style events!
+		log_debug("Windows Event = WM_SIZE");
+		break;
+	}
+
+	case WM_SIZING:
+	{
+		// This is fired, when the user is resizing the window.
+		// However it is called, before the window size is recalcuated.
+		// Therefore the rectangle dimensions passed through, as parameters are unreliable to use.
+		// Causes a size mismatch, when Platform::changeDisplaySettings(...) gets called
+		// as it scans the current window size to determine if its the same... if it isn't, it resizes the window.
+
+		// HACK:
+		// Currently grabbing the last dimensions for the window and using those to call resize.
+		// Cake and eat it too... even though the cake is technically a teeny bit stale :P
+
+
+		// Retrieve the DRAG Rectangle. Do NOT remove the following line
+		// The DRAG Rectangle is slightly different to the Window Dimensions, retrieved below.
+		//RECT * lp = (RECT*)lParam;
+
+		// Get the dimensions of the window, in it's last calculated position
+		Int32 winWidth = 0;
+		Int32 winHeight = 0;
+
+		getWindowSize(winWidth, winHeight);
+
+		// Resize.
+		resize(winWidth, winHeight);
+
+		// Set Result
+		result = TRUE;
+		break;
+	}
+
+	case WM_EXITSIZEMOVE:
+	{
+		// This is being used in conjuction with WM_SIZING
+		// However it is only called at the very end, and WM_SIZING has a hack to make it work for now
+		log_debug("Windows Event = WM_EXITSIZEMOVE");
+		Int32 winWidth = 0;
+		Int32 winHeight = 0;
+
+		getWindowSize(winWidth, winHeight);
+
+		resize(winWidth, winHeight);
+		break;
+	}
+
+
+
+	case WM_WINDOWPOSCHANGED:
+	{
+		// This event is fired twice ?
+
+		log_debug("Windows Event = WM_WINDOWPOSCHANGED");
+
+		// This is being used in conjuction with WM_SIZING
+		// However it is only called at the very end, and WM_SIZING has a hack to make it work for now
+		Int32 winWidth = 0;
+		Int32 winHeight = 0;
+
+		getWindowSize(winWidth, winHeight);
+
+		resize(winWidth, winHeight);
+		break;
+	}
+
+	case WM_WINDOWPOSCHANGING:
+
+		// This event is fired twice ?
+
+		log_debug("Windows Event = WM_WINDOWPOSCHANGING");
+		break;
+
+
+
+
+
+
+		/*
+			Keyboard Events: Send Event to Engine
+		*/
+	case WM_KEYDOWN:
+		keyDown((Int8)wParam);
+		break;
+
+	case WM_KEYUP:
+		keyUp((Int8)wParam);
+		break;
+
+
+		/*
+			Mouse Events: Send Event to Engine
+		*/
+	case WM_MOUSEMOVE:
+		mouseMove(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		break;
+
+	case WM_LBUTTONDOWN:
+		mouseDown(Mouse::Left, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		break;
+
+	case WM_LBUTTONUP:
+		mouseUp(Mouse::Left, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		break;
+
+	case WM_RBUTTONDOWN:
+		mouseDown(Mouse::Right, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		break;
+
+	case WM_RBUTTONUP:
+		mouseUp(Mouse::Right, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		break;
+
+	case WM_MBUTTONDOWN:
+		mouseDown(Mouse::Middle, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		break;
+
+	case WM_MBUTTONUP:
+		mouseUp(Mouse::Middle, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		break;
+
+	case WM_XBUTTONDOWN:
+		if (GET_XBUTTON_WPARAM(wParam) == XBUTTON1)
+			mouseDown(Mouse::XButton0, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		else  if (GET_XBUTTON_WPARAM(wParam) == XBUTTON2)
+			mouseDown(Mouse::XButton1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		break;
+
+	case WM_XBUTTONUP:
+		if (GET_XBUTTON_WPARAM(wParam) == XBUTTON1)
+			mouseUp(Mouse::XButton0, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		else  if (GET_XBUTTON_WPARAM(wParam) == XBUTTON2)
+			mouseUp(Mouse::XButton1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		break;
+		break;
+
+	case WM_MOUSEHWHEEL:
+		//A_LOGD("> Mouse WHeeeeeeeeeeeeeeeeeee.......l\n");
+		// Dispatch Temporary Mouse Events!
+		//dispatchMouseWheelEvent(GET_WHEEL_DELTA_WPARAM(wParam), GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		break;
+
+
+
+		/* Default Actions */
+	default:
+		return DefWindowProc(hWnd, uMsg, wParam, lParam);
+		break;
+	}
+
+
+	return result;
 }

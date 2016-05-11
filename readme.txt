@@ -14,6 +14,7 @@ TODO:
 	AndromedaFX				: NVFX Wrapper (This may be too "hard-wired")
 	AndromedaZLib			: ZLib support via a wrapper that taps into the virtual resource management
  
+ - Change ALL header inlcude gates to '#pragma once' rather than the old style gates
 
 
 Particle System
@@ -63,5 +64,5 @@ include/andromeda		: Root Directory for Andromeda Includes
 
 src/					: Root Directory for Andromeda Source
 src/andromeda			: Andromeda Source
-src/common				: Andromeda Source with "common-use" platform dependant code
+src/common				: Andromeda Source with "common-use" platform dependant code. Common is linked for modules that are needed.
 src/windows				: Andromeda Source with windows specific code 

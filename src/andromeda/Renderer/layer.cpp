@@ -1,9 +1,11 @@
 #include <andromeda/Renderer/layer.h>
 
-#include <andromeda/Game/camera.h>
+
 #include <andromeda/Graphics/effect.h>
+
 #include <andromeda/Math/matrix_stack.h>
 
+#include <andromeda/Renderer/camera.h>
 #include <andromeda/Renderer/projection.h>
 #include <andromeda/Renderer/renderable.h>
 
@@ -65,19 +67,26 @@ Boolean Layer::removeRenderable(IRenderable * renderable)
 
 
 
-/*
 
+
+
+
+/*
+	render():
+
+	Renders the Layer
 */
-Boolean Layer::render(std::shared_ptr<IProjection> projection, const std::shared_ptr<ICamera> camera, const std::string & technique)
+Boolean Layer::render(std::shared_ptr<IProjection> projection, const std::shared_ptr<ICamera> camera)
 {
 	// Get Effect
 //	std::shared_ptr<Effect> effect = _effect.lock();
 
 	assert(_effect);
 	
-	// Begin the Technique :: Ignore Technique Name for now
-	_effect->beginTechnique(/*technique*/);
+	// Get Technique Name :: Dont worry about for now
 
+	// Begin the Technique 
+	_effect->beginTechnique();
 
 	// Push Projection Matrix to Effect :: Constant for a Layer
 	_effect->setUniformMat4("u_projection", projection->matrix());
@@ -112,8 +121,7 @@ Boolean Layer::render(std::shared_ptr<IProjection> projection, const std::shared
 
 
 			// Render the Renderable
-			renderable->render(_effect, ms);		// Pass
-
+			renderable->render(_effect, ms);
 		}
 
 

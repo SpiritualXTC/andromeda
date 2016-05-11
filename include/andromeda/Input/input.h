@@ -27,6 +27,7 @@ namespace andromeda
 	//	Boolean isRequired() override { return false; }
 		void onResume() override { return; }
 		void onPause() override { return; }
+		void onStop() override { return; }
 	};
 
 }

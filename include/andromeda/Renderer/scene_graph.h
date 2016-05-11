@@ -18,16 +18,17 @@ namespace andromeda
 	// Forward Declarations
 	class ITransform;
 	class GameObject;
+	class SceneGraphCache;
 
 
 	/*
-	
+		this shouldnt be an interface, but an abstract class with pure virtual functions
 	*/
-	class ISceneGraph
+	class SceneGraph
 	{
 	public:
-		ISceneGraph() {}
-		virtual ~ISceneGraph() {}
+		SceneGraph() {}
+		virtual ~SceneGraph() {}
 
 		virtual std::shared_ptr<GameObject> getGameObject(const std::string & name) = 0;
 
@@ -45,17 +46,9 @@ namespace andromeda
 
 		virtual std::shared_ptr<GameObject> operator[](const char * const name) = 0;
 
-
-		virtual void for_each(std::function<void(std::shared_ptr<GameObject>)> cb) = 0;
-
-
-
-
 		virtual void update(const Float timeStep) = 0;
 
-
-		// TEMP
-		//	virtual Boolean process(std::shared_ptr<ITransform> transform, std::shared_ptr<ISceneGraph> sgCache) = 0;
+		virtual Boolean process(std::shared_ptr<SceneGraphCache> sgCache) = 0;
 	};
 
 

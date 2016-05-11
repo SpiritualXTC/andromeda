@@ -22,7 +22,7 @@ namespace andromeda
 
 		Manages resources that have been loaded into memory or video memory
 	*/
-	class ResourceCache : public Module<ResourceCache>
+	class ResourceCache
 	{
 	private:
 		struct _Resource
@@ -46,7 +46,15 @@ namespace andromeda
 
 			// Get Resource
 			_Resource & res = _cache[id];
+
+			std::shared_ptr<T> r = std::static_pointer_cast<T>(res.resource);
+
+			return r;
 		}
+
+
+
+
 
 
 	private:

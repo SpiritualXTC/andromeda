@@ -48,6 +48,9 @@
     <ClCompile Include="src\random_path_component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\circular_path_component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\console.h">
@@ -78,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\random_path_component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\circular_path_component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

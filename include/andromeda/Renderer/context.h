@@ -23,14 +23,16 @@ namespace andromeda
 		friend class System;
 
 	public:
-		Context(std::weak_ptr<System> system);
+		Context();
 		virtual ~Context();
 
 		// IModule
-		void onResume(){ }
-		void onPause(){  }
+		void onResume() override { }
+		void onPause() override { }
+		void onStop() override { }
 
-		void update();
+
+		void update() override;
 
 	protected:
 		/*

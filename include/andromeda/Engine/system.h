@@ -9,12 +9,16 @@
 #include "module.h"
 #include "display.h"
 
+#include <andromeda/Utilities/log.h>
+
 namespace andromeda
 {
 	// Forward Declarations
-	class Config;
-	class Engine;
+	class Context;
+	class Display;
+	class Platform;
 
+	class IAndromedaConfig;
 	
 
 	/*
@@ -34,109 +38,87 @@ namespace andromeda
 
 	
 
+	/*
+		used for access... add to later :)
+	*/
+	class ISystem
+	{
+	public:
+		ISystem() {}
+		virtual ~ISystem() {}
 
+	// Interface
+
+	};
 
 
 
 	/*
 		System:
-		Controls the running configuration of the engine :)
-
-		This would be a central "controller", if you were to associate as an MVC application :)
 	*/
-	class System : public Module < System >
+	class System : virtual public ISystem
 	{
 	public:
-		friend class Engine;
-
 		enum _SystemEvents
 		{
 		//	Initialise,
 			Close,
-			Resize,
+			Resize,	// TODO: Move to Display
 			Pause,
 			Resume,
 		};
 
 
 	public:
-		System(Engine * engine, std::weak_ptr<Module<Config>> config);
+		System(IAndromedaConfig * config);
 		virtual ~System();
 
-		// Getters
-		const Int32 displayWidth() const { return _display.format.width; }
-		const Int32 displayHeight() const { return _display.format.height; }
-		const DisplayMode displayMode() const { return _display.mode; }
-		
 
 		/*
-			These will need to take a lot more parameters (quite possibly an entire structure :P
-			But for the most part, method-overloading will solve it :)
-
-			Adjust these so that they have default parameters instead of 600 functions.
+			Getters
 		*/
-		Boolean changeDisplaySettings(Int width, Int32 height);
-		Boolean changeDisplaySettings(DisplayMode mode);
-		Boolean changeDisplaySettings(DisplayFormat format);
-		Boolean changeDisplaySettings(Int width, Int32 height, DisplayMode mode);
-
+		const inline std::shared_ptr<Display> getDisplay() { return _display; }
+		const inline std::shared_ptr<Platform> getPlatform() { return _platform; }
+		const inline std::shared_ptr<Context> getContext() { return _context; }
 
 		/*
-			Looks at the Platform for a list of supported Display Settings
-			...
-			Should probably be a list, instead of a set.
+			Final Initialisation
 		*/
-		Boolean enumerateDisplaySettings(std::set<DisplayFormat> & displayModes);
+		Boolean init();
+
+		/*
+			Final Destruction
+		*/
+		Boolean destroy();
 
 
 		/*
-			Updates the Current Display Settings to the Configuration, for export
+			Close
+
+			TODO:: Remove or clean up
 		*/
-		Boolean updateDisplaySettings();
-
-
-		/*
-			Get Display Resolution.
-		*/
-		Boolean getDisplayResolution(Int32 & width, Int32 & height);
-
-
-
-		
-
-		/*
-			
-		*/
-		Boolean quit();
-
 		Boolean close();
-		Boolean pause();
-		Boolean resume();
 
 
 
-		// IModule
-		void onResume() override { return; }
-		void onPause() override { return; }
-		void update() override { return; }
+
+
+		/* Pass Through Functions :: Display */
 		
-	private:
-
 
 		/*
-			Bootstrap Initialisation!
+			Change Display Settings
 		*/
-		Boolean run();
+		Boolean changeDisplaySettings(DisplayParameters & dp);
 
+		/* Pass Through Functions :: Platform */
 
+		/* Pass Through Functions :: Context */
 
-		Boolean changeDisplaySettings(const DisplayParameters & dp);
-
-		void dispatchResizeEvent();
-
-		DisplayParameters _display;
-
-		Engine * _engine = nullptr;
+	private:		
+		std::shared_ptr<Display> _display;
+		std::shared_ptr<Platform> _platform;
+		std::shared_ptr<Context> _context;
 	};
 }
 

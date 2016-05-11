@@ -53,7 +53,9 @@ namespace andromeda
 
 
 	/*
-		The Mouse is Instantly Sending Events out.
+		The Mouse is Instantly Sending Events out. (Currently)
+
+		This is a generic Mouse class. It doesn't interface with a Mouse device, only dispatches the events and stores states.
 	*/
 	class Mouse : public Input<Mouse>
 	{

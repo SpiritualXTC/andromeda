@@ -9,7 +9,7 @@
 
 namespace andromeda
 {
-	class IRenderable;	// TEMP
+	class IRenderable;
 	class View;
 	
 
@@ -19,13 +19,17 @@ namespace andromeda
 	class GameObject : public Entity
 	{
 	private:
-		static const Int32 GAME_OBJECT_COUNTER = 0;
+		static Int32 GAME_OBJECT_COUNTER;
 		static const std::string GAME_OBJECT_GENERIC_NAME;
 
 
 		static inline std::string nextGenericName()
 		{
-			return GAME_OBJECT_GENERIC_NAME + std::string(GAME_OBJECT_COUNTER);
+			std::stringstream s(GAME_OBJECT_GENERIC_NAME);
+
+			s << (++GAME_OBJECT_COUNTER);
+
+			return s.str();
 		}
 
 	public:

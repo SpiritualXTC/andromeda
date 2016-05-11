@@ -1,75 +1,80 @@
 #ifndef _ANDROMEDA_RENDERER_SCENE_GRAPH_CACHE_H_
 #define _ANDROMEDA_RENDERER_SCENE_GRAPH_CACHE_H_
 
+#include <memory>
+#include <unordered_map>
 
-#include "scene_graph.h"
-
+#include <andromeda/stddef.h>
 
 namespace andromeda
 {
 	class View;
-
+	class ITransform;
+	class GameObject;
+	class SceneGraph;
+	class IVisibility;
 
 	/*
 		Extremely Basic Scene Graph Caching
 
 		Contains the SceneGraph of objects that are for all intensive purposes... "visible"
 
-		This Probably SHOULD NOT Extend ISceneGraph, as for all intensive purposes ... it's only needed for a quick lookup.
+		This Probably SHOULD NOT Extend SceneGraph, as for all intensive purposes ... it's only needed for a quick lookup.
 		Not even a pointer is needed (smart or otherwise)
 	*/
-	class SceneGraphCache : public ISceneGraph
+	class SceneGraphCache
 	{
 	public:
-		SceneGraphCache(View * view);
+		SceneGraphCache(View * view, IVisibility * visibility);
 		virtual ~SceneGraphCache();
 
-		std::shared_ptr<GameObject> getGameObject(const std::string & name) override;
 
-		Boolean hasObject(const std::string & name) override;
-		Boolean hasObject(std::shared_ptr<GameObject> object) override;
+		Boolean hasObject(std::shared_ptr<GameObject> object);
+		Boolean addGameObject(std::shared_ptr<GameObject> object);
+		Boolean removeGameObject(std::shared_ptr<GameObject> object);
+		
 
-		Boolean addGameObject(std::shared_ptr<GameObject> object) override;
-		Boolean removeGameObject(const std::string & name) override;
-		Boolean removeGameObject(std::shared_ptr<GameObject> object) override;
-
-		const Int32 getObjectCount() const override
-		{
-			return _objects.size();
-		}
+		/*
+			Does the ID exist in the lookup table
+		*/
+		Boolean exists(UInt64 id);
 
 
-		void for_each(std::function<void(std::shared_ptr<GameObject>)> cb) override;
+		/*
+			Inserts the ID into the lookup table
+		*/
+		Boolean insert(UInt64 id);
+
+
+		/*
+			Removes the ID from the lookup table
+		*/
+		Boolean erase(UInt64 id);
+
+
+
+
 
 		/*
 			Process the Source Graph to manipulate the cache
 		*/
-		Boolean process(std::shared_ptr<ITransform> transform, std::shared_ptr<ISceneGraph> source);
+		//Boolean process(std::shared_ptr<ITransform> transform, std::shared_ptr<SceneGraph> source);
 
 
-		// OBJECT RETRIEVAL :: TESTING
-		std::shared_ptr<GameObject> operator[](const char * const name) override
-		{
-			return getGameObject(name);
-		}
+		/*
+		
+		*/
+		void process(const std::shared_ptr<GameObject> & go);
 
 
+//		Boolean visiblilityCheck(const std::shared_ptr<GameObject> & go);
 
-
-
-
-
-
-
-		// ISceneGraph	:: Remove When ISceneGraph is not part of the class :)
-		// This does nothing on the cache
-		void update(const Float timeStep) override {}
 
 	private:
-		View * _view;
-		std::unordered_map<std::string, std::shared_ptr<GameObject>> _objects;
-
-		//std::unordered_map<Int64, Boolean> _lookUp;	// Key = GameObject counter, value = It's current state. False = Not "Visible" True = "Visible"
+		View * _view = nullptr;						// Pointer to the view that created this cache
+		IVisibility * _visibility = nullptr;		// Pointer to the visibility check used for the view, by this cache
+			
+		std::unordered_map<UInt64, Boolean> _table;
 	};
 
 }

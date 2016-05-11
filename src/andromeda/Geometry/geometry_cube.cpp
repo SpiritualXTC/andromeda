@@ -56,15 +56,6 @@ std::shared_ptr<Geometry> andromeda::CreateCube(Float width, Float height, Float
 		{ 0, 1 }, { 1, 1 }, { 0, 0 }, { 1, 0 },
 		{ 0, 1 }, { 1, 1 }, { 0, 0 }, { 1, 0 },
 		{ 0, 1 }, { 1, 1 }, { 0, 0 }, { 1, 0 }
-
-#if 0
-		{ 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 },
-		{ 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 },
-		{ 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 },
-		{ 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 },
-		{ 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 },
-		{ 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 }
-#endif
 	};
 
 
@@ -93,17 +84,8 @@ std::shared_ptr<Geometry> andromeda::CreateCube(Float width, Float height, Float
 	if (genMask & GEN_TEXTURE)
 		gb.addVertexData("tex", texture, 24, GeometryLocation::Texture0);
 
-	// Create Buffers
-	std::shared_ptr<VertexBuffer> vb = std::make_shared<VertexBuffer>();
-	std::shared_ptr<IndexBuffer> ib = std::make_shared<IndexBuffer>();
-	std::shared_ptr<GeometryDescription> desc = std::make_shared<GeometryDescription>(GL_TRIANGLES, 24, 36, GL_UNSIGNED_INT);
-	
-	// Interleave Data amongst buffers
-	gb.build(vb, desc);
+	gb.setIndexData(indices, 36);
 
-	// Copy Index Data
-	ib->data(indices, 36 * sizeof(UInt32));
-
-	// Create Geometry Object
-	return std::make_shared<Geometry>(vb, desc, ib);
+	// Build Geometry
+	return gb.build();
 }

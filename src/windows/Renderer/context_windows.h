@@ -16,22 +16,25 @@
 
 namespace andromeda
 {
-	class PlatformWindows;
-
-	class ContextWindows : public Context
+	namespace windows
 	{
-	public:
-		ContextWindows(std::weak_ptr<System> system, std::weak_ptr<PlatformWindows> platWin);
-		virtual ~ContextWindows();
+		class PlatformWindows;
+
+		class ContextWindows : public Context
+		{
+		public:
+			ContextWindows(HDC hDC);
+			virtual ~ContextWindows();
 
 
-	protected:
-		void swap() override;
+		protected:
+			void swap() override;
 
-	private:
-		HGLRC		_hGL;
-		HDC			_hDC;
-	};
+		private:
+			HGLRC		_hGL;
+			HDC			_hDC;
+		};
+	}
 }
 
 #endif //OS Restrictions

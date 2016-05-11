@@ -31,7 +31,7 @@ namespace andromeda
 
 
 
-
+#if 0
 	/*
 		RenderTargets can be made up of 1 or more textures.
 
@@ -54,6 +54,7 @@ namespace andromeda
 	private:
 		GLuint _frameBuffer = 0;
 	};
+#endif
 
 
 	/*

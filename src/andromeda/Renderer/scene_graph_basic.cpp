@@ -3,6 +3,7 @@
 #include <cassert>
 
 #include <andromeda/Game/game_object.h>
+#include <andromeda/Renderer/scene_graph_cache.h>
 
 using namespace andromeda;
 
@@ -116,19 +117,9 @@ Boolean BasicSceneGraph::removeGameObject(std::shared_ptr<GameObject> object)
 
 
 /*
+	update():
 
-*/
-void BasicSceneGraph::for_each(std::function<void(std::shared_ptr<GameObject>)> cb)
-{
-	for (const auto & p : _objects)
-		cb(p.second);
-}
-
-
-
-
-/*
-
+	Updates all objects in the scene
 */
 void BasicSceneGraph::update(const Float timeStep)
 {
@@ -137,44 +128,18 @@ void BasicSceneGraph::update(const Float timeStep)
 }
 
 
-
-
-#if 0
 /*
+	process():
 
+	Process the Scene with respect to the cache
 */
-Boolean BasicSceneGraph::process(std::shared_ptr<ITransform> transform, std::shared_ptr<ISceneGraph> sgCache)
+Boolean BasicSceneGraph::process(std::shared_ptr<SceneGraphCache> sgCache)
 {
-	assert(sgCache);
-	// Does a direct copy (crappy system)
-
-
-
-	// Loop through objects
+	// Iterate through all objects
 	for (const auto & it : _objects)
 	{
-		// "Visibility Check" :: Determines whether the object is "on screen"
-		Boolean visible = true;
-		Boolean cached = sgCache->hasObject(it.first);
-
-		// Object is Visble && It's Cached.				:: Nothing needs to be done
-		// Object is NOT Visible && It's NOT Cached		:: Nothing needs to be done
-		if (visible == cached)
-			continue;
-
-
-		if (visible)
-		{
-			log_debugp("SceneGraph: Object '%1%' entered screen space, caching", it.second->getName());
-			sgCache->addGameObject(it.second);
-		}
-		else
-		{
-			log_debugp("SceneGraph: Object '%1%' exited screen space, caching", it.second->getName());
-			sgCache->removeGameObject(it.second);
-		}
+		sgCache->process(it.second);
 	}
 
 	return true;
 }
-#endif

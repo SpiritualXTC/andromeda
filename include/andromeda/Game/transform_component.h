@@ -3,7 +3,7 @@
 
 
 #include <andromeda/Game/component.h>
-#include <andromeda/Game/transform.h>
+#include <andromeda/Renderer/transform.h>
 
 #include <andromeda/glm.h>
 

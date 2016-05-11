@@ -1,13 +1,19 @@
 #include "game.h"
 
-#include <andromeda/Game/camera.h>
+// dont really wanna include this everywhere ...
+#include <andromeda/andromeda.h>
+
+#include <andromeda/Renderer/camera.h>
 #include <andromeda/Game/game_object.h>
 #include <andromeda/Game/geometry_component.h>
+#include <andromeda/Game/mesh_component.h>
 #include <andromeda/Game/transform_component.h>
 
 #include <andromeda/Geometry/geometry.h>
 #include <andromeda/Geometry/geometry_generate.h>
 
+#include <andromeda/Graphics/font.h>
+#include <andromeda/Graphics/mesh.h>
 
 #include <andromeda/Renderer/renderer.h>
 #include <andromeda/Renderer/scene.h>
@@ -18,7 +24,7 @@
 
 
 #include "random_path_component.h"
-
+#include "circular_path_component.h"
 
 
 
@@ -33,6 +39,10 @@ Game::Game(std::shared_ptr<andromeda::Renderer> renderer)
 
 	// Do stuff with the renderer
 
+	// Load a Font
+	_font = std::make_shared<andromeda::Font>("../res/fonts/unispace rg.ttf", 96);
+
+
 	// Create the Scene
 	_scene = std::make_shared<andromeda::Scene>("game_scene", std::make_shared<andromeda::BasicSceneGraph>());
 
@@ -41,7 +51,7 @@ Game::Game(std::shared_ptr<andromeda::Renderer> renderer)
 
 
 	// Create the Views
-	aInt32 players = 2;
+	aInt32 players = 1;
 
 	if (players == 1)
 		createView(0, 0, 1, 1);
@@ -59,11 +69,13 @@ Game::Game(std::shared_ptr<andromeda::Renderer> renderer)
 		createView(0.5f, 0.5f, 0.5f, 0.5f);
 	}
 
-	// Create Some Objects
 
-	//createEntity("test_1");
-	//createEntity("test2");
-	//createEntity("test3");
+
+
+	// Create Some Objects
+	createGround();
+
+	createMesh("mesh_0");
 
 
 	aInt32 objs = 100;
@@ -78,20 +90,26 @@ Game::Game(std::shared_ptr<andromeda::Renderer> renderer)
 		// Create Entity
 		std::shared_ptr<andromeda::GameObject> go = createEntity(name.str());
 
+		// Set Initial Transform
 		std::shared_ptr<andromeda::TransformComponent> transform = go->getComponentPtr<andromeda::TransformComponent>();
 
 		aFloat angle = i / (aFloat)objs * glm::pi<aFloat>() * 2.0f;
-		aFloat radius = 2.0f;
+		//aFloat radius = 2.0f;
 
-		transform->position(cosf(angle) * radius, 0.0f, sinf(angle) * radius);
-		transform->calculate();
+		//transform->position(cosf(angle) * radius, 0.0f, sinf(angle) * radius);
+		//transform->calculate();
+
+
+		// Setup Pathing
+		std::shared_ptr<CircularPathComponent> circle = std::make_shared<CircularPathComponent>(transform, angle);
+		go->addComponent<CircularPathComponent>(circle);
 	}
 
 
 
 	// Create some cameras..... if it's NOT a single viewport -- this is only cos (lazy)
-	if (players > 1)
-	{
+//	if (players > 1)
+//	{
 		aInt32 i = 0;
 
 		//for (aInt32 i = 0; i < _views.size(); ++i)
@@ -111,14 +129,13 @@ Game::Game(std::shared_ptr<andromeda::Renderer> renderer)
 			transform->position(cosf(angle) * radius, 0.0f, sinf(angle) * radius);
 			transform->calculate();
 
-
 			// Assign the View to the Target
 			view->setCameraTarget(name.str());
-			view->camera()->distance(5.0f);
+			view->camera()->distance(500.0f);
 
 			++i;
 		}
-	}
+//	}
 
 }
 
@@ -157,6 +174,32 @@ void Game::createView(aFloat x, aFloat y, aFloat w, aFloat h)
 /*
 
 */
+std::shared_ptr<andromeda::GameObject> Game::createGround()
+{
+	// Create Game Object
+	std::shared_ptr<andromeda::GameObject> obj = std::make_shared<andromeda::GameObject>("ground");
+
+	// Create Standard Components
+	std::shared_ptr<andromeda::TransformComponent> transform = std::make_shared<andromeda::TransformComponent>();
+
+	// Create Geometry
+	std::shared_ptr<andromeda::Geometry> geometry = andromeda::CreatePlane(5.0f, 5.0f, andromeda::GEN_NORMALS | andromeda::GEN_TEXTURE);
+
+	obj->addComponent(transform);
+
+	std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, transform);
+	obj->addComponent<andromeda::RenderComponent>(render);
+
+	// Add Game Object to Scene
+	_scene->getSceneGraph()->addGameObject(obj);
+
+	return obj;
+}
+
+
+/*
+
+*/
 std::shared_ptr<andromeda::GameObject> Game::createEntity(const std::string & name)
 {
 	// Create Game Object
@@ -171,18 +214,6 @@ std::shared_ptr<andromeda::GameObject> Game::createEntity(const std::string & na
 
 	// Create Geometry
 	std::shared_ptr<andromeda::Geometry> geometry = andromeda::CreateEllipse(0.5f, 0.5f, 0.5f, 32, 16, 0);;
-
-#if 0
-	int shape = rand() % 2;
-	
-	if (shape == 0)
-		geometry = andromeda::CreateEllipse(0.5f, 0.5f, 0.5f, 32, 16, 0);
-	else if (shape == 1)
-		geometry = andromeda::CreateCube(0.25f, 2.0f, 0.25f, 0);
-	else if (shape == 2)
-		geometry = andromeda::CreatePlane(4, 4, 0);
-#endif
-
 
 	// Add RenderComponent
 	if (geometry)
@@ -217,16 +248,13 @@ std::shared_ptr<andromeda::GameObject> Game::createCamera(const std::string & na
 	// Add/Create Simple Component
 	obj->addComponent<RandomPathComponent>(std::make_shared<RandomPathComponent>(transform));
 
-
-
-
-	// Create Geometry
-	std::shared_ptr<andromeda::Geometry> geometry = andromeda::CreateCube(0.25f, 0.25f, 0.25f, 0);
+	// Load Mesh
+	std::shared_ptr<andromeda::Mesh> mesh = andromeda::LoadResource<andromeda::Mesh>("Millennium_Falcon.dae");
 
 	// Add RenderComponent
-	if (geometry)
+	if (mesh)
 	{
-		std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, transform);
+		std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::MeshRenderComponent>(mesh, transform);
 		obj->addComponent<andromeda::RenderComponent>(render);
 	}
 	else
@@ -239,6 +267,37 @@ std::shared_ptr<andromeda::GameObject> Game::createCamera(const std::string & na
 }
 
 
+/*
+
+*/
+std::shared_ptr<andromeda::GameObject> Game::createMesh(const std::string & name)
+{
+	// Create Game Object
+	std::shared_ptr<andromeda::GameObject> obj = std::make_shared<andromeda::GameObject>(name);
+
+	// Create Standard Components
+	std::shared_ptr<andromeda::TransformComponent> transform = std::make_shared<andromeda::TransformComponent>();
+
+	// Add Components
+	obj->addComponent<andromeda::TransformComponent>(transform);
+
+	// Load Mesh
+	std::shared_ptr<andromeda::Mesh> mesh = andromeda::LoadResource<andromeda::Mesh>("dwarf.x");
+	
+	// Add RenderComponent
+	if (mesh)
+	{
+		std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::MeshRenderComponent>(mesh, transform);
+		obj->addComponent<andromeda::RenderComponent>(render);
+	}
+	else
+		return nullptr;
+
+	// Add Game Object to Scene
+	_scene->getSceneGraph()->addGameObject(obj);
+
+	return obj;
+}
 
 
 
@@ -302,10 +361,10 @@ aBoolean Game::mouseMove(andromeda::MouseMoveEventArgs & e)
 		{
 			if (view->getDisplayRegion().contains(glm::vec2(e.x, e.y)))
 			{
-				std::shared_ptr<andromeda::ICamera> camera = view->camera();
+				const std::shared_ptr<andromeda::ICamera> & camera = view->camera();
 
-				camera->yaw(camera->yaw() + e.deltaX * sensitivity);
-				camera->pitch(camera->pitch() + e.deltaY * sensitivity);
+				camera->yaw(camera->yaw() - e.deltaX * sensitivity);
+				camera->pitch(camera->pitch() - e.deltaY * sensitivity);
 			}
 		}
 	}

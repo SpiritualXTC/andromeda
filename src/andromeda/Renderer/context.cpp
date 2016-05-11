@@ -18,15 +18,9 @@ using namespace andromeda;
 /*
 
 */
-Context::Context(std::weak_ptr<System> system) : Module(Module::Render , Module::Lowest)
+Context::Context() : Module(Module::Render , Module::Lowest)
 {
-	log_verbose("Context: Create");
-
-	assert(!system.expired());
-	addDependancy<System>(system);
-
-
-
+	log_verbosep("Context :: <init>();");
 }
 
 
@@ -35,7 +29,7 @@ Context::Context(std::weak_ptr<System> system) : Module(Module::Render , Module:
 */
 Context::~Context()
 {
-	log_verbose("Context: Destroy");
+	log_verbosep("Context :: <destroy>();");
 }
 
 

@@ -24,6 +24,7 @@ namespace andromeda
 
 	class GameObject;
 	class Geometry;
+	class Font;
 
 	class Renderer;
 }
@@ -54,9 +55,13 @@ private:
 	//Ents<10000> _entities;
 
 	void createView(aFloat x, aFloat y, aFloat w, aFloat h);
+
+	std::shared_ptr<andromeda::GameObject> createGround();
 	std::shared_ptr<andromeda::GameObject> createEntity(const std::string & name);
 	std::shared_ptr<andromeda::GameObject> createCamera(const std::string & name);
 
+
+	std::shared_ptr<andromeda::GameObject> createMesh(const std::string & name);
 
 
 	
@@ -66,6 +71,10 @@ private:
 
 	// TEMPORARY :: Need a way of pulling views from the Renderer
 	std::list<std::shared_ptr<andromeda::View>> _views;	// List of main views
+	
+	// TEMP FONT
+	std::shared_ptr<andromeda::Font> _font;
+
 };
 
 #endif

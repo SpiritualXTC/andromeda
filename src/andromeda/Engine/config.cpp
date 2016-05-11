@@ -11,7 +11,7 @@ using namespace andromeda;
 /*
 
 */
-Config::Config() : Module(Module::Idle, Module::Lowest, true)
+Config::Config()
 {
 	log_verbose("Config: Created");
 

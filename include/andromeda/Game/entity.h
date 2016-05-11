@@ -25,11 +25,17 @@ namespace andromeda
 	class Entity : public TemplateContainer<IComponent>
 	{
 	private:
+		static UInt64 ENTITY_COUNTER;
 		typedef std::unordered_map<Int32, std::shared_ptr<IComponent>> ComponentMap;
 
 	public:
-		Entity() {}
+		Entity() { _id = ++Entity::ENTITY_COUNTER; }
 		virtual ~Entity() {}
+
+		/*
+			Gets the Entity ID
+		*/
+		const inline UInt64 getId() const { return _id; }
 
 		/*
 			Gets the Component ID
@@ -86,6 +92,7 @@ namespace andromeda
 
 
 	private:
+		UInt64 _id;
 		ComponentMap _components;
 	};
 }

@@ -50,8 +50,9 @@ namespace andromeda
 
 
 		// IModule
-		void onPause(){}
-		void onResume(){}
+		void onPause() override {}
+		void onResume() override {}
+		void onStop() override {}
 
 		void update();
 	private:

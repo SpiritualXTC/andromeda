@@ -11,7 +11,7 @@
 
 namespace andromeda
 {
-	class ISceneGraph;
+	class SceneGraph;
 
 
 	/*
@@ -22,7 +22,7 @@ namespace andromeda
 	class Scene
 	{
 	public:
-		Scene(const std::string & name, std::shared_ptr<ISceneGraph> sceneGraph);
+		Scene(const std::string & name, std::shared_ptr<SceneGraph> sceneGraph);
 		virtual ~Scene();
 
 
@@ -64,13 +64,13 @@ namespace andromeda
 		/*
 			Gets the SceneGraph
 		*/
-		std::shared_ptr<ISceneGraph> getSceneGraph() { return _sceneGraph; }
+		std::shared_ptr<SceneGraph> getSceneGraph() { return _sceneGraph; }
 
 
 		/*
 			Gets Constant Reference to the SceneGraph
 		*/
-		const std::shared_ptr<ISceneGraph> & getSceneGraph() const { return _sceneGraph; }
+		const std::shared_ptr<SceneGraph> & getSceneGraph() const { return _sceneGraph; }
 
 
 		/*
@@ -97,7 +97,7 @@ namespace andromeda
 		std::string _name;
 
 		
-		std::shared_ptr<ISceneGraph> _sceneGraph;
+		std::shared_ptr<SceneGraph> _sceneGraph;
 		std::multiset<std::shared_ptr<View>> _views;	//Maybe an ordered_map :: Referencing Views by name may be useful
 	};
 

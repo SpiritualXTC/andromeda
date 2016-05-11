@@ -2,7 +2,8 @@
 
 #include <cassert>
 
-#include <andromeda/Engine/engine.h>
+#include <andromeda/andromeda.h>
+
 #include <andromeda/Events/event_manager.h>
 #include <andromeda/Events/resize.h>
 #include <andromeda/Platform/platform.h>
@@ -12,36 +13,59 @@
 
 using namespace andromeda;
 
+// TODO: Move the Resize event to Display
+
 
 
 /*
 
 */
-System::System(Engine * engine, std::weak_ptr<Module<Config>> config) 
-	: Module(Module::Idle, Module::Lowest, true)
-	, _engine(engine)
+System::System(IAndromedaConfig * config)
 {
-	assert(! config.expired());
-	assert(_engine);
-
-	log_verbose("System: Created");
-
-	
-
-	// Add the Dependancy
-	addDependancy<Config>(config);
-
-	// Get Configuration Settings Relevant to the System
-	_display.format.width = 800;
-	_display.format.height = 600;
-	_display.mode = DisplayMode::Windowed;
+	log_verbosep("System :: <init>();");
 
 
 
+
+	// Register System Events
 	registerEvent<CloseEventArgs>(System::Close);
 	registerEvent<ResizeEventArgs>(System::Resize);
 	registerEvent<AppEventArgs>(System::Pause);
 	registerEvent<AppEventArgs>(System::Resume);
+
+	
+	// Get Configuration Settings Relevant to the System
+	DisplayParameters displayParam;
+
+	// DEFAULT Configuration for the Display
+	displayParam.resolution.width = 800;
+	displayParam.resolution.height = 600;
+	displayParam.mode = DisplayMode::Windowed;
+
+
+	// TEMP
+//	_displayParam = displayParam;
+
+
+	// Create Display
+	_display = config->initDisplay(displayParam);
+
+	// Create Platform
+	_platform = config->initPlatform();
+
+
+	_platform->add(_display);
+
+	assert(_platform);
+
+
+	// Create Input Devices
+
+	// Create Context
+	_context = config->initContext();
+	assert(_context);
+
+	// TODO: Throw Exceptions for Required Elements (Platform, System, Display, Context, etc)
 }
 
 
@@ -50,142 +74,110 @@ System::System(Engine * engine, std::weak_ptr<Module<Config>> config)
 */
 System::~System()
 {
-	// Unregister Events
+	// Unregister System Events
 	unregisterEvent<AppEventArgs>(System::Resume);
 	unregisterEvent<AppEventArgs>(System::Pause);
 	unregisterEvent<ResizeEventArgs>(System::Resize);
 	unregisterEvent<CloseEventArgs>(System::Close);
 
-	log_verbose("System: Destroyed");
+	log_verbosep("System: Destroyed");
 }
-
 
 
 
 /*
 
 */
-Boolean System::enumerateDisplaySettings(std::set<DisplayFormat> & displayModes)
+Boolean System::changeDisplaySettings(DisplayParameters & dp)
 {
-	std::shared_ptr<Platform> platform = getDependancyPtr<Platform>();
+	/*
+		TODO:
 
-	return platform->enumerateDisplaySettings(displayModes);
-}
+		Restructure how display settings is done...
+
+		// Changes Screen Resolution
+		setFullscreen(int width, int height, int bpp, int freq);
+
+		// Has ZERO effect on Screen Resolution : Unless switching from Fullscreen in which case it needs to restore resolution
+		setWindowed(int width, int height, bool borderless);
+
+		// DisplayMode is essentially pointless
+
+		isBorderless()	: True if Borderless
+		isFullscreen()	: True if Borderless Windowed OR Fullscreen (?)
+		isExclusive()	: True if Fullscreen (?)
+	*/
 
 
-/*
 
-*/
-Boolean System::getDisplayResolution(Int32 & width, Int32 & height)
-{
-	std::shared_ptr<Platform> platform = getDependancyPtr<Platform>();
+	log_warnp("System :: Change Display Settings");
 
-	if (platform == nullptr)
-		return false;
-
-	return _display.mode == DisplayMode::Windowed ? platform->getClientResolution(width, height) : platform->getScreenResolution(width, height);
-}
-
-/*
-
-*/
-Boolean System::changeDisplaySettings(Int width, Int32 height)
-{
-	DisplayParameters dp = _display;
+	// Change Display Settings for the display
 	
-	dp.format.width = width;
-	dp.format.height = height;
-
-	return changeDisplaySettings(dp);
-}
-
-/*
-
-*/
-Boolean System::changeDisplaySettings(Int width, Int32 height, DisplayMode mode)
-{
-	DisplayParameters dp = _display;
-
-	// Adjust Width ?
-	if (width)
-		dp.format.width = width;
-
-	// Adjust Height
-	if (height)
-		dp.format.height = height;
-
-	// Always Adjust Mode
-	dp.mode = mode;
-
-	return changeDisplaySettings(dp);
-}
-
-
-/*
-
-*/
-Boolean System::changeDisplaySettings(DisplayMode mode)
-{
-	DisplayParameters dp = _display;
-
-	// Currently is Windowed. Changing to something else!
-	// _display.mode == DisplayMode::Windowed &&
+	Boolean result = true;
 	
-	// Mode is being changed to something that isn't Windowed. Make sure the resolution is valid.
-	// Set to Current Resolution
-	if (mode != DisplayMode::Windowed)
+
+
+	// Get Current Screen Resolution
+	Int32 screenWidth = 0;
+	Int32 screenHeight = 0;
+
+	_display->getScreenResolution(screenWidth, screenHeight);
+
+
+
+	// Modify Params if needed!
+
+	//
+	if (dp.mode != DisplayMode::Windowed)
 	{
-		log_warn("Mode is being changed from windowed to non-windowed, and no resolution is set.");
-		log_warn("Resolution is being adjusted to Native!");
+		// Borderless
+		// Fullscreen
 
-		Int32 width = 0;
-		Int32 height = 0;
+		// Use Native Resolution
+		if (dp.resolution.width == 0 || dp.resolution.height == 0)
+		{
 
-		std::shared_ptr<Platform> platform = getDependancyPtr<Platform>();
-
-		platform->getScreenResolution(width, height);
-
-		dp.format.width = width;
-		dp.format.height = height;
+			// Use Current Screen Resolution for the Updated Settings
+			dp.resolution.width = screenWidth;
+			dp.resolution.height = screenHeight;
+		}
 	}
 
-	// New Display Mode
-	dp.mode = mode;
 
-	return changeDisplaySettings(dp);
+
+	// Change Display Settings Using Adjusted Parameters
+	result &= _display->changeDisplaySettings(dp);
+
+	// Change Dimensions of the window
+	if (result)
+	{
+		result &= _platform->changeWindowSettings(dp, screenWidth, screenHeight);
+	}
+
+	return result;
 }
 
 
-
-/*
-
-*/
-Boolean System::changeDisplaySettings(DisplayFormat format)
-{
-	DisplayParameters dp = _display;
-
-	dp.format = format;
-
-	return changeDisplaySettings(dp);
-}
-
-
+#if 0
 /*
 
 */
 Boolean System::changeDisplaySettings(const DisplayParameters & dp)
 {
+	log_warn("System :: changeDisplaySettings() DEPRECATED function in use");
+
 	Boolean b = true;
 
-	std::shared_ptr<Platform> platform = getDependancyPtr<Platform>();
+//	std::shared_ptr<Platform> platform = getDependancyPtr<Platform>();
 
-	b = platform->changeDisplaySettings(dp);
+	b = _platform->changeDisplaySettings(dp);
 	
 	// Update Stored DisplayParameters
 	if (b)
 	{
 		log_debug("Display Settings have updated");
-		_display = dp;
+		_displayParam = dp;
 	}
 
 	// Fire off Resize Event
@@ -193,44 +185,47 @@ Boolean System::changeDisplaySettings(const DisplayParameters & dp)
 
 	return b;
 }
+#endif
 
 
 /*
-	
+	init():
+
+
 */
-Boolean System::updateDisplaySettings()
+Boolean System::init()
 {
-	return true;
-}
+	log_debugp("System :: run();");
 
+	assert(_platform);
 
-/*
-	
-*/
-Boolean System::run()
-{
-	std::shared_ptr<Platform> platform = getDependancyPtr<Platform>();
-
-	if (!platform)
+	if (!_platform)
 		return false;
 
 
 	// Show the Platform
-	platform->show();
+	_platform->show();
 
 	// Send initial resize event!
-	dispatchResizeEvent();
+	//dispatchResizeEvent();
+
+	// TEMPORARY :: May or may NOT be needed
+	_display->notify(_platform.get());
 
 	return true;
 }
 
 
 /*
+	destroy():
+
 
 */
-Boolean System::quit()
+Boolean System::destroy()
 {
-	_engine->quit();
+	// Restore Display Resolution
+	_display->restoreScreenResolution();
+
 	return true;
 }
 
@@ -238,10 +233,12 @@ Boolean System::quit()
 
 
 /*
-
+	I NEED FIXING :(
 */
 Boolean System::close()
 {
+	log_warn("System :: close() DEPRECATED function in use");
+
 	CloseEventArgs e;
 	e.cancel = false;
 
@@ -252,63 +249,10 @@ Boolean System::close()
 	if (!e.cancel)
 	{
 		// Quit 
-		_engine->quit();		
+		Andromeda::instance()->quit();
 	}
 	else
 		log_warn("Quitting was cancelled");
 
 	return true;
 }
-
-
-/*
-
-*/
-Boolean System::pause()
-{
-	log_warn("System::Pause()");
-
-	_engine->pause(false);
-
-	AppEventArgs e;
-	
-	dispatch<AppEventArgs>(System::Pause, e);
-
-	return true;
-}
-
-/*
-
-*/
-Boolean System::resume()
-{
-	log_warn("System::Resume()");
-	_engine->resume();
-
-
-
-	AppEventArgs e;
-
-	dispatch<AppEventArgs>(System::Resume, e);
-
-	return true;
-}
-
-
-
-/*
-
-*/
-void System::dispatchResizeEvent()
-{
-	ResizeEventArgs e;
-
-	// Retrieving Display Resolution Failed. Platform Probably not assigned yet.
-	// Don't dispatch event
-	if (!getDisplayResolution(e.displayWidth, e.displayHeight))
-		return;
-
-	// Dispatch Event
-	dispatch<ResizeEventArgs>(System::Resize, e);
-}
-

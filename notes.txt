@@ -1,4 +1,37 @@
 
+Initialisation: [New Version]
+-----------------------------
+
+Andromeda
+ |
+ --- Config
+ |
+ --- ResourceManager ??? (System?)
+ |
+ --- System
+ |   |
+ |   --- Display
+ |   |
+ |	 --- Platform
+ |	 |   |
+ |	 |   --- Input Devices[]
+ |	 |	 
+ |	 | --- Context (Could be done by platform)
+ |   
+ |--- Timing
+ |
+ |--- Renderer
+ |
+ |--- EventManager
+
+
+
+Important:
+----------
+Rename:	andromeda/Platform to andromeda/System
+Move:	andromeda/Engine/system to andromeda/System/system
+
+
 
 Renderer Notes:
 ---------------
@@ -27,3 +60,12 @@ SceneGraph:
 1. The renderer is updated (drawn).
 2. FOREACH view.
 3.  Determine what objects in the scene need to be displayed
+
+
+
+
+
+Resource Notes:
+---------------
+- The Font: 'unispace.ttf' is NOT allowed to be used in embedded applications!
+	- For testing it will do :) lolololol

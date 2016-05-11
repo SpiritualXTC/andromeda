@@ -15,18 +15,9 @@
 // Forward Declarations
 namespace andromeda
 {
-	
-	class Entity;
-	class Engine;
-	class View;
-
 	struct CloseEventArgs;
 	struct ResizeEventArgs;
 	struct KeyEventArgs;
-
-	class Texture;
-	class RenderTarget;
-	class RenderTarget2;
 }
 
 
@@ -44,9 +35,6 @@ public:
 	
 	*/
 	void initialise();
-
-	//void run();
-
 
 	/*
 	
@@ -73,20 +61,11 @@ protected:
 	aBoolean mouseWheel(andromeda::MouseWheelEventArgs & e) override;
 
 	// IModule
-	void onPause(){}
-	void onResume(){}
+	void onPause() override {}
+	void onResume() override {}
+	void onStop() override {}
 
 private:
-	//std::shared_ptr<andromeda::View> _view;
-	//std::shared_ptr<andromeda::View> _dynView;
-
-
-	//std::shared_ptr<andromeda::Texture> _texture;
-	//std::shared_ptr<andromeda::RenderTarget2> _target;
-	
-
-	//std::list<std::shared_ptr<andromeda::Entity>> _entities;
-
 
 	std::shared_ptr<Game> _game;
 };

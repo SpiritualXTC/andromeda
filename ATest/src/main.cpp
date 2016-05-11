@@ -27,7 +27,12 @@
 #pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "soil.lib")
 
+#pragma comment(lib, "assimp-vc130-mtd.lib")
+#pragma comment(lib, "freetype240MT_D.lib")
+
 #pragma comment(lib, "andromeda.lib")
+
+
 
 // nvFX Library
 #if defined(_DEBUG) 
@@ -86,6 +91,9 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	// Set Exit Handler
 	atexit(exit);
 
+	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_DEBUG);
+
+
 	// Create Log
 	andromeda::Log::instance();
 
@@ -106,6 +114,10 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 #else
 	std::shared_ptr<IFramework> framework = nullptr;
 #endif
+
+
+	
+
 
 	// Test the Engine
 	if (!framework)
