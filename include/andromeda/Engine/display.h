@@ -80,6 +80,13 @@ namespace andromeda
 	class Display : virtual public IObserver<Platform>
 	{
 	public:
+		enum _DisplayEvents
+		{
+			Resize,
+		};
+
+
+	public:
 		Display(const DisplayParameters & dp);
 		virtual ~Display();
 

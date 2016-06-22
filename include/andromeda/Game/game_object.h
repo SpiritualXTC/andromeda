@@ -14,6 +14,21 @@ namespace andromeda
 	
 
 	/*
+		TODO:
+		An Optimized Caching Mechanism Stored in the game Object
+		Use a 64 bit INT, where each bit represents a different view.
+
+		0 = No in View
+		1 = In View
+
+		The ID of the View, determines what bit is used.
+
+		Events work the Same as they currently do - only doesn't require the hashmap lookup 
+	*/
+
+
+
+	/*
 		Object that exists in the game
 	*/
 	class GameObject : public Entity

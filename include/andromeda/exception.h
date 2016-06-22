@@ -19,7 +19,8 @@ namespace andromeda
 		/*
 		
 		*/
-		Exception(const std::string & message) : _message(message)
+		Exception(const std::string & message) 
+			: _message(message)
 		{
 
 		}

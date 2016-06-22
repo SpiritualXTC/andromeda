@@ -51,6 +51,9 @@ namespace andromeda
 	class Mouse;
 	class Keyboard;
 
+
+	class Graphics;
+
 	/*
 		Namespace Functionality :)
 	*/
@@ -67,13 +70,14 @@ namespace andromeda
 		virtual inline std::shared_ptr<Config> & getConfig() = 0;
 		virtual inline std::shared_ptr<System> & getSystem() = 0;
 		virtual inline std::shared_ptr<Engine> & getEngine() = 0;
+		virtual inline std::shared_ptr<Graphics> & getGraphics() = 0;
 
 		virtual inline std::shared_ptr<Timing> & getTiming() = 0;
 
 		virtual inline std::shared_ptr<Renderer> & getRenderer() = 0;
 
 
-		virtual void run(std::shared_ptr<Application> app) = 0;
+		virtual void run(std::shared_ptr<Application> & app) = 0;
 		virtual void quit() = 0;
 
 		virtual void pause() = 0;
@@ -108,6 +112,7 @@ namespace andromeda
 		virtual std::shared_ptr<Display> initDisplay(const DisplayParameters & dp) = 0;
 		virtual std::shared_ptr<Platform> initPlatform() = 0;
 		virtual std::shared_ptr<Context> initContext() = 0;
+		virtual std::shared_ptr<Graphics> initGraphics() = 0;
 	};
 
 
@@ -132,18 +137,17 @@ namespace andromeda
 		*/
 		static Boolean initialise(IAndromedaConfig * config)
 		{
+			assert(!_instance);
 
 			log_debugp("Andromeda :: initialise();");
 
-
-			assert(! _instance);
-
+			// Create Instance
 			_instance = std::make_shared<Andromeda>(config);
 			 
 
 			log_debugp("Andromeda :: initialisation() done;");
 
-			return true;
+			return !!_instance;
 		}
 
 
@@ -156,6 +160,9 @@ namespace andromeda
 
 			assert(_instance);
 			_instance->quit();
+
+			// Lower Reference Count
+			_instance.reset();
 
 			return true;
 		}
@@ -199,13 +206,13 @@ namespace andromeda
 		inline std::shared_ptr<Config> & getConfig() override{ return _config; };
 		inline std::shared_ptr<System> & getSystem() override { return _system; };
 		inline std::shared_ptr<Engine> & getEngine() override { return _engine; };
-
+		inline std::shared_ptr<Graphics> & getGraphics() override { return _graphics; }
 
 		inline std::shared_ptr<Timing> & getTiming() override {return _timing;}
 
 		inline std::shared_ptr<Renderer> & getRenderer() override { return _renderer; }
 
-		void run(std::shared_ptr<Application> app);
+		void run(std::shared_ptr<Application> & app);
 		void quit();
 
 		void pause();
@@ -220,6 +227,7 @@ namespace andromeda
 		std::shared_ptr<System> _system;
 
 		std::shared_ptr<Engine> _engine;
+		std::shared_ptr<Graphics> _graphics;
 
 		std::shared_ptr<Timing> _timing;
 		std::shared_ptr<Renderer> _renderer;
@@ -245,12 +253,37 @@ namespace andromeda
 
 
 
+	/* Run */
+	inline void run(std::shared_ptr<Application> & app)
+	{
+		Andromeda::instance()->run(app);
+	}
+
+	/* Destroy */
+	inline void destroy()
+	{
+		Andromeda::destroy();
+	}
 
 
 
 
 
-	/* Initialise */
+
+	inline std::shared_ptr<ResourceManager> resources()
+	{
+		return Andromeda::instance()->getResourceManager();
+	}
+
+	inline std::shared_ptr<Graphics> graphics()
+	{
+		return Andromeda::instance()->getGraphics();
+	}
+
+
+
+
+	/* Initialise - Platform Specific */
 #if BOOST_OS_WINDOWS
 	Boolean initialise(HINSTANCE hInstance);
 #endif

@@ -10,8 +10,7 @@
 namespace andromeda
 {
 	// Forward Declarations
-	class IEffect;
-	class Shader;
+	class IShader;
 	class MatrixStack;
 
 
@@ -38,7 +37,7 @@ namespace andromeda
 		/*
 			Render
 		*/
-		virtual void render(const std::shared_ptr<IEffect> effect, MatrixStack & ms) = 0;
+		virtual void render(const std::shared_ptr<IShader> shader, MatrixStack & ms) = 0;
 
 
 

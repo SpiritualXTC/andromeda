@@ -29,34 +29,17 @@ RasterizationState rasterStateWireframe
 
 
 // Matrix Constants
-uniform mat4 u_projection;		// Projection Matrix
-uniform mat4 u_modelview;		// ModelView Matrix
+uniform mat4 u_projection;				// Projection Matrix
+uniform mat4 u_modelview;				// ModelView Matrix
 
-// Texture
-uniform sampler2D u_texture;
-
-
-uniform vec3 g_ambient;
+// Material
+uniform vec3 g_ambient;	
 uniform vec3 g_diffuse;
 uniform vec3 g_specular;
 uniform float g_opacity;
 
-
-ConstantBuffer MATERIAL
-{
-	uniform vec3 ambient;
-    uniform vec3 diffuse;
-    uniform vec3 specular;
-	uniform float opacity;
-	
-	
-//	uniform sampler2D diffuseTexture;
-	
-//    uniform float    specexp;
-//    uniform float    reflectivity;
-//    uniform float    translucency;
-};
-
+// Texture
+uniform sampler2D g_diffuseTexture;		// Diffuse Texture
 
 
 
@@ -80,14 +63,14 @@ GLSLShader vertShader
         vec4 gl_Position;
     };
 	
-	out vec2 v_texture;
+	out vec2 v_diffuseTextureCoord;
 	out vec3 v_normal;
 
 	// Entry Point
 	void main()
 	{
 		// Setup Varying Interpolation
-		v_texture = a_texture;
+		v_diffuseTextureCoord = vec2(a_texture.x, 1.0 - a_texture.y);
 		
 		// Calculate Position
 		gl_Position = u_projection * u_modelview * a_position;	
@@ -104,7 +87,7 @@ GLSLShader vertShader
 GLSLShader fragShaderFill
 {
 	// Passed Along the Pipe
-	in vec2 v_texture;
+	in vec2 v_diffuseTextureCoord;
 	in vec3 v_normal;
 
 	// Output
@@ -112,12 +95,12 @@ GLSLShader fragShaderFill
 
 	void main(void)
 	{
-
-		vec3 col = diffuse;
+		vec4 texDif = texture2D(g_diffuseTexture, v_diffuseTextureCoord);
+		vec4 dif = vec4(g_diffuse, 1);
 
 		// Set Output Color
-		o_color = vec4(g_diffuse, 1);
-		//o_color = vec4(diffuse, 1);//vec4(1.0, 1.0, 0.0, 1.0);
+		//o_color = dif * texDif;
+		o_color = texDif;//vec4(v_diffuseTextureCoord, 1, 1);
 	}
 }
 
@@ -138,13 +121,104 @@ GLSLShader fragShaderWireframe
 
 
 
+GLSLShader vertShaderFaceNormal
+{
+	// Vertex Data
+	layout(location=0) in vec4 a_position;
+
+	out vec4 o_position;
+	
+	// Entry Point
+	void main()
+	{		
+		// Set Position
+		o_position = a_position;	
+	}
+}
+
+GLSLShader geomShaderFaceNormal
+{
+	layout(triangles) in;
+	layout(line_strip, max_vertices = 2) out;
+
+		// Pass along the Pipeline
+    out gl_PerVertex 
+	{
+        vec4 gl_Position;
+    };
+	
+	in vec4 o_position[3];
+	
+
+	void main(void)
+	{
+		// Nice Position
+	//	vec3 v0 = gl_in[0].gl_Position.xyz;
+	//	vec3 v1 = gl_in[1].gl_Position.xyz;
+	//	vec3 v2 = gl_in[2].gl_Position.xyz;
+	
+		vec3 v0 = o_position[0].xyz;
+		vec3 v1 = o_position[1].xyz;
+		vec3 v2 = o_position[2].xyz;
+	
+		// Subtraction
+		vec3 vs1 = v0 - v1;
+		vec3 vs2 = v1 - v2;
+
+		// Cross Product : Calculate Normal
+		//out[x] = v1[y]*v2[z] - v1[z]*v2[y];
+		//out[y] = v1[z]*v2[x] - v1[x]*v2[z];
+		//out[z] = v1[x]*v2[y] - v1[y]*v2[x];
+
+		float nx = vs1.y * vs2.z - vs1.z * vs2.y;
+		float ny = vs1.z * vs2.x - vs1.x * vs2.z;
+		float nz = vs1.x * vs2.y - vs1.y * vs2.x;
+
+		vec3 normal = vec3(nx, ny, nz);
+
+		// Calc Center of Face
+		vec3 p0 = (v0 + v1 + v2) / 3.0;
+		vec3 p1 = p0 + normalize(normal);
+
+		// Emit Vertex A
+		gl_Position = u_projection * u_modelview * vec4(p0, 1);
+		EmitVertex();
+
+		// Emit Vertex B
+		gl_Position = u_projection * u_modelview * vec4(p1, 1);
+		EmitVertex();
+
+		EndPrimitive();
+	}
+}
+
+
+GLSLShader fragShaderFaceNormal
+{
+	// Output
+	out vec4 o_color;
+
+	void main(void)
+	{
+		// Set Output Color
+		o_color = vec4(1.0, 0.0, 1.0, 1.0);
+	}
+}
+
+
+
+
+
+
+
+
 
 
 Technique DEFAULT
 {
 	Pass FILL_PASS
 	{
-	//	DEPTH_TEST = 1;
+		DEPTH_TEST = 1;
 		RasterizationState = rasterStateNormal;
 		VertexProgram = vertShader;
 		FragmentProgram = fragShaderFill;
@@ -152,9 +226,19 @@ Technique DEFAULT
 	
 	Pass WIREFRAME_PASS
 	{
-	//	DEPTH_TEST = 0;
+		DEPTH_TEST = 0;
 		RasterizationState = rasterStateWireframe;
 		VertexProgram = vertShader;
 		FragmentProgram = fragShaderWireframe;	
+	}
+
+	Pass NORMAL_PASS
+	{
+		DEPTH_TEST = 0;
+		RasterizationState = rasterStateWireframe;
+
+		VertexProgram = vertShaderFaceNormal;
+		GeometryProgram = geomShaderFaceNormal;
+		FragmentProgram = fragShaderFaceNormal;
 	}
 }

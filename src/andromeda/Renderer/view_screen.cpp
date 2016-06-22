@@ -37,7 +37,7 @@ Boolean ScreenView::onResize(ResizeEventArgs & e)
 	// Resize
 	resize(e.displayWidth, e.displayHeight);
 
-	log_event("ON_RESIZE: ", e.displayWidth, e.displayHeight);
+	log_eventp("ON_RESIZE: %1%x%2%", e.displayWidth, e.displayHeight);
 
 	return true;
 }

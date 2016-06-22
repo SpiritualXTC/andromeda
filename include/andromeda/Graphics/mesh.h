@@ -13,7 +13,7 @@ namespace andromeda
 {
 	class Geometry;
 	class GeometryBuilder;
-	class IEffect;
+	class IShader;
 
 	/*
 		Simplistic UNOPTIMISED Mesh Class
@@ -43,8 +43,8 @@ namespace andromeda
 
 		Boolean addMaterial(Material & material);
 
-		void render(const std::shared_ptr<IEffect> & effect);
-		void render(const std::shared_ptr<IEffect> & effect, UInt32 geomIndex);
+		void render(const std::shared_ptr<IShader> & effect);
+		void render(const std::shared_ptr<IShader> & effect, UInt32 geomIndex);
 
 	private:
 		std::vector<_MeshData> _geometry;

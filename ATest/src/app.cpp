@@ -11,7 +11,6 @@
 
 #include <andromeda/Renderer/renderer.h>
 
-
 #include <andromeda/Utilities/log.h>
 
 
@@ -25,39 +24,11 @@
 */
 App::App()
 {
-	log_verbose("App: Create");
-}
+	log_verbose("App :: <init>()");
 
-/*
-
-*/
-App::~App()
-{
-	log_verbose("App: Destroy");
-}
-
-/*
-
-*/
-void App::initialise()
-{
-
-	// Create Instance of Game... ?
-
-	// Add Game Dependancies
-	// Timing
-	// Config
-	// System
-	// Renderer
-	// ResourceManager
-	
-
-	// add game to engine
-
-
-	// Bind Close Event!
+	// Bind Events!
 	andromeda::bind<andromeda::CloseEventArgs>(andromeda::System::Close, std::bind(&App::close, this, std::placeholders::_1));
-	andromeda::bind<andromeda::ResizeEventArgs>(andromeda::System::Resize, std::bind(&App::resize, this, std::placeholders::_1));
+	andromeda::bind<andromeda::ResizeEventArgs>(andromeda::Display::Resize, std::bind(&App::resize, this, std::placeholders::_1));
 
 
 #if 0
@@ -93,22 +64,27 @@ void App::initialise()
 #endif
 
 
-	
 
-
-
-
-	// Create the Renderer : This should be done by the engine :)
-	//std::shared_ptr<andromeda::Renderer> renderer = _engine->getModulePtr<andromeda::Renderer>();
+	// Get the Renderer
 	std::shared_ptr<andromeda::Renderer> renderer = andromeda::Andromeda::instance()->getRenderer();
 
 
 	// Create Game Instance
+#if 1
 	_game = std::make_shared<Game>(renderer);
-
+#else
 	log_warnp("===========================");
 	log_errp("====== Game Disabled ======");
 	log_warnp("===========================");
+#endif
+}
+
+/*
+
+*/
+App::~App()
+{
+	log_verbose("App: Destroy");
 }
 
 
@@ -128,7 +104,7 @@ aBoolean App::close(andromeda::CloseEventArgs & e)
 */
 aBoolean App::resize(andromeda::ResizeEventArgs & e)
 {
-	log_debug("Resize:", e.displayWidth, e.displayHeight);
+	log_debugp("Resize: %1%x%2%", e.displayWidth, e.displayHeight);
 
 	return true;
 }
@@ -171,7 +147,6 @@ aBoolean App::keyUp(andromeda::KeyEventArgs & e)
 		}
 
 		system->changeDisplaySettings(params);
-
 	}
 	else if (e.key >= '1' && e.key <= '9')
 	{
@@ -225,7 +200,7 @@ aBoolean App::keyUp(andromeda::KeyEventArgs & e)
 		}
 	}
 
-	//log_event("KeyUp:", e.key);
+	//log_eventp("KeyUp: %1%", e.key);
 
 	return true;
 }
@@ -236,7 +211,7 @@ aBoolean App::keyUp(andromeda::KeyEventArgs & e)
 */
 aBoolean App::keyDown(andromeda::KeyEventArgs & e)
 {
-	//log_event("KeyDown:", e.key);
+	//log_eventp("KeyDown: %1%", e.key);
 
 	return true;
 }
@@ -258,7 +233,7 @@ aBoolean App::keyRepeat(andromeda::KeyEventArgs & e)
 */
 aBoolean App::mouseDown(andromeda::MouseButtonEventArgs & e)
 {
-	log_event("MouseDown:", e.button, e.x, e.y);
+	log_eventp("MouseDown: %1%, %2%x%3%", e.button, e.x, e.y);
 
 	return true;
 }
@@ -269,7 +244,7 @@ aBoolean App::mouseDown(andromeda::MouseButtonEventArgs & e)
 */
 aBoolean App::mouseUp(andromeda::MouseButtonEventArgs & e)
 {
-	log_event("MouseUp:", e.button, e.x, e.y);
+	log_eventp("MouseUp: %1%, %2%x%3%", e.button, e.x, e.y);
 
 	return true;
 }
@@ -289,7 +264,7 @@ aBoolean App::mouseMove(andromeda::MouseMoveEventArgs & e)
 */
 aBoolean App::mouseWheel(andromeda::MouseWheelEventArgs & e)
 {
-	log_event("MouseWheel:", e.delta);
+	log_eventp("MouseWheel: %1%", e.delta);
 	return true;
 }
 

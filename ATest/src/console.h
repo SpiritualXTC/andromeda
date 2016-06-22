@@ -15,12 +15,17 @@ public:
 	virtual ~Console();
 
 	aBoolean log(andromeda::LogMessage & message);
-	aBoolean print(std::string & string);
+	aBoolean print(std::string & string, andromeda::Log::LogLevel level = andromeda::Log::Verbose);
 
 private:
 	HANDLE _stdout = nullptr;
 	HANDLE _stderr = nullptr;
 	HANDLE _stdin = nullptr;
+
+	andromeda::Int32 _eventHandle;
+
+
+	std::string _indent;
 
 
 	std::unordered_map<aInt32, aInt16> _colors;

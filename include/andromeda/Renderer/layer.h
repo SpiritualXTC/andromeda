@@ -55,7 +55,7 @@ namespace andromeda
 		};
 
 	public:
-		Layer(const std::string & effectFile);
+		Layer(std::shared_ptr<Effect> & effect);
 		virtual ~Layer();
 		
 

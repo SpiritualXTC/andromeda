@@ -6,8 +6,8 @@
 
 
 
-#include "../stddef.h"
-#include "../Utilities/template.h"
+#include <andromeda/stddef.h>
+#include <andromeda/Utilities/template.h>
 
 namespace andromeda
 {
@@ -27,7 +27,7 @@ namespace andromeda
 	
 	*/
 	template <class EVENT>
-	class Event : public IEvent//, public TemplateIndex<EVENT, IEvent>
+	class Event : public IEvent
 	{
 	private:
 		struct Listener

@@ -56,6 +56,10 @@ void Geometry::render()
 		_indexBuffer->bind();
 
 		// Draw Indexed Primitives
+		/*
+			TODO:
+			API Agnostic Draw Call!
+		*/
 		glDrawElements(_description->mode(), _description->indices(), _description->indexType(), 0);
 
 		// Unbind IB
@@ -64,6 +68,10 @@ void Geometry::render()
 	else
 	{
 		// Draw Primitives
+		/*
+			TODO:
+			API Agnostic Draw Call!
+		*/
 		glDrawArrays(_description->mode(), 0, _description->vertices());
 	}
 

@@ -34,11 +34,6 @@ public:
 	/*
 	
 	*/
-	void initialise();
-
-	/*
-	
-	*/
 	void update(aDouble ft) override;
 
 

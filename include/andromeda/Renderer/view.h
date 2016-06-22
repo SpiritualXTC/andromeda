@@ -34,6 +34,8 @@ namespace andromeda
 	class SceneGraph;
 	class SceneGraphCache;
 
+	class Effect;
+
 	/*
 
 	*/
@@ -108,6 +110,11 @@ namespace andromeda
 		inline const Region2f getViewRegion() const { return _view; }
 		inline const Region2i getDisplayRegion() const { return _display; }
 		inline const Region2i getScreenRegion() const { return _screen; }
+
+		/*
+			Layers
+		*/
+		Boolean addLayer(const std::string & layer, std::shared_ptr<Effect> & effect);
 
 
 		/*

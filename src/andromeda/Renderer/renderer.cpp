@@ -148,7 +148,7 @@ void Renderer::errorCheck()
 	while ((err = glGetError()) != GL_NO_ERROR)
 	{
 		// Send error message to log :)
-		log_err("GL Error: ", gluErrorString(err));
+		log_errp("GL Error: %1%", gluErrorString(err));
 	}
 }
 

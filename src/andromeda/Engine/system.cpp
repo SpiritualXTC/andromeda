@@ -5,7 +5,7 @@
 #include <andromeda/andromeda.h>
 
 #include <andromeda/Events/event_manager.h>
-#include <andromeda/Events/resize.h>
+
 #include <andromeda/Platform/platform.h>
 
 #include <andromeda/Utilities/log.h>
@@ -29,7 +29,6 @@ System::System(IAndromedaConfig * config)
 
 	// Register System Events
 	registerEvent<CloseEventArgs>(System::Close);
-	registerEvent<ResizeEventArgs>(System::Resize);
 	registerEvent<AppEventArgs>(System::Pause);
 	registerEvent<AppEventArgs>(System::Resume);
 
@@ -47,13 +46,13 @@ System::System(IAndromedaConfig * config)
 //	_displayParam = displayParam;
 
 
-	// Create Display
+	// Create Display :: This needs to be created first because of an event :)
 	_display = config->initDisplay(displayParam);
 
 	// Create Platform
 	_platform = config->initPlatform();
 
-
+	// Add an Observer for Display Changes
 	_platform->add(_display);
 
 	assert(_platform);
@@ -77,7 +76,6 @@ System::~System()
 	// Unregister System Events
 	unregisterEvent<AppEventArgs>(System::Resume);
 	unregisterEvent<AppEventArgs>(System::Pause);
-	unregisterEvent<ResizeEventArgs>(System::Resize);
 	unregisterEvent<CloseEventArgs>(System::Close);
 
 	log_verbosep("System: Destroyed");

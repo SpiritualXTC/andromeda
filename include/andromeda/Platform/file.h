@@ -16,76 +16,14 @@
 
 namespace andromeda
 {
-	//typedef std::vector<Char> FileBuffer;
-
-#if 0
-	/*
-		Array of Bytes
-
-		This could be done via a vector, but YOLO for now this will do :)
-	*/
-	class FileBuffer
-	{
-	public:
-		FileBuffer();
-		FileBuffer(Size len);
-		FileBuffer(UChar * source, Size len);
-
-		virtual ~FileBuffer();
-
-
-		/*
-			Get Size of Buffer
-		*/
-		const inline Size length() const { return _length; }
-
-
-		/*
-			Lock Existing Buffer
-		*/
-		UChar * lock() { return lock(0); }
-		
-		/*
-			Lock New Buffer
-
-			TODO: Their are no flags (yet)!
-		*/
-		UChar * lock(Size len, UInt32 flags = 0);
-
-
-
-		void stream();
-
-		/*
-			Release Existing Data
-		*/
-		void release();
-
-	private:
-		void allocate(Size size);
-		void deallocate();
-		void copy(UChar * source, Size size);
-
-
-		Size _length = 0;
-
-		UChar * _bytes = nullptr;
-	};
-#endif
-
-
 	/*
 	
 	*/
 	class File
 	{
 	public:
-		File(const std::string & extension)
-			:_extension(extension)
-		{
-
-		}
-		virtual ~File(){}
+		File(const std::string & filename, const std::string & location = "");
+		virtual ~File();
 
 		/*
 			Contents of the File
@@ -102,8 +40,20 @@ namespace andromeda
 		*/
 		const inline std::string & extension() const { return _extension; }
 
+		/*
+			
+		*/
+		const inline std::string & filename() const { return _filename; }
+
+		/*
+			Location where the file was located :: This Could be a Resource Location
+		*/
+		const inline std::string & location() const { return _filename; }
+
 	private:
 		std::string _extension;
+		std::string _filename;
+		std::string _location;
 	};
 
 
@@ -114,7 +64,8 @@ namespace andromeda
 	{
 	public:
 		FileBinary(std::istream & stream);
-		FileBinary(std::istream & stream, const std::string & extension);
+		FileBinary(std::istream & stream, const std::string & filename, const std::string & location = "");
+
 
 		/*
 			Get Data
@@ -140,7 +91,7 @@ namespace andromeda
 	public:
 
 		FileText(std::istream & stream);
-		FileText(std::istream & stream, const std::string & extension);
+		FileText(std::istream & stream, const std::string & filename, const std::string & location = "");
 
 		/*
 			Get Data

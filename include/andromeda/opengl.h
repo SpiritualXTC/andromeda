@@ -14,7 +14,7 @@
 /* Windows */
 #if BOOST_OS_WINDOWS
 /* Windows Support */
-#include <GL/glew.h>
+#include <gl/glew.h>
 
 
 #endif

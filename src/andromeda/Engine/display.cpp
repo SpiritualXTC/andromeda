@@ -15,6 +15,8 @@ using namespace andromeda;
 Display::Display(const DisplayParameters & dp)
 	: _display(dp)
 {
+	registerEvent<ResizeEventArgs>(Display::Resize);
+
 	_displayWidth = dp.resolution.width;
 	_displayHeight = dp.resolution.height;
 }
@@ -25,7 +27,7 @@ Display::Display(const DisplayParameters & dp)
 */
 Display::~Display()
 {
-
+	unregisterEvent<ResizeEventArgs>(Display::Resize);
 }
 
 
@@ -151,7 +153,7 @@ Boolean Display::resize(Int32 width, Int32 height)
 	e.displayWidth = _displayWidth;
 	e.displayHeight = _displayHeight;
 
-	andromeda::dispatch<ResizeEventArgs>(System::Resize, e);
+	andromeda::dispatch<ResizeEventArgs>(Display::Resize, e);
 
 	return true;
 }

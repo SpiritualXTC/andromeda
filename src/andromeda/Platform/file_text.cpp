@@ -3,6 +3,8 @@
 #include <fstream>
 #include <sstream>
 
+#include <andromeda/Utilities/log.h>
+
 using namespace andromeda;
 
 
@@ -10,7 +12,7 @@ using namespace andromeda;
 
 */
 FileText::FileText(std::istream & stream)
-	: FileText(stream, "")
+	: FileText(stream, "", "")
 {
 
 }
@@ -19,8 +21,8 @@ FileText::FileText(std::istream & stream)
 /*
 
 */
-FileText::FileText(std::istream & stream, const std::string & extension)
-	: File(extension)
+FileText::FileText(std::istream & stream, const std::string & filename, const std::string & location)
+	: File(filename, location)
 {
 	std::stringstream contents;
 

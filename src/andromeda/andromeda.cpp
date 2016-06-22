@@ -88,6 +88,7 @@ Andromeda::Andromeda(IAndromedaConfig * config)
 	// Configure the Resource Manager from stored config settings
 
 
+	
 
 	
 	
@@ -96,7 +97,8 @@ Andromeda::Andromeda(IAndromedaConfig * config)
 	log_verbosep("Andromeda :: <init>() :: Create System");
 	_system = std::make_shared<System>(config);
 
-
+	// Initialise the Graphics API
+	_graphics = config->initGraphics();
 
 	// Initialise the Engine
 	log_verbosep("Andromeda :: <init>() :: Create Engine");
@@ -161,14 +163,13 @@ Andromeda::Andromeda(IAndromedaConfig * config)
 Andromeda::~Andromeda()
 {
 	log_verbosep("Andromeda :: <destroy>()");
-
 }
 
 
 /*
 
 */
-void Andromeda::run(std::shared_ptr<Application> app)
+void Andromeda::run(std::shared_ptr<Application> & app)
 {
 	assert(_system);
 	assert(_engine);
@@ -177,7 +178,6 @@ void Andromeda::run(std::shared_ptr<Application> app)
 
 	// Add the Application to the Engine
 	_engine->addModule<Application>(app);
-
 
 	// Start the System
 	_system->init();

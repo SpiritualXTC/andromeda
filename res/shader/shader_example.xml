@@ -1,0 +1,290 @@
+<?xml version="1.0"?>
+<effect version="420">
+
+  <!--
+    This XML Effect file consists of a lot of rubbish :)
+    
+    Mostly testing related (edge cases, mixed styles)
+  -->
+  
+  
+  
+  <!-- Effect Variables -->
+  <var name="lightingModel" value="Phong" />
+  <var name="lightingShader" value="lighting$(lightingModel)" />
+  <var name="test1" value="test_blah" />
+  <var name="test2" value="testing1234" />
+  
+  
+  
+  <!-- Shader Header --> 
+  <extension name="extension_name" value="[enable/require/warn/disable]" />
+  <extension name="GL_ARB_separate_shader_objects" value="enable" />
+
+  <!--
+    TODO:
+    Shader Defines :: Appends to INDIVIDUAL Shaders
+    However this can be a way for an application to inject constants into a shader
+  -->
+
+  
+  
+  <!--
+    TODO:
+    This will be the most time consuming, tedious section to write...
+    study up on OpenGL :(
+    
+    It will also require the Graphics API to be setup, rather than coding up gl function calls inside it.
+    
+    http://docs.gl/gl3/
+  -->
+  <state name="rs1">
+    
+    <!-- Basic States -->
+    <cull>[none, all, front, back]</cull>
+
+    <polygon face="all">fill</polygon>
+
+
+    <!-- Blending States -->
+    <blending>
+      <enable>true</enable>
+      <color red="0" green="0" blue="0" alpha="0" />
+      <equation rgb="" alpha=""></equation>
+      <source rgb="" alpha=""></source>
+      <destination rgb="" alpha=""></destination>
+    </blending>
+    
+    
+    <!-- Depth States -->
+    <depth>
+      <enable>true</enable>
+      <function>lessthan</function>
+      <write>true</write>
+      <range near="0" far="1" />
+    </depth>
+
+
+    <!-- Stencil States -->
+    <stencil enable="true" face="[all, front, back]">
+
+      <!-- Function: 3 parameters - function, int, uint -->
+      <function ref="0" mask="0xFFFFFFFF">always</function>
+
+      <mask>0xFFFFFFFF</mask>
+      
+      <!-- Operation: 3 Parameters - operation, operation, operation -->
+      <operation fail="keep" depthfail="keep" depthpass="keep" />
+    </stencil>
+
+
+    <!-- Scissor Test 
+      To Do this Correctly it will require some "smarts" 
+      - or just some smarts in the Graphics API 
+      
+      The values would typically need to be Screen Coordinates,
+      but that will vary depending on resolution,
+      but it could be archieved using a screen (or viewport) weighting
+      
+      Essentially, express as a percentage or [0.0-1.0]
+    -->
+    <scissor enable="true">
+      <x>0.0</x>
+      <y>0.0</y>
+      <width>1.0</width>
+      <height>1.0</height>
+    </scissor>
+    
+  </state>
+
+  <!--
+    TODO:
+    Load states from external file
+  -->
+  <state name="fdfds" source="state.xml" />
+  
+  
+  
+  
+  <!-- 
+  TODO:
+    Add a dependancies List, so shaders can pull other shaders in
+    The dependancy list will make pulling the shaders together, cleaner.
+    
+  EG:
+  <shader dependancies="{blah}">
+  
+  </shader>
+  
+  Recommendation:
+    Besides the global "shader" - it would probably be best to stick to using external files for shaders
+  -->
+  
+
+  <!-- Global Shader -->
+  <shader>
+    // The anonymous shader.
+    // Acts as an attachment to every shader.
+    // Best to define common structures, and definitions here
+    // And Function Headers/Prototypes! Pretty sure those are supported by GLSL
+  </shader>
+
+  
+  <!-- Default Vertex Shader -->
+  <shader name="defaultVS" source="default.vs" depandancies="{something.glsl}"/>
+ 
+  
+  <!-- Plug 'n Play Shader Sections -->
+  <shader name="lightingPhong" source="lighting_Phong.glsl" />
+  <shader name="lightingBlinnPhong" source="lighting_BlinnPhong.glsl" />
+          
+ 
+  <!-- Normal View Shader -->
+  <shader name="normalViewVS">
+	  // Vertex Data
+	  layout(location=0) in vec4 a_position;
+
+	  out vec4 o_position;
+	
+	  // Entry Point
+	  void main()
+	  {		
+		  // Set Position
+		  o_position = a_position;	
+	  }
+  </shader>
+  
+  <shader name="normalViewGS">
+    layout(triangles) in;
+	  layout(line_strip, max_vertices = 2) out;
+
+		  // Pass along the Pipeline
+      out gl_PerVertex 
+	  {
+          vec4 gl_Position;
+      };
+	
+	  in vec4 o_position[3];
+	
+	  void main(void)
+	  {
+		  vec3 normal = calcNormal(o_position[0].xyz, o_position[1].xyz, o_position[2].xyz);
+
+		  // Calc Center of Face
+		  vec3 p0 = (v0 + v1 + v2) / 3.0;
+		  vec3 p1 = p0 + normalize(normal);
+
+		  // Emit Vertex A
+		  gl_Position = u_projection * u_modelview * vec4(p0, 1);
+		  EmitVertex();
+
+		  // Emit Vertex B
+		  gl_Position = u_projection * u_modelview * vec4(p1, 1);
+		  EmitVertex();
+
+		  EndPrimitive();
+	  }
+  </shader>
+  
+  <shader name="normalViewFS">
+    // Output
+	  out vec4 o_color;
+
+	  void main(void)
+	  {
+		  // Set Output Color
+		  o_color = vec4(1.0, 0.0, 1.0, 1.0);
+	  }
+  </shader>
+  
+
+  <!-- Fragment Shaders -->
+  <shader name="test_Position" source="test_Position.fs" />
+  <shader name="test_Normal" source="frag_Normal.fs" />
+
+  <!-- Technique -->
+  <technique name="t1">
+    
+    <!-- Draws the mesh normally -->
+    <pass name="normal" state="{}">
+
+      <state>
+        <!-- Additional Options -->        
+      </state>
+      
+      <vertexShader shader="defaultVS" />
+
+      <fragmentShader shader="{test_Position, $(lightingShader), test_Normal}" />
+      
+    </pass>    
+    
+    <!-- Displays The Mesh in Wireframe -->
+    <pass name="wireframe">
+      <vertexShader shader="defaultVS" />
+      <fragmentShader>
+
+        <!-- 
+          TODO:
+          Support Shader Customization via #defines
+          
+          This will require research into how to inject values - pretty sure this is built into GLSL
+        -->
+        
+        <shader>
+          	// Output
+	          out vec4 o_color;
+
+	          void main(void)
+	          {
+		          // Set Output Color
+		          o_color = vec4(0.0, 1.0, 0.0, 1.0);
+	          }
+        </shader>
+      </fragmentShader>
+    </pass>
+    
+    <!-- Displays Face Normals for a Model -->
+    <pass name="normal_view">
+      <vertexShader shader="normalViewVS" />
+      <geometryShader shader="" />
+      <fragmentShader shader="normalViewFS" />
+    </pass>
+
+    <!-- Lots of Random Crap -->
+    <pass name="test_random">
+      <vertexShader shader="{defaultVS}" />
+      <geometryShader>
+        <shader source="test_Position.gs" />
+        <shader source="test_Normal.gs" />
+        <shader>
+          vec4 test()
+          {
+            return vec4(0,0,0,0);
+          }
+        </shader>
+      </geometryShader>    
+      <fragmentShader shader="{$(lightingShader), test_Normal}"/>
+    </pass>
+  
+  </technique>
+
+  <!-- Technique : This particular technique should be in it's own file <,< -->
+  <technique name="particles">
+    <pass name="pass1">
+      
+      <vertexShader>
+        <shader source="particle_draw.vs" />
+      </vertexShader>
+      
+      <geometryShader>
+        <shader source="particle_draw.gs" />
+      </geometryShader>
+        
+      <fragmentShader>
+        <shader source="particle_draw.fs" />
+      </fragmentShader>
+    
+    </pass>
+  </technique>
+  
+</effect>

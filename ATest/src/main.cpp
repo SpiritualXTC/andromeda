@@ -7,24 +7,20 @@
 
 
 
-
+#include <andromeda/andromeda.h>
+#include <andromeda/graphics.h>
+#include <andromeda/Resources/resource_manager.h>
 #include <andromeda/Utilities/io.h>
 #include <andromeda/Utilities/log.h>
 
 
-
+#include "app.h"
 #include "console.h"
-#include "framework.h"
-#include "test_bounds.h"
-#include "test_effect.h"
-#include "test_engine.h"
-#include "test_fs.h"
-#include "test_xml.h"
 
 // Libraries
 #pragma comment(lib,"opengl32.lib")
-#pragma comment(lib,"glu32.lib")
-#pragma comment(lib, "glew32s.lib")
+#pragma comment(lib,"glu32.lib")	// glErrorString(...) uses this function
+#pragma comment(lib, "glew32.lib")	//glew32s.lib for the static library - which for unknown reasons has decided to stop linking correctly! Go Figure!
 #pragma comment(lib, "soil.lib")
 
 #pragma comment(lib, "assimp-vc130-mtd.lib")
@@ -47,10 +43,12 @@
 #pragma comment(lib, "nvFxcc.lib")
 #endif
 
+// Boost Auto Links its libraries?? 
 
-// Boost may Auto Link ?? 
 
 
+
+// Debug Console
 #if defined(_DEBUG)
 #define LOCK_CONSOLE
 // Uncomment this to immediately quit on exit :)
@@ -65,6 +63,7 @@ void exit()
 {
 #if defined(LOCK_CONSOLE)
 	// Everything else will be out of scope by now :P
+	// Including the fucking logger & console.
 	//std::cout << "\n\nPress any Key to Continue:";
 	_getch();
 #endif
@@ -82,6 +81,8 @@ void printHeader(std::shared_ptr<Console> console)
 	console->print(contents);
 }
 
+
+#include <boost/regex.hpp>
 
 /*
 
@@ -104,30 +105,38 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	// Print the Header to Console
 	printHeader(console);
 #endif
-
-	// Create Framework Pointer
-
-//#define FRAMEWORK
-
-#if defined(FRAMEWORK)
-	std::shared_ptr<IFramework> framework = std::make_shared<IFramework>();
-#else
-	std::shared_ptr<IFramework> framework = nullptr;
-#endif
-
-
 	
+	// Create Engine
+	log_debug("main() :: Initialising Engine");
+
+	// Initialise the Engine
+	andromeda::initialise(hInstance);
+
+	// Resource management
+	andromeda::ResourceManager * fs = andromeda::Andromeda::Andromeda::instance()->getResourceManager().get();
+
+	// Resources
+	/*
+		TODO
+		- Move this to some automated aspect with the engine :: Potentially using the config
+	*/
+	fs->addResourceType<andromeda::Mesh>("models", andromeda::ResourceManager::Binary);
+	fs->addResourceType<andromeda::Effect>("shader");
+	fs->addResourceType<andromeda::Texture>("textures", andromeda::ResourceManager::Binary);
 
 
-	// Test the Engine
-	if (!framework)
-		testEngine(hInstance);
-	else
-	{
-		std::shared_ptr<Framework> fw = std::make_shared<Framework>(framework);
-		if (fw->initialise(1650, 900))
-			fw->loop();
-	}
+	// Create Application!
+	std::shared_ptr<andromeda::Application> app = std::make_shared<App>();
+
+	// Run Engine
+	andromeda::run(app);
+
+	log_debug("main() :: Destroying Engine");
+
+	// Destroy the Engine
+	andromeda::destroy();
+
+	log_debug("main() :: Fin");
 
 	return 0;
 }

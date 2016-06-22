@@ -56,12 +56,14 @@ namespace andromeda
 			// Are their any weak pointers that need to be removed?
 			Boolean weak = false;
 
+			// TODO: There may be a threading related crash occuring here when an observer dies
+
 			// Notify Observers
-			for (auto it : _observers)
+			for (auto & it : _observers)
 			{
-				std::shared_ptr<IObserver<T>> ptr = it.lock();
-				if (ptr)
-					ptr->notify(p);
+				//std::shared_ptr<IObserver<T>> ptr = it.lock();
+				if (! it.expired())
+					it.lock()->notify(p);
 				else
 					weak = true;
 			}

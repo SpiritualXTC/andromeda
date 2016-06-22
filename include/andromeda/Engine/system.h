@@ -63,7 +63,6 @@ namespace andromeda
 		{
 		//	Initialise,
 			Close,
-			Resize,	// TODO: Move to Display
 			Pause,
 			Resume,
 		};

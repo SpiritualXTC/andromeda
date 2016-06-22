@@ -38,6 +38,9 @@ void GeometryBuilder::addVertexData(const std::string & id, void * data, Size le
 	// Copy everything to a vector
 	std::vector<UInt8> vector((UInt8*)data, (UInt8*)data + bytes);
 
+	// IF TRIM == true AND stride != elements * elementSize
+	// Copy to the vector manually :S
+
 	// Setup Geometry
 	_VertexData geometry;
 

@@ -2,6 +2,8 @@
 
 #include <andromeda/Platform/file.h>
 
+#include <andromeda/Utilities/log.h>
+
 using namespace andromeda;
 using namespace boost;
 

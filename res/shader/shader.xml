@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<effect version="400">
+
+  
+  <shader name="vs" source="shader.vs" />
+  <shader name="fs" source="shader.fs" />
+
+
+  <shader name="passthru" source="passthru.vs" />
+  <shader name="constantColor" source="constant_color.fs" />
+
+
+  <!-- Does Nothing -->
+  <state name="normal">
+    <depth enable="true" />
+    <polygon>fill</polygon>
+  </state>
+
+  <!-- Wireframe View -->
+
+  <state name="wireframe">
+    <depth enable="false" />
+    <cull>back</cull>
+    <polygon>wireframe</polygon>
+  </state>
+
+
+
+
+ 
+
+
+
+  <technique name="t1">
+
+    <!--
+      Normal Display
+    -->
+    <pass state="normal">
+      <vertexShader shader="vs" />
+      <fragmentShader shader="fs" />
+    </pass>
+
+
+    <!-- Debug Display-->
+    <pass name="debug_Normals">
+       
+      <uniform name="u_color" value="{1.0, 0.0, 1.0, 1.0}" />
+
+      <vertexShader shader="passthru" />
+
+      <geometryShader>
+        <shader source="calc_Normal.glsl" />
+        <shader source="display_normal.gs" />
+      </geometryShader>
+
+      <fragmentShader shader="constantColor" />
+    </pass>
+    
+    <!-- Debug Wireframe-->
+    <pass name="debug_Wireframe" state="wireframe">
+      <uniform name="u_color" value="{0.0, 1.0, 0.0, 1.0}" />
+
+      <vertexShader shader="vs" />
+      <fragmentShader shader="constantColor" />
+    </pass>
+    
+    
+  </technique>
+  
+</effect>

@@ -65,8 +65,50 @@
 #include "resource_stream.h"
 #include "resource_type.h"
 
+//#include "mesh_resource.h"
+
 namespace andromeda
 {
+
+	/*
+		DEPRECATED
+
+		IResourceScan:
+
+		Technique to use to navigate a virtual or physical file system to locate resources.
+
+		TODO: Remove Meh, and anything that still uses it.
+	*/
+	class IResourceScan
+	{
+	public:
+		IResourceScan() {}
+		virtual ~IResourceScan() {}
+
+		/*
+			Load a resource
+		*/
+		virtual std::shared_ptr<ResourceStream> load(const std::string & location,
+			const std::string & localPath,
+			const std::string & filename) = 0;
+
+
+		/*
+			Search for resources in the specified location
+		*/
+		virtual Boolean search(const std::string & location,
+			const std::string & localPath,
+			const std::string & extension,
+			std::vector<std::string> & files) = 0;
+	};
+
+
+
+
+
+
+
+
 	/*
 		Resource Exception
 	*/
@@ -109,39 +151,6 @@ namespace andromeda
 	};
 
 
-	/*
-		DEPRECATED
-
-		IResourceScan:
-
-		Technique to use to navigate a virtual or physical file system to locate resources.
-	*/
-	class IResourceScan
-	{
-	public:
-		IResourceScan() {}
-		virtual ~IResourceScan() {}
-
-		/*
-			Load a resource
-		*/
-		virtual std::shared_ptr<ResourceStream> load(const std::string & location,
-			const std::string & localPath,
-			const std::string & filename) = 0;
-
-
-		/*
-			Search for resources in the specified location
-		*/
-		virtual Boolean search(const std::string & location,
-			const std::string & localPath,
-			const std::string & extension,
-			std::vector<std::string> & files) = 0;
-	};
-
-
-
-
 
 	/*
 		ResourceManager:
@@ -153,13 +162,14 @@ namespace andromeda
 	*/
 	class ResourceManager
 	{
-	private:
-
+	public:
 		enum _ResourceFlags
 		{
+			None = 0x00,
 			Binary = 0x01,
 		};
 
+	private:
 		struct _Resource
 		{
 			std::string directory;
@@ -172,24 +182,17 @@ namespace andromeda
 		virtual ~ResourceManager();
 
 
-
-		/*
-			---------------------------
-			New Functions
-			---------------------------
-		*/
-
-		
-
-
-		
-
 		/*
 			Adds a resource type
 		*/
 		template <typename RESOURCE>
-		Boolean addResourceType(const std::string & directory)
+		Boolean addResourceType(const std::string & directory, UInt32 flags = ResourceManager::None)
 		{
+			// TODO: Make less "templatey"
+
+			// This is currently NOT required, as their as:
+			// a) No Base Resource Type
+			// b) No Requirement for a Base Resource Type :)
 		//	static_assert(std::is_base_of<andromeda::Resource, RESOURCE>::value, "Resource is not a valid resource");
 
 			// Get Resource ID
@@ -198,7 +201,7 @@ namespace andromeda
 			// Add Resource
 			_Resource res;
 			res.directory = directory;
-			res.flags = 0;
+			res.flags = flags;
 
 			_resourceType[type] = res;
 
@@ -212,15 +215,7 @@ namespace andromeda
 		/*
 			Adds a Keyed Location
 		*/
-		Boolean addLocation(const std::string & name, std::shared_ptr<ResourceLocation> location)
-		{
-			assert(location);
-
-			// Insert the New Location
-			_location2[name] = location;
-				
-			return false;
-		}
+		Boolean addLocation(const std::string & name, std::shared_ptr<ResourceLocation> location);
 
 
 
@@ -259,20 +254,44 @@ namespace andromeda
 		template <typename RESOURCE>
 		std::shared_ptr<RESOURCE> loadResource(const std::string & filename, const std::string & locationName = "")
 		{
+			// TODO: Make less "templatey"
+
 			// Should it attempt to retrieve from the cache?
 
 			// Search for FIRST reference that matches filename in the map
 			// Search for ALL references that matches the filename in the map.
 			// Search for the file that matches the location in the map
 
+			// Load the File
+			std::shared_ptr<File> file = loadResourceSupport<RESOURCE>(filename, locationName);
+
+
+			if (file == nullptr)
+				return nullptr;
+
+			// Process the File using the Resources Loading Mechanism
+			ResourceLoader loader;
+			std::shared_ptr<RESOURCE> resource = loader.build<RESOURCE>(file);
+
+
+			return resource;
+		}
+
+
+		/*
+		
+		*/
+		template <typename RESOURCE>
+		std::shared_ptr<File> loadResourceSupport(const std::string & filename, const std::string & locationName = "")
+		{
 			// Get Resource ID
 			const _Resource & res = getResourceType<RESOURCE>();
 
 			std::string filepath = res.directory + "/" + filename;
-			
+
 			log_debugp("ResourceManager :: loadResource() :: %1%", filepath);
 
-			
+
 			// Binary or Text?
 			Boolean binary = false;
 
@@ -280,50 +299,10 @@ namespace andromeda
 				binary = true;
 
 			// Load the File
-			std::shared_ptr<File> file = loadFile(filepath, binary, locationName);
-
-
-			if (file == nullptr)
-				return nullptr;
-
-			// Process the File using the Resources Loading Mechanism
-			
-			// Load the Resource
-	//		std::shared_ptr<RESOURCE> resource = LoadResource<RESOURCE>(file);
-		
-			ResourceLoader loader;
-
-			// TODO: Add a generic loader
-			/*
-			std::shared_ptr<RESOURCE> r = std::make_shared<RESOURCE>(file);
-
-			OR
-
-			static_assert(...);// Is Resource derived from IResource ?
-			std::shared_ptr<IResource> res = std::static_cast<IResource>(r);
-			res->load(file);
-			*/
-
-			std::shared_ptr<RESOURCE> resource = loader.build<RESOURCE>(file);
-
-
-			//OR
-			//resource = LoadResource<RESOURCE>(buffer);
-
-			//OR
-			//resource = std::make_shared<RESOURCE>();		
-			//loader = std::make_shared<ResourceLoader<RESOURCE>>(resource, buffer);	
-			// - No Abstraction (May be required)
-			// - No Inheritance (May be required)
-			// + Allows Empty Instance
-			// + Can load data into the resource, later
-			// + Thread friendly with "instant" return
-			// + Can be made to allow for "dummy" data while waiting for it to complete loading
-			// + Resource Doesn't know how it gets populated, nor does it care.
-			
-
-			return resource;
+			return loadFile(filepath, binary, locationName);
 		}
+
+
 
 
 		/*
@@ -344,23 +323,15 @@ namespace andromeda
 
 	private:
 
-
-		// NEW
-
-
-
-
-
-
 		// Mapping :: ResourceType :: ResourceDirectory
 		std::unordered_map<ResourceType, _Resource> _resourceType;
 
 		// Mapping :: locationName <-> ILocator
-		std::unordered_map<std::string, std::shared_ptr<ResourceLocation>> _location2;
+		std::unordered_map<std::string, std::shared_ptr<ResourceLocation>> _location;
 
 
 		// Mapping :: [<Resource>/]<filename> <-> FILEEX_STRUCTURE
-		//std::unordered_multimap<std::string, std::shared_ptr<_FileEx>> _files2;	// Map of Filename <-> File Access
+		//std::unordered_multimap<std::string, std::shared_ptr<_FileEx>> _files;	// Map of Filename <-> File Access
 	};
 
 
@@ -391,6 +362,22 @@ namespace andromeda
 
 
 
+
+
+	class Effect;
+	class Mesh;
+	class Texture;
+
+
+
+	template<>
+	std::shared_ptr<Effect> ResourceLoader::build<Effect>(std::shared_ptr<File> file);
+
+	template<>
+	std::shared_ptr<Mesh> ResourceLoader::build<Mesh>(std::shared_ptr<File> file);
+
+	template<>
+	std::shared_ptr<Texture> ResourceLoader::build<Texture>(std::shared_ptr<File> file);
 
 }
 

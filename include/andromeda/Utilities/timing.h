@@ -6,19 +6,26 @@
 #include <chrono>
 
 #include <andromeda/Engine/module.h>
-#include <andromeda/Utilities/log.h>
 
+
+/*
+	TODO:
+	Decide between
+
+	std::chrono
+	and 
+	boost::chrono
+*/
 
 namespace andromeda
 {
-	//template <class CHRONO>
 	class Timing : public Module<Timing>
 	{
 	public:
 		typedef std::chrono::high_resolution_clock CHRONO;
 
-		Timing() : Module(Module::Critical, Module::Highest) {}
-		virtual ~Timing() {}
+		Timing();
+		virtual ~Timing();
 
 		// IModule
 		void onPause() override {}
@@ -30,26 +37,7 @@ namespace andromeda
 		void onStop() override {}
 
 
-		void update() override
-		{
-			CHRONO::time_point time = CHRONO::now();
-
-			_frametime = (time - _last).count() / (Double)CHRONO::period::den;
-
-			_last = time;
-
-			_frame++;
-			_timing += _frametime;
-			if (_timing > 1.0)
-			{
-				log_debug("FPS:", _frame);
-
-				_fps = _frame;
-
-				_frame = 0;
-				_timing -= 1.0;
-			}
-		}
+		void update() override;
 
 
 

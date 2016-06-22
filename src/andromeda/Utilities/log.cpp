@@ -39,7 +39,7 @@ void Log::log(LogLevel level, const std::string & message)
 	msg.message = message;
 
 	// Send Notification to Observers
-	notify(this);
+	//notify(this);
 
 	// Send Event
 	dispatch<LogMessage>(Log::Message, msg);

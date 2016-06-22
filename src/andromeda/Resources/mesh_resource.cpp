@@ -1,5 +1,6 @@
+#include "mesh_resource.h"
+
 #include <andromeda/Graphics/mesh.h>
-#include <andromeda/Resources/mesh_resource.h>
 #include <andromeda/Resources/resource_manager.h>
 
 #include <cassert>
@@ -21,7 +22,6 @@
 #include <andromeda/Utilities/io.h>
 #include <andromeda/Utilities/log.h>
 
-
 using namespace andromeda;
 
 
@@ -32,6 +32,8 @@ using namespace andromeda;
 	loadMesh():
 
 	Loads a mesh using AssImp [Asset Importer], and returns the Mesh
+
+	Not sure if this will be needed -- leaving it it does allow a way to bypass resource management...
 */
 std::shared_ptr<Mesh> andromeda::LoadMesh(const std::string & filename)
 {
@@ -44,16 +46,16 @@ std::shared_ptr<Mesh> andromeda::LoadMesh(const std::string & filename)
 
 
 /*
-	Template Specialisation for Loading a Mesh
+Template Specialisation for Loading a Mesh
 
-	TODO: 
-	 - The Mesh needs to be created and returned, irrespective of when/where the mesh gets loaded
-	 - Add threading support somewhere ...
+TODO:
+- The Mesh needs to be created and returned, irrespective of when/where the mesh gets loaded
+- Add threading support somewhere ...
 */
 template<>
 std::shared_ptr<Mesh> ResourceLoader::build<Mesh>(std::shared_ptr<File> file)
 {
-	log_warnp("Loading Mesh");
+	log_warnp("ResourceLoader :: build<Mesh>() :: Loading Mesh");
 
 	MeshLoader loader(file);
 
@@ -197,6 +199,8 @@ aiString MeshLoader::getTextureFilename(const aiMaterial * pmaterial, aiTextureT
 */
 std::shared_ptr<Texture> MeshLoader::loadTexture(const aiMaterial * pmaterial, aiTextureType type, UInt32 index)
 {
+	log_debugp("MeshLoader :: loadTexture()");
+
 	// No Texture
 	if (pmaterial->GetTextureCount(type) == 0)
 		return nullptr;
@@ -204,10 +208,16 @@ std::shared_ptr<Texture> MeshLoader::loadTexture(const aiMaterial * pmaterial, a
 	// Get Filename
 	aiString filename = getTextureFilename(pmaterial, type, 0);
 
+	// Strip any "additional" information from the filename
 	std::string fn = GetFilename(std::string(filename.C_Str()));
 
 	// Load Texture :: This can't be loaded via a separate thread
 	std::shared_ptr<Texture> texture = andromeda::LoadResource<Texture>(fn.c_str());
+
+	if (texture)
+		log_infop("-- Valid Texture");
+	else
+		log_warnp("-- No Texture");
 
 	return texture;
 }
@@ -223,14 +233,9 @@ void MeshLoader::loadMaterial(const aiMaterial * pmaterial)
 	aiString name;
 	pmaterial->Get(AI_MATKEY_NAME, name);
 
-	
+	log_infop("- Material: %1%", name.C_Str());
 
-	aiColor3D ambient = getColor(pmaterial, AI_MATKEY_COLOR_AMBIENT);
-	aiColor3D diffuse = getColor(pmaterial, AI_MATKEY_COLOR_DIFFUSE);
-	aiColor3D specular = getColor(pmaterial, AI_MATKEY_COLOR_SPECULAR);
 
-	Float opacity = 1.0f;
-	pmaterial->Get(AI_MATKEY_OPACITY, opacity);
 
 
 	// Texture Types
@@ -241,19 +246,37 @@ void MeshLoader::loadMaterial(const aiMaterial * pmaterial)
 	//aiTextureType_DISPLACEMENT	:: Displacement Mapping (?)
 
 
-	log_debugp("- Material: %1%", name.C_Str());
-	log_debugp("-- Ambient: (%1%, %2%, %3%)", ambient.r, ambient.g, ambient.b);
-	log_debugp("-- Diffuse: (%1%, %2%, %3%)", diffuse.r, diffuse.g, diffuse.b);
-	log_debugp("-- Specular: (%1%, %2%, %3%)", specular.r, specular.g, specular.b);
-	log_debugp("-- Opacity: %1%", opacity);
-	log_debugp("-- Diffuse Texture Count: %1%", pmaterial->GetTextureCount(aiTextureType_DIFFUSE));
 
 
+	aiColor3D ambient = getColor(pmaterial, AI_MATKEY_COLOR_AMBIENT);
+	aiColor3D diffuse = getColor(pmaterial, AI_MATKEY_COLOR_DIFFUSE);
+	aiColor3D specular = getColor(pmaterial, AI_MATKEY_COLOR_SPECULAR);
+
+	Float opacity = 1.0f;
+	pmaterial->Get(AI_MATKEY_OPACITY, opacity);
 
 	// Load only the First Texture
 	std::shared_ptr<Texture> difTex = loadTexture(pmaterial, aiTextureType_DIFFUSE, 0);
 	std::shared_ptr<Texture> normTex = loadTexture(pmaterial, aiTextureType_NORMALS, 0);
 
+	// Create the Material
+	Material material(name.C_Str());
+
+	// Set Material Properties
+	material.setAmbient(ambient.r, ambient.g, ambient.b);
+	material.setDiffuse(diffuse.r, diffuse.g, diffuse.b);
+	material.setSpecular(specular.r, specular.g, specular.b);
+	material.setOpacity(opacity);
+
+
+
+
+
+	log_infop("-- Ambient: (%1%, %2%, %3%)", ambient.r, ambient.g, ambient.b);
+	log_infop("-- Diffuse: (%1%, %2%, %3%)", diffuse.r, diffuse.g, diffuse.b);
+	log_infop("-- Specular: (%1%, %2%, %3%)", specular.r, specular.g, specular.b);
+	log_infop("-- Opacity: %1%", opacity);
+	log_infop("-- Diffuse Texture Count: %1%", pmaterial->GetTextureCount(aiTextureType_DIFFUSE));
 
 	// Texture Debug
 	for (UInt32 tex = 0; tex < pmaterial->GetTextureCount(aiTextureType_DIFFUSE); ++tex)
@@ -267,32 +290,31 @@ void MeshLoader::loadMaterial(const aiMaterial * pmaterial)
 			continue;
 		}
 
-		log_debugp("-- Texture Filename: %1%", filename.C_Str());
+		log_infop("-- Texture Filename: %1%", filename.C_Str());
 	}
-
-	
-
-
-
-
-
-
-	
-	// Create the Material
-	Material material(name.C_Str());
-
-	// Set Material Properties
-	material.setAmbient(ambient.r, ambient.g, ambient.b);
-	material.setDiffuse(diffuse.r, diffuse.g, diffuse.b);
-	material.setSpecular(specular.r, specular.g, specular.b);
-	material.setOpacity(opacity);
 
 	// Set Textures
 	if (difTex)
+	{
+		log_infop("-- Diffuse Texture Assigned");
 		material.setDiffuseTexture(difTex);
+	}
+	else
+		log_infop("-- No Diffuse Texture");
 
 	if (normTex)
+	{
+		log_infop("-- Normal Texture Assigned");
 		material.setNormalTexture(normTex);
+	}
+	else
+		log_infop("-- No Normal Texture");
+
+
+
+
+
+
 
 	// Add Material
 	_mesh->addMaterial(material);
@@ -307,11 +329,11 @@ void MeshLoader::loadMesh(const aiMesh * pmesh)
 	log_debugp("MeshLoader :: loadMesh()");
 
 #if 0
-	log_debugp("-- Mesh '%1%'", pmesh->mName.C_Str());
-	log_debugp("-- Vertices = %1%", pmesh->mNumVertices);
-	log_debugp("-- Faces = %1%", pmesh->mNumFaces);
-	log_debugp("-- Material index = %1%", pmesh->mMaterialIndex);
-	log_debugp("-- Texture Channels %1%", pmesh->GetNumUVChannels());
+	log_infop("-- Mesh '%1%'", pmesh->mName.C_Str());
+	log_infop("-- Vertices = %1%", pmesh->mNumVertices);
+	log_infop("-- Faces = %1%", pmesh->mNumFaces);
+	log_infop("-- Material index = %1%", pmesh->mMaterialIndex);
+	log_infop("-- Texture Channels %1%", pmesh->GetNumUVChannels());
 	for (UInt32 t = 0; t < pmesh->GetNumUVChannels(); ++t)
 		log_debugp("--- Texture Coordinates[%1%] = %2%", t, pmesh->mNumUVComponents[t]);
 #endif
@@ -346,6 +368,8 @@ void MeshLoader::loadMesh(const aiMesh * pmesh)
 			// however this will add additional data that is never used to the GPU streams
 
 			// The other aspect is.... the stride offsets have never been tested for the case where the stride is greater than the size of the data
+
+			gb.addVertexData<aiVector3D>("tex", pmesh->mTextureCoords[tex], (Size)pmesh->mNumVertices, (Size)pmesh->mNumUVComponents[tex], GL_FLOAT, GeometryLocation::Texture0);
 		}
 	}
 

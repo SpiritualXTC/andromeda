@@ -141,8 +141,7 @@ namespace andromeda
 	//	Boolean deindex();	// Removes indexing from the data
 
 		
-
-
+	
 		Size _stride = 0;					// Size of the total structure 
 		Size _length = 0;					// Number of array elements in the array
 

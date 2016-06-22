@@ -36,8 +36,8 @@ View::View(const std::shared_ptr<SceneGraph> sceneGraph, std::shared_ptr<IProjec
 		_projection = std::make_shared<ProjectionPerspective>();
 
 	// Create a default Layer [Temporary]
-	log_warn("Creating default layer");
-	_layers["default"] = std::make_unique<Layer>("");
+//	log_warn("Creating default layer");
+//	_layers["default"] = std::make_unique<Layer>(nullptr);
 
 	// Create Scene Graph Cache
 	_sceneGraphCache = std::make_shared<SceneGraphCache>(this, _visibility.get());
@@ -55,6 +55,17 @@ View::~View()
 }
 
 
+/*
+
+*/
+Boolean View::addLayer(const std::string & layer, std::shared_ptr<Effect> & effect)
+{
+	log_debugp("View :: addLayer() :: Layer = %1%", layer);
+
+	_layers[layer] = std::make_unique<Layer>(effect);
+
+	return true;
+}
 
 
 /*
@@ -123,6 +134,7 @@ void View::resize(const Int32 width, const Int32 height)
 */
 void View::render()
 {
+	assert(_camera);
 	assert(_sceneGraph);
 
 	// Viewport Attributes
@@ -136,16 +148,23 @@ void View::render()
 	bottom -= height;
 
 
+	/*
+		TODO: 
+		ReAdd support for RenderTargets
+		Do this after texturing is working and back in place :D
+	*/
 
+	
 	// THE RENDER TARGET NEEDS TO DO SHIT HERE
 	// IViewTarget Interface
 	//IViewTarget->begin();
 
 	// Set Viewport
 	glViewport(left, bottom, width, height);
+	// graphics()->setViewport(left, bottom, width, height);
 
-	// Camera
-	assert(_camera);
+	// Update Camera Position
+	// TODO: Camera should really be part of the scenegraph and be updated there
 	_camera->calculate();
 
 	if (_visibility)

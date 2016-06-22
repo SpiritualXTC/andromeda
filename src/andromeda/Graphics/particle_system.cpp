@@ -65,7 +65,7 @@ void ParticleSystem::update(Float ft)
 /*
 	
 */
-void ParticleSystem::render(const Shader * const shader, const glm::mat4 & modelView)
+void ParticleSystem::render(const std::shared_ptr<IShader> shader, MatrixStack & ms)
 {
 
 	// Update the Particles

@@ -26,6 +26,7 @@ namespace andromeda
 			std::shared_ptr<Display> initDisplay(const DisplayParameters & dp) override;
 			std::shared_ptr<Platform> initPlatform() override;
 			std::shared_ptr<Context> initContext() override;
+			std::shared_ptr<Graphics> initGraphics() override;
 
 		private:
 			std::shared_ptr<PlatformWindows> _platform;

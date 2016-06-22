@@ -32,7 +32,7 @@ GeometryRenderComponent::~GeometryRenderComponent()
 /*
 
 */
-void GeometryRenderComponent::render(const std::shared_ptr<andromeda::IEffect> effect, andromeda::MatrixStack & ms)
+void GeometryRenderComponent::render(const std::shared_ptr<andromeda::IShader> shader, andromeda::MatrixStack & ms)
 {
 
 	// Animation Matices, could be push/popped here :)
@@ -54,7 +54,7 @@ void GeometryRenderComponent::render(const std::shared_ptr<andromeda::IEffect> e
 	ms.multiply(_transform->matrix());
 
 	// Update the Model View Matrix
-	effect->updateUniformMat4("u_modelview", ms.top());
+	shader->setUniform("u_modelview", ms.top());
 
 	// Render ALL Geometry
 	_geometry->render();

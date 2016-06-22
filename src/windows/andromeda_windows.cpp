@@ -27,12 +27,13 @@
 
 
 
+/*
+	TODO:
+	Fix up the graphics initialiser / headers
+*/
+#include <opengl/graphics_gl.h>
 
 
-
-#include <andromeda/Graphics/effect.h>
-#include <andromeda/Graphics/mesh.h>
-#include <andromeda/Graphics/texture.h>
 
 
 using namespace andromeda;
@@ -129,3 +130,13 @@ std::shared_ptr<Context> AndromedaConfigWindows::initContext()
 	return std::make_shared<ContextWindows>(_hDC);
 }
 
+/*
+	Create Graphics
+
+	TODO:
+	Determine whether the context should create the Graphics or NOT.
+*/
+std::shared_ptr<Graphics> AndromedaConfigWindows::initGraphics()
+{
+	return std::make_shared<GraphicsOpenGL>();
+}

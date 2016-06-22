@@ -57,6 +57,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions);GLM_FORCE_RADIANS</PreprocessorDefinitions>
       <CompileAsManaged>false</CompileAsManaged>
+      <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -98,7 +99,8 @@
     <ClInclude Include="include\andromeda\Game\view_component.h" />
     <ClInclude Include="include\andromeda\glm.h" />
     <ClInclude Include="include\andromeda\Graphics\effect.h" />
-    <ClInclude Include="include\andromeda\Graphics\effect_buffer.h" />
+    <ClInclude Include="include\andromeda\Utilities\convert.h" />
+    <ClInclude Include="include\nvfx\nv_effect_buffer.h" />
     <ClInclude Include="include\andromeda\Renderer\layer.h" />
     <ClInclude Include="include\andromeda\Renderer\projection.h" />
     <ClInclude Include="include\andromeda\Renderer\scene.h" />
@@ -106,8 +108,10 @@
     <ClInclude Include="include\andromeda\Renderer\scene_graph_cache.h" />
     <ClInclude Include="include\andromeda\Renderer\view_builder.h" />
     <ClInclude Include="include\andromeda\Renderer\visibility.h" />
-    <ClInclude Include="include\andromeda\Resources\effect_resource.h" />
-    <ClInclude Include="include\andromeda\Resources\mesh_resource.h" />
+    <ClInclude Include="include\nvfx\nv_effect.h" />
+    <ClInclude Include="src\opengl\shader_gl.h" />
+    <ClInclude Include="src\andromeda\Resources\effect_resource.h" />
+    <ClInclude Include="src\andromeda\Resources\mesh_resource.h" />
     <ClInclude Include="include\andromeda\Platform\file.h" />
     <ClInclude Include="include\andromeda\Resources\resource_cache.h" />
     <ClInclude Include="include\andromeda\Resources\resource_loader.h" />
@@ -157,9 +161,10 @@
     <ClInclude Include="include\andromeda\Input\mouse.h" />
     <ClInclude Include="include\andromeda\Platform\platform.h" />
     <ClInclude Include="include\andromeda\Resources\resource_type.h" />
-    <ClInclude Include="include\andromeda\Resources\texture_resource.h" />
+    <ClInclude Include="src\andromeda\Resources\texture_resource.h" />
     <ClInclude Include="include\andromeda\Resources\xml_resource.h" />
     <ClInclude Include="include\andromeda\stddef.h" />
+    <ClInclude Include="include\andromeda\Utilities\chain.h" />
     <ClInclude Include="include\andromeda\Utilities\dependancy.h" />
     <ClInclude Include="include\andromeda\Utilities\io.h" />
     <ClInclude Include="include\andromeda\Utilities\log.h" />
@@ -167,6 +172,8 @@
     <ClInclude Include="include\andromeda\Utilities\singleton.h" />
     <ClInclude Include="include\andromeda\Utilities\template.h" />
     <ClInclude Include="include\andromeda\Utilities\timing.h" />
+    <ClInclude Include="include\andromeda\graphics_types.h" />
+    <ClInclude Include="include\opengl\graphics_gl.h" />
     <ClInclude Include="src\andromeda\andromeda.h" />
     <ClInclude Include="src\andromeda\andromeda_config.h" />
     <ClInclude Include="include\andromeda\Resources\resource_location_filesystem.h" />
@@ -176,6 +183,24 @@
     <ClInclude Include="src\windows\Engine\display_windows.h" />
     <ClInclude Include="src\windows\Renderer\context_windows.h" />
     <ClInclude Include="src\windows\Platform\platform_windows.h" />
+    <ClInclude Include="include\xeffect\xeffect.h" />
+    <ClInclude Include="src\xeffect\xloader.h" />
+    <ClInclude Include="src\xeffect\x_exception.h" />
+    <ClInclude Include="src\xeffect\x_name.h" />
+    <ClInclude Include="src\xeffect\x_node.h" />
+    <ClInclude Include="src\xeffect\x_shader.h" />
+    <ClInclude Include="src\xeffect\x_effect.h" />
+    <ClInclude Include="src\xeffect\x_extension.h" />
+    <ClInclude Include="src\xeffect\x_pass.h" />
+    <ClInclude Include="src\xeffect\x_shader_builder.h" />
+    <ClInclude Include="src\xeffect\x_shader_source.h" />
+    <ClInclude Include="src\xeffect\x_state.h" />
+    <ClInclude Include="src\xeffect\x_state_builder.h" />
+    <ClInclude Include="src\xeffect\x_type_conversion.h" />
+    <ClInclude Include="src\xeffect\x_technique.h" />
+    <ClInclude Include="src\xeffect\x_uniform.h" />
+    <ClInclude Include="src\xeffect\x_uniform_builder.h" />
+    <ClInclude Include="src\xeffect\x_variable_map.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Docs\code.txt" />
@@ -184,6 +209,8 @@
     <Text Include="Docs\todo.txt" />
     <Text Include="notes.txt" />
     <Text Include="readme.txt" />
+    <Text Include="res\shader\display_wireframe.gs" />
+    <Text Include="res\shader\passthru.vs" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\andromeda\andromeda.cpp" />
@@ -192,7 +219,8 @@
     <ClCompile Include="src\andromeda\Engine\display.cpp" />
     <ClCompile Include="src\andromeda\Engine\engine.cpp" />
     <ClCompile Include="src\andromeda\Game\mesh_component.cpp" />
-    <ClCompile Include="src\andromeda\Graphics\effect_material_buffer.cpp" />
+    <ClCompile Include="src\andromeda\graphics.cpp" />
+    <ClCompile Include="src\nvfx\nv_effect_material_buffer.cpp" />
     <ClCompile Include="src\andromeda\Graphics\font.cpp" />
     <ClCompile Include="src\andromeda\Graphics\material.cpp" />
     <ClCompile Include="src\andromeda\Graphics\mesh.cpp" />
@@ -205,7 +233,7 @@
     <ClCompile Include="src\andromeda\Game\game_object.cpp" />
     <ClCompile Include="src\andromeda\Game\geometry_component.cpp" />
     <ClCompile Include="src\andromeda\Game\render_component.cpp" />
-    <ClCompile Include="src\andromeda\Graphics\effect.cpp" />
+    <ClCompile Include="src\nvfx\nv_effect.cpp" />
     <ClCompile Include="src\andromeda\Renderer\layer.cpp" />
     <ClCompile Include="src\andromeda\Renderer\scene.cpp" />
     <ClCompile Include="src\andromeda\Renderer\scene_graph_basic.cpp" />
@@ -214,10 +242,10 @@
     <ClCompile Include="src\andromeda\Renderer\view_texture.cpp" />
     <ClCompile Include="src\andromeda\Renderer\view_screen.cpp" />
     <ClCompile Include="src\andromeda\Renderer\visibility_region.cpp" />
+    <ClCompile Include="src\andromeda\Resources\effect_resource.cpp" />
     <ClCompile Include="src\andromeda\Resources\mesh_resource.cpp" />
     <ClCompile Include="src\andromeda\Platform\file.cpp" />
     <ClCompile Include="src\andromeda\Resources\resource_cache.cpp" />
-    <ClCompile Include="src\andromeda\Resources\resource_loader.cpp" />
     <ClCompile Include="src\andromeda\Resources\resource_manager.cpp" />
     <ClCompile Include="src\andromeda\Engine\system.cpp" />
     <ClCompile Include="src\andromeda\Events\resize.cpp" />
@@ -247,12 +275,50 @@
     <ClCompile Include="src\andromeda\Utilities\io.cpp" />
     <ClCompile Include="src\andromeda\Utilities\log.cpp" />
     <ClCompile Include="src\andromeda\Resources\resource_location_filesystem.cpp" />
+    <ClCompile Include="src\andromeda\Utilities\timing.cpp" />
     <ClCompile Include="src\common\Resources\resource_search_common.cpp" />
     <ClCompile Include="src\common\Resources\resource_stream_common.cpp" />
+    <ClCompile Include="src\opengl\graphics_gl.cpp" />
+    <ClCompile Include="src\opengl\shader_gl.cpp" />
     <ClCompile Include="src\windows\andromeda_windows.cpp" />
     <ClCompile Include="src\windows\Engine\display_windows.cpp" />
     <ClCompile Include="src\windows\Renderer\context_windows.cpp" />
     <ClCompile Include="src\windows\Platform\platform_windows.cpp" />
+    <ClCompile Include="src\xeffect\xeffect.cpp" />
+    <ClCompile Include="src\xeffect\xloader.cpp" />
+    <ClCompile Include="src\xeffect\x_extension.cpp" />
+    <ClCompile Include="src\xeffect\x_node.cpp" />
+    <ClCompile Include="src\xeffect\x_shader.cpp" />
+    <ClCompile Include="src\xeffect\x_effect.cpp" />
+    <ClCompile Include="src\xeffect\x_pass.cpp" />
+    <ClCompile Include="src\xeffect\x_shader_builder.cpp" />
+    <ClCompile Include="src\xeffect\x_shader_source.cpp" />
+    <ClCompile Include="src\xeffect\x_state.cpp" />
+    <ClCompile Include="src\xeffect\x_state_builder.cpp" />
+    <ClCompile Include="src\xeffect\x_type_conversion.cpp" />
+    <ClCompile Include="src\xeffect\x_technique.cpp" />
+    <ClCompile Include="src\xeffect\x_uniform_builder.cpp" />
+    <ClCompile Include="src\xeffect\x_variable_map.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="res\shader\shader.xml">
+      <SubType>Designer</SubType>
+    </Xml>
+    <Xml Include="res\shader\shader_example.xml">
+      <SubType>Designer</SubType>
+    </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shader\constant_color.fs" />
+    <None Include="res\shader\display_normal.gs" />
+    <None Include="res\shader\lighting_BlinnPhong.glsl" />
+    <None Include="res\shader\lighting_Phong.glsl" />
+    <None Include="res\shader\old\default.vs" />
+    <None Include="res\shader\calc_Normal.glsl" />
+    <None Include="res\shader\shader.fs" />
+    <None Include="res\shader\shader.glslfx" />
+    <None Include="res\shader\shader.vs" />
+    <None Include="res\shader\types.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

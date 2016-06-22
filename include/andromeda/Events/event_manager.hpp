@@ -3,13 +3,6 @@
 
 namespace andromeda
 {
-
-
-
-	/*
-	Move to a .hpp file :)
-	*/
-
 	/*
 		Register the Event
 	*/

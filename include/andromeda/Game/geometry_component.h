@@ -16,7 +16,7 @@ namespace andromeda
 		GeometryRenderComponent(std::shared_ptr<Geometry> geometry, std::shared_ptr<ITransform> transform);
 		virtual ~GeometryRenderComponent();
 
-		void render(const std::shared_ptr<andromeda::IEffect> effect, andromeda::MatrixStack & ms) override;
+		void render(const std::shared_ptr<andromeda::IShader> shader, andromeda::MatrixStack & ms) override;
 
 	private:
 		std::shared_ptr<Geometry> _geometry;

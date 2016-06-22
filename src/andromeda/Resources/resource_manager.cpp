@@ -47,6 +47,21 @@ ResourceManager::~ResourceManager()
 }
 
 
+/*
+
+*/
+Boolean ResourceManager::addLocation(const std::string & name, std::shared_ptr<ResourceLocation> location)
+{
+	assert(location);
+
+	// TODO: Add Validation
+
+	// Insert the New Location
+	_location[name] = location;
+
+	return true;
+}
+
 
 
 /*
@@ -54,17 +69,19 @@ ResourceManager::~ResourceManager()
 */
 std::shared_ptr<File> ResourceManager::loadFile(const std::string & filepath, Boolean binary, const std::string & locationName)
 {
-
 	std::shared_ptr<File> buffer = nullptr;
 
 	// Empty locationName == Use First Instance
 	if (locationName == "")
 	{
-		// TODO: Implement & Search a master cache of files + where to load them
+		// TODO: 
+		// Implement & Search a master cache of files + where to load them
 
 		// Loop through all locations until it is loaded
-		for (const auto it : _location2)
+		for (const auto it : _location)
 		{
+			log_debugp("ResourceManager :: loadFile() :: Location Name = %1%", it.first);
+
 			// Attempt to load File
 			buffer = it.second->load(filepath, binary);
 
@@ -74,10 +91,12 @@ std::shared_ptr<File> ResourceManager::loadFile(const std::string & filepath, Bo
 	}
 	else
 	{
-		// Search for the specific location
-		const auto it = _location2.find(locationName);
+		log_debugp("ResourceManager :: loadFile() :: Location Name = %1%", locationName);
 
-		if (it == _location2.end())
+		// Search for the specific location
+		const auto it = _location.find(locationName);
+
+		if (it == _location.end())
 		{
 			// No Location Found
 		}

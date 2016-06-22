@@ -45,7 +45,7 @@ namespace andromeda
 		{
 			Float aspect = width / height;
 			
-			_matrix = glm::ortho(aspect, -aspect, -1.0f, 1.0f, 0.1f, 10000.0f);
+			_matrix = glm::ortho(aspect, -aspect, -1.0f, 1.0f, 0.1f, 1000.0f);
 		}
 
 		inline glm::mat4 & matrix() override {return _matrix;}

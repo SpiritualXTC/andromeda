@@ -55,6 +55,10 @@ namespace andromeda
 		/* Binds the Material to the shader -- This will probably be unneeded */
 		void bind();
 
+
+		const inline std::string & getName() const { return _name; }
+		const inline Float getOpacity() const { return _opacity; }
+
 		/* Set Material Name */
 		inline Material & setName(const std::string & name)
 		{
@@ -70,9 +74,9 @@ namespace andromeda
 		}
 
 
-		const inline MatColor & getAmbient() { return _ambient; }
-		const inline MatColor & getDiffuse() { return _diffuse; }
-		const inline MatColor & getSpecular() { return _specular; }
+		const inline MatColor & getAmbient() const { return _ambient; }
+		const inline MatColor & getDiffuse() const { return _diffuse; }
+		const inline MatColor & getSpecular() const { return _specular; }
 
 		/* Set Ambient Color */
 		inline Material & setAmbient(const MatColor & ambient)
@@ -118,14 +122,18 @@ namespace andromeda
 			return *this;
 		}
 		
+		const inline std::shared_ptr<Texture> getDiffuseTexture() const { return _diffuseTexture; }
+		const inline std::shared_ptr<Texture> getNormalTexture() const { return _normalTexture; }
 
 
-
+		/* Set Diffuse Texture */
 		inline Material & setDiffuseTexture(const std::shared_ptr<Texture> & tex)
 		{
 			_diffuseTexture = tex;
 			return *this;
 		}
+
+		/* Set Normal Texture */
 		inline Material & setNormalTexture(const std::shared_ptr<Texture> & tex)
 		{
 			_normalTexture = tex;

@@ -4,6 +4,7 @@
 	This file needs to be redone once knowledge has been attained as to how the fucking nvFX library works... :D
 */
 
+#include <memory>
 #include <string>
 #include <cstdio>
 
@@ -28,132 +29,124 @@
 
 namespace andromeda
 {
-	class IEffect
-	{
-	public:
-		IEffect() {}
-		virtual ~IEffect() {}
 
-		virtual const inline void setUniformMat4(const std::string & name, glm::mat4 &m) const = 0;
-		virtual const inline void setUniformVec2(const std::string &name, const glm::vec2 &v)const = 0;
-		virtual const inline void setUniformVec3(const std::string &name, const glm::vec3 &v)const = 0;
-		virtual const inline void setUniformVec4(const std::string &name, const glm::vec4 &v)const = 0;
-		virtual const inline void setUniformTexture(const std::string &name, UInt32 bindIndex)const = 0;
+	
+	class ITechnique;
+	class IPass;
 
-		virtual const inline void updateUniformMat4(const std::string & name, glm::mat4 &m) const = 0;
-		virtual const inline void updateUniformVec2(const std::string &name, const glm::vec2 &v)const = 0;		
-		virtual const inline void updateUniformVec3(const std::string &name, const glm::vec3 &v)const = 0;		
-		virtual const inline void updateUniformVec4(const std::string &name, const glm::vec4 &v)const = 0;
-		virtual const inline void updatetUniformTexture(const std::string &name, UInt32 bindIndex)const = 0;
-	};
 
 
 	/*
-	
+		TODO:
+		Rename to Shader ... maybe
 	*/
-	class Effect : public IEffect
+	class IShader
 	{
 	public:
-		Effect();
-		virtual ~Effect();
+		IShader() {}
+		virtual ~IShader() {}
 
-
-		Boolean setActiveTechnique(const std::string & technique);
-
-		Boolean beginTechnique(const std::string & technique);
-		Boolean beginTechnique();
-		Boolean endTechnique();
-
-
-		Boolean beginPass(Int32 pass);
-		Boolean endPass();
-
-
-		/*
+		virtual const inline void setUniform(const std::string &name, glm::mat4 &m) const = 0;
 		
-		*/
-		const inline Int32 getNumPasses() const
-		{
-			assert(_active);
-			return _active->getNumPasses();
-		}
+		virtual const inline void setUniform(const std::string &name, const glm::fvec2 &v)const = 0;
+		virtual const inline void setUniform(const std::string &name, const glm::fvec3 &v)const = 0;
+		virtual const inline void setUniform(const std::string &name, const glm::fvec4 &v)const = 0;
 
+		virtual const inline void setUniform(const std::string &name, const glm::ivec2 &v)const = 0;
+		virtual const inline void setUniform(const std::string &name, const glm::ivec3 &v)const = 0;
+		virtual const inline void setUniform(const std::string &name, const glm::ivec4 &v)const = 0;
 
-
-
-		const inline void setUniformMat4(const std::string & name, glm::mat4 &m) const
-		{
-			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
-			uniform->setMatrix4f(glm::value_ptr(m));
-		}
-		const inline void setUniformVec2(const std::string &name, const glm::vec2 &v)const
-		{
-			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
-			uniform->setValue2f(v.x, v.y);
-		}
-		const inline void setUniformVec3(const std::string &name, const glm::vec3 &v)const
-		{
-			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
-			uniform->setValue3f(v.x, v.y, v.z);
-		}
-		const inline void setUniformVec4(const std::string &name, const glm::vec4 &v)const
-		{
-			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
-			uniform->setValue4f(v.x, v.y, v.z, v.w);
-		}
-
-		const inline void setUniformTexture(const std::string &name, UInt32 bindIndex)const
-		{
-			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
-			uniform->setValue1i(bindIndex);	// NOT SURE ABOUT THIS
-		}
-
-
-
-
-		const inline void updateUniformMat4(const std::string & name, glm::mat4 &m) const
-		{
-			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
-			uniform->updateMatrix4f(glm::value_ptr(m), _activePass);
-		}
-		const inline void updateUniformVec2(const std::string &name, const glm::vec2 &v)const
-		{
-			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
-			uniform->updateValue2f(v.x, v.y, _activePass);
-		}
-		const inline void updateUniformVec3(const std::string &name, const glm::vec3 &v)const
-		{
-			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
-			uniform->updateValue3f(v.x, v.y, v.z, _activePass);
-		}
-		const inline void updateUniformVec4(const std::string &name, const glm::vec4 &v)const
-		{
-			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
-			uniform->updateValue4f(v.x, v.y, v.z, v.w, _activePass);
-		}
-
-		const inline void updatetUniformTexture(const std::string &name, UInt32 bindIndex)const
-		{
-			
-			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
-			uniform->updateValue1i(bindIndex, _activePass);	// NOT SURE ABOUT THIS
-		}
-
-
-
-
-
-	private:
-		void infoOutput();
-		void shaderHack();
-
-		Boolean validate();
-
-		nvFX::IContainer * _effect = nullptr;
-		
-
-		nvFX::ITechnique * _active = nullptr;
-		nvFX::IPass * _activePass = nullptr;
+		// This one is special :P
+		virtual const inline void setUniformTexture(const std::string &name, UInt32 bindIndex)const = 0;
 	};
+
+
+
+	/*
+		Core Effect Interface:
+
+		TODO: Remove all da crap
+	*/
+	class Effect
+	{
+	public:
+		Effect() {}
+		virtual ~Effect() {}
+
+		// NEW INTERFACE
+		virtual std::shared_ptr<ITechnique> getTechnique(const std::string & name) const = 0;
+
+
+
+
+
+
+
+
+		// OLD INTERFACE
+		virtual Boolean setActiveTechnique(const std::string & technique) = 0;
+
+		virtual Boolean beginTechnique(const std::string & technique) = 0;
+		virtual Boolean beginTechnique() = 0;
+		virtual Boolean endTechnique() = 0;
+
+
+		virtual Boolean beginPass(Int32 pass) = 0;
+		virtual Boolean endPass() = 0;
+
+		virtual const inline Int32 getNumPasses() const = 0;
+
+
+		// Only the "Setter" is needed :: Move these to another interface. 
+		// One that both IEffect and IPass extend
+//		virtual const inline void setUniformMat4(const std::string &name, glm::mat4 &m) const = 0;
+//		virtual const inline void setUniformVec2(const std::string &name, const glm::vec2 &v)const = 0;
+//		virtual const inline void setUniformVec3(const std::string &name, const glm::vec3 &v)const = 0;
+//		virtual const inline void setUniformVec4(const std::string &name, const glm::vec4 &v)const = 0;
+//		virtual const inline void setUniformTexture(const std::string &name, UInt32 bindIndex)const = 0;
+	};
+
+
+
+
+
+
+
+	/*
+		
+	*/
+	class ITechnique
+	{
+	public:
+		ITechnique() {}
+		virtual ~ITechnique() {}
+
+		virtual const inline std::string & getName() const = 0;
+
+		virtual std::shared_ptr<IPass> getPass(const std::string & name) const = 0;
+		virtual std::shared_ptr<IPass> getPass(const Int32 index) const = 0;
+		virtual const inline Int32 getNumPasses() const = 0;
+	};
+
+
+
+
+	/*
+		
+	*/
+	class IPass : public virtual IShader
+	{
+	public:
+		IPass() {}
+		virtual ~IPass() {}
+
+
+		virtual const inline std::string & getName() const = 0;
+
+		virtual Boolean apply() = 0;
+	};
+
+
+
 }
 

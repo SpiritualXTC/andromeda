@@ -30,6 +30,18 @@ Scene::~Scene()
 }
 
 
+/*
+	
+*/
+Boolean Scene::addLayer(const std::string & group, std::shared_ptr<Effect> & effect)
+{
+	/*
+		TODO: Layer Groups
+	*/
+	_layerGroup.effect = effect;
+
+	return true;
+}
 
 
 /*
@@ -73,7 +85,19 @@ Boolean Scene::addView(std::shared_ptr<View> view)
 {
 	assert(view);
 
-	// Create some Dummy Views	
+
+	// Add Layers
+
+	/*
+		TODO:
+		Layer Groups
+	*/
+
+	log_warn("Scene :: addView() :: Adding Primitive Layers");
+	view->addLayer(_layerGroup.name, _layerGroup.effect);
+
+
+	// Insert the View
 	_views.insert(view);
 
 	return true;

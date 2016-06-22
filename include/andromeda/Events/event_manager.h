@@ -66,7 +66,6 @@ namespace andromeda
 		inline Int32 getEventId(Int32 id)
 		{
 			return (getTemplateId<EVENT>() << 16) | id;
-			//return (TemplateIndex<EVENT, IEvent>::getTemplateID() << 16) | id;
 		}
 
 		/*
@@ -77,10 +76,17 @@ namespace andromeda
 		{
 			Int32 uid = getEventId<EVENT>(id);
 
-			if (!_events[uid])
+
+			const auto & it = _events.find(uid);
+			if (it == _events.end())
 				return nullptr;
 
-			return static_cast<Event<EVENT>*>(_events[uid].get());
+			return static_cast<Event<EVENT>*>(it->second.get());
+
+			//if (!_events[uid])
+			//	return nullptr;
+
+			//return static_cast<Event<EVENT>*>(_events[uid].get());
 		}
 
 		// Map of all Events

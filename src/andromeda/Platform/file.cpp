@@ -19,7 +19,7 @@ using namespace boost;
 */
 std::shared_ptr<File> andromeda::OpenFile(const std::string & filepath, Boolean binary)
 {
-	log_infop("Common FS :: Load File: %1%", filepath);
+	log_infop("Common FS :: Load File: %1%, Binary = %2%", filepath, binary);
 
 
 	// Validate if File Exists
@@ -39,24 +39,20 @@ std::shared_ptr<File> andromeda::OpenFile(const std::string & filepath, Boolean 
 	if (!file.is_open())
 		return nullptr;
 
-	// Get Extension
-	std::string extension = GetFileExtension(filepath);
-
 	// Read File
 	std::shared_ptr<File> f = nullptr;
 
 	if (binary)
 	{
 		// Binary File
-		f = std::make_shared<FileBinary>(file, extension);
+		f = std::make_shared<FileBinary>(file, filepath, "");
 	}
 	else
 	{
 		// Text File
-		f = std::make_shared<FileText>(file, extension);
+		f = std::make_shared<FileText>(file, filepath, "");
 	}
 
-	
 	// Close File
 	file.close();
 
@@ -64,114 +60,23 @@ std::shared_ptr<File> andromeda::OpenFile(const std::string & filepath, Boolean 
 }
 
 
-#if 0
 
 /*
 
 */
-FileBuffer::FileBuffer()
+File::File(const std::string & filename, const std::string & location)
+	: _filename(filename)
+	, _location(location)
 {
-
-}
-
-FileBuffer::FileBuffer(Size len)
-{
-	// Allocate
-	allocate(len);
-}
-
-FileBuffer::FileBuffer(UChar * source, Size len)
-{
-	// Allocate
-	allocate(len);
-
-	// Copy
-	copy(source, len);
-}
-
-
-
-/*
-
-*/
-FileBuffer::~FileBuffer()
-{
-	deallocate();
-}
-
-
-
-
-void FileBuffer::allocate(Size len)
-{
-	deallocate();
-
-	// Allocate
-	_length = len;
-	_bytes = new UChar[_length];
+	// Get File Extension
+	_extension = GetFileExtension(_filename);
 }
 
 /*
 
 */
-void FileBuffer::release()
+File::~File()
 {
-	deallocate();
+
+
 }
-
-/*
-
-*/
-void FileBuffer::deallocate()
-{
-	if (_bytes != nullptr)
-		delete[] _bytes;
-
-	_bytes = nullptr;
-	_length = 0;
-}
-
-
-/*
-	TODO: Untested
-*/
-void FileBuffer::copy(UChar * source, Size len)
-{
-	assert(len == length());
-
-	UChar * copy = lock();
-
-	for (Int32 i = 0; i < len; ++i)
-		*copy++ = *source++;
-}
-
-
-
-/*
-
-*/
-UChar * FileBuffer::lock(Size size, UInt32 flags)
-{
-	if (size != 0)
-	{
-		// Release Existing
-		allocate(size);
-	}
-
-	// Validate
-	assert(_bytes);
-
-	// Return Buffer
-	return _bytes;
-}
-
-
-
-#include <vector>
-void FileBuffer::stream()
-{
-	
-}
-
-
-#endif

@@ -7,7 +7,7 @@
 namespace andromeda
 {
 	/*
-	Singleton default creation
+		Singleton default creation
 	*/
 	template <typename T>
 	class SingletonCreate
@@ -22,7 +22,7 @@ namespace andromeda
 
 
 	/*
-	Singleton
+		Singleton
 	*/
 	template <typename T, typename CreatePolicy = SingletonCreate<T>>
 	class Singleton : private CreatePolicy
@@ -30,7 +30,7 @@ namespace andromeda
 		using CreatePolicy::create;
 
 	public:
-		static T * instance()
+		static inline T * instance()
 		{
 			static std::unique_ptr<T> _instance = std::move(create());
 

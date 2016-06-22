@@ -11,6 +11,7 @@
 
 namespace andromeda
 {
+	class Effect;
 	class SceneGraph;
 
 
@@ -21,9 +22,26 @@ namespace andromeda
 	*/
 	class Scene
 	{
+	private:
+		struct _LayerGroup
+		{
+			std::string name;					// Layer Name
+			std::shared_ptr<Effect> effect;		// Effect for the Layer
+		};
+
+
+
+
 	public:
 		Scene(const std::string & name, std::shared_ptr<SceneGraph> sceneGraph);
 		virtual ~Scene();
+
+
+		/*
+			TODO:
+			Layer Groups
+		*/
+		Boolean addLayer(const std::string & group, std::shared_ptr<Effect> & effect);
 
 
 		/*
@@ -99,6 +117,8 @@ namespace andromeda
 		
 		std::shared_ptr<SceneGraph> _sceneGraph;
 		std::multiset<std::shared_ptr<View>> _views;	//Maybe an ordered_map :: Referencing Views by name may be useful
+
+		_LayerGroup _layerGroup;	// TODO: Add LayerGroups
 	};
 
 

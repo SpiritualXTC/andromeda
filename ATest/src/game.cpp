@@ -12,8 +12,8 @@
 #include <andromeda/Geometry/geometry.h>
 #include <andromeda/Geometry/geometry_generate.h>
 
-#include <andromeda/Graphics/font.h>
-#include <andromeda/Graphics/mesh.h>
+
+#include <andromeda/graphics.h>
 
 #include <andromeda/Renderer/renderer.h>
 #include <andromeda/Renderer/scene.h>
@@ -26,8 +26,7 @@
 #include "random_path_component.h"
 #include "circular_path_component.h"
 
-
-
+#include <xeffect/xeffect.h>
 
 /*
 
@@ -48,6 +47,27 @@ Game::Game(std::shared_ptr<andromeda::Renderer> renderer)
 
 	// Add Scene to Renderer
 	renderer->addScene(_scene);
+
+
+
+	// Effect Test
+	std::shared_ptr<andromeda::Effect> effect = andromeda::LoadResource<andromeda::Effect>("shader.xml");
+
+	// Settings
+//	andromeda::graphics()->setCullMode(andromeda::FaceMode::FrontAndBack);
+//	andromeda::graphics()->setPolygonMode(andromeda::FaceMode::FrontAndBack, andromeda::PolygonMode::Wireframe);
+
+
+	// Add Layers
+	andromeda::Boolean addLayers = true;
+
+	if (addLayers)
+	{
+		if (!effect)
+			log_err("Game :: <init>() :: Invalid Effect");
+		else
+			_scene->addLayer("[default]", effect);
+	}
 
 
 	// Create the Views
@@ -131,11 +151,15 @@ Game::Game(std::shared_ptr<andromeda::Renderer> renderer)
 
 			// Assign the View to the Target
 			view->setCameraTarget(name.str());
-			view->camera()->distance(500.0f);
+			view->camera()->distance(5.0f);
 
 			++i;
 		}
 //	}
+
+
+	
+
 
 }
 
@@ -249,7 +273,7 @@ std::shared_ptr<andromeda::GameObject> Game::createCamera(const std::string & na
 	obj->addComponent<RandomPathComponent>(std::make_shared<RandomPathComponent>(transform));
 
 	// Load Mesh
-	std::shared_ptr<andromeda::Mesh> mesh = andromeda::LoadResource<andromeda::Mesh>("Millennium_Falcon.dae");
+	std::shared_ptr<andromeda::Mesh> mesh = andromeda::LoadResource<andromeda::Mesh>("test.dae");
 
 	// Add RenderComponent
 	if (mesh)
@@ -257,8 +281,8 @@ std::shared_ptr<andromeda::GameObject> Game::createCamera(const std::string & na
 		std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::MeshRenderComponent>(mesh, transform);
 		obj->addComponent<andromeda::RenderComponent>(render);
 	}
-	else
-		return nullptr;
+//	else
+//		return nullptr;
 
 	// Add Game Object to Scene
 	_scene->getSceneGraph()->addGameObject(obj);
@@ -282,7 +306,7 @@ std::shared_ptr<andromeda::GameObject> Game::createMesh(const std::string & name
 	obj->addComponent<andromeda::TransformComponent>(transform);
 
 	// Load Mesh
-	std::shared_ptr<andromeda::Mesh> mesh = andromeda::LoadResource<andromeda::Mesh>("dwarf.x");
+	std::shared_ptr<andromeda::Mesh> mesh = andromeda::LoadResource<andromeda::Mesh>("Missile AGM-65.dae");
 	
 	// Add RenderComponent
 	if (mesh)

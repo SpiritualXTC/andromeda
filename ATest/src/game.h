@@ -11,7 +11,6 @@
 
 
 #include <andromeda/Math/matrix_stack.h>
-#include <andromeda/Graphics/effect.h>
 #include <andromeda/Renderer/renderable.h>
 
 #include <andromeda/Input/mouse.h>
@@ -24,6 +23,8 @@ namespace andromeda
 
 	class GameObject;
 	class Geometry;
+
+	class Effect;
 	class Font;
 
 	class Renderer;
@@ -70,7 +71,7 @@ private:
 
 
 	// TEMPORARY :: Need a way of pulling views from the Renderer
-	std::list<std::shared_ptr<andromeda::View>> _views;	// List of main views
+	std::list<std::shared_ptr<andromeda::View>> _views;			// List of main views
 	
 	// TEMP FONT
 	std::shared_ptr<andromeda::Font> _font;

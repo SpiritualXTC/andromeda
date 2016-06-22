@@ -28,7 +28,7 @@ namespace andromeda
 
 
 		void update(Float ft);
-		void render(const Shader * const shader, const glm::mat4 & modelView);
+		virtual void render(const std::shared_ptr<IShader> shader, MatrixStack & ms) override;
 
 	private:
 		Boolean _process = false;
