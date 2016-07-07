@@ -30,12 +30,12 @@ CircularPathComponent::~CircularPathComponent()
 */
 void CircularPathComponent::update(aFloat timeStep)
 {
-	aFloat speed = 1.0f;	//radians /s
+	aFloat speed = 0.25f;	//radians /s
 
 	_angle += timeStep * speed;
 
-	aFloat x = glm::cos(_angle) * 3.0f;
-	aFloat z = glm::sin(_angle) * 3.0f;
+	aFloat x = glm::cos(_angle) * 8.0f;
+	aFloat z = glm::sin(_angle) * 8.0f;
 
 	_transform->position(x, 0.0f, z);
 

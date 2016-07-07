@@ -1,5 +1,6 @@
 #include <andromeda/Renderer/layer.h>
 
+#include <cassert>
 
 #include <andromeda/Graphics/effect.h>
 
@@ -8,7 +9,7 @@
 #include <andromeda/Renderer/camera.h>
 #include <andromeda/Renderer/projection.h>
 #include <andromeda/Renderer/renderable.h>
-
+#include "render_group.h"
 
 #include <andromeda/Utilities/log.h>
 
@@ -16,25 +17,34 @@ using namespace andromeda;
 
 
 
-// TODO: Remove this
-// This is a temporary method to give an effect to a layer
-#include <andromeda/andromeda.h>
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*
 
 */
-Layer::Layer(std::shared_ptr<Effect> & effect)
-	: _effect(effect)
+Layer::Layer(std::shared_ptr<Camera> & camera, std::shared_ptr<Effect> & effect, std::shared_ptr<RenderGroup> rg)
+	: _camera(camera)
+	, _effect(effect)
+	, _renderGroup(rg)
 {
-	log_warn("Creating default effect");
+	assert(_camera);
+	assert(_effect);
 
-	/*
-		TODO:
-		This needs to be redone.
-		Effect needs to be injected from the View - Which Needs to be injected from the Application
-	*/
+	// Get Default Technique
+	_technique = _effect->getTechniqueDefault();
 }
+
 
 
 
@@ -48,99 +58,60 @@ Layer::~Layer()
 
 
 /*
-
+	Sets the Active Techqniue Used by a Layer
 */
-Boolean Layer::addRenderable(IRenderable * renderable)
+Boolean Layer::setActiveTechnique(const std::string & technique)
 {
-	if (renderable == nullptr)
-		return false;
-	
-	// TEMP, just add the renderable immediately
-	_renderables.insert(renderable);
-
-	return true;
-}
-
-/*
-
-*/
-Boolean Layer::removeRenderable(IRenderable * renderable)
-{
-	if (renderable == nullptr)
-		return false;
-
-	// TEMP, remove the renderable immediately
-	_renderables.erase(renderable);
-
-	return true;
-}
-
-
-
-
-
-
-
-
-/*
-	render():
-
-	Renders the Layer
-*/
-Boolean Layer::render(std::shared_ptr<IProjection> projection, const std::shared_ptr<ICamera> camera)
-{
-	// Get Effect
-//	std::shared_ptr<Effect> effect = _effect.lock();
-
 	assert(_effect);
+
+	// Get Technique
+	if (_effect->hasTechnique(technique))
+		_technique = _effect->getTechnique(technique);
+	else
+		return false;
+
+	return ! _technique.expired();
+}
+
+
+
+
+
+
+
+
+/*
 	
-	// Get Technique Name :: Dont worry about for now
+*/
+Boolean Layer::render()
+{
+	assert(_effect);
+	assert(_camera);
 
+	// Lock Technique
+	std::shared_ptr<ITechnique> t = _technique.lock();
 
+	if (t == nullptr)
+		return false;
 
-
-
-
-	// Begin the Technique 
-	_effect->beginTechnique();
-
-	// Push Projection Matrix to Effect :: Constant for a Layer
-//	_effect->setUniformMat4("u_projection", projection->matrix());
-
-	// Push Lighting :: Constant for a Layer
-
-
-	// Setup Matrix Stack :: Initialise with Camera View Matrix 
-	// Camera needs to be Rewritten
-	MatrixStack ms(camera->matrix());
-	
-	
-
-	/*
-		NEW SYSTEM
-	*/
-	std::shared_ptr<ITechnique> t = _effect->getTechnique("t1");
-
-	if (t != nullptr)
+	// Iterate through passes
+	for (Int32 i = 0; i < t->getNumPasses(); ++i)
 	{
-		for (Int32 i = 0; i < t->getNumPasses(); ++i)
-		{
-			std::shared_ptr<IPass> p = t->getPass(i);
+		// Get Pass
+		std::shared_ptr<IPass> p = t->getPass(i);
 
-			if (!p->apply())
-				continue;
+		// Pass isn't valid.
+		// Pass isn't enabled
+		// Pass fails to Apply
+		if (!p || !p->isEnabled() || !p->apply())
+			continue;
 
-			// Set Project Matrix
-			p->setUniform("u_projection", projection->matrix());
+		// Set Projection Matrix
+		p->setUniform("u_projection", _camera->getProjectionMatrix());
 
-
-			// Render Objects With This Effect
-			for (const auto renderable : _renderables)
-			{
-				// Render the Renderable
-				renderable->render(p, ms);
-			}
-		}
+		// Render the RenderGroup
+		if (_renderGroup)
+			_renderGroup->render(_camera, p);
 	}
 
 	return true;

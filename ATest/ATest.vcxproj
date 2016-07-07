@@ -75,6 +75,8 @@
     <ClCompile Include="src\console.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\plane_test_component.cpp" />
+    <ClCompile Include="src\player.cpp" />
     <ClCompile Include="src\random_path_component.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +84,8 @@
     <ClInclude Include="src\circular_path_component.h" />
     <ClInclude Include="src\console.h" />
     <ClInclude Include="src\game.h" />
+    <ClInclude Include="src\plane_test_component.h" />
+    <ClInclude Include="src\player.h" />
     <ClInclude Include="src\random_path_component.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

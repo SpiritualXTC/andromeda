@@ -1,91 +1,141 @@
-#include <andromeda/Geometry/geometry_generate.h>
+#include <andromeda/Geometry/geometry_cube.h>
 
-#include <andromeda/Graphics/buffer.h>
-#include <andromeda/Geometry/geometry.h>
-#include <andromeda/Geometry/geometry_builder.h>
-#include <andromeda/Geometry/geometry_desc.h>
-
-#include <andromeda/glm.h>
 using namespace andromeda;
+using namespace andromeda::geometry;
+
 
 /*
 
 */
-std::shared_ptr<Geometry> andromeda::CreateCube(Float width, Float height, Float depth, UInt32 genMask)
+Cube::Cube()
 {
-	const Float w = width * 0.5f;
-	const Float h = height * 0.5f;
-	const Float d = depth * 0.5f;
 
-	glm::vec3 position[] =
+}
+
+/*
+
+*/
+Cube::Cube(Float f)
+	: _width(f)
+	, _height(f)
+	, _depth(f)
+{
+
+}
+
+
+/*
+
+*/
+Cube::Cube(Float fw, Float fh, Float fd)
+	: _width(fw)
+	, _height(fh)
+	, _depth(fd)
+{
+
+}
+
+
+/*
+
+*/
+void Cube::buildPosition(glm::vec3 * pvertices, UInt32 count)
+{
+	glm::vec3 position[VERTICES] = 
 	{
 		// Pos Z
-		{ -w, h, d }, { w, h, d }, { -w, -h, d }, { w, -h, d },
+		{ -1, 1, 1 }, { 1, 1, 1 }, { -1, -1, 1 }, { 1, -1, 1 },
 
 		// Neg X
-		{ -w, h, -d }, { -w, h, d }, { -w, -h, -d }, { -w, -h, d },
+		{ -1, 1, -1 }, { -1, 1, 1 }, { -1, -1, -1 }, { -1, -1, 1 },
 
 		// Neg Z
-		{ w, h, -d }, { -w, h, -d }, { w, -h, -d }, { -w, -h, -d },
+		{ 1, 1, -1 }, { -1, 1, -1 }, { 1, -1, -1 }, { -1, -1, -1 },
 
 		// Pos X
-		{ w, h, d }, { w, h, -d }, { w, -h, d }, { w, -h, -d },
+		{ 1, 1, 1 }, { 1, 1, -1 }, { 1, -1, 1 }, { 1, -1, -1 },
 
 		// Pos Y
-		{ -w, h, -d }, { w, h, -d }, { -w, h, d }, { w, h, d },
+		{ -1, 1, -1 }, { 1, 1, -1 }, { -1, 1, 1 }, { 1, 1, 1 },
 
 		// Neg Y
-		{ -w, -h, d }, { w, -h, d }, { -w, -h, -d }, { w, -h, -d },
+		{ -1, -1, 1 }, { 1, -1, 1 }, { -1, -1, -1 }, { 1, -1, -1 }
 	};
 
-	glm::vec3 normal[] = 
+	glm::vec3 size = glm::vec3(_width * 0.5f, _height * 0.5f, _depth * 0.5f);
+
+	for (Int32 i = 0; i < VERTICES; ++i)
 	{
-		{ 0, 0, 1 }, { 0, 0, 1 }, { 0, 0, 1 }, { 0, 0, 1 },
-		{ -1, 0, 0 }, { -1, 0, 0 }, { -1, 0, 0 }, { -1, 0, 0 },
-		{ 0, 0, -1 }, { 0, 0, -1 }, { 0, 0, -1 }, { 0, 0, -1 },
-		{ 1, 0, 0 }, { 1, 0, 0 }, { 1, 0, 0 }, { 1, 0, 0 },
-		{ 0, 1, 0 }, { 0, 1, 0 }, { 0, 1, 0 }, { 0, 1, 0 },
-		{ 0, -1, 0 }, { 0, -1, 0 }, { 0, -1, 0 }, { 0, -1, 0 }
-	};
+		*pvertices++ = position[i] * size;
+	}
+}
 
-	glm::vec2 texture[] = 
+
+/*
+
+*/
+void Cube::buildNormals(glm::vec3 * pvertices, UInt32 count)
+{
+	glm::vec3 normal[SIDES] =
 	{
-		{ 0, 1 }, { 1, 1 }, { 0, 0 }, {1, 0 },
-		{ 0, 1 }, { 1, 1 }, { 0, 0 }, { 1, 0 },
-		{ 0, 1 }, { 1, 1 }, { 0, 0 }, { 1, 0 },
-		{ 0, 1 }, { 1, 1 }, { 0, 0 }, { 1, 0 },
-		{ 0, 1 }, { 1, 1 }, { 0, 0 }, { 1, 0 },
-		{ 0, 1 }, { 1, 1 }, { 0, 0 }, { 1, 0 }
+		// Pos Z - Back
+		{ 0, 0, 1 },
+		
+		// Neg X - Left
+		{ -1, 0, 0 },
+
+		// Neg Z - Front
+		{ 0, 0, -1 },
+
+		// Pos X - Right
+		{ 1, 0, 0 },
+
+		// Pos Y - Top
+		{ 0, 1, 0 },
+
+		// Neg Y - Bottom
+		{ 0, -1, 0 }
 	};
 
 
-
-	UInt32 indices[] =
+	for (Int32 i = 0; i < SIDES; ++i)
 	{
-		0, 1, 2, 2, 1, 3,
-		4, 5, 6, 6, 5, 7,
-		8, 9, 10, 10, 9, 11,
-		12, 13, 14, 14, 13, 15,
-		16, 17, 18, 18, 17, 19,
-		20, 21, 22, 22, 21, 23
-	};
+		for (Int32 j = 0; j < VERTICES_PER_SIDE; ++j)
+			*pvertices++ = normal[i];
+	}
 
 
+}
 
-	// Add Vertex Data
-	GeometryBuilder gb;
 
-	//gb.addVertexData("pos", position, 36);	// Non-indexed version
-	gb.addVertexData("pos", position, 24, GeometryLocation::Position);
+/*
 
-	if (genMask & GEN_NORMALS)
-		gb.addVertexData("norm", normal, 24, GeometryLocation::Normal);
+*/
+void Cube::buildTexCoords(glm::vec2 * pvertices, UInt32 count)
+{
+	glm::vec2 tex[VERTICES_PER_SIDE] = { { 0, 1 }, { 1, 1 }, { 0, 0 }, { 1, 0 } };
 
-	if (genMask & GEN_TEXTURE)
-		gb.addVertexData("tex", texture, 24, GeometryLocation::Texture0);
+	for (Int32 i = 0; i < SIDES; ++i)
+	{
+		for (Int32 j = 0; j < VERTICES_PER_SIDE; ++j)
+			*pvertices++ = tex[j];
+	}
+}
 
-	gb.setIndexData(indices, 36);
 
-	// Build Geometry
-	return gb.build();
+/*
+
+*/
+void Cube::buildIndices(UInt32 * pindices, UInt32 count)
+{
+	UInt32 indices[INDICES_PERS_SIDE] = { 0, 1, 2, 2, 1, 3};
+	UInt32 offset = 0;
+
+	for (Int32 i = 0; i < SIDES; ++i)
+	{
+		for (Int32 j = 0; j < INDICES_PERS_SIDE; ++j)
+			*pindices++ = indices[j] + offset;
+		
+		offset += VERTICES_PER_SIDE;
+	}
 }

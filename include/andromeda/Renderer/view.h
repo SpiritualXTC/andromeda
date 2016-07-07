@@ -10,7 +10,7 @@
 
 
 	TODO:
-	Visibility Check and the SceneGraphCache could be tied together a bit better
+	Visibility Check and the SceneGraphViewCache could be tied together a bit better
 */
 
 #include <memory>
@@ -22,19 +22,31 @@
 #include <andromeda/Math/region.h>
 
 
+
+#include "camera.h"
+
 namespace andromeda
 {
 	// Forward Declarations
 	class ICamera;
 	class IProjection;
-	class IVisibility;
+	class IRenderable;
 
 	class Layer;
-	class IRenderable;
+	class LayerGroup;
+	class RenderGroup;
 	class SceneGraph;
-	class SceneGraphCache;
+	class SceneGraphViewCache;
 
 	class Effect;
+
+#if 0
+	enum class ViewOrder
+	{
+		Target,
+		Screen,
+	};
+#endif
 
 	/*
 
@@ -49,24 +61,6 @@ namespace andromeda
 			Interface,	// Interface/HUD Layer :: Not needed
 		};
 
-		// TODO
-		/*
-		enum _Order
-		{
-			Default,
-			Interface,
-			Debug,
-		};
-
-		enum _Target
-		{
-			Texture,
-			Screen,
-		};
-		
-		*/
-
-
 		// View Order Sorting!
 		friend Boolean operator <(const std::shared_ptr<View> & lhs, const std::shared_ptr<View> & rhs)
 		{
@@ -74,20 +68,14 @@ namespace andromeda
 		}
 
 	public:
-		View(const std::shared_ptr<SceneGraph> sceneGraph, Int32 order = View::Normal)
-			: View(sceneGraph, 0.0f, 0.0f, 1.0f, 1.0f, order)
+		View(Int32 order = View::Normal)
+			: View(0.0f, 0.0f, 1.0f, 1.0f, order)
 		{
 
 		}
 
-		View(const std::shared_ptr<SceneGraph> sceneGraph, Float x, Float y, Float width, Float height, Int32 order = View::Normal)
-			: View(sceneGraph, nullptr, nullptr, x, y, width, height, order)
-		{
+		View(Float x, Float y, Float width, Float height, Int32 order = View::Normal);
 
-		}
-
-		View(const std::shared_ptr<SceneGraph> sceneGraph, std::shared_ptr<IProjection> projection, std::shared_ptr<IVisibility> visibility,
-			Float x, Float y, Float width, Float height, Int32 order = View::Normal);
 
 		virtual ~View();
 
@@ -111,45 +99,48 @@ namespace andromeda
 		inline const Region2i getDisplayRegion() const { return _display; }
 		inline const Region2i getScreenRegion() const { return _screen; }
 
+
+
+
 		/*
-			Layers
+			Render Group
 		*/
-		Boolean addLayer(const std::string & layer, std::shared_ptr<Effect> & effect);
+	//	Boolean addRenderGroup(const std::string & group);
+
+		/*
+			Layer Group
+		*/
+		Boolean addLayerGroup(const std::string & group, const std::shared_ptr<SceneGraph> & sg);
+
+
+		Boolean addLayer(const std::string & layerName, std::shared_ptr<Effect> effect, const std::string & technique, const std::string & layerGroup, const std::string & renderGroup);
+
+		/*
+			Clear Layers, LayerGroups, RenderGroups
+		*/
+		void clear();
 
 
 		/*
 			Renderables
 		*/
-		Boolean addRenderable(const std::string & layer, IRenderable * renderable);
-		Boolean removeRenderable(const std::string & layer, IRenderable * renderable);
-
-
-
-
-		/*
-			Set Camera Target using a default Camera
-		*/
-		Boolean setCameraTarget();
-
-		/*
-			Set Camera Target using a GameObject. GameObject must be in the SceneGraph
-		*/
-		Boolean setCameraTarget(const std::string & name);
-
-		/*
-			Set Camera Target using a Custom Camera
-		*/
-		Boolean setCameraTarget(std::shared_ptr<ICamera> & camera);
-
-
-
+		Boolean addRenderable(IRenderable * renderable, const std::string & group = "");
+		Boolean removeRenderable(IRenderable * renderable, const std::string & group = "");
 
 		/*
 			Gets the Views Camera
 		*/
-		const inline std::shared_ptr<ICamera> camera() const { return _camera; }
+		std::shared_ptr<Camera> & getCamera(const std::string & layerGroup = "");
 
 	private:
+
+		// Add and/or Retrieve the RenderGroup
+		std::shared_ptr<RenderGroup> getRenderGroup(const std::string & group);
+
+		// Add and/or Retrieve the LayerGroup
+		std::shared_ptr<LayerGroup> getLayerGroup(const std::string & group);
+
+
 
 		Int32 _zOrder = 0;									// View Order
 
@@ -159,50 +150,46 @@ namespace andromeda
 
 
 
-		// Camera Related
-		std::shared_ptr<IProjection> _projection;			// Projection Matrix
-		std::shared_ptr<ICamera> _camera;					// Camera for the View :: Make this a weak pointer :: Add another Camera for a default camera (Maybe)
-		std::shared_ptr<IVisibility> _visibility;			// Visibility Check :: Checks whether a GameObject is visible from this view
-
-
-		// Scene Reltated
-		std::shared_ptr<SceneGraph> _sceneGraph;			// Reference to the SceneGraph for this View
-		std::shared_ptr<SceneGraphCache> _sceneGraphCache;	// Lookup table of objects in the "visible" space of the scene from this view
-
-
-
-
-		// View Related
 		std::unordered_map<std::string, std::unique_ptr<Layer>> _layers;		// Visual Style Layers
 																				// Create Default Layer using default shader
 																				// Special Systems will need to auto create their own layers (such as particle effects)
 																				// Might be possible to override the Layer class ?
+
+		std::unordered_map<std::string, std::shared_ptr<RenderGroup>> _renderGroups;
+
+		std::unordered_map<std::string, std::shared_ptr<LayerGroup>> _layerGroups;
 	};
 
 
+
+
+
+
+
+
+
+
 	/*
-	
+		TODO:
+		Remove this.
+		Re-add the functionality as a a component to a View
 	*/
 	class ScreenView : public View, public ResizeListener
 	{
 	public:
-		ScreenView(const std::shared_ptr<SceneGraph> sceneGraph, Int32 order = View::Normal)
-			: ScreenView(sceneGraph, 0.0f, 0.0f, 1.0f, 1.0f, order)
+		ScreenView(Int32 order = View::Normal)
+			: ScreenView(0.0f, 0.0f, 1.0f, 1.0f, order)
 		{
 
 		}
 
-		ScreenView(const std::shared_ptr<SceneGraph> sceneGraph, Float x, Float y, Float width, Float height, Int32 order = View::Normal)
-			: ScreenView(sceneGraph, nullptr, nullptr, x, y, width, height, order)
+		ScreenView(Float x, Float y, Float width, Float height, Int32 order = View::Normal)
+			: View(x, y, width, height, order)
 		{
 
 		}
 
-
-
-		ScreenView(const std::shared_ptr<SceneGraph> sceneGraph, std::shared_ptr<IProjection> projection, std::shared_ptr<IVisibility> visibility, 
-			Float x, Float y, Float width, Float height, Int32 order = View::Normal);
-		virtual ~ScreenView();
+		virtual ~ScreenView() {}
 
 	private:
 
@@ -212,19 +199,6 @@ namespace andromeda
 
 
 
-	/*
-	
-	*/
-	class TextureView : public View
-	{
-	public:
-		TextureView(const std::shared_ptr<SceneGraph> sceneGraph)
-			: View(sceneGraph, 0.0f, 0.0f, 1.0f, 1.0f, View::Target)
-		{	
-
-		}
-
-	};
 }
 
 #endif

@@ -10,6 +10,8 @@
   <shader name="constantColor" source="constant_color.fs" />
 
 
+  
+
   <!-- Does Nothing -->
   <state name="normal">
     <depth enable="true" />
@@ -27,9 +29,6 @@
 
 
 
- 
-
-
 
   <technique name="t1">
 
@@ -42,8 +41,8 @@
     </pass>
 
 
-    <!-- Debug Display-->
-    <pass name="debug_Normals">
+    <!-- Display Face Normals -->
+    <pass name="debug_Normals" enabled="false">
        
       <uniform name="u_color" value="{1.0, 0.0, 1.0, 1.0}" />
 
@@ -57,8 +56,8 @@
       <fragmentShader shader="constantColor" />
     </pass>
     
-    <!-- Debug Wireframe-->
-    <pass name="debug_Wireframe" state="wireframe">
+    <!-- Display Wireframe -->
+    <pass name="debug_Wireframe" state="wireframe" enabled="false">
       <uniform name="u_color" value="{0.0, 1.0, 0.0, 1.0}" />
 
       <vertexShader shader="vs" />

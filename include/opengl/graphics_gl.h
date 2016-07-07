@@ -16,6 +16,20 @@
 	Don't think this header file should be here...
 */
 
+
+/*
+	TODO:
+	This should NOT extend graphics ... in fact there shouldn't even be a header file.
+
+	The SOURCE file should be implementation specific -- but only using the andromeda::Graphics class
+	as there should only be one implementation /link
+
+	However this may make supporting numerous versions of OpenGL rather confusing :P (Except for Vulkan, as that would be 100% separate)
+
+	This can ONLY be done after the Core Library has been divided into sub-libraries
+*/
+
+
 namespace andromeda
 {
 

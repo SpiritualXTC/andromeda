@@ -126,7 +126,7 @@ namespace andromeda
 
 
 
-			const inline void setUniform(const std::string & name, glm::mat4 &m) const override
+			const inline void setUniform(const std::string & name, const glm::mat4 &m) const override
 			{
 				glUniformMatrix4fv(getUniformHandle(name), 1, false, glm::value_ptr(m));
 			}

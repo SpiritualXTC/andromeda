@@ -3,6 +3,9 @@
 
 /*
 	Selects which OpenGL Libraries to include!
+
+	TODO:
+	This shouldn't be here :)
 */
 
 

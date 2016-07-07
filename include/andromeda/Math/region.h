@@ -1,5 +1,4 @@
-#ifndef _ANDROMEDA_MATH_REGION_H_
-#define _ANDROMEDA_MATH_REGION_H_
+#pragma once
 
 #include "glmx/glm_conversion.h"
 #include "glmx/glm_extension.h"
@@ -193,6 +192,3 @@ namespace andromeda
 	typedef Region<Double, glm::highp, glm::detail::tvec4> Region4d;
 	typedef Region<Int32, glm::highp, glm::detail::tvec4> Region4i;
 }
-
-
-#endif

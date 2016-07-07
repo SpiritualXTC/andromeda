@@ -1,9 +1,8 @@
 #include <andromeda/Renderer/view.h>
 
-#include <andromeda/Renderer/visibility.h>
-
 using namespace andromeda;
 
+#if 0
 /*
 
 */
@@ -26,7 +25,7 @@ ScreenView::~ScreenView()
 {
 
 }
-
+#endif
 
 
 /*

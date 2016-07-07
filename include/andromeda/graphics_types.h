@@ -271,4 +271,11 @@ namespace andromeda
 		ClampToEdge,
 	};
 
+
+
+
+	/*
+		Shader Annotations
+	*/
+
 }

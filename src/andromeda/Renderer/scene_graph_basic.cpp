@@ -3,7 +3,7 @@
 #include <cassert>
 
 #include <andromeda/Game/game_object.h>
-#include <andromeda/Renderer/scene_graph_cache.h>
+#include <andromeda/Renderer/scene_graph_view_cache.h>
 
 using namespace andromeda;
 
@@ -132,8 +132,11 @@ void BasicSceneGraph::update(const Float timeStep)
 	process():
 
 	Process the Scene with respect to the cache
+
+	TODO: 
+	Remove Meh
 */
-Boolean BasicSceneGraph::process(std::shared_ptr<SceneGraphCache> sgCache)
+Boolean BasicSceneGraph::process(std::shared_ptr<SceneGraphViewCache> & sgCache)
 {
 	// Iterate through all objects
 	for (const auto & it : _objects)
@@ -143,3 +146,4 @@ Boolean BasicSceneGraph::process(std::shared_ptr<SceneGraphCache> sgCache)
 
 	return true;
 }
+

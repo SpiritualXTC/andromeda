@@ -70,78 +70,33 @@ namespace andromeda
 				return -1;
 			}
 
+#if 0
+			const inline void setUniformMat4(const std::string & name, glm::mat4 &m) const {}
+			const inline void setUniformVec2(const std::string &name, const glm::vec2 &v)const {}
+			const inline void setUniformVec3(const std::string &name, const glm::vec3 &v)const {}
+			const inline void setUniformVec4(const std::string &name, const glm::vec4 &v)const {}
+			const inline void setUniformTexture(const std::string &name, UInt32 bindIndex)const {}
+			const inline void updateUniformMat4(const std::string & name, glm::mat4 &m) const {}
+			const inline void updateUniformVec2(const std::string &name, const glm::vec2 &v)const {}
+			const inline void updateUniformVec3(const std::string &name, const glm::vec3 &v)const {}
+			const inline void updateUniformVec4(const std::string &name, const glm::vec4 &v)const{}
+			const inline void updatetUniformTexture(const std::string &name, Int32 bindIndex)const{}
+#endif
 
 
 
-			const inline void setUniformMat4(const std::string & name, glm::mat4 &m) const
-			{
-
-			}
-			const inline void setUniformVec2(const std::string &name, const glm::vec2 &v)const
-			{
-
-			}
-			const inline void setUniformVec3(const std::string &name, const glm::vec3 &v)const
-			{
-
-			}
-			const inline void setUniformVec4(const std::string &name, const glm::vec4 &v)const
-			{
-
-			}
-
-			const inline void setUniformTexture(const std::string &name, UInt32 bindIndex)const
-			{
-
-			}
-
-			const inline void updateUniformMat4(const std::string & name, glm::mat4 &m) const
-			{
-
-			}
-			const inline void updateUniformVec2(const std::string &name, const glm::vec2 &v)const
-			{
-
-			}
-			const inline void updateUniformVec3(const std::string &name, const glm::vec3 &v)const
-			{
-
-			}
-			const inline void updateUniformVec4(const std::string &name, const glm::vec4 &v)const
-			{
-	
-			}
-
-			const inline void updatetUniformTexture(const std::string &name, Int32 bindIndex)const
-			{
-
-			}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+			/*
+				NEW INTERFACE
+			*/
 
 			// Technique Exists 
-			Boolean hasTechnique(const std::string & name) const;
+			Boolean hasTechnique(const std::string & name) const override;
 
 			// Get the Technique
 			std::shared_ptr<ITechnique> getTechnique(const std::string & name) const override;
+
+			// Get the Default Technique
+			std::shared_ptr<ITechnique> getTechniqueDefault() const override;
 
 			// Add a Technique
 			Boolean addTechnique(std::shared_ptr<XTechnique> & technique);

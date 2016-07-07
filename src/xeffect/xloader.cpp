@@ -25,6 +25,7 @@
 #include "x_state.h"
 #include "x_state_builder.h"
 #include "x_technique.h"
+#include "x_type_conversion.h"
 #include "x_uniform_builder.h"
 
 using namespace andromeda;
@@ -515,6 +516,15 @@ std::shared_ptr<XPass> XEffectLoader::loadPass(XNode & node, const std::shared_p
 
 	// Create Pass
 	std::shared_ptr<XPass> pass = std::make_shared<XPass>(name, program);
+
+	// Enabled State
+	boost::optional<std::string> enabled = node.getAttribute("enabled");
+	
+	if (enabled.is_initialized())
+	{
+		log_debugp("Pass <%1%> :: Set Enabled = %2%", name, enabled);
+		pass->setEnabled(XTypeConversion::convBoolean(enabled.get(), true));
+	}
 
 	// Load States
 	std::vector<std::string> states;

@@ -8,7 +8,7 @@
 #include <andromeda/stddef.h>
 #include <andromeda/Engine/module.h>
 
-#include <andromeda/Utilities/observer.h>
+#include <andromeda/Utilities/observable.h>
 
 namespace andromeda
 {

@@ -144,9 +144,6 @@
     <ClInclude Include="include\andromeda\graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\andromeda\Geometry\geometry_surface.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\andromeda\Geometry\geometry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -189,18 +186,6 @@
     <ClInclude Include="include\andromeda\Resources\resource_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\andromeda\Resources\resource_stream.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\common\Resources\resource_search_common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\common\Resources\resource_stream_common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\andromeda\Resources\resource_cache.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\andromeda\Renderer\layer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -220,9 +205,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\andromeda\Game\view_component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\andromeda\Renderer\scene_graph_cache.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\andromeda\Renderer\scene.h">
@@ -252,22 +234,10 @@
     <ClInclude Include="include\andromeda\Renderer\camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\andromeda\Renderer\camera_target.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\andromeda\Renderer\camera_static.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\andromeda\Renderer\transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\andromeda\Renderer\visibility.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\andromeda\Renderer\view_builder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\andromeda\Renderer\camera_builder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\andromeda\Graphics\mesh.h">
@@ -390,6 +360,48 @@
     <ClInclude Include="src\opengl\shader_gl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\andromeda\Math\math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Graphics\light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Resources\resource_manager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Renderer\scene_graph_view_cache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Geometry\geometry_surface_function.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Geometry\geometry_cube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\geometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Geometry\geometry_ellipse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Geometry\geometry_cylinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Geometry\geometry_torus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Math\plane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Renderer\layer_group.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Utilities\observable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\andromeda\Renderer\render_group.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Docs\readme.txt" />
@@ -471,9 +483,6 @@
     <ClCompile Include="src\andromeda\Geometry\geometry_ellipse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\andromeda\Geometry\geometry_plane.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\andromeda\Geometry\geometry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -501,15 +510,6 @@
     <ClCompile Include="src\andromeda\Resources\resource_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\Resources\resource_search_common.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\Resources\resource_stream_common.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Resources\resource_cache.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\andromeda\Renderer\layer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -519,16 +519,10 @@
     <ClCompile Include="src\andromeda\Game\game_object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\andromeda\Renderer\scene_graph_cache.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\andromeda\Renderer\scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Game\render_component.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Renderer\view_texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Renderer\view_screen.cpp">
@@ -538,21 +532,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Game\entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Renderer\camera_default.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Renderer\camera_static.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Renderer\camera_target.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Renderer\camera_builder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Renderer\visibility_region.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Renderer\view_builder.cpp">
@@ -660,10 +639,32 @@
     <ClCompile Include="src\opengl\shader_gl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\andromeda\Geometry\geometry_surface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\scene_graph_view_cache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Geometry\geometry_generate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\layer_group.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\render_group.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\layer_builder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="res\shader\shader_example.xml" />
     <Xml Include="res\shader\shader.xml" />
+    <Xml Include="res\shader\font_shader.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader\lighting_Phong.glsl" />

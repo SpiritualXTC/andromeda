@@ -29,7 +29,9 @@
 
 namespace andromeda
 {
-
+	/*
+		Rename IPass to Pass
+	*/
 	
 	class ITechnique;
 	class IPass;
@@ -46,7 +48,7 @@ namespace andromeda
 		IShader() {}
 		virtual ~IShader() {}
 
-		virtual const inline void setUniform(const std::string &name, glm::mat4 &m) const = 0;
+		virtual const inline void setUniform(const std::string &name, const glm::mat4 &m) const = 0;
 		
 		virtual const inline void setUniform(const std::string &name, const glm::fvec2 &v)const = 0;
 		virtual const inline void setUniform(const std::string &name, const glm::fvec3 &v)const = 0;
@@ -75,14 +77,18 @@ namespace andromeda
 
 		// NEW INTERFACE
 		virtual std::shared_ptr<ITechnique> getTechnique(const std::string & name) const = 0;
+		virtual std::shared_ptr<ITechnique> getTechniqueDefault() const = 0;
+
+		virtual Boolean hasTechnique(const std::string & name) const = 0;
 
 
 
 
 
 
-
-
+		/*
+			TODO REMOVE
+		*/
 		// OLD INTERFACE
 		virtual Boolean setActiveTechnique(const std::string & technique) = 0;
 
@@ -142,6 +148,8 @@ namespace andromeda
 
 
 		virtual const inline std::string & getName() const = 0;
+
+		virtual Boolean isEnabled() const = 0;
 
 		virtual Boolean apply() = 0;
 	};

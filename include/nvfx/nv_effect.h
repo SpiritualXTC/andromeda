@@ -51,10 +51,12 @@ namespace andromeda
 		/*
 			Floats
 		*/
-		const inline void setUniform(const std::string & name, glm::mat4 &m) const override
+		const inline void setUniform(const std::string & name, const glm::mat4 &m) const override
 		{
+			glm::mat4 m2 = m;
+
 			nvFX::IUniform * uniform = _effect->findUniform(name.c_str());
-			uniform->updateMatrix4f(glm::value_ptr(m), _activePass);
+			uniform->updateMatrix4f(glm::value_ptr(m2), _activePass);
 		}
 		const inline void setUniform(const std::string &name, const glm::fvec2 &v)const override
 		{

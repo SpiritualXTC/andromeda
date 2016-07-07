@@ -18,6 +18,11 @@ TODO:
  
  - Change ALL header include gates to '#pragma once' rather than the old style gates
 
+ - Setup Forward Declaration style
+	class XYZ {};
+	typdef andromeda::XYZ a_XYZ;
+
+
 
 Particle System
  - GPU & CPU implementations

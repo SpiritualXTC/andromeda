@@ -1,15 +1,13 @@
-#ifndef _ANDROMEDA_UTILITY_OBSERVER_H_
-#define _ANDROMEDA_UTILITY_OBSERVER_H_
+#pragma once
 
-#include <list>
-#include <memory>
+
 
 #include "../stddef.h"
 
 namespace andromeda
 {
-	template <class T>
-	class IObserver
+	template <typename T>
+	class IObserver 
 	{
 	public:
 		IObserver() {}
@@ -19,66 +17,31 @@ namespace andromeda
 	};
 
 
+
+
+
+
+
+
+
+
+#if 0
 	template <class T>
-	class Observable
+	class IObserverSelf : public IObserver<T>, public std::enable_shared_from_this<IObserverSelf<T>>
 	{
 	public:
-		Observable(){}
-		virtual ~Observable(){}
-
-
-		/*
-			Add an Observer
-		*/
-		void add(std::weak_ptr<IObserver<T>> observer)
+		void bind(Observable<T> * o)
 		{
-			// Is the observer already in the list ??
-
-			// Add to List
-			_observers.push_back(observer);
+			o->add(shared_from_this());
 		}
-
-		/*
-			Remove the Observer
-		*/
-		void remove(std::weak_ptr<IObserver<T>> observer)
+		void unbind(Observable<T> * o)
 		{
-			// Remove the Observer from the list
-			_observers.erase(observer);
+			o->remove(shared_from_this());
 		}
-
-
-		/*
-			Generic Notification
-		*/
-		void notify(const T * const p)
-		{
-			// Are their any weak pointers that need to be removed?
-			Boolean weak = false;
-
-			// TODO: There may be a threading related crash occuring here when an observer dies
-
-			// Notify Observers
-			for (auto & it : _observers)
-			{
-				//std::shared_ptr<IObserver<T>> ptr = it.lock();
-				if (! it.expired())
-					it.lock()->notify(p);
-				else
-					weak = true;
-			}
-
-			// Remove any ... weak links!
-			if (weak)
-				_observers.remove_if([](std::weak_ptr<IObserver<T>> observer) {return observer.expired(); });
-		}
-
-	private:
-		std::list<std::weak_ptr<IObserver<T>>> _observers;
 	};
-}
-
 #endif
+
+}
 
 
 

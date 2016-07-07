@@ -44,7 +44,9 @@ namespace andromeda
 		/*
 			Process the Scene in relation to the view
 		*/
-		Boolean process(std::shared_ptr<SceneGraphCache> sgCache);
+		Boolean process(std::shared_ptr<SceneGraphViewCache> & sgCache) override;
+
+	
 
 
 		// OBJECT RETRIEVAL :: TESTING

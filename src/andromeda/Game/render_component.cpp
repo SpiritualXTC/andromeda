@@ -27,7 +27,7 @@ RenderComponent::~RenderComponent()
 */
 void RenderComponent::onViewActivate(View * view)
 {
-	view->addRenderable("", this);
+	view->addRenderable(this);
 }
 
 /*
@@ -35,5 +35,5 @@ void RenderComponent::onViewActivate(View * view)
 */
 void RenderComponent::onViewDeactivate(View * view)
 {
-	view->removeRenderable("", this);
+	view->removeRenderable(this);
 }

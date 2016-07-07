@@ -41,7 +41,7 @@ System::System(IAndromedaConfig * config)
 	displayParam.resolution.height = 600;
 	displayParam.mode = DisplayMode::Windowed;
 
-
+	
 	// TEMP
 //	_displayParam = displayParam;
 

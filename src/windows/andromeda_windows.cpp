@@ -22,11 +22,6 @@
 #include "Renderer/context_windows.h"
 #include "Platform/platform_windows.h"
 
-#include "../common/Resources/resource_search_common.h"
-
-
-
-
 /*
 	TODO:
 	Fix up the graphics initialiser / headers

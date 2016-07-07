@@ -1,4 +1,4 @@
-#include <andromeda/Renderer/scene_graph_cache.h>
+#include <andromeda/Renderer/scene_graph_view_cache.h>
 
 
 #include <cassert>
@@ -13,7 +13,6 @@
 #include <andromeda/Renderer/scene_graph.h>
 #include <andromeda/Renderer/transform.h>
 #include <andromeda/Renderer/view.h>
-#include <andromeda/Renderer/visibility.h>
 
 
 using namespace andromeda;
@@ -22,9 +21,9 @@ using namespace andromeda;
 /*
 
 */
-SceneGraphCache::SceneGraphCache(View * view, IVisibility * visibility)
+SceneGraphViewCache::SceneGraphViewCache(View * view, Camera * camera)
 	: _view(view)
-	, _visibility(visibility)
+	, _camera(camera)
 {
 	assert(_view);
 
@@ -34,7 +33,7 @@ SceneGraphCache::SceneGraphCache(View * view, IVisibility * visibility)
 /*
 
 */
-SceneGraphCache::~SceneGraphCache()
+SceneGraphViewCache::~SceneGraphViewCache()
 {
 
 }
@@ -47,7 +46,7 @@ SceneGraphCache::~SceneGraphCache()
 /*
 	Is this object in the scene
 */
-Boolean SceneGraphCache::hasObject(std::shared_ptr<GameObject> object)
+Boolean SceneGraphViewCache::hasObject(std::shared_ptr<GameObject> object)
 {
 	// Validate Object
 	assert(object);
@@ -62,7 +61,7 @@ Boolean SceneGraphCache::hasObject(std::shared_ptr<GameObject> object)
 /*
 	Adds a game object
 */
-Boolean SceneGraphCache::addGameObject(std::shared_ptr<GameObject> object)
+Boolean SceneGraphViewCache::addGameObject(std::shared_ptr<GameObject> object)
 {
 	// Validate Object
 	assert(object);
@@ -95,7 +94,11 @@ Boolean SceneGraphCache::addGameObject(std::shared_ptr<GameObject> object)
 
 	Boolean b = insert(object->getId());
 	if (b)
+	{
 		object->onViewActivate(_view);
+
+		_objects.insert_or_assign(object->getId(), object);
+	}
 
 	return b;
 }
@@ -104,20 +107,42 @@ Boolean SceneGraphCache::addGameObject(std::shared_ptr<GameObject> object)
 /*
 	Removes a game object
 */
-Boolean SceneGraphCache::removeGameObject(std::shared_ptr<GameObject> object)
+Boolean SceneGraphViewCache::removeGameObject(std::shared_ptr<GameObject> object)
 {
 	assert(object);
 
 	Boolean b = erase(object->getId());
 	if (b)
+	{
 		object->onViewDeactivate(_view);
+		_objects.erase(object->getId());
+	}
 	
 	return b;
 }
 
 
 
+/*
 
+*/
+Boolean SceneGraphViewCache::clearObjects()
+{
+	/*
+		TODO:
+		This will need to be tested .... somehow
+	*/
+
+	for (const auto & it : _objects)
+	{
+		it.second->onViewDeactivate(_view);
+	}
+
+	_objects.clear();
+	_table.clear();
+
+	return true;
+}
 
 
 
@@ -127,7 +152,7 @@ Boolean SceneGraphCache::removeGameObject(std::shared_ptr<GameObject> object)
 /*
 	Does it exist in the Table
 */
-Boolean SceneGraphCache::exists(UInt64 id)
+Boolean SceneGraphViewCache::exists(UInt64 id)
 {
 	auto it = _table.find(id);
 
@@ -142,7 +167,7 @@ Boolean SceneGraphCache::exists(UInt64 id)
 /*
 	Inserts the ID into the lookup table
 */
-Boolean SceneGraphCache::insert(UInt64 id)
+Boolean SceneGraphViewCache::insert(UInt64 id)
 {
 	auto & it = _table.insert_or_assign(id, true);
 
@@ -153,7 +178,7 @@ Boolean SceneGraphCache::insert(UInt64 id)
 /*
 	Removes the ID from the lookup table
 */
-Boolean SceneGraphCache::erase(UInt64 id)
+Boolean SceneGraphViewCache::erase(UInt64 id)
 {
 	// Override Flag
 	if (exists(id))
@@ -167,51 +192,26 @@ Boolean SceneGraphCache::erase(UInt64 id)
 }
 
 
-#if 0
-/*
-	this shouldn't be here....
-*/
-Boolean SceneGraphCache::visiblilityCheck(const std::shared_ptr<GameObject> & go)
-{
-	// Visibility Test
-	const std::shared_ptr<ICamera> & camera = _view->camera();
-
-	// Transform Component
-	std::shared_ptr<ITransform> transform = go->getComponentPtr<TransformComponent>();
-
-	if (!transform)
-		return false;
 
 
-	aFloat cam_size = 2.0f;
-	aFloat obj_size = 0.5f;
 
 
-//	const glm::vec3 & cam_pos = camera->position();
-	const glm::vec3 & obj_pos = transform->position();
-
-	const glm::vec4 cam_pos2 = camera->worldMatrix() * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-
-	
 
 
-	Region2f valid = Region2f(glm::vec2(cam_pos2.x - cam_size, cam_pos2.z - cam_size), glm::vec2(cam_pos2.x + cam_size, cam_pos2.z + cam_size));
-	Region2f object = Region2f(glm::vec2(obj_pos.x - obj_size, obj_pos.z - obj_size), glm::vec2(obj_pos.x + obj_size, obj_pos.z + obj_size));
-	
-	return valid.overlap(object);
-}
-#endif
 
 
 
 /*
 
 */
-void SceneGraphCache::process(const std::shared_ptr<GameObject> & go)
+void SceneGraphViewCache::process(const std::shared_ptr<GameObject> & go)
 {
 	assert(go);
-
+	assert(_camera);
 	
+
+
+
 
 	// Cache Check :: Is it already in the cache
 	Boolean cached = exists(go->getId());
@@ -219,8 +219,39 @@ void SceneGraphCache::process(const std::shared_ptr<GameObject> & go)
 	// Visible :: Does the object pass the visibility check
 	Boolean visible = true;
 
-	if (!! _visibility)
-		visible = _visibility->isVisible(go);
+//	if (!! _visibility)
+//		visible = _visibility->isVisible(go);
+
+
+	/*
+		TODO:
+		This needs to be an AABB
+		Add functionality to the GameObject to get an AABB ... fast
+
+		The function however needs to be to handle an accumlated AABB such as that generated by a scene heirarchy
+
+		2 AABB will need to be associated for each object.
+		 - The Heirarchy AABB.
+			This includes all objects that treat this object as a parent in the scene graph
+		 - The Object AABB
+			The object AABB, this wraps the display dimensions of an object
+
+
+		Currently is using a primitive sphere for visibility detection
+	*/
+	// Get Transform Component
+	std::shared_ptr<ITransform> transform = go->getComponentPtr<TransformComponent>();
+
+	if (transform)
+	{
+		const glm::vec3 & position = transform->position();
+
+		visible = _camera->isVisible(position, 0.1f);
+	}
+
+
+
+
 
 
 

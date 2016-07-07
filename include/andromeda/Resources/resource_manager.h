@@ -1,5 +1,4 @@
-#ifndef _ANDROMEDA_RESOURCES_RESOURCE_MANAGER_H_
-#define _ANDROMEDA_RESOURCES_RESOURCE_MANAGER_H_
+#pragma once
 
 /*
 	Resource Management classes for maintaining a virtual file system 
@@ -62,49 +61,10 @@
 
 
 #include "resource_loader.h"
-#include "resource_stream.h"
 #include "resource_type.h"
-
-//#include "mesh_resource.h"
 
 namespace andromeda
 {
-
-	/*
-		DEPRECATED
-
-		IResourceScan:
-
-		Technique to use to navigate a virtual or physical file system to locate resources.
-
-		TODO: Remove Meh, and anything that still uses it.
-	*/
-	class IResourceScan
-	{
-	public:
-		IResourceScan() {}
-		virtual ~IResourceScan() {}
-
-		/*
-			Load a resource
-		*/
-		virtual std::shared_ptr<ResourceStream> load(const std::string & location,
-			const std::string & localPath,
-			const std::string & filename) = 0;
-
-
-		/*
-			Search for resources in the specified location
-		*/
-		virtual Boolean search(const std::string & location,
-			const std::string & localPath,
-			const std::string & extension,
-			std::vector<std::string> & files) = 0;
-	};
-
-
-
-
 
 
 
@@ -170,11 +130,13 @@ namespace andromeda
 		};
 
 	private:
+#if 1
 		struct _Resource
 		{
 			std::string directory;
 			UInt32 flags;
 		};
+#endif
 
 
 	public:
@@ -186,30 +148,7 @@ namespace andromeda
 			Adds a resource type
 		*/
 		template <typename RESOURCE>
-		Boolean addResourceType(const std::string & directory, UInt32 flags = ResourceManager::None)
-		{
-			// TODO: Make less "templatey"
-
-			// This is currently NOT required, as their as:
-			// a) No Base Resource Type
-			// b) No Requirement for a Base Resource Type :)
-		//	static_assert(std::is_base_of<andromeda::Resource, RESOURCE>::value, "Resource is not a valid resource");
-
-			// Get Resource ID
-			ResourceType type = Resource<RESOURCE>::getResourceId();
-
-			// Add Resource
-			_Resource res;
-			res.directory = directory;
-			res.flags = flags;
-
-			_resourceType[type] = res;
-
-			log_infop("ResourceManager :: addResourceType() :: Type = %1%, Directory = %2%", type, directory);
-
-			return false;
-		}
-
+		Boolean addResourceType(const std::string & directory, UInt32 flags = ResourceManager::None);
 
 
 		/*
@@ -230,18 +169,7 @@ namespace andromeda
 			b) A pointer to a resource that hasn't been loaded yet
 		*/
 		template <typename RESOURCE>
-		std::shared_ptr<RESOURCE> loadResourceAsync(const std::string & filename)
-		{
-			// First of all... SEARCH THE CACHE for the resource... it may have already been loaded!
-
-			// If it isn't in the cache, then Load the Resource
-
-			// Add to Loader :: This loads the resource in the background
-
-			// Add to Cache ??
-
-			return nullptr;
-		}
+		std::shared_ptr<RESOURCE> loadResourceAsync(const std::string & filename);
 
 
 
@@ -252,58 +180,33 @@ namespace andromeda
 			Loads from the FIRST Location found in the map
 		*/
 		template <typename RESOURCE>
-		std::shared_ptr<RESOURCE> loadResource(const std::string & filename, const std::string & locationName = "")
-		{
-			// TODO: Make less "templatey"
-
-			// Should it attempt to retrieve from the cache?
-
-			// Search for FIRST reference that matches filename in the map
-			// Search for ALL references that matches the filename in the map.
-			// Search for the file that matches the location in the map
-
-			// Load the File
-			std::shared_ptr<File> file = loadResourceSupport<RESOURCE>(filename, locationName);
-
-
-			if (file == nullptr)
-				return nullptr;
-
-			// Process the File using the Resources Loading Mechanism
-			ResourceLoader loader;
-			std::shared_ptr<RESOURCE> resource = loader.build<RESOURCE>(file);
-
-
-			return resource;
-		}
+		std::shared_ptr<RESOURCE> loadResource(const std::string & filename, const std::string & locationName = "");
 
 
 		/*
 		
 		*/
 		template <typename RESOURCE>
-		std::shared_ptr<File> loadResourceSupport(const std::string & filename, const std::string & locationName = "")
-		{
-			// Get Resource ID
-			const _Resource & res = getResourceType<RESOURCE>();
-
-			std::string filepath = res.directory + "/" + filename;
-
-			log_debugp("ResourceManager :: loadResource() :: %1%", filepath);
-
-
-			// Binary or Text?
-			Boolean binary = false;
-
-			if (res.flags & ResourceManager::Binary)
-				binary = true;
-
-			// Load the File
-			return loadFile(filepath, binary, locationName);
-		}
+		std::shared_ptr<File> loadResourceSupport(const std::string & filename, const std::string & locationName = "");
 
 
 
+
+
+
+
+		/*
+			Gets the Resource Directory
+		*/
+		template <typename RESOURCE>
+		std::shared_ptr<ResourceType<RESOURCE>> getResourceType();
+
+
+		
+
+
+
+	private:
 
 		/*
 			Loads a File from the given path
@@ -312,21 +215,17 @@ namespace andromeda
 		std::shared_ptr<File> loadFile(const std::string & filepath, Boolean binary, const std::string & locationName = "");
 
 
-		/*
-			Gets the Resource Directory
-		*/
 		template <typename RESOURCE>
-		const _Resource & getResourceType();
+		inline ResourceTypeId getResourceTypeId() const
+		{
+			return Resource<RESOURCE>::getResourceId();
+		}
 
-
-
-
-	private:
 
 		// Mapping :: ResourceType :: ResourceDirectory
-		std::unordered_map<ResourceType, _Resource> _resourceType;
+		std::unordered_map<ResourceTypeId, std::shared_ptr<IResourceType>> _resourceType;
 
-		// Mapping :: locationName <-> ILocator
+		// Mapping :: locationName <-> ResourceLocation
 		std::unordered_map<std::string, std::shared_ptr<ResourceLocation>> _location;
 
 
@@ -337,38 +236,17 @@ namespace andromeda
 
 
 
+
+
 	/*
-	
+		Resource Loading ...
+
+		TODO:
+		This setup may lead to issues when it comes to loading custom types with the resource manager
 	*/
-	template <typename RESOURCE>
-	const ResourceManager::_Resource & ResourceManager::getResourceType()
-	{
-		// Get Resource Type
-		ResourceType type = Resource<RESOURCE>::getResourceId();
-
-		// Find Resource Type
-		const auto it = _resourceType.find(type);
-
-		if (it == _resourceType.end())
-		{
-			log_errp("ResourceManager :: getResourceDirectory() :: Invalid Resource Type [%1%]", type);
-			throw ResourceException("Invalid Resource Type");
-		}
-
-		return it->second;
-	}
-
-
-
-
-
-
-
 	class Effect;
 	class Mesh;
 	class Texture;
-
-
 
 	template<>
 	std::shared_ptr<Effect> ResourceLoader::build<Effect>(std::shared_ptr<File> file);
@@ -378,10 +256,9 @@ namespace andromeda
 
 	template<>
 	std::shared_ptr<Texture> ResourceLoader::build<Texture>(std::shared_ptr<File> file);
-
 }
 
+#include "resource_manager.hpp"
 
 
 
-#endif

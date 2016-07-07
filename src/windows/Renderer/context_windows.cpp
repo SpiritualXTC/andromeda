@@ -31,7 +31,8 @@ ContextWindows::ContextWindows(HDC hDC)
 	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
 	pfd.iPixelType = PFD_TYPE_RGBA;
 	pfd.cColorBits = 24;
-	pfd.cDepthBits = 32;
+	pfd.cDepthBits = 24;
+	pfd.cStencilBits = 8;
 	
 	pfd.iLayerType = PFD_MAIN_PLANE;
 
@@ -60,6 +61,24 @@ ContextWindows::ContextWindows(HDC hDC)
 	const GLubyte *oglv = glGetString(GL_VERSION);
 
 	log_debugp("Context :: <init>() :: OpenGL Version %1%", oglv);
+
+
+	/*
+		TODO:
+		Put some functionality for querying values into the Graphics API :)
+
+		Version, Color/Depth/Stencil Bits, Driver, etc
+	*/
+	GLint depthBits = 0;
+	GLint stencilBits = 0;
+
+	glGetIntegerv(GL_DEPTH_BITS, &depthBits);
+	glGetIntegerv(GL_STENCIL_BITS, &stencilBits);
+
+	log_debugp("OpenGL Information");
+	log_tree();
+	log_debugp("Depth = %1%", depthBits);
+	log_debugp("Stencil = %1%", stencilBits);
 }
 
 /*

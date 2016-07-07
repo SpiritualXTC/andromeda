@@ -47,6 +47,18 @@ std::shared_ptr<ITechnique> XEffect::getTechnique(const std::string & name) cons
 	return find != _technique.end() ? find->second : nullptr;
 }
 
+std::shared_ptr<ITechnique> XEffect::getTechniqueDefault() const
+{
+	/*
+		TODO: Add a default technique thingy to XEffect and the XML
+
+		TODO: Test this ....
+	*/
+	const auto & first = _technique.begin();
+
+	return first != _technique.end() ? first->second : nullptr;
+}
+
 /*
 	Add a Technique
 */

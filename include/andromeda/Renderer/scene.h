@@ -1,17 +1,16 @@
-#ifndef _ANDROMEDA_RENDERER_SCENE_H_
-#define _ANDROMEDA_RENDERER_SCENE_H_
+#pragma once 
 
 #include <string>
 #include <set>
 #include <memory>
 
 #include <andromeda/stddef.h>
+#include <andromeda/Renderer/layer_group.h>
+#include <andromeda/Renderer/view.h>
 
-#include "view.h"
 
 namespace andromeda
 {
-	class Effect;
 	class SceneGraph;
 
 
@@ -23,31 +22,31 @@ namespace andromeda
 	class Scene
 	{
 	private:
-		struct _LayerGroup
-		{
-			std::string name;					// Layer Name
-			std::shared_ptr<Effect> effect;		// Effect for the Layer
-		};
-
-
 
 
 	public:
 		Scene(const std::string & name, std::shared_ptr<SceneGraph> sceneGraph);
 		virtual ~Scene();
 
+		/*
+			Gets the Scene Name
+		*/
+		inline const std::string & getName() const { return _name; }
 
 		/*
-			TODO:
-			Layer Groups
+			Is the scene enabled :: This can come in handy when displaying multiple scenes, and one scene is completely invisible
 		*/
-		Boolean addLayer(const std::string & group, std::shared_ptr<Effect> & effect);
+		inline Boolean isEnabled() const { return _enabled; }
+
+
+
+
 
 
 		/*
 			Adds a Precreated View
 		*/
-		Boolean addView(std::shared_ptr<View> view);
+		std::shared_ptr<View> addView(std::shared_ptr<View> view);
 
 		/*
 			Remove a View
@@ -60,35 +59,50 @@ namespace andromeda
 		Boolean clearViews();
 
 
-
+#if 0
 		// Currently only Static Views as they are the only type of view that exists
 		inline std::shared_ptr<View> addScreenView(const std::string & name)
 		{
 			return addScreenView(name, 0.0f, 0.0f, 1.0f, 1.0f, View::Normal);
 		}
 		std::shared_ptr<View> addScreenView(const std::string & name, Float x, Float y, Float width, Float height, Int32 order = View::Normal);
+#endif
 
 
-		// NOT SUPPORTED YET
-		Boolean addTextureView(const std::string & name, const Int32 texWidth, const Int32 texHeight);
+
+
+
+
+
+
 
 
 		/*
-			Gets the Scene Name
+			Adds a SceneGraph
 		*/
-		const std::string & getName() { return _name; }
+		Boolean addSceneGraph(std::shared_ptr<SceneGraph> & sg, const std::string & groupName = "");
 
 
 		/*
 			Gets the SceneGraph
 		*/
-		std::shared_ptr<SceneGraph> getSceneGraph() { return _sceneGraph; }
+		inline std::shared_ptr<SceneGraph> getSceneGraph(const std::string & groupName = "") 
+		{ 
+			const auto & it = _graphs.find(groupName);
+			return it == _graphs.end() ? nullptr : it->second; 
+		}
 
 
 		/*
 			Gets Constant Reference to the SceneGraph
 		*/
-		const std::shared_ptr<SceneGraph> & getSceneGraph() const { return _sceneGraph; }
+		const std::shared_ptr<SceneGraph> & getSceneGraph(const std::string & groupName = "") const 
+		{ 
+			const auto & it = _graphs.find(groupName);
+			return it == _graphs.end() ? nullptr : it->second;
+		}
+
+
 
 
 		/*
@@ -99,10 +113,10 @@ namespace andromeda
 
 		/*
 			Syncs the Update Data with the Render Data
-			SHOULD BE VERY LIGHTWEIGHT.
+			MUST BE VERY LIGHTWEIGHT.
 			Minimal processing needed.
 		*/
-		void sync();
+	//	void sync();
 
 
 		/*
@@ -114,11 +128,15 @@ namespace andromeda
 
 		std::string _name;
 
+		Boolean _enabled = true;
+		Boolean _paused = false;
 		
-		std::shared_ptr<SceneGraph> _sceneGraph;
-		std::multiset<std::shared_ptr<View>> _views;	//Maybe an ordered_map :: Referencing Views by name may be useful
 
-		_LayerGroup _layerGroup;	// TODO: Add LayerGroups
+		// Map of Scene Graphs used by this scene
+		std::unordered_map<std::string, std::shared_ptr<SceneGraph>> _graphs;
+
+
+		std::multiset<std::shared_ptr<View>> _views;	//Maybe an ordered_map :: Referencing Views by name may be useful
 	};
 
 
@@ -126,7 +144,7 @@ namespace andromeda
 	/*
 		Builds a scene
 
-		INPUT. Numerous Options. Could even be XML File
+		INPUT. Numerous Options. Could be an XML File
 		OUTPUT. A Scene Object
 	*/
 	class SceneBuilder
@@ -139,4 +157,3 @@ namespace andromeda
 
 }
 
-#endif

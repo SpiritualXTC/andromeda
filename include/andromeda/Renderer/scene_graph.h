@@ -16,9 +16,10 @@
 namespace andromeda
 {
 	// Forward Declarations
+	class Camera;
 	class ITransform;
 	class GameObject;
-	class SceneGraphCache;
+	class SceneGraphViewCache;
 
 
 	/*
@@ -48,7 +49,13 @@ namespace andromeda
 
 		virtual void update(const Float timeStep) = 0;
 
-		virtual Boolean process(std::shared_ptr<SceneGraphCache> sgCache) = 0;
+
+		/*
+			OLD
+		*/
+		virtual Boolean process(std::shared_ptr<SceneGraphViewCache> & sgCache) = 0;
+
+
 	};
 
 

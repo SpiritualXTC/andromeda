@@ -13,7 +13,7 @@ namespace andromeda
 {
 	class Geometry;
 	class GeometryBuilder;
-	class IShader;
+//	class IShader;
 
 	/*
 		Simplistic UNOPTIMISED Mesh Class
@@ -43,8 +43,23 @@ namespace andromeda
 
 		Boolean addMaterial(Material & material);
 
+		/*
 		void render(const std::shared_ptr<IShader> & effect);
 		void render(const std::shared_ptr<IShader> & effect, UInt32 geomIndex);
+		*/
+
+
+		const Int32 getGeometryCount() const { return _geometry.size(); }
+		const Int32 getMaterialCount() const { return _materials.size(); }
+
+		const Material & getGeometryMaterial(UInt32 geomIndex) const { return _materials[_geometry[geomIndex].materialIndex]; }
+
+
+
+		const std::vector<Material> & getMaterials() const { return _materials; }
+		const Material & getMaterial(Int32 materialIndex) const { return _materials[materialIndex]; }
+
+		void drawGeometry(UInt32 geomIndex) const;
 
 	private:
 		std::vector<_MeshData> _geometry;
@@ -54,6 +69,5 @@ namespace andromeda
 
 	std::shared_ptr<Mesh> LoadMesh(const std::string & filename);
 }
-
 
 #endif

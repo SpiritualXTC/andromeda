@@ -15,6 +15,8 @@
 
 #include <andromeda/Input/mouse.h>
 
+
+// Forward Declarations :: Engine
 namespace andromeda
 {
 	class ISceneGraph;
@@ -30,6 +32,11 @@ namespace andromeda
 	class Renderer;
 }
 
+
+
+
+// Forward Declarations :: Game
+class Player;
 
 
 /*
@@ -55,7 +62,7 @@ protected:
 private:
 	//Ents<10000> _entities;
 
-	void createView(aFloat x, aFloat y, aFloat w, aFloat h);
+	std::shared_ptr<Player> createPlayer(aFloat x, aFloat y, aFloat w, aFloat h);
 
 	std::shared_ptr<andromeda::GameObject> createGround();
 	std::shared_ptr<andromeda::GameObject> createEntity(const std::string & name);
@@ -72,6 +79,9 @@ private:
 
 	// TEMPORARY :: Need a way of pulling views from the Renderer
 	std::list<std::shared_ptr<andromeda::View>> _views;			// List of main views
+
+	std::list<std::shared_ptr<Player>> _players;
+
 	
 	// TEMP FONT
 	std::shared_ptr<andromeda::Font> _font;

@@ -1,9 +1,8 @@
-#ifndef _ANDROMEDA_GRAPHICS_GEOMETRY_H_
-#define _ANDROMEDA_GRAPHICS_GEOMETRY_H_
+#pragma once
 
 #include <memory>
 
-#include "../stddef.h"
+#include <andromeda/stddef.h>
 
 namespace andromeda
 {
@@ -45,4 +44,3 @@ namespace andromeda
 
 typedef andromeda::Geometry aGeometry;
 
-#endif

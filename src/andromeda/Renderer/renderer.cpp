@@ -20,7 +20,7 @@ using namespace andromeda;
 */
 Renderer::Renderer() : Module(Module::Render)
 {
-	log_verbose("Renderer: Create");
+	log_verbose("Renderer :: <init>()");
 
 	// Default States
 	glEnable(GL_DEPTH_TEST);	
@@ -33,7 +33,7 @@ Renderer::Renderer() : Module(Module::Render)
 */
 Renderer::~Renderer()
 {
-	log_verbose("Renderer: Destroy");
+	log_verbose("Renderer: <destroy>()");
 }
 
 
@@ -61,7 +61,6 @@ Boolean Renderer::addScene(std::shared_ptr<Scene> scene)
 */
 Boolean Renderer::removeScene(const std::string & name)
 {
-	
 	// Check if a Scene with the matching name exists 
 	if (!hasScene(name))
 		return false;

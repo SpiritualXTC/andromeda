@@ -4,7 +4,6 @@
 
 #include <andromeda/Renderer/scene_graph.h>
 #include <andromeda/Renderer/view.h>
-#include <andromeda/Renderer/visibility.h>
 
 using namespace andromeda;
 
@@ -14,10 +13,11 @@ using namespace andromeda;
 */
 Scene::Scene(const std::string & name, std::shared_ptr<SceneGraph> sceneGraph)
 	: _name(name)
-	, _sceneGraph(sceneGraph)
 {
-	assert(_sceneGraph);
 
+	// Adds a scene graph if one is passed in
+	if (sceneGraph)
+		addSceneGraph(sceneGraph);
 }
 
 
@@ -30,30 +30,31 @@ Scene::~Scene()
 }
 
 
+
 /*
-	
+	Adds a SceneGraph
 */
-Boolean Scene::addLayer(const std::string & group, std::shared_ptr<Effect> & effect)
+Boolean Scene::addSceneGraph(std::shared_ptr<SceneGraph> & sg, const std::string & groupName)
 {
-	/*
-		TODO: Layer Groups
-	*/
-	_layerGroup.effect = effect;
+	assert(sg);
+
+	_graphs[groupName] = sg;
 
 	return true;
 }
 
 
+
+
+
+#if 0
 /*
 
 */
 std::shared_ptr<View> Scene::addScreenView(const std::string & name, Float x, Float y, Float width, Float height, Int32 order)
 {
-	// Create the Visibility Object :: TEMP
-	std::shared_ptr<IVisibility> visibility = std::make_shared<VisibilityRegion>();
-
 	// Create the View
-	std::shared_ptr<View> view = std::make_shared<ScreenView>(_sceneGraph, nullptr, visibility, x, y, width, height, order);
+	std::shared_ptr<View> view = std::make_shared<ScreenView>(x, y, width, height, order);
 
 	// Add the View
 	Boolean b = addView(view);
@@ -64,43 +65,20 @@ std::shared_ptr<View> Scene::addScreenView(const std::string & name, Float x, Fl
 	// Return the View
 	return view;
 }
+#endif
 
 
 /*
 
 */
-Boolean Scene::addTextureView(const std::string & name, const Int32 texWidth, const Int32 texHeight)
-{
-	std::shared_ptr<View> view = std::make_shared<TextureView>(_sceneGraph);
-
-	return addView(view);;
-}
-
-
-
-/*
-
-*/
-Boolean Scene::addView(std::shared_ptr<View> view)
+std::shared_ptr<View> Scene::addView(std::shared_ptr<View> view)
 {
 	assert(view);
-
-
-	// Add Layers
-
-	/*
-		TODO:
-		Layer Groups
-	*/
-
-	log_warn("Scene :: addView() :: Adding Primitive Layers");
-	view->addLayer(_layerGroup.name, _layerGroup.effect);
-
 
 	// Insert the View
 	_views.insert(view);
 
-	return true;
+	return view;
 }
 
 
@@ -132,13 +110,17 @@ Boolean Scene::clearViews()
 */
 void Scene::update(const Float timeStep)
 {
-	assert(_sceneGraph);
+	// If the scene isn't enabled, do not update
+	// If the scene is paused, do not update
+	if (!_enabled || _paused) return;
 
-	_sceneGraph->update(timeStep);
+	// Update Scene Graph
+	for (const auto & it : _graphs)
+		it.second->update(timeStep);
 }
 
 
-
+#if 0
 /*
 	sync():
 */
@@ -147,7 +129,7 @@ void Scene::sync()
 	assert(_sceneGraph);
 
 }
-
+#endif
 
 
 /*
@@ -155,11 +137,20 @@ void Scene::sync()
 */
 void Scene::render()
 {
+	// If the scene isn't enabled, do not draw
+	if (!_enabled) return;
+
 	// Loop through all views!
 	for (auto view : _views)
 	{
 		// Render the View
 		view->render();
 	}
-
 }
+
+
+
+
+
+
+

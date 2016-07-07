@@ -3,6 +3,7 @@
 
 #include <andromeda/Graphics/mesh.h>
 #include <andromeda/Graphics/effect.h>
+#include <andromeda/Graphics/texture.h>
 #include <andromeda/Math/matrix_stack.h>
 #include <andromeda/Renderer/transform.h>
 
@@ -45,7 +46,16 @@ void MeshRenderComponent::render(const std::shared_ptr<andromeda::IShader> shade
 	/* Effect: Set Materials, Textures, Colors */
 	/* Effect: Set Transformations */
 
-	//effect->
+
+
+	/*
+		TODO:
+		- Effect Annotations
+		- Don't pass the shader in, go directly via the Graphics API
+			It should contain a pointer/reference to the active shader
+	*/
+
+
 
 	// Push Matrix
 	ms.push();
@@ -54,8 +64,42 @@ void MeshRenderComponent::render(const std::shared_ptr<andromeda::IShader> shade
 	// Update the Model View Matrix
 	shader->setUniform("u_modelview", ms.top());
 
+	// Bind Material Uniforms
+
+	for (Int32 i = 0; i < _mesh->getGeometryCount(); ++i)
+	{
+		const Material & material = _mesh->getGeometryMaterial(i);
+
+		/*
+			TODO:
+			This process should be done via Graphics API & Annotations
+		*/
+		shader->setUniform("g_ambient", material.getAmbient());
+		shader->setUniform("g_diffuse", material.getDiffuse());
+		shader->setUniform("g_specular", material.getSpecular());
+
+		const std::shared_ptr<Texture> & diffuseTex = material.getDiffuseTexture();
+
+		if (diffuseTex)
+		{
+			/*
+				TODO:
+				This process SHOULD be done directly via the Graphics API
+			*/
+			//graphics()->setTexture(diffuseTex, [annotation], [index]);
+			diffuseTex->bind();
+			shader->setUniformTexture("g_diffuseTexture", 0);
+		}
+
+
+		_mesh->drawGeometry(i);
+
+		if (diffuseTex)
+			diffuseTex->unbind();
+	}
+
 	// Render ALL Geometry :: Simple version. LOLOLOLOLOLOLOLOLOLOLOLOLOL
-	_mesh->render(shader);
+	//_mesh->render(shader);
 
 	/*
 	for (Int32 i=0; i<_mesh->numgeometry(); ++mesh)

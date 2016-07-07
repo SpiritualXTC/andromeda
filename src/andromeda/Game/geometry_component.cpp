@@ -3,6 +3,7 @@
 
 #include <andromeda/Geometry/geometry.h>
 #include <andromeda/Graphics/effect.h>
+#include <andromeda/Graphics/texture.h>
 #include <andromeda/Math/matrix_stack.h>
 #include <andromeda/Renderer/transform.h>
 
@@ -15,8 +16,17 @@ GeometryRenderComponent::GeometryRenderComponent(std::shared_ptr<Geometry> geome
 	: _geometry(geometry)
 	, _transform(transform)
 {
+	_material.setDiffuse(1, 1, 1);
+}
+
+GeometryRenderComponent::GeometryRenderComponent(std::shared_ptr<Geometry> geometry, const Material & material, std::shared_ptr<ITransform> transform)
+	: _geometry(geometry)
+	, _transform(transform)
+	, _material(material)
+{
 
 }
+
 
 
 /*
@@ -56,8 +66,29 @@ void GeometryRenderComponent::render(const std::shared_ptr<andromeda::IShader> s
 	// Update the Model View Matrix
 	shader->setUniform("u_modelview", ms.top());
 
+	// Get Material
+	shader->setUniform("g_ambient", _material.getAmbient());
+	shader->setUniform("g_diffuse", _material.getDiffuse());
+	shader->setUniform("g_specular", _material.getSpecular());
+
+	// Get Texture
+	const std::shared_ptr<Texture> & diffuseTex = _material.getDiffuseTexture();
+
+	if (diffuseTex)
+	{
+		// TODO: See Mesh Class
+		diffuseTex->bind();
+		shader->setUniformTexture("g_diffuseTexture", 0);
+	}
+
 	// Render ALL Geometry
 	_geometry->render();
+
+
+	if (diffuseTex)
+	{
+		diffuseTex->unbind();
+	}
 
 	// Pop the matrix
 	ms.pop();

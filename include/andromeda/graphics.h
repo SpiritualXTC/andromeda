@@ -47,6 +47,18 @@ namespace andromeda
 
 		TODO: 
 		Tie to the resize event() to store screen dimensions
+
+		TODO:
+		Batch Rendering Setup
+
+		I assume this will consist of:
+		An array of 'GeometryGroup's (Probably a set, or map) : indexed or sorted by a Unique ID on the Geometry Buffer
+			
+		Each GeometryGroup will have an array of matrices that is then fed directly into the multi-draw call
+
+
+		TODO:
+		Create a 1x1 or 2x2 pure WHITE texture to be used when calls to setTexture() is null
 	*/
 	class Graphics : virtual protected ResizeListener
 	{
@@ -72,6 +84,12 @@ namespace andromeda
 	//	virtual inline std::shared_ptr<RenderTarget> createRenderTarget() = 0;
 
 		// Important States
+		/*
+			TODO:
+			This is directly effected by what the render target is as well
+			RenderTarget = null = Backbuffer
+			RenderTarget != null = A Texture
+		*/
 		virtual inline void setViewport(Int32 x, Int32 y, Int32 width, Int32 height) = 0;
 
 

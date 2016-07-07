@@ -27,35 +27,22 @@ namespace andromeda
 			XPass(const std::string & name, const std::shared_ptr<XShaderProgram> & shader);
 			virtual ~XPass();
 
+			
+
 			// Gets the Pass Name
 			const inline std::string & getName() const override { return _name; }
+
+			// Is the pass enabled?
+			Boolean isEnabled() const override { return _enabled; }
 
 
 			// Apply the Pass
 			Boolean apply() override;
 
-
-			void addUniform(const std::string & name, const glm::fvec2 & v);
-			void addUniform(const std::string & name, const glm::fvec3 & v);
-			void addUniform(const std::string & name, const glm::fvec4 & v);
-
-			void addUniform(const std::string & name, const glm::ivec2 & v);
-			void addUniform(const std::string & name, const glm::ivec3 & v);
-			void addUniform(const std::string & name, const glm::ivec4 & v);
-
-			void addUniform(const std::shared_ptr<XUniform> & uniform);
-
-
-
-			void addState(const std::shared_ptr<IState> & state);
-
-
-
-
 			/*
 			
 			*/
-			const inline void setUniform(const std::string & name, glm::mat4 &m) const override
+			const inline void setUniform(const std::string & name, const glm::mat4 &m) const override
 			{
 				assert(_shader);
 				_shader->setUniform(name, m);
@@ -108,10 +95,31 @@ namespace andromeda
 			}
 
 
+
+
+
+
+			void addUniform(const std::string & name, const glm::fvec2 & v);
+			void addUniform(const std::string & name, const glm::fvec3 & v);
+			void addUniform(const std::string & name, const glm::fvec4 & v);
+
+			void addUniform(const std::string & name, const glm::ivec2 & v);
+			void addUniform(const std::string & name, const glm::ivec3 & v);
+			void addUniform(const std::string & name, const glm::ivec4 & v);
+
+			void addUniform(const std::shared_ptr<XUniform> & uniform);
+
+
+
+			void addState(const std::shared_ptr<IState> & state);
+
+			void setEnabled(Boolean enabled) { _enabled = enabled; }
+
 		private:
 			
 
 			std::string _name;
+			Boolean _enabled = true;
 
 			/*
 				TODO:

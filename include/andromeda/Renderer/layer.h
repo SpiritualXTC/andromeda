@@ -1,5 +1,4 @@
-#ifndef _ANDROMEDA_RENDERER_LAYER_H_
-#define _ANDROMEDA_RENDERER_LAYER_H_
+#pragma once
 
 #include <memory>
 #include <string>
@@ -12,27 +11,38 @@
 
 #include <andromeda/stddef.h>
 
+#include "camera.h"
+
 #include "renderable.h"
 
 
 namespace andromeda
 {
+	/*
+		TODO:
+		Remove This
+		Rename ITechnique to Technique
+	*/
+	//class ITechnique;
+	//typedef ITechnique Technique;
+
+
+
+	class Camera;
+
 	class Effect;
-	class IRenderable;
+	class ITechnique;
+	class IPass;
+
+
 	class IRenderable;
 	class IProjection;
 
-	class ICamera;
-	class ViewCamera;
+	
+
+	class RenderGroup;
 
 
-	/*
-		Class used to create views as they are dynamically added
-	*/
-	class LayerInfo
-	{
-
-	};
 
 
 
@@ -43,6 +53,7 @@ namespace andromeda
 	class Layer
 	{
 	private:
+#if 0
 		struct _LayerSort
 		{
 			Boolean operator ()(IRenderable * lhs, IRenderable * rhs)
@@ -53,29 +64,43 @@ namespace andromeda
 			}
 
 		};
-
+#endif
 	public:
-		Layer(std::shared_ptr<Effect> & effect);
+		Layer(std::shared_ptr<Camera> & camera, std::shared_ptr<Effect> & effect, std::shared_ptr<RenderGroup> rg);
+		//Layer(std::shared_ptr<Effect> & effect, const std::string & technique);
 		virtual ~Layer();
 		
+
+		Boolean setActiveTechnique(const std::string & techniqueName);
 
 //		Boolean addRenderable(std::shared_ptr<IRenderable> renderable);
 //		Boolean removeRenderable(std::shared_ptr<IRenderable> renderable);
 
-		Boolean addRenderable(IRenderable * renderable);
-		Boolean removeRenderable(IRenderable * renderable);
+//		Boolean addRenderable(IRenderable * renderable);
+//		Boolean removeRenderable(IRenderable * renderable);
 
+	//	Boolean addLight(Light * light);
+	//	Boolean removeLight(Light * light);
 
-	//	Boolean render(const std::unique_ptr<ViewCamera> & camera);	
-		Boolean render(std::shared_ptr<IProjection> projection, const std::shared_ptr<ICamera> camera);	
+		Boolean render(/*std::shared_ptr<Camera> & camera*/);													// New Camera
+
+		
 
 	private:
-		std::shared_ptr<Effect> _effect;	// Should it be a weak pointer ?
+		std::shared_ptr<Camera> _camera;
 
-	//	std::unordered_map<std::string, std::shared_ptr<IRenderable>> _renderables;
-	//	std::set<std::shared_ptr<IRenderable>> _renderables;
-		std::set<IRenderable*, _LayerSort> _renderables;
+		std::shared_ptr<Effect> _effect;		// Should it be a weak pointer ?
+		std::weak_ptr<ITechnique> _technique;
+
+
+		std::shared_ptr<RenderGroup> _renderGroup;
 	};
+
+
+
+
+
+
+
 }
 
-#endif

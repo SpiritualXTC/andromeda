@@ -32,7 +32,9 @@ void includeCallbackFunc(const char *incName, FILE *&fp, const char *&buf)
 	log_warnp("NVFX:: Include = %1%", incName);
 
 	// Load File :: This won't load from the shader directory
-	std::shared_ptr<andromeda::File> file = Andromeda::instance()->getResourceManager()->loadFile(incName, false);
+	std::shared_ptr<andromeda::File> file = nullptr;// Andromeda::instance()->getResourceManager()->loadFile(incName, false);
+
+	log_errp("NVFX needs to be restructured....... have fun with that :P");
 
 	if (!file)
 		log_errp("Unable to load Resource %1%", incName);
@@ -83,7 +85,9 @@ NVEffect::NVEffect()
 {
 	// Load File :: This is temporarily here
 	//std::shared_ptr<andromeda::ResourceStream> res = ResourceManager::instance()->load("shader.glslfx");
-	std::shared_ptr<andromeda::File> file = Andromeda::instance()->getResourceManager()->loadFile("shader/shader.glslfx", false);
+	std::shared_ptr<andromeda::File> file = nullptr;// Andromeda::instance()->getResourceManager()->loadFile("shader/shader.glslfx", false);
+
+	log_errp("NVFX needs to be restructured....... have fun with that :P");
 
 	if (file)
 	{

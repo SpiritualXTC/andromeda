@@ -21,12 +21,37 @@
   <extension name="extension_name" value="[enable/require/warn/disable]" />
   <extension name="GL_ARB_separate_shader_objects" value="enable" />
 
+
+  <!-- 
+    TODO:
+    Load another effect
+  -->
+  <effect name="blah" source="effect.xml" />
+
   <!--
     TODO:
     Shader Defines :: Appends to INDIVIDUAL Shaders
     However this can be a way for an application to inject constants into a shader
   -->
 
+  <!--
+    TODO:
+    Shader Annotations:
+    uniform <varname> : <annotation>
+    Uniform Annotations:
+      MODELVIEW           Model View Matrix
+      PROJECTION          Projection Matrix
+      COLOR               Uniform/Constant Color
+      
+      DIFFUSE_TEXTURE     Diffuse Texture 
+      NORMAL_MAP          Normals Map
+      
+      
+    Attribute Annotations
+      VERTICES
+      NORMALS
+      TEXCOORD0
+  -->
   
   
   <!--
@@ -202,6 +227,15 @@
   <shader name="test_Position" source="test_Position.fs" />
   <shader name="test_Normal" source="frag_Normal.fs" />
 
+  
+  <!--
+    TODO:
+    Master switch for disabling a pass will stop the pass from being displayed...
+    while still allowing it to be part of the effect
+    <pass enabled="false">
+    </pass>
+  -->
+  
   <!-- Technique -->
   <technique name="t1">
     
@@ -219,7 +253,7 @@
     </pass>    
     
     <!-- Displays The Mesh in Wireframe -->
-    <pass name="wireframe">
+    <pass name="wireframe" enabled="false">
       <vertexShader shader="defaultVS" />
       <fragmentShader>
 
@@ -286,5 +320,14 @@
     
     </pass>
   </technique>
-  
+
+
+
+
+  <!-- 
+    TODO - copy effects from one effect to another
+  -->
+  <technique name="t1" effect="blah" technique="t1" />
+
+
 </effect>

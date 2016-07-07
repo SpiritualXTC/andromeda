@@ -90,6 +90,8 @@ namespace andromeda
 		std::string _name;
 
 		Int32 _viewReferenceCounter = 0;
+
+	//	UInt64 _viewMap = 0;
 	};
 }
 #endif

@@ -1,166 +1,180 @@
-#include <andromeda/Geometry/geometry_generate.h>
+#include <andromeda/Geometry/geometry_ellipse.h>
 
-#include <andromeda/Graphics/buffer.h>
-#include <andromeda/Geometry/geometry.h>
-#include <andromeda/Geometry/geometry_builder.h>
-#include <andromeda/Geometry/geometry_desc.h>
-
-#include <andromeda/glm.h>
 #include <glm/ext.hpp>
 
 using namespace andromeda;
+using namespace andromeda::geometry;
+
+/*
+
+*/
+Ellipse::Ellipse()
+{
+
+}
 
 
 /*
-	THERE IS A BUG IN THIS CODE WITH RESPECT TO THE CAPS and SLICE COUNTS
-	DEBUG LATER
-*/
-std::shared_ptr<Geometry> andromeda::CreateEllipse(Float width, Float height, Float depth, Int32 slices, Int32 stacks, UInt32 genMask)
-{
-	Float w = width * 0.5f;
-	Float h = height * 0.5f;
-	Float d = depth * 0.5f;
 
-	// Validation!
+*/
+Ellipse::Ellipse(Float radius)
+	: _rX(radius)
+	, _rY(radius)
+	, _rZ(radius)
+{
+
+}
+
+/*
+
+*/
+void Ellipse::buildPosition(glm::vec3 * pvertices, UInt32 count)
+{
 	Float pi = glm::pi<Float>();
 
-	// Calculate Number of Vertices
-	Int32 vertex_count = slices * stacks + 2 - slices;
-
-	// Allocation
-	glm::vec3 * position = new glm::vec3[vertex_count];
-	glm::vec3 * normal = new glm::vec3[vertex_count];
-	glm::vec2 * texture = new glm::vec2[vertex_count];
-
-
-	Int32 vertex = 0;
-	Int32 cap_neg = 0, cap_pos = 0;
-
-	for (Int32 vst = 1; vst < stacks; vst++)
+	for (UInt32 i = 0; i <= _slices; ++i)
 	{
-		Float angle_st = (Float)vst / (Float)(stacks)* pi - pi * 0.5f;
-		Float angle_st2 = (Float)vst / (Float)(stacks)* pi;
+		// Range = [0, 360]
+		Float slice_angle = (Float)i / _slices * pi * 2.0f;
 
-		for (Int32 vsl = 0; vsl < slices; vsl++)
+		Float slice_cos = glm::cos(slice_angle);
+		Float slice_sin = glm::sin(slice_angle);
+
+		// Stacks
+		for (UInt32 j = 0; j <= _stacks; ++j)
 		{
-			Float angle_sl = (Float)vsl / (Float)(slices)* pi * 2.0f;
+			// Range = -90, 90
+			Float stack_angle = (Float)j / _stacks * pi - pi * 0.5f;
 
-			// Calculate Position
-			Float x = w * glm::cos(angle_st) * glm::cos(angle_sl);
-			Float y = d * glm::sin(angle_st);
-			Float z = h * glm::sin(angle_st2) * glm::sin(angle_sl);
-			
+			Float stack_cos = glm::cos(-stack_angle);
+			Float stack_sin = glm::sin(-stack_angle);
 
-			position[vertex] = glm::vec3(x, y, z);
-			normal[vertex] = glm::normalize(glm::vec3(x, y, z));
+			Float x = _rX * stack_cos * slice_cos;
+			Float y = _rY * stack_sin;
+			Float z = _rZ * stack_cos * slice_sin;
 
-			texture[vertex] = glm::vec2(vsl / (float)slices, vst / (float)stacks);
-
-			vertex++;
+			*pvertices++ = glm::vec3(x, y, z);
 		}
 	}
+}
+
+/*
+
+*/
+void Ellipse::buildNormals(glm::vec3 * pvertices, UInt32 count)
+{
+	/*
+		TODO:
+		This may or may not be incorrect.
+		Requires testing / display
+
+		It Probably isn't :P
+	*/
+	Float pi = glm::pi<Float>();
+
+	for (UInt32 i = 0; i <= _slices; ++i)
+	{
+		// Range = [0, 360]
+		Float slice_angle = (Float)i / _slices * pi * 2.0f;
+
+		Float slice_cos = glm::cos(slice_angle);
+		Float slice_sin = glm::sin(slice_angle);
+
+		// Stacks
+		for (UInt32 j = 0; j <= _stacks; ++j)
+		{
+			// Range = -90, 90
+			Float stack_angle = (Float)j / _stacks * pi - pi * 0.5f;
+
+			Float stack_cos = glm::cos(-stack_angle);
+			Float stack_sin = glm::sin(-stack_angle);
+
+			Float x = (1.0f / _rX) * stack_cos * slice_cos;
+			Float y = (1.0f / _rY) * stack_sin;
+			Float z = (1.0f / _rZ) * stack_cos * slice_sin;
+
+			*pvertices++ = glm::normalize(glm::vec3(x, y, z));
+		}
+	}
+}
+
+
+/*
+
+*/
+void Ellipse::buildTexCoords(glm::vec2 * pvertices, UInt32 count)
+{
+	Float uCapOffset = 0.5f / _slices;
+
+	for (UInt32 i = 0; i <= _slices; ++i)
+	{
+		Float tu = (Float)i / _slices;
+
 	
-
-	// Add Cap
-	cap_neg = vertex++;
-	cap_pos = vertex++;
-
-	position[cap_neg] = glm::vec3(0, -h, 0);
-	position[cap_pos] = glm::vec3(0, h, 0);
-
-	normal[cap_pos] = glm::vec3(0, 1, 0);
-	normal[cap_neg] = glm::vec3(0, -1, 0);
-
-	texture[cap_pos] = glm::vec2(0, 0);	// This coordinate just doesn't exist properly in a fully indexed sphere
-	texture[cap_neg] = glm::vec2(0, 0);	// This coordinate just doesn't exist properly in a fully indexed sphere
+		// Top Cap
+		*pvertices++ = glm::vec2(tu + uCapOffset, 0.0f);
 
 
-
-	// Indexing
-	Int32 index = 0;
-	Int32 index_count = (slices * (stacks - 2)) * 2 + slices * 2;
-
-	index_count *= 3;
-
-	UInt32 * indices = new UInt32[index_count];
-
-	for (Int32 fst = 0; fst < stacks - 2; fst++)
-	{
-		for (Int32 fsl = 0; fsl < slices; fsl++)
+		// Stacks
+		for (UInt32 j = 1; j <= _stacks - 1; ++j)
 		{
-			//Int32 fsl = 0;
-			UInt32 iA = (UInt32)(((fsl + 0) % (UInt32)slices) + (fst + 1) * (slices));
-			UInt32 iB = (UInt32)(((fsl + 0) % (UInt32)slices) + (fst + 0) * (slices));
-			UInt32 iC = (UInt32)(((fsl + 1) % (UInt32)slices) + (fst + 1) * (slices));
-			UInt32 iD = (UInt32)(((fsl + 1) % (UInt32)slices) + (fst + 0) * (slices));
+			Float tv = (Float)j / _stacks;
 
-			indices[index++] = iA;
-			indices[index++] = iB;
-			indices[index++] = iC;
-
-			indices[index++] = iC;
-			indices[index++] = iB;
-			indices[index++] = iD;
+			*pvertices++ = glm::vec2(tu, 0.0f);
 		}
-	}
 
-	//::	caps
-	for (Int32 fsl = 0; fsl < slices; fsl++)
+		// Bottom Cap
+		*pvertices++ = glm::vec2(tu + uCapOffset, 1.0f);
+	}
+}
+
+/*
+
+*/
+void Ellipse::buildIndices(UInt32 * pindices, UInt32 count)
+{
+	
+	Int32 stack_mul = _stacks + 1;
+
+	for (UInt32 i = 0; i < _slices; ++i)
 	{
-		//Neg-Cap
-		UInt32 capA = (fsl + 1) % (UInt32)slices;
-		UInt32 capB = (fsl + 0) % (UInt32)slices;
+		UInt32 stack = 0;
+
+		// Top Cap
+		UInt32 topA = (stack + 1) + (i + 0) * stack_mul;
+		UInt32 topB = (stack + 0) + (i + 0) * stack_mul;
+		UInt32 topC = (stack + 1) + (i + 1) * stack_mul;
+
+		*pindices++ = topA;
+		*pindices++ = topB;
+		*pindices++ = topC;
+
+		stack++;
 		
-		indices[index++] = cap_neg;
-		indices[index++] = capA;
-		indices[index++] = capB;
+		// Elliptical Centre
+		for (UInt32 j = 0; j < _stacks - 2; ++j, ++stack)
+		{
+			UInt32 iA = (stack + 0) + (i + 0) * stack_mul;
+			UInt32 iB = (stack + 0) + (i + 1) * stack_mul;
+			UInt32 iC = (stack + 1) + (i + 0) * stack_mul;
+			UInt32 iD = (stack + 1) + (i + 1) * stack_mul;
 
-		//Pos-Cap
-		UInt32 capC = (fsl + 0) % (UInt32)slices;
-		UInt32 capD = (fsl + 1) % (UInt32)slices;
-		UInt32 capBase = cap_pos - 1 - (UInt32)slices;
+			*pindices++ = iA;
+			*pindices++ = iB;
+			*pindices++ = iC;
 
-		indices[index++] = cap_pos;
-		indices[index++] = capBase + capC;
-		indices[index++] = capBase + capD;
+			*pindices++ = iC;
+			*pindices++ = iB;
+			*pindices++ = iD;
+		}
+
+		// Bottom Cap
+		UInt32 bottomA = (stack + 0) + (i + 0) * stack_mul;
+		UInt32 bottomB = (stack + 0) + (i + 1) * stack_mul;
+		UInt32 bottomC = (stack + 1) + (i + 0) * stack_mul;
+
+		*pindices++ = bottomA;
+		*pindices++ = bottomB;
+		*pindices++ = bottomC;
 	}
-
-
-
-
-
-
-
-
-
-	// Add Vertex Data
-	GeometryBuilder gb;
-	gb.addVertexData("pos", position, vertex_count, GeometryLocation::Position);
-
-	if (genMask & GEN_NORMALS)
-		gb.addVertexData("norm", normal, vertex_count, GeometryLocation::Normal);
-
-	if (genMask & GEN_TEXTURE)
-		gb.addVertexData("tex", texture, vertex_count, GeometryLocation::Texture0);
-
-	// Set Index Data
-	gb.setIndexData(indices, index_count);
-
-	// Build Geometry
-	std::shared_ptr<Geometry> geometry = gb.build();
-
-	// Delete Buffers
-	if (indices)
-		delete[] indices;
-
-	// Deallocate
-	if (texture)
-		delete[] texture;
-	if (normal)
-		delete[] normal;
-	if (position)
-		delete[] position;
-
-	// Return 
-	return geometry;
 }

@@ -1,5 +1,4 @@
-#ifndef _ANDROMEDA_GAME_CAMERA_H_
-#define _ANDROMEDA_GAME_CAMERA_H_
+#pragma once
 
 /*
 	camera.h:
@@ -15,142 +14,139 @@
 #include <andromeda/stddef.h>
 #include <andromeda/glm.h>
 
+#include <andromeda/Math/plane.h>
+#include <andromeda/Utilities/observer.h>
+
 
 #include "transform.h"
 
+#include "projection.h"
+
 namespace andromeda
 {
-	class ITransform;
 
 	/*
-		Camera Interface
+		This is the NEW Camera Class
+
+		A Camera is made up Projection, View and Visibility Region
+
+		The PPROJECTION controls the Perspective of the Camera AND "primitive" view matrices and the creation of the Visibility Region
+		The VIEW controls the world orientation of the camera
+
+		TODO:
+		Also needs to support the matrix stacking... maybe not :)
 	*/
-	class ICamera : public ITransform
+	/*
+		TODO:
+		This recreates memory :: A listener or observer will be able to solve this issue :)
+
+		Both the View/Projection matrix needs to be "observed" by the Camera.
+		Any changes sets a flag --
+		The flag is polled in the update() function to check for changes
+		Any changes resets the flag and updates the matrices
+
+		This will allow the matrices to be altered without using the camera class :)
+	*/
+
+	class Camera : public IObserver<IProjectionMatrix>, public IObserver<IViewMatrix>, public std::enable_shared_from_this<Camera>
 	{
-	public:
-		ICamera(){}
-		virtual ~ICamera(){}
-
-		virtual const inline Float distance() const = 0;
-		virtual inline void distance(Float f) = 0;
-
-
-		virtual const inline glm::mat4 & worldMatrix() const = 0;
-
 	private:
-
-	};
-
-
-
-
-	/*
-	
-	*/
-	class CameraDefault : virtual public ICamera
-	{
+		static const Int32 PLANE_COUNT = 6;
 	public:
-		CameraDefault() {}
-		virtual ~CameraDefault() {}
+		Camera();
+		virtual ~Camera();
+
+		Float getWidth() const { return _width; }
+		Float getHeight() const { return _height; }
 
 
-		const inline glm::mat4 & matrix() const override { return _view; }
-		const inline glm::mat4 & worldMatrix() const override { return _world; }
+		/*
+			Gets the Projection Matrix
+		*/
+		const inline glm::mat4 & getProjectionMatrix() const { return _projectionMatrix; }
+
+		/*
+			Gets the View Matrix :: This is the Constant View Matrix
+		*/
+		const inline glm::mat4 & getViewMatrix() const { return _viewMatrix; }
+		
+		/*
+			Gets the Projection Object
+		*/
+		const inline std::shared_ptr<IProjectionMatrix> & getProjection() const { return _projection; }
+
+		/*
+			Gets the View Object
+		*/
+		const inline std::shared_ptr<IViewMatrix> & getView() const { return _view; }
+
+		/*
+			Set Projection Matrix
+		*/
+		void setProjection(std::shared_ptr<IProjectionMatrix> p);
+
+		/*
+			Set View Matrix
+		*/
+		void setView(std::shared_ptr<IViewMatrix> v);
 
 
 
 
 
 		/*
-			Translate the Camera
+			Sets a Perspective Matrix [Projection]
 		*/
-		void translate(Float x, Float y, Float z);
+		std::shared_ptr<PerspectiveMatrix> setPerspectiveFov(Float fov, Float zN, Float zF);
 
 		/*
-			Translate the Camera
+			Sets an Orthogonal Matrix [Projection]
 		*/
-		void translate(const glm::vec3 & position);
+		std::shared_ptr<OrthogonalMatrix> setOrthogonal(Float mul, Float zN, Float zF);
 
 		/*
-			Position
+			Sets up a simple view matrix
 		*/
-		const inline Float x() const override { return _position.x; }
-		const inline Float y() const override { return _position.y; }
-		const inline Float z() const override { return _position.z; }
+		std::shared_ptr<ViewMatrix> setView(Float distance);
 
-		/*
-			Rotation
-		*/
-		const inline Float pitch() const override { return _rotation.x; }
-		const inline Float yaw() const override { return _rotation.y; }
-		const inline Float roll() const override { return _rotation.z; }
+
 
 
 
 		/*
-			Set Position
+			Updates the Camera
 		*/
-		void x(Float) override;
-		void y(Float) override;
-		void z(Float) override;
-
+		void update();
+		void resize(Float width, Float height);
 
 
 		/*
-			Rotate the Camera
+			Determine whether Point/Shape/Object is inside the visibility region
 		*/
-		void yaw(Float) override;
-		void pitch(Float) override;
-		void roll(Float) override;
+		Boolean isVisible(const glm::vec3 & centre, Float radius) const;
 
 
-
-
-
-
-		/* Getters */
-		const inline glm::vec3 & position() const { return _position; }
-		const inline Float distance() const override { return _distance; }
-
-		/* Setters */
-		inline void position(Float x, Float y, Float z) { _position = glm::vec3(x, y, z); }
-		inline void distance(Float f) override { _distance = f; }
-
-
-
-		/*
-			Is the camera currently locked?
-			Locked camera cannot be adjusted by translation/rotation/zoom functions
-			They still track targets and follow paths.
-		*/
-		const inline Boolean isLocked() { return _locked; }
-
-		/*
-			Locks the Camera
-		*/
-		inline void lock() { _locked = true; }
-
-		/*
-			Unlocks the Camera
-		*/
-		inline void unlock() { _locked = false; }
 
 	protected:
-		glm::mat4 _view;							// View Matrix
-		glm::mat4 _world;							// View Matrix
+		void notify(const IProjectionMatrix * const pm) override;
+		void notify(const IViewMatrix * const vm) override;
 
 	private:
-		// Locks camera movement
-		Boolean _locked = false;
+		Float _width = 1.0f;
+		Float _height = 1.0f;
 
-		Float _distance = 2.0f;
-		glm::vec3 _position{ 0.0f, 0.0f, 0.0f };
-		glm::vec3 _rotation{ 0.0f };
+		glm::mat4 _projectionMatrix{ 1.0f };
+		glm::mat4 _viewMatrix{ 1.0f };
 
+		// Projection Matrix
+		std::shared_ptr<IProjectionMatrix> _projection;
 
+		// Viewing Matrix
+		std::shared_ptr<IViewMatrix> _view;
 
+		// Viewing Frustrum
+		Plane3f _planes[PLANE_COUNT];
 	};
 
-}
 
-#endif
+}

@@ -59,6 +59,22 @@ Boolean Mesh::addMaterial(Material & material)
 	return true;
 }
 
+
+
+
+void Mesh::drawGeometry(UInt32 geomIndex) const
+{
+	assert(geomIndex < _geometry.size());
+	assert(_geometry[geomIndex].geometry);
+
+	// Render Geometry
+	_geometry[geomIndex].geometry->render();
+}
+
+
+
+
+#if 0
 /*
 
 */
@@ -71,7 +87,8 @@ void Mesh::render(const std::shared_ptr<IShader> & shader)
 }
 
 /*
-
+	TODO:
+	This could be reimplemented when the Graphics API / Shader Annotations is setup
 */
 void Mesh::render(const std::shared_ptr<IShader> & shader, UInt32 geomIndex)
 {
@@ -115,3 +132,4 @@ void Mesh::render(const std::shared_ptr<IShader> & shader, UInt32 geomIndex)
 	if (difTex)
 		difTex->unbind();
 }
+#endif

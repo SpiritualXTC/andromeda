@@ -238,17 +238,7 @@ namespace andromeda
 
 
 
-	/*
-		Namespace level "quick" functions
 
-		Not sure if they should exist in THIS file or not...
-	*/
-
-	template <typename RESOURCE>
-	inline std::shared_ptr<RESOURCE> LoadResource(const std::string filename, const std::string locationName = "")
-	{
-		return Andromeda::instance()->getResourceManager()->loadResource<RESOURCE>(filename, locationName);
-	}
 
 
 
@@ -266,18 +256,30 @@ namespace andromeda
 	}
 
 
-
-
-
-
+	/* Resource Manager */
 	inline std::shared_ptr<ResourceManager> resources()
 	{
 		return Andromeda::instance()->getResourceManager();
 	}
 
+	/* Graphics API */
 	inline std::shared_ptr<Graphics> graphics()
 	{
 		return Andromeda::instance()->getGraphics();
+	}
+
+
+
+	/*
+		Namespace level "quick" functions
+
+		Not sure if they should exist in THIS file or not...
+	*/
+
+	template <typename RESOURCE>
+	inline std::shared_ptr<RESOURCE> LoadResource(const std::string filename, const std::string locationName = "")
+	{
+		return Andromeda::instance()->getResourceManager()->loadResource<RESOURCE>(filename, locationName);
 	}
 
 
