@@ -44,13 +44,23 @@ GeometryGenerate::~GeometryGenerate()
 
 
 /*
-
+	TODO:
+	This really needs a more dynamic implementation
 */
 std::shared_ptr<Geometry> GeometryGenerate::build(UInt32 genFlags)
 {
+	// Prebuild Process
+	Boolean b = prebuild();
+	if (!b)
+		return nullptr;
+
 	// Allocate
 	Int32 vertices = getVertexCount();
 	Int32 faces = getFaceCount();
+
+	if (faces == 0 || vertices == 0)
+		return nullptr;
+
 
 	// Allocate Position
 	_position = new glm::vec3[vertices];

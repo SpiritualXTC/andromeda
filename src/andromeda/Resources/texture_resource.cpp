@@ -1,7 +1,6 @@
 #include "texture_resource.h"
 
 #include <andromeda/Graphics/texture.h>
-//#include <andromeda/Resources/texture_resource.h>
 #include <andromeda/Resources/resource_manager.h>
 
 #include <andromeda/Platform/file.h>

@@ -70,6 +70,10 @@ namespace andromeda
 
 
 		protected:
+			// A Process that begins immediately before geometry construction
+			// This can allow the generator to calculate values that
+			virtual Boolean prebuild() { return true; }
+
 			virtual void buildPosition(glm::vec3 * pvertices, UInt32 count) = 0;
 			virtual void buildNormals(glm::vec3 * pvertices, UInt32 count) = 0;
 			virtual void buildTexCoords(glm::vec2 * pvertices, UInt32 count) = 0;

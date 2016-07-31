@@ -3,21 +3,27 @@
 // dont really wanna include this everywhere ...
 #include <andromeda/andromeda.h>
 
-#include <andromeda/Renderer/camera.h>
+
 #include <andromeda/Game/game_object.h>
 #include <andromeda/Game/geometry_component.h>
 #include <andromeda/Game/mesh_component.h>
+#include <andromeda/Game/text_component.h>
 #include <andromeda/Game/transform_component.h>
 
 #include <andromeda/geometry.h>
 
 #include <andromeda/graphics.h>
 
+#include <andromeda/Renderer/camera.h>
 #include <andromeda/Renderer/renderer.h>
+#include <andromeda/Renderer/renderer_deferred.h>
 #include <andromeda/Renderer/scene.h>
 #include <andromeda/Renderer/scene_graph_basic.h>
+#include <andromeda/Renderer/scene_manager.h>
 #include <andromeda/Renderer/view.h>
 #include <andromeda/Renderer/view_builder.h>
+
+#include <andromeda/Resources/font_resource.h>
 
 #include <andromeda/Utilities/log.h>
 
@@ -35,42 +41,31 @@
 /*
 
 */
-Game::Game(std::shared_ptr<andromeda::Renderer> renderer)
-	: _renderer(renderer)
+Game::Game()
 {
-
-
-	// Do stuff with the renderer
-
 	// Load a Font
-	_font = std::make_shared<andromeda::Font>("../res/fonts/unispace rg.ttf", 96);
+	_font = std::make_shared<andromeda::Font>("../res/fonts/arial.ttf", 192);
+
+
+	// Initialise States
+	andromeda::graphics()->setDepthEnable(true);
+
+
 
 
 	// Create the Scene
 	_scene = std::make_shared<andromeda::Scene>("game_scene", std::make_shared<andromeda::BasicSceneGraph>());
 
-	// Add Scene to Renderer
-	renderer->addScene(_scene);
+	// Add Scene to Scene Manager
+	andromeda::scenes()->addScene(_scene);
 
 
 
 	// Effect Test
 	std::shared_ptr<andromeda::Effect> effect = andromeda::LoadResource<andromeda::Effect>("shader.xml");
 
-	// Add Layers
-	andromeda::Boolean addLayers = true;
-
-	if (addLayers)
-	{
-		if (!effect)
-			log_err("Game :: <init>() :: Invalid Effect");
-//		else
-//			_scene->addLayerGroup(effect);
-	}
-
-
 	// Create the Views
-	aInt32 players = 4;
+	aInt32 players = 1;
 
 	if (players == 1)
 		createPlayer(0, 0, 1, 1);
@@ -97,7 +92,7 @@ Game::Game(std::shared_ptr<andromeda::Renderer> renderer)
 	createMesh("mesh_0");
 
 
-	aInt32 objs = 50;
+	aInt32 objs = 5;// 50;
 
 	for (aInt32 i = 0; i < objs; i++)
 	{
@@ -161,9 +156,7 @@ Game::Game(std::shared_ptr<andromeda::Renderer> renderer)
 	}
 
 
-
-	
-
+	createText();
 
 }
 
@@ -177,37 +170,47 @@ Game::~Game()
 }
 
 
-/*
 
-*/
-std::shared_ptr<Player> Game::createPlayer(aFloat x, aFloat y, aFloat w, aFloat h)
+
+
+void Game::createText()
 {
-	// Get Renderer
-	std::shared_ptr<andromeda::Renderer> renderer = _renderer.lock();
 
-
+	// Load a Font via the ResourceManager
+	// TODO: Needs to be Font
+	std::shared_ptr<andromeda::FontFace> f = std::make_shared<andromeda::FontFace>("../res/fonts/arial.ttf");
+	//std::shared_ptr<andromeda::FontFace> f = std::make_shared<andromeda::FontFace>("../res/fonts/CODE2000.ttf");
 	
-
-	andromeda::ViewBuilder vb;
-
-	// TODO: This needs to be adjusted. As it shouldn't be needed :)
-	// Add default layergroup
-	vb.addLayerGroup("", _scene->getSceneGraph());
-
-	vb.addLayer(andromeda::LayerBuilder("layer2").setEffect("shader.xml"));
-	vb.setRegion(x, y, w, h);
-
-	// Create a View
-	std::string name = "view_" + (_views.size() + 1);
-//	std::shared_ptr<andromeda::View> view = _scene->addScreenView(name, x, y, w, h);
-	std::shared_ptr<andromeda::View> view = _scene->addView(vb.build());
+	//
+	//
+#if 0
+	if (!f->setFontSize(96))
+	{
+		log_errp("Error setting font size");
+	}
 
 
-	// Add View to temp list
-	_views.push_back(view);
+	// TesT
+	if (!f->getCharacterOutline((aUInt32)'0'))
+	{
+		log_errp("Error loading character shape");
+	}
+
+	// TesT
+	if (!f->getCharacterBitmap((aUInt32)'0'))
+	{
+		log_errp("Error loading character bitmap");
+	}
+#endif
+
+	// Create Font Atlas
+	std::shared_ptr<andromeda::FontAtlas> fa = std::make_shared<andromeda::FontAtlas>(f, 128);
+
+
+
 
 	// Create Object
-	std::shared_ptr<andromeda::GameObject> obj = std::make_shared<andromeda::GameObject>(name);
+	std::shared_ptr<andromeda::GameObject> obj = std::make_shared<andromeda::GameObject>("text");
 
 	// Create Standard Components
 	std::shared_ptr<andromeda::TransformComponent> transform = std::make_shared<andromeda::TransformComponent>();
@@ -215,15 +218,161 @@ std::shared_ptr<Player> Game::createPlayer(aFloat x, aFloat y, aFloat w, aFloat 
 	// Add Components
 	obj->addComponent<andromeda::TransformComponent>(transform);
 
-	// Create Geometry
-	andromeda::geometry::Cube geom(4.0f, 0.5f, 0.1f);
+	transform->x(-0.0f);
+	transform->y( 0.0f);	//2.0f
+	transform->z(-1.0f);
 
-	std::shared_ptr<andromeda::Geometry> geometry = geom.build(andromeda::geometry::GeometryGenerate::Texture | andromeda::geometry::GeometryGenerate::Normals);
+
+
+
 
 	// Add RenderComponent
-	if (geometry)
+	if (f)
 	{
-		std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, transform);
+		//	std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, material, transform);
+
+		std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::FontRenderComponent>(fa, transform);
+
+		obj->addComponent<andromeda::RenderComponent>(render);
+	}
+
+	// Add Game Object to Scene
+	_scene->getSceneGraph()->addGameObject(obj);
+}
+
+
+
+
+
+
+/*
+
+*/
+std::shared_ptr<Player> Game::createPlayer(aFloat x, aFloat y, aFloat w, aFloat h)
+{
+
+
+	andromeda::ViewBuilder vb;
+
+	// Add ViewGroup
+	vb.addGroup("", _scene->getSceneGraph());
+	
+	vb.addLayer(andromeda::LayerBuilder("normal").setEffect("shader.xml"));
+
+	vb.addLayer(andromeda::LayerBuilder("vector").setEffect("vector.xml").setRenderGroup("vector"));
+
+	vb.setRegion(x, y, w, h);
+
+
+
+
+
+
+	// Create a View
+	std::string name = "view_" + (_views.size() + 1);
+	std::shared_ptr<andromeda::View> view = _scene->addView(vb.build());
+
+
+
+
+	// Load/Get the Effect
+	std::shared_ptr<andromeda::Effect> effect = andromeda::LoadResource<andromeda::Effect>("shader.xml");
+
+	/*
+		TODO. Fix the Deferred Shader.... lololol
+	*/
+	std::shared_ptr<andromeda::Effect> defEffect = andromeda::LoadResource<andromeda::Effect>("shader.xml");
+
+
+
+
+	std::shared_ptr<andromeda::SceneGraph> sg = _scene->getSceneGraph();
+
+	// Create Renderer
+	std::shared_ptr<andromeda::IRenderer> renderer = std::make_shared<andromeda::Renderer>(sg);
+	view->addRenderer("default", renderer);
+	view->addRendererLayer("default", "", "", effect, "");
+
+	// Create Deferred Renderer
+	std::shared_ptr<andromeda::IRenderer> deferred = std::make_shared<andromeda::DeferredRenderer>(sg);
+	view->addRenderer("deferred", deferred);
+	view->addRendererLayer("deferred", "", "", effect, "");
+
+
+
+	// Add View to temp list
+	_views.push_back(view);
+
+
+	
+
+
+
+
+
+
+
+	// Create Object
+	std::shared_ptr<andromeda::GameObject> obj = std::make_shared<andromeda::GameObject>(name);
+
+
+
+
+	// Create Standard Components
+	std::shared_ptr<andromeda::TransformComponent> transform = std::make_shared<andromeda::TransformComponent>();
+
+	// Add Components
+	obj->addComponent<andromeda::TransformComponent>(transform);
+
+	transform->x(-0.0f);
+	transform->y( 0.0f);
+
+
+
+
+
+
+	// Create Geometry
+	//andromeda::geometry::Cube geom(4.0f, 0.5f, 0.1f);
+
+	// Create Material
+	std::shared_ptr<andromeda::Texture> tex = andromeda::LoadResource<andromeda::Texture>("pattern0.png");
+	andromeda::Material material;
+
+	material.setDiffuse(0, 1, 1)
+		.setDiffuseTexture(tex);
+
+
+#if 0
+	andromeda::geometry::Polygon geom;
+
+
+	geom.moveTo(glm::vec3(-1.0f, 0.0f, 0));
+
+	geom.bezierTo(glm::vec3(-1.0f, 1.0f, 0.0f), glm::vec3( 0.0f, 1.0f, 0.0f));
+	geom.bezierTo(glm::vec3( 1.0f, 1.0f, 0.0f), glm::vec3( 1.0f, 0.0f, 0.0f));
+	geom.bezierTo(glm::vec3( 1.0f,-1.0f, 0.0f), glm::vec3( 0.0f,-1.0f, 0.0f));
+	geom.bezierTo(glm::vec3(-1.0f,-1.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
+
+
+
+
+
+	std::shared_ptr<andromeda::Geometry> geometry = geom.build(andromeda::geometry::GeometryGenerate::Texture | andromeda::geometry::GeometryGenerate::Normals);
+#else
+	//std::shared_ptr<andromeda::Geometry> geometry = _font->getGeometry(0x4E83);
+#endif
+
+
+
+
+	// Add RenderComponent
+	if (_font)
+	{
+	//	std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, material, transform);
+
+		std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::TextRenderComponent>(_font, transform);
+
 		obj->addComponent<andromeda::RenderComponent>(render);
 	}
 
@@ -235,7 +384,7 @@ std::shared_ptr<Player> Game::createPlayer(aFloat x, aFloat y, aFloat w, aFloat 
 
 
 	// Add to Players Array
-	_players.push_back(std::make_shared<Player>(view, obj));
+	_players.push_back(std::make_shared<Player>(view, renderer->getCamera(), obj));
 
 
 	return nullptr;
@@ -278,9 +427,12 @@ std::shared_ptr<andromeda::GameObject> Game::createGround()
 	material.setDiffuse(1, 1, 1)
 		.setDiffuseTexture(tex);
 
+
+	aInt32 divisions = 100;
+
 	// Create Geometry
 	andromeda::geometry::Surface surface;
-	surface.setDivisions(1000, 1000)
+	surface.setDivisions(divisions, divisions)
 		.setPositionFunction(&lamb);
 
 	std::shared_ptr<andromeda::Geometry> geometry = surface.build(andromeda::geometry::GeometryGenerate::Texture | andromeda::geometry::GeometryGenerate::Normals);
@@ -314,6 +466,8 @@ std::shared_ptr<andromeda::GameObject> Game::createEntity(const std::string & na
 	// Create Geometry
 	//andromeda::geometry::Cube geom(0.25f, 2.0f, 0.125f);
 	andromeda::geometry::Ellipse geom(0.5f);
+	geom.setSlices(32).setStacks(16);
+
 
 	std::shared_ptr<andromeda::Geometry> geometry = geom.build(andromeda::geometry::GeometryGenerate::Texture | andromeda::geometry::GeometryGenerate::Normals);
 
@@ -322,6 +476,8 @@ std::shared_ptr<andromeda::GameObject> Game::createEntity(const std::string & na
 	{
 		std::shared_ptr<andromeda::GeometryRenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, transform);
 		obj->addComponent<andromeda::GeometryRenderComponent>(render);
+
+		render->getMaterial().setDiffuseTexture(andromeda::LoadResource<andromeda::Texture>("white.png"));
 
 		// Add Plane Test Component
 		std::shared_ptr<PlaneTestComponent> planeTest = std::make_shared<PlaneTestComponent>(render, transform);
@@ -359,27 +515,18 @@ std::shared_ptr<andromeda::GameObject> Game::createCamera(const std::string & na
 
 
 
+	// Create Material
 
-
-#if 0
-	// Load Mesh
-	std::shared_ptr<andromeda::Mesh> mesh = andromeda::LoadResource<andromeda::Mesh>("test.dae");
-
-	// Add RenderComponent
-	if (mesh)
-	{
-		std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::MeshRenderComponent>(mesh, transform);
-		obj->addComponent<andromeda::RenderComponent>(render);
-	}
-//	else
-//		return nullptr;
-#else
 	// Create Geometry
 	andromeda::geometry::Ellipse geom(1.0f);
 	geom.setSlices(32).setStacks(16);
+	
 	//andromeda::geometry::Cube geom(16.0f, 0.5f, 0.25f);
 
-	std::shared_ptr<andromeda::Geometry> geometry = geom.build(andromeda::geometry::GeometryGenerate::Texture | andromeda::geometry::GeometryGenerate::Normals);
+
+
+
+	std::shared_ptr<andromeda::Geometry> geometry = nullptr;// geom.build(andromeda::geometry::GeometryGenerate::Texture | andromeda::geometry::GeometryGenerate::Normals);
 
 	// Add RenderComponent
 	if (geometry)
@@ -387,9 +534,9 @@ std::shared_ptr<andromeda::GameObject> Game::createCamera(const std::string & na
 		std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, transform);
 		obj->addComponent<andromeda::RenderComponent>(render);
 	}
-	else
-		return nullptr;
-#endif
+//	else
+//		return nullptr;
+
 
 	// Add Game Object to Scene
 	_scene->getSceneGraph()->addGameObject(obj);
@@ -434,26 +581,11 @@ std::shared_ptr<andromeda::GameObject> Game::createMesh(const std::string & name
 
 
 /*
-
+	This shouldn't be here :)
 */
 void Game::update(aFloat timeStep)
 {
-#if 0
-	aFloat ft2 = timeStep * 0.5f;
 
-
-	// Physics Update
-	for (aInt32 i = 0; i < _entities.size; ++i)
-	{
-		// No Entity
-		if (! _entities.status[i])
-			continue;
-
-
-		_entities.vel[i] += _entities.acc[i] * ft;
-		_entities.pos[i] += _entities.acc[i] * ft2 + _entities.vel[i] * ft;
-	}
-#endif
 
 	// Update the Scene
 	_scene->update(timeStep);
@@ -567,6 +699,29 @@ aBoolean Game::mouseMove(andromeda::MouseMoveEventArgs & e)
 }
 
 
+/*
+
+*/
+aBoolean Game::keyUp(andromeda::KeyEventArgs & e)
+{
+	if (_players.size() == 0)
+		return true;
+
+	// Get First Player Only
+	std::shared_ptr<Player> & p = _players.front();
+
+
+	if (e.key == 'q' || e.key == 'Q')
+	{
+		p->zoomIn();
+	}
+	else if (e.key == 'e' || e.key == 'E')
+	{
+		p->zoomOut();
+	}
+
+	return true;
+}
 
 
 

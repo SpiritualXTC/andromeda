@@ -1,5 +1,4 @@
-#ifndef _ANDROMEDA_GAME_GEOMETRY_COPMONENT_H_
-#define _ANDROMEDA_GAME_GEOMETRY_COPMONENT_H_
+#pragma once
 
 #include <andromeda/Graphics/material.h>
 
@@ -36,4 +35,3 @@ namespace andromeda
 	};
 }
 
-#endif

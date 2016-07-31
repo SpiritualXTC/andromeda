@@ -1,118 +1,109 @@
 #include <andromeda/Renderer/renderer.h>
 
-#include <cassert>
+#include <assert.h>
 
-#include <andromeda/Events/event_manager.h>
-#include <andromeda/Events/resize.h>
+#include <andromeda/Graphics/effect.h>
 
-#include <andromeda/opengl.h>
-#include <andromeda/Renderer/renderable.h>
-#include <andromeda/Renderer/scene.h>
+#include <andromeda/Renderer/camera.h>
+#include <andromeda/Renderer/layer.h>
+
+
 #include <andromeda/Renderer/scene_graph.h>
+#include <andromeda/Renderer/scene_graph_cache.h>	// TODO rename to RenderCache
 
-#include <andromeda/Utilities/log.h>
+#include "renderable_group.h"
 
 using namespace andromeda;
+
+
 
 
 /*
 
 */
-Renderer::Renderer() : Module(Module::Render)
+Renderer::Renderer(const std::shared_ptr<SceneGraph> & sg)
+	//: _camera(camera)
+	: _sceneGraph(sg)
 {
-	log_verbose("Renderer :: <init>()");
+	//assert(camera);
+	assert(sg);
 
-	// Default States
-	glEnable(GL_DEPTH_TEST);	
+	// Create Camera
+	_camera = std::make_shared<Camera>();
+
+	// Create Cache
+	_cache = std::make_shared<RenderCache>(_camera.get());
 }
-
-
 
 /*
 
 */
 Renderer::~Renderer()
 {
-	log_verbose("Renderer: <destroy>()");
+
 }
 
-
 /*
-	addScene():
+
 */
-Boolean Renderer::addScene(std::shared_ptr<Scene> scene)
+Boolean Renderer::addLayer(const std::string & method, const std::string & renderGroup, const std::shared_ptr<Effect> & effect, const std::string & technique)
 {
-	assert(scene);
+	// Add a layer to the correct RenderMethod
+	// If no RenderMethod is found... create a simple one
 
-	// Check if a scene with the matching name exists already
-	if (hasScene(scene->getName()))
-		return false;
+	// Find RendererMethod
+	const auto & it = _methods.find(method);
 
-	// Add Scene
-	_scenes[scene->getName()] = scene;
+	std::shared_ptr<RendererMethod> m;
 
-	// Check whether it was added
-	return hasScene(scene->getName());
+	// Not Found?
+	if (it == _methods.end())
+	{
+		// Create Basic RendererMethod
+		m = std::make_shared<RendererMethod>();
+		
+		// Insert it
+		_methods.insert({method, m});
+	}
+	else
+		m = it->second;
+
+	assert(m);
+
+	// Gets the Render Group
+	std::shared_ptr<RenderableGroup> rg = _cache->getRenderGroup(renderGroup);
+
+	// Add a Layer to the rendering method
+	m->addLayer(_camera, rg, effect, technique);
+	
+	return true;
 }
 
 
+
 /*
-	removeScene():
+
 */
-Boolean Renderer::removeScene(const std::string & name)
+void Renderer::resize(Float width, Float height)
 {
-	// Check if a Scene with the matching name exists 
-	if (!hasScene(name))
-		return false;
+	// Resize the Camera
+	_camera->resize(width, height);
 
-	// Remove Scene
-	_scenes.erase(name);
-
-	// Check whether it was removed
-	return hasScene(name);
+	// Call the onResize event
+	onResize(width, height);
 }
 
+
 /*
-	removeScene():
+
 */
-Boolean Renderer::removeScene(std::shared_ptr<Scene> scene)
+void Renderer::clear()
 {
-	assert(scene);
-
-	return removeScene(scene->getName());
+	assert(_cache);
+	
+	// Clear the Cache
+	_cache->clearObjects();
 }
-
-
-
-
-/*
-	hasScene():
-
-	The Renderer Has the Scene
-*/
-Boolean Renderer::hasScene(const std::string & name)
-{ 
-	return _scenes.find(name) != _scenes.end(); 
-}
-
-
-/*
-	getScene():
-
-	Gets the scene with the matching name
-*/
-std::shared_ptr<Scene> Renderer::getScene(const std::string & name)
-{
-	// Check for the Scene
-	if (!hasScene(name))
-		return nullptr;
-
-	// Return the Scene
-	return _scenes[name];
-}
-
-
-
 
 
 
@@ -121,34 +112,117 @@ std::shared_ptr<Scene> Renderer::getScene(const std::string & name)
 */
 void Renderer::update()
 {
+	assert(_camera);
+	assert(_cache);
+	assert(_sceneGraph);
 
-	glClearColor(1.0f, 0.5f, 0.5f, 1.0f);
+	// Update the Camera
+	_camera->update();
 
-	//GL_STENCIL_BUFFER_BIT
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Render All Scenes
-	for (const auto scene : _scenes)
-		scene.second->render();
-
-	// Swapping is handled by the context module :)
-
-	errorCheck();
+	// Process the Scene Graph
+	_sceneGraph->process(_cache);
 }
 
 
 /*
-	Check for OpenGL Errors
-*/
-void Renderer::errorCheck()
-{
-	Int32 err = 0;
 
-	while ((err = glGetError()) != GL_NO_ERROR)
+*/
+void Renderer::render()
+{
+	// Renders all the methods
+
+	for (const auto & method : _methods)
 	{
-		// Send error message to log :)
-		log_errp("GL Error: %1%", gluErrorString(err));
+		RendererMethod * m = method.second.get();
+
+
+		m->begin();
+
+		// Render the Scene
+		m->render();
+
+		// Configure the Method :: Example (Revert back to the Normal FrameBuffer)
+		m->end();
 	}
+
+
+	/*
+		For Example:
+		Deferred Rendering would require, 2 rendering methods. 
+			The first would setup the GBuffer for rendering.
+			The second would setup the Lighting for rendering, while using the GBuffers' textures as the source for world geometry
+	*/
 }
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+*/
+RendererMethod::RendererMethod()
+{
+
+}
+
+/*
+
+*/
+RendererMethod::~RendererMethod()
+{
+
+}
+
+/*
+
+*/
+void RendererMethod::addLayer(const std::shared_ptr<Camera> & camera, const std::shared_ptr<RenderableGroup> & rg, const std::shared_ptr<Effect> & effect, const std::string & technique)
+{
+	// Create Layer
+	std::shared_ptr<Layer> layer = std::make_shared<Layer>(camera, effect, rg);
+
+	// Sets the Layers Technique
+	if (technique.length() != 0)
+		layer->setActiveTechnique(technique);
+
+	// Add Layer
+	_layers.push_back(layer);
+}
+
+/*
+
+*/
+void RendererMethod::begin()
+{
+	// Nothing
+}
+
+/*
+
+*/
+void RendererMethod::end()
+{
+	// Nothing
+}
+
+/*
+
+*/
+void RendererMethod::render()
+{
+	// Render all the layers
+	for (const auto & layer : _layers)
+		layer->render();
+}
+
+
+
 
 

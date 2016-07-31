@@ -37,6 +37,18 @@ GeometryDescription::~GeometryDescription()
 
 }
 
+/*
+
+*/
+Boolean GeometryDescription::addDeclaration(const Int32 elements, const GLenum dataType, const Int32 stride, const GeometryLocation location)
+{
+	/*
+		Use the Current Stride as the Offset
+	*/
+
+	return addDeclaration(elements, _stride, dataType, stride, location);
+}
+
 
 /*
 
@@ -59,7 +71,7 @@ Boolean GeometryDescription::addDeclaration(const Int32 elements, const Int32 of
 
 
 	decl.dataType = datatype;
-	decl.offset = offset;
+	decl.offset = offset;		// This could be automatic :P back().offset + back().stride
 	decl.elements = elements;
 
 	_stride += stride;

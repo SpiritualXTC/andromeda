@@ -1,11 +1,7 @@
-#ifndef _ANDROMEDA_GRAPHICS_SCENE_GRAPH_H_
-#define _ANDROMEDA_GRAPHICS_SCENE_GRAPH_H_
+#pragma once
 
 #include <memory>
-#include <unordered_map>
-#include <vector>
-#include <algorithm>
-#include <functional>
+
 
 #include <andromeda/glm.h>
 
@@ -16,10 +12,9 @@
 namespace andromeda
 {
 	// Forward Declarations
-	class Camera;
-	class ITransform;
 	class GameObject;
-	class SceneGraphViewCache;
+
+	class RenderCache;
 
 
 	/*
@@ -51,11 +46,11 @@ namespace andromeda
 
 
 		/*
-			OLD
+			TODO:
+			These really shouldn't be here.
+			Access should be done via a begin/end function to allow for better iteration
 		*/
-		virtual Boolean process(std::shared_ptr<SceneGraphViewCache> & sgCache) = 0;
-
-
+		virtual Boolean process(std::shared_ptr<RenderCache> & sgCache) = 0;
 	};
 
 
@@ -63,5 +58,3 @@ namespace andromeda
 
 }
 
-
-#endif

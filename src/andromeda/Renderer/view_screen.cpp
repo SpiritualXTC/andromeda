@@ -1,42 +1,39 @@
 #include <andromeda/Renderer/view.h>
 
+#include <andromeda/Utilities/log.h>
+
 using namespace andromeda;
 
-#if 0
-/*
-
-*/
-ScreenView::ScreenView(const std::shared_ptr<SceneGraph> sceneGraph, std::shared_ptr<IProjection> projection, std::shared_ptr<IVisibility> visibility, 
-	Float x, Float y, Float width, Float height, Int32 order)
-	: View(sceneGraph, projection, visibility, x, y, width, height, order)
-{
-	/*
-		TODO:
-		Requires the dimensions of the actual screen ....
-	*/
-}
-
 
 
 /*
 
 */
-ScreenView::~ScreenView()
+ViewScreen::ViewScreen()
 {
 
 }
-#endif
+
+/*
+
+*/
+ViewScreen::~ViewScreen()
+{
+	
+}
 
 
 /*
 
 */
-Boolean ScreenView::onResize(ResizeEventArgs & e)
+Boolean ViewScreen::onResize(ResizeEventArgs & e)
 {
-	// Resize
-	resize(e.displayWidth, e.displayHeight);
+	log_errp("SCREEN RESIZE BY WEIRD SPOT %1%x%2%", e.displayWidth, e.displayHeight);
 
-	log_eventp("ON_RESIZE: %1%x%2%", e.displayWidth, e.displayHeight);
+	_width = e.displayWidth;
+	_height = e.displayHeight;
+
+	notify(this);
 
 	return true;
 }

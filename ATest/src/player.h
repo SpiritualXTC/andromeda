@@ -13,30 +13,19 @@
 
 namespace andromeda
 {
+	class Camera;
 	class View;
 	class GameObject;
 }
 
 
 
-/*
-	This is a typical camera controller :)
-*/
-class CameraControl : public virtual andromeda::ViewMatrix
-{
-public:
-	
-
-
-private:
-};
-
 
 
 class Player
 {
 public:
-	Player(std::shared_ptr<andromeda::View> & view, std::shared_ptr<andromeda::GameObject> & object);
+	Player(std::shared_ptr<andromeda::View> & view, std::shared_ptr<andromeda::Camera> & camera, std::shared_ptr<andromeda::GameObject> & object);
 	virtual ~Player();
 
 
@@ -46,11 +35,15 @@ public:
 	void alterCameraDistance(aFloat distance);
 	void alterCameraRotation(aFloat yaw, aFloat pitch);
 
+	void zoomIn();
+	void zoomOut();
+
 private:
 	std::shared_ptr<andromeda::View> _view;
-
+	std::shared_ptr<andromeda::Camera> _camera;
 
 	std::shared_ptr<andromeda::ViewMatrix> _viewMatrix;
+	std::shared_ptr<andromeda::PerspectiveMatrix> _projMatrix;
 
 
 

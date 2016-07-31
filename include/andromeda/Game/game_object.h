@@ -10,7 +10,7 @@
 namespace andromeda
 {
 	class IRenderable;
-	class View;
+	class IRenderableManager;
 	
 
 	/*
@@ -59,14 +59,14 @@ namespace andromeda
 
 	
 		/*
-			When activated for a view
+			Called when a GameObject has entered the viewable region.
 		*/
-		void onViewActivate(View * view);
+		void onRenderActivate(IRenderableManager * manager);
 
 		/*
-			When deactivated for a view
+			Called when a GameObject has exited the viewable region
 		*/
-		void onViewDeactivate(View * view);
+		void onRenderDeactivate(IRenderableManager * manager);
 
 
 		/*
@@ -89,7 +89,7 @@ namespace andromeda
 	private:
 		std::string _name;
 
-		Int32 _viewReferenceCounter = 0;
+		Int32 _renderReferenceCounter = 0;
 
 	//	UInt64 _viewMap = 0;
 	};

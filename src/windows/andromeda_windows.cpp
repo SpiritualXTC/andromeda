@@ -6,7 +6,6 @@
 #include <andromeda/Engine/system.h>
 
 #include <andromeda/Renderer/context.h>
-#include <andromeda/Renderer/renderer.h>
 
 #include <andromeda/Input/keyboard.h>
 #include <andromeda/Input/mouse.h>

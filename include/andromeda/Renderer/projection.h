@@ -28,7 +28,7 @@ namespace andromeda
 
 
 		// Update the Matrix and send Notification to observers
-		void update()
+		virtual void update()
 		{
 			calculate();
 			notify();
@@ -278,6 +278,15 @@ namespace andromeda
 
 		inline Float aspectRatio() const { return _aspect; }
 
+
+		/*
+		
+		*/
+		void update() override
+		{
+			update(width(), height());
+		}
+
 		/*
 
 		*/
@@ -298,58 +307,6 @@ namespace andromeda
 		Float _aspect = 1.0f;
 	};
 
-
-	/*
-		New Projection Matrix
-
-		TODO: Convert to builder (Maybe)
-	*/
-#if 0
-	class ProjectionMatrix : public CameraMatrix<ProjectionMatrix>
-	{
-	public:
-
-		/*
-
-		*/
-		inline void setNear(Float fn) { _near = fn; }
-
-		inline void setFar(Float ff) { _far = ff; }
-
-		inline Float getWidth() const { return _width; }
-		inline Float getHeight() const { return _height; }
-
-		inline Float getAspectRatio() const { return _aspect; }
-
-		inline Float getNear() const { return _near; }
-		inline Float getFar() const { return _far; }
-
-
-		/*
-			Adjusts the Matrix
-		*/
-		void update(Float width, Float height)
-		{
-			_width = width;
-			_height = height;
-
-			_aspect = _width / _height;
-
-			CameraMatrix<ProjectionMatrix>::update();
-		}
-
-	private:
-
-		Float _width = 1.0f;
-		Float _height = 1.0f;
-
-		Float _aspect = 1.0f;
-
-		// Clipping Planes
-		Float _near = 0.1f;
-		Float _far = 1000.0f;
-	};
-#endif
 
 
 	/*
@@ -385,6 +342,13 @@ namespace andromeda
 			return *this;
 		}
 
+		// Set Zoom
+		inline PerspectiveMatrix & zoom(Float z)
+		{
+			_zoom = z;
+
+			return *this;
+		}
 
 
 
@@ -398,13 +362,37 @@ namespace andromeda
 		// Get Far Clipping Plane
 		inline Float zFar() const { return _far; }
 
+
+		// Gets the Zoom
+		inline Float zoom() const { return _zoom; }
+
 	protected:
 		/*
 			Calculates the Matrix
 		*/
 		void calculate() override
 		{
+			/*
+			Float aspect = width() / height();
+
+			Float fovy = glm::pi<Float>() / 4.0f;
+
+			Float fovx = 2 * atan(tan(fovy * 0.5) * aspect);
+			*/
+
+			/*
+				TODO: Googly Correct Fov calculations :)
+			*/
 			_projection = glm::perspectiveFov(fov(), width(), height(), zNear(), zFar());
+
+		//	if (_zoom != 1.0f)
+		//	{
+				glm::mat4 m(1.0f);
+
+				m = glm::scale(m, glm::vec3(zoom(), zoom(), 1.0f));
+
+				_projection = _projection * m;
+		//	}
 		}
 	private:
 		// Clipping Planes
@@ -413,10 +401,16 @@ namespace andromeda
 
 		Float _fov = glm::pi<Float>() / 4.0f;
 
+		Float _zoom = 1.0f;
 
 
 		glm::mat4 _projection;
 	};
+
+
+
+
+
 
 
 	/*
@@ -488,130 +482,4 @@ namespace andromeda
 		glm::mat4 _projection;
 	};
 
-
-
-
-
-
-
-
-
-
-
-
-
-	/*
-		TODO:
-		Remove Everything Below Meh
-	*/
-	class IProjection
-	{
-	public:
-
-		virtual void calculate(const Float width, const Float height) = 0;
-		virtual inline glm::mat4 & matrix() = 0;
-	};
-
-
-	/*
-		Basic Orthoginal Projection
-
-		NEEDS TESTING
-	*/
-	class ProjectionOrtho : public IProjection//, public virtual ProjectionMatrix
-	{
-	public:
-		ProjectionOrtho()
-		{
-
-		}
-		virtual ~ProjectionOrtho()
-		{
-
-		}
-
-		// OLD INTERFACE
-		void calculate(const Float width, const Float height)
-		{
-			Float aspect = width / height;
-			
-			_projection = glm::ortho(aspect, -aspect, -1.0f, 1.0f, 0.1f, 1000.0f);
-		}
-
-		inline glm::mat4 & matrix() override {return _projection;}
-
-
-
-
-
-
-#if 0
-		//NEW INTERFACE
-		const glm::mat4 & getProjection() const override { return _projection; }
-		const glm::mat4 & getView() const override { return _view; }
-
-	protected:
-		void calcProjection() override
-		{
-			Float x = getAspectRatio() / getZoom();
-			Float y = 1.0f / getZoom();
-
-			_projection = glm::ortho(-x, x, -y, y, getNear(), getFar());
-		}
-
-		void calcView() override
-		{
-			glm::mat4 m(1.0f);
-
-			_view = glm::translate(m, glm::vec3(0, 0, -getDistance()));
-		}
-#endif
-	private:
-		glm::mat4 _projection;
-		glm::mat4 _view;
-	};
-
-
-	/*
-		Basic Fov Perspective Matrix
-	*/
-	class ProjectionPerspective : public IProjection//, public virtual ProjectionMatrix
-	{
-	public:
-		ProjectionPerspective() { }
-		virtual ~ProjectionPerspective() {}
-
-		// OLD INTERFACE
-		void calculate(const Float width, const Float height)
-		{
-			_projection = glm::perspectiveFov(glm::pi<Float>() / 4.0f, width, height, 0.1f, 1000.0f);
-		}
-
-		inline glm::mat4 & matrix() override { return _projection; }
-
-
-
-#if 0
-		// NEW INTERFACE
-		const glm::mat4 & getProjection() const override { return _projection; }
-		const glm::mat4 & getView() const override { return _view; }
-
-	protected:
-		void calcProjection() override
-		{
-			_projection = glm::perspectiveFov(glm::pi<Float>() / 4.0f, getWidth(), getHeight(), getNear(), getFar());
-		}
-
-		void calcView() override
-		{
-			glm::mat4 m(1.0f);
-
-			_view = glm::translate(m, glm::vec3(0, 0, -getDistance()));
-		}
-#endif
-
-	private:
-		glm::mat4 _projection;
-		glm::mat4 _view;
-	};
 }

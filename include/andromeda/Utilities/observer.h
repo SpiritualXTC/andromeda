@@ -20,7 +20,28 @@ namespace andromeda
 
 
 
+	/*
+		TEMPORARY.
+		Helps implement observers that need to pass "this" into a class in the constructor
+	*/
+	template <typename OBSERVABLE>
+	class ObserverHelper : public IObserver<OBSERVABLE>
+	{
+	public:
+		ObserverHelper(IObserver<OBSERVABLE> * self)
+			: _observer(self)
+		{
+			assert(_observer);
+		}
 
+		void notify(const OBSERVABLE * const obs) override
+		{
+			_observer->notify(obs);
+		}
+
+	private:
+		IObserver<OBSERVABLE> * _observer;
+	};
 
 
 
@@ -40,6 +61,14 @@ namespace andromeda
 		}
 	};
 #endif
+
+
+
+	/*
+		New Observer System.... /SIGH
+	*/
+
+
 
 }
 

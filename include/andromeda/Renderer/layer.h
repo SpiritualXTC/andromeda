@@ -18,16 +18,6 @@
 
 namespace andromeda
 {
-	/*
-		TODO:
-		Remove This
-		Rename ITechnique to Technique
-	*/
-	//class ITechnique;
-	//typedef ITechnique Technique;
-
-
-
 	class Camera;
 
 	class Effect;
@@ -40,7 +30,7 @@ namespace andromeda
 
 	
 
-	class RenderGroup;
+	class RenderableGroup;
 
 
 
@@ -52,37 +42,14 @@ namespace andromeda
 	*/
 	class Layer
 	{
-	private:
-#if 0
-		struct _LayerSort
-		{
-			Boolean operator ()(IRenderable * lhs, IRenderable * rhs)
-			{
-				// WHY AM I USING THE ID??? LOLOLOLOLOLOLOLOLOLOL
-				// Should be related to distance to camera, or some such thing :P
-				return lhs->id() < rhs->id();
-			}
-
-		};
-#endif
 	public:
-		Layer(std::shared_ptr<Camera> & camera, std::shared_ptr<Effect> & effect, std::shared_ptr<RenderGroup> rg);
-		//Layer(std::shared_ptr<Effect> & effect, const std::string & technique);
+		Layer(const std::shared_ptr<Camera> & camera, const std::shared_ptr<Effect> & effect, const std::shared_ptr<RenderableGroup> rg);
 		virtual ~Layer();
 		
 
 		Boolean setActiveTechnique(const std::string & techniqueName);
 
-//		Boolean addRenderable(std::shared_ptr<IRenderable> renderable);
-//		Boolean removeRenderable(std::shared_ptr<IRenderable> renderable);
-
-//		Boolean addRenderable(IRenderable * renderable);
-//		Boolean removeRenderable(IRenderable * renderable);
-
-	//	Boolean addLight(Light * light);
-	//	Boolean removeLight(Light * light);
-
-		Boolean render(/*std::shared_ptr<Camera> & camera*/);													// New Camera
+		Boolean render();													
 
 		
 
@@ -93,7 +60,7 @@ namespace andromeda
 		std::weak_ptr<ITechnique> _technique;
 
 
-		std::shared_ptr<RenderGroup> _renderGroup;
+		std::shared_ptr<RenderableGroup> _renderGroup;
 	};
 
 

@@ -1,4 +1,4 @@
-#include "render_group.h"
+#include "renderable_group.h"
 
 #include <cassert>
 
@@ -14,7 +14,7 @@ using namespace andromeda;
 /*
 
 */
-RenderGroup::RenderGroup(const std::string & groupName)
+RenderableGroup::RenderableGroup(const std::string & groupName)
 	: _groupName(groupName)
 {
 
@@ -25,7 +25,7 @@ RenderGroup::RenderGroup(const std::string & groupName)
 /*
 
 */
-RenderGroup::~RenderGroup()
+RenderableGroup::~RenderableGroup()
 {
 
 }
@@ -34,7 +34,7 @@ RenderGroup::~RenderGroup()
 /*
 
 */
-Boolean RenderGroup::addRenderable(IRenderable * renderable)
+Boolean RenderableGroup::addRenderable(IRenderable * renderable)
 {
 	if (renderable == nullptr)
 		return false;
@@ -48,7 +48,7 @@ Boolean RenderGroup::addRenderable(IRenderable * renderable)
 /*
 
 */
-Boolean RenderGroup::removeRenderable(IRenderable * renderable)
+Boolean RenderableGroup::removeRenderable(IRenderable * renderable)
 {
 	if (renderable == nullptr)
 		return false;
@@ -65,7 +65,7 @@ Boolean RenderGroup::removeRenderable(IRenderable * renderable)
 /*
 
 */
-void RenderGroup::render(std::shared_ptr<Camera> & camera, std::shared_ptr<IShader> shader)
+void RenderableGroup::render(std::shared_ptr<Camera> & camera, std::shared_ptr<IShader> shader)
 {
 //	assert(camera);
 

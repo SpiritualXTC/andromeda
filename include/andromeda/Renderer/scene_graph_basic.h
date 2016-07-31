@@ -3,6 +3,7 @@
 
 
 #include <unordered_map>
+#include <vector>
 
 #include "scene_graph.h"
 
@@ -14,6 +15,8 @@ namespace andromeda
 		return pair.second;
 	}
 	*/
+
+	
 
 
 
@@ -44,8 +47,7 @@ namespace andromeda
 		/*
 			Process the Scene in relation to the view
 		*/
-		Boolean process(std::shared_ptr<SceneGraphViewCache> & sgCache) override;
-
+		Boolean process(std::shared_ptr<RenderCache> & sgCache) override;	// 
 	
 
 

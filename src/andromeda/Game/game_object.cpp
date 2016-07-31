@@ -23,61 +23,55 @@ GameObject::GameObject(const std::string & name)
 /*
 
 */
-void GameObject::onViewActivate(View * view)
+void GameObject::onRenderActivate(IRenderableManager * manager)
 {
-	assert(view);
+	assert(manager);
 
 	// First View Reference ?
-	if (_viewReferenceCounter == 0)
+	if (_renderReferenceCounter == 0)
 	{
-		int c = 0;
 		// Iterate through all components
 		for (const auto & p : components())
 		{
-			p.second->onViewActivate();
-			c++;
+			p.second->onRenderActivate();
 		}
 	}
 	
-
-	int c = 0;
 	// Iterate through all components
 	for (const auto & p : components())
 	{
-
-		c++;
-
-		p.second->onViewActivate(view);
+		p.second->onRenderActivate(manager);
 	}
 
 	// Increment View Reference Counter
-	_viewReferenceCounter++;
+	_renderReferenceCounter++;
 }
 
 
 /*
 
 */
-void GameObject::onViewDeactivate(View * view)
+void GameObject::onRenderDeactivate(IRenderableManager * manager)
 {
+	assert(manager);
+
 	// Decrement View Reference Counter
-	_viewReferenceCounter--;
+	_renderReferenceCounter--;
 
 	// Last View Reference
-	if (_viewReferenceCounter == 0)
+	if (_renderReferenceCounter == 0)
 	{
 		// Iterate through all components
 		for (const auto & p : components())
 		{
-			p.second->onViewDeactivate();
+			p.second->onRenderDeactivate();
 		}
 	}
-
 
 	// Iterate through all components
 	for (const auto & p : components())
 	{
-		p.second->onViewDeactivate(view);
+		p.second->onRenderDeactivate(manager);
 	}
 }
 

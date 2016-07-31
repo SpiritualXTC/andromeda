@@ -34,9 +34,17 @@ namespace andromeda
 		*/
 		void data(const GLvoid * ptr, const GLsizeiptr length);
 
+
+		/*
+		
+		*/
+		void subdata(const GLvoid * ptr, GLintptr offset, GLsizeiptr length);
+
 	private:
 		GLenum _type = GLU_UNKNOWN;
 		GLuint _handle = 0;
+
+		GLsizeiptr _length = 0;
 	};
 
 

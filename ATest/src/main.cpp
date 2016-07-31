@@ -84,6 +84,25 @@ void printHeader(std::shared_ptr<Console> console)
 
 #include <boost/regex.hpp>
 
+
+
+void test(const glm::vec2 & v0, const glm::vec2 & v1, const glm::vec2 & c)
+{
+	glm::vec2 s0 = v1 - v0;
+	glm::vec2 s1 = c - v0;
+
+	aFloat dot = glm::dot(s0, s1);
+	aFloat cross = s0.x * s1.y - s0.y * s1.x;
+
+	log_debugp("V0 = (%1%, %2%)", v0.x, v0.y);
+	log_debugp("V1 = (%1%, %2%)", v1.x, v1.y);
+	log_debugp("C  = (%1%, %2%)", c.x, c.y);
+	log_debugp("Dot = %1%", dot);
+	log_debugp("Cross = %1%", cross);
+}
+
+
+
 /*
 
 */
@@ -106,6 +125,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	printHeader(console);
 #endif
 	
+
 	// Create Engine
 	log_debug("main() :: Initialising Engine");
 
@@ -124,13 +144,19 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	fs->addResourceType<andromeda::Effect>("shader");
 	fs->addResourceType<andromeda::Texture>("textures", andromeda::ResourceManager::Binary);
 
+	log_warn("main() :: TODO: Rename to Font when Font library is setup fully.");	// This is being logged for a reason :p
+	fs->addResourceType<andromeda::FontFace>("fonts", andromeda::ResourceManager::Binary);
+
+
+
+
 
 	// Create Application!
 	std::shared_ptr<andromeda::Application> app = std::make_shared<App>();
 
 	// Run Engine
 	andromeda::run(app);
-
+	
 	log_debug("main() :: Destroying Engine");
 
 	// Destroy the Engine

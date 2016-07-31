@@ -9,7 +9,7 @@
 #include <cstdio>
 
 #include <andromeda/glm.h>
-#include <glm/gtc/type_ptr.hpp>
+
 
 #include <andromeda/stddef.h>
 

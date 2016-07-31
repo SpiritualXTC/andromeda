@@ -16,9 +16,9 @@ LayerBuilder::LayerBuilder(const std::string & name)
 /*
 
 */
-LayerBuilder & LayerBuilder::setLayerGroup(const std::string & groupName)
+LayerBuilder & LayerBuilder::setGroup(const std::string & groupName)
 {
-	_layerGroup = groupName;
+	_group = groupName;
 	return *this;
 }
 

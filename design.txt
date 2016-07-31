@@ -1,0 +1,25 @@
+
+
+PIMPLE NOTES:
+
+Non-Templated Pimples can be setup with something like:
+This doesn't help for inline functions that much however....
+
+
+<header>
+
+class Something
+{
+public:
+	Something();
+
+private:
+	class SomethingImpl;
+
+	std::shared_ptr<SomethingImpl> _impl;
+}
+
+
+
+<source>
+Something::SomethingImpl

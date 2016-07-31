@@ -1,5 +1,4 @@
-#ifndef _ANDROMEDA_GRAPHICS_VIEW_H_
-#define _ANDROMEDA_GRAPHICS_VIEW_H_
+#pragma once
 
 /*
 	view.h:
@@ -7,10 +6,6 @@
 	The class has been trimmed down pretty damn heavily.
 
 	Render Target Capabilities have been removed for now.
-
-
-	TODO:
-	Visibility Check and the SceneGraphViewCache could be tied together a bit better
 */
 
 #include <memory>
@@ -21,44 +16,82 @@
 #include <andromeda/Events/resize.h>
 #include <andromeda/Math/region.h>
 
-
-
-#include "camera.h"
+#include <andromeda/Utilities/observable.h>
+#include <andromeda/Utilities/observer.h>
 
 namespace andromeda
 {
 	// Forward Declarations
-	class ICamera;
-	class IProjection;
-	class IRenderable;
-
-	class Layer;
-	class LayerGroup;
-	class RenderGroup;
-	class SceneGraph;
-	class SceneGraphViewCache;
-
+	class IRenderer;
 	class Effect;
 
-#if 0
-	enum class ViewOrder
+
+
+	class IViewTarget : public Observable<IViewTarget>
 	{
-		Target,
-		Screen,
+	public:
+		IViewTarget() {}
+		virtual ~IViewTarget() {}
+
+		virtual Int32 width() const = 0;
+		virtual Int32 height() const = 0;
 	};
-#endif
+
+
+	/*
+		The View is Drawn to the Screen
+	*/
+	class ViewScreen : public IViewTarget, public ResizeListener
+	{
+	public:
+		ViewScreen();
+		virtual ~ViewScreen();
+
+		Int32 width() const override { return _width; }
+		Int32 height() const override { return _height; }
+
+
+	protected:
+		// ResizeListener Event
+		Boolean onResize(ResizeEventArgs & e) override;
+
+	private:
+		Int32 _width = 0;
+		Int32 _height = 0;
+	};
+
+
+
+	/*
+		The View is Drawn to a Texture... worry about semantics, options - and how it's done, later :)
+
+		This probably needs a lot more ... stuff
+	*/
+	class ViewTexture : public IViewTarget
+	{
+	public:
+
+	};
+
+
+
+
+
+
+
+
+
 
 	/*
 
 	*/
-	class View
+	class View : public IObserver<IViewTarget>
 	{
 	public:
-		enum _ZOrder		// Make this an Enum Class
+		enum _ZOrder		// Make this an Enum Class :: Is this required ??? [I assume it should be, view's using something other than the BackBuffer for drawing will need to be rendered before anything else]
 		{
 			Target,		// Render Target :: is this needed anymore ?? [not sure]
 			Normal,		// Typical Game Layer
-			Interface,	// Interface/HUD Layer :: Not needed
 		};
 
 		// View Order Sorting!
@@ -80,68 +113,67 @@ namespace andromeda
 		virtual ~View();
 
 		/*
-			Gets the Z-Order
+			Getters
 		*/
+
+		// Gets the Z-Order
 		const inline Int32 zOrder() const { return _zOrder; }
-
-		/*
-		
-		*/
-		void render();
-
-		/*
-		
-		*/
-		void resize(const Int32 width, const Int32 height);
-
 
 		inline const Region2f getViewRegion() const { return _view; }
 		inline const Region2i getDisplayRegion() const { return _display; }
 		inline const Region2i getScreenRegion() const { return _screen; }
 
 
+		// Gets the Renderer
+		std::shared_ptr<IRenderer> getRenderer(const std::string & rendererName);
 
 
-		/*
-			Render Group
-		*/
-	//	Boolean addRenderGroup(const std::string & group);
-
-		/*
-			Layer Group
-		*/
-		Boolean addLayerGroup(const std::string & group, const std::shared_ptr<SceneGraph> & sg);
 
 
-		Boolean addLayer(const std::string & layerName, std::shared_ptr<Effect> effect, const std::string & technique, const std::string & layerGroup, const std::string & renderGroup);
+		// Adds a Renderer to the View
+		Boolean addRenderer(const std::string & rendererName, std::shared_ptr<IRenderer> & renderer);
 
-		/*
-			Clear Layers, LayerGroups, RenderGroups
-		*/
+
+		// Adds a Layer to a Renderer
+		Boolean addRendererLayer(const std::string & rendererName, const std::string & renderGroup, const std::string & renderMethod,
+			const std::shared_ptr<Effect> effect, const std::string & technique);
+
+		// Render the View
+		void render();
+
+
+
+		// Clear
 		void clear();
 
 
-		/*
-			Renderables
-		*/
-		Boolean addRenderable(IRenderable * renderable, const std::string & group = "");
-		Boolean removeRenderable(IRenderable * renderable, const std::string & group = "");
+		// This will be the final -- I Hope... lololol :)
+		// The Cache is now handled by the renderer itself
+		// RenderGroups are handled by the cache
+		std::unordered_map<std::string, std::shared_ptr<IRenderer>> _renderer;
 
 		/*
-			Gets the Views Camera
+			Renderer Examples:
+				deferred	- 3D geometry to a GBuffer, then draws the Gbuffer and processes lighting calculations
+				basic		- Renders directly to the screen
+
+			From the RenderGroup examples:
+				A single deferred renderer would render terrain/objects/lights
+				Multiple basic renderers would be used to render the hud, interface, 3D debug layer, 2D debug layer
 		*/
-		std::shared_ptr<Camera> & getCamera(const std::string & layerGroup = "");
+
+
+	protected:
+
+
+		// Resize the View :: The public facing resize() should only be able to resize the weighted values
+		void resize(const Int32 width, const Int32 height);
+
+		// IObserver<IViewTarget>
+		void notify(const IViewTarget * const vt) override;
+
 
 	private:
-
-		// Add and/or Retrieve the RenderGroup
-		std::shared_ptr<RenderGroup> getRenderGroup(const std::string & group);
-
-		// Add and/or Retrieve the LayerGroup
-		std::shared_ptr<LayerGroup> getLayerGroup(const std::string & group);
-
-
-
 		Int32 _zOrder = 0;									// View Order
 
 		Region2f _view;										// Weighted View Region
@@ -149,56 +181,70 @@ namespace andromeda
 		Region2i _screen;									// Screen Region
 
 
+		std::shared_ptr<ObserverHelper<IViewTarget>> _helper;
+		std::shared_ptr<IViewTarget> _target;
 
-		std::unordered_map<std::string, std::unique_ptr<Layer>> _layers;		// Visual Style Layers
-																				// Create Default Layer using default shader
-																				// Special Systems will need to auto create their own layers (such as particle effects)
-																				// Might be possible to override the Layer class ?
+				/*
+					RenderGroup Examples:
+						
+						terrain		
+							- 3D world camera : Camera 1
+							- Shader to render geometry : Shader 1
+								- Technique 1, Pass 1
+							
+							- SceneGraph = 'world'
+							- Renderer = Deferred, Method = Terrain
 
-		std::unordered_map<std::string, std::shared_ptr<RenderGroup>> _renderGroups;
+						objects
+							- 3D world camera : Camera 1
+							- Shader to render geometry : Shader 2
+								(Objects and Terrain could share the same shader, but terrain may need be doing tesselation in the shader)
+								- Technique 1, Pass 2
+							
+							- SceneGraph = 'world'
+							- Renderer = Deferred, Method = Objects
 
-		std::unordered_map<std::string, std::shared_ptr<LayerGroup>> _layerGroups;
+						text
+							- 3D world camera : Camera 1
+							- Shader to render text : Shader 6 (Could also be shader 2)
+								(depending on special color options)
+							- This is for 3D text that could be used for "Augmented Reality". So, is "present" in the world
+						
+							- SceneGraph = 'world'
+							- Renderer = Deferred, Method = Text/Objects
+
+						lights		
+							- 3D world camera : Camera 1
+							- Shader to render lights and process GBuffer : Shader 3 
+								(Deferred Rendering Only - Renders lights to screen by processing values stored in the GBuffer)
+								- Technique 2, Pass 1
+							- It may be required to use multiple light layers. One for directional and one for bounded lights (point/spotlight)
+
+							- SceneGraph = 'world'
+							- Renderer = Deferred, Method = Deferred
+
+						hud	/ interface		
+							- 2D ortho Camera : Camera 2
+							- Shader to render direct to screen : Shader 4
+							- Hud & Interface are logically separate however are very similiar in the way they work
+								(Should use separate cameras, however would probably use the same shader)
+
+							- SceneGraph = 'hud' or 'Interface'
+							- Renderer = Simple2D
+							
+						debug3d		
+							- 3D world camera : Camera 1
+							- Shader to render direct to screen : Shader 5
+							- Shows debug information on objects (Normals, etc)
+							- SceneGraph = 'world'
+							- Renderer = Simple3D
+
+						debug2d		
+							- 2D world camera : Camera 3
+							- Shows text information to the screen (Console, kinda thing)
+							- SceneGraph = 'debug'
+							- Renderer = Simple 2D
+				*/
 	};
-
-
-
-
-
-
-
-
-
-
-	/*
-		TODO:
-		Remove this.
-		Re-add the functionality as a a component to a View
-	*/
-	class ScreenView : public View, public ResizeListener
-	{
-	public:
-		ScreenView(Int32 order = View::Normal)
-			: ScreenView(0.0f, 0.0f, 1.0f, 1.0f, order)
-		{
-
-		}
-
-		ScreenView(Float x, Float y, Float width, Float height, Int32 order = View::Normal)
-			: View(x, y, width, height, order)
-		{
-
-		}
-
-		virtual ~ScreenView() {}
-
-	private:
-
-		// ResizeListener Event
-		Boolean onResize(ResizeEventArgs & e) override;
-	};
-
-
-
 }
 
-#endif

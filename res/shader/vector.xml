@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<effect version="400">
+
+  <shader name="vs" source="vector.vs" />
+  <shader name="fs" source="vector.fs" />
+
+  <!-- Does Nothing Special -->
+  <state name="normal">
+    <depth enable="true" />
+    <polygon>fill</polygon>
+    
+    <blending enable="false">
+      <source alpha="sourcealpha">sourcealpha</source>
+      <destination alpha="oneminussourcealpha">oneminussourcealpha</destination>
+      <equation></equation>
+    </blending>
+    
+  </state>
+
+  <technique name="vector">
+    <pass state="normal">
+      
+      
+      <vertexShader shader="vs" />
+      <fragmentShader shader="fs" />
+      
+      
+    </pass>
+  </technique>
+
+</effect>

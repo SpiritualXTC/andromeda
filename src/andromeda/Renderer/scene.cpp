@@ -34,7 +34,7 @@ Scene::~Scene()
 /*
 	Adds a SceneGraph
 */
-Boolean Scene::addSceneGraph(std::shared_ptr<SceneGraph> & sg, const std::string & groupName)
+Boolean Scene::addSceneGraph(const std::shared_ptr<SceneGraph> & sg, const std::string & groupName)
 {
 	assert(sg);
 
@@ -92,6 +92,7 @@ Boolean Scene::removeView(std::shared_ptr<View> view)
 	_views.erase(view);
 	return true;
 }
+
 
 /*
 	clearViews():

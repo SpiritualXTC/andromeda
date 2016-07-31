@@ -1,23 +1,25 @@
 #include <andromeda/Renderer/view.h>
 
-#include <glm/gtc/constants.hpp>
-
 #include <andromeda/graphics.h>
 
-#include <andromeda/Renderer/camera.h>
-#include <andromeda/Renderer/layer.h>
-#include <andromeda/Renderer/layer_group.h>
-#include <andromeda/Renderer/projection.h>
-#include <andromeda/Renderer/scene_graph.h>
-#include <andromeda/Renderer/scene_graph_view_cache.h>
+#include <andromeda/Renderer/renderer.h>
 
 #include <andromeda/Utilities/log.h>
 
 
-
-#include "render_group.h"
-
 using namespace andromeda;
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
 
@@ -27,14 +29,18 @@ View::View(Float x, Float y, Float width, Float height, Int32 order)
 {
 	assert(_zOrder != View::_ZOrder::Target);
 
+
+	// Create the Target
+	_target = std::make_shared<ViewScreen>();
+
+	// Observer Workaround/Setup
+	_helper = std::make_shared<ObserverHelper<IViewTarget>>(this);
+	_target->add(_helper);
+	
+
+
 	// Set the Region
 	_view = Region2f({ x, y }, { width + x, height + y });
-
-	// TODO: Fix Meh
-	// Create a dummy/default Render Group ? 
-	// It might be beneficial for this to always be here.
-	// Render Groups are now automatically created as they are required
-//	addRenderGroup("");
 }
 
 
@@ -47,147 +53,77 @@ View::~View()
 }
 
 
+/*
+
+*/
+void View::notify(const IViewTarget * const vt)
+{
+	log_errp("SCREEN RESIZE BY WEIRD SPOT IN THE VIEW %1%x%2%", vt->width(), vt->height());
+
+	resize(vt->width(), vt->height());
+}
+
 
 
 
 
 
 /*
-	Adds a LayerGroup
+
 */
-Boolean View::addLayerGroup(const std::string & groupName, const std::shared_ptr<SceneGraph> & sg)
+Boolean View::addRenderer(const std::string & rendererName, std::shared_ptr<IRenderer> & renderer)
 {
-	// Search for a LayerGroup with the same name
-	const auto & it = _layerGroups.find(groupName);
-	if (it != _layerGroups.end())
+	assert(renderer);
+
+	// Renderer Exists
+	if (_renderer.find(rendererName) != _renderer.end())
 		return false;
 
-	// Create LayerGroup
-	std::shared_ptr<LayerGroup> lg = std::make_shared<LayerGroup>(groupName, sg, this);
-
-	// Add LayerGroup
-	_layerGroups[groupName] = lg;
+	// Insert
+	_renderer[rendererName] = renderer;
 
 	return true;
 }
 
 
-
 /*
-	Gets the RenderGroup
+	Gets the Renderer
 */
-std::shared_ptr<RenderGroup> View::getRenderGroup(const std::string & group)
+std::shared_ptr<IRenderer> View::getRenderer(const std::string & rendererName)
 {
-	// Find the Group
-	const auto & it = _renderGroups.find(group);
+	// Find the Renderer
+	const auto & it = _renderer.find(rendererName);
 
 	// Found ??
-	if (it != _renderGroups.end())
-	{
-		// Retrieve
-		return it->second;
-	}
-
-	// Create and Insert
-	std::shared_ptr<RenderGroup> rg = std::make_shared<RenderGroup>(group);
-	_renderGroups[group] = rg;
-
-	return rg;
+	return it == _renderer.end() ? nullptr : it->second;
 }
 
 
 /*
-	Gets the LayerGroup
+
 */
-std::shared_ptr<LayerGroup> View::getLayerGroup(const std::string & group)
+Boolean View::addRendererLayer(const std::string & rendererName, const std::string & renderGroup, const std::string & renderMethod, const std::shared_ptr<Effect> effect, const std::string & technique)
 {
-	std::shared_ptr<LayerGroup> g;
+	std::shared_ptr<IRenderer> renderer = getRenderer(rendererName);
 
-	// Find the Group
-	const auto & it = _layerGroups.find(group);
-
-	// Found ??
-	return it == _layerGroups.end() ? nullptr : it->second;
+	return renderer->addLayer(renderMethod, renderGroup, effect, technique);
 }
 
 
 
 
 
-/*
-	Adds a Layer to the View
-*/
-Boolean View::addLayer(const std::string & layerName, std::shared_ptr<Effect> effect, const std::string & technique, const std::string & layerGroup, const std::string & renderGroup)
-{
-	/*
-		TODO:
-		Change the Layers to an ordered_map.
-		The KEY is the layerName, and order it by the layers zOrder
-	*/
-
-	std::shared_ptr<RenderGroup> rg = getRenderGroup(renderGroup);
-	std::shared_ptr<LayerGroup> lg = getLayerGroup(layerGroup);
-
-	assert(rg);
-	assert(lg);
-
-
-	// Create Layer
-	std::unique_ptr<Layer> layer = std::make_unique<Layer>(lg->getCamera(), effect, rg);
-
-	_layers[layerName] = std::move(layer);
-
-	return true;
-}
 
 
 
-/*
-
-*/
-Boolean View::addRenderable(IRenderable * renderable, const std::string & group)
-{
-	// Gets the Group
-	std::shared_ptr<RenderGroup> rg = getRenderGroup(group);
-
-	assert(rg);
-
-	// Add Renderable
-	rg->addRenderable(renderable);
-
-	return true;
-}
-
-/*
-
-*/
-Boolean View::removeRenderable(IRenderable * renderable, const std::string & group)
-{
-	// Gets the Group
-	std::shared_ptr<RenderGroup> rg = getRenderGroup(group);
-
-	assert(rg);
-
-	// Remove Renderable
-	rg->removeRenderable(renderable);
-
-	return true;
-}
 
 
 
-/*
 
-*/
-std::shared_ptr<Camera> & View::getCamera(const std::string & layerGroup)
-{ 
-	const auto & it = _layerGroups.find(layerGroup);
 
-	if (it == _layerGroups.end())
-		throw std::exception();
 
-	return it->second->getCamera();
-}
+
+
 
 
 
@@ -196,14 +132,9 @@ std::shared_ptr<Camera> & View::getCamera(const std::string & layerGroup)
 */
 void View::clear()
 {
-	// Clear all Layers. This needs to be done first!
-	_layers.clear();
-
-	// Clear all LayerGroups
-	_layerGroups.clear();
-
-	// Clear all RenderGroups
-	_renderGroups.clear();
+	// Clear all the renderers
+	for (const auto & it : _renderer)
+		it.second->clear();
 }
 
 
@@ -219,9 +150,6 @@ void View::clear()
 */
 void View::resize(const Int32 width, const Int32 height)
 {
-	// Must have projection matrix
-//	assert(_camera);
-
 	// Set Screen Dimensions
 	_screen.minimum = glm::ivec2(0, 0);
 	_screen.maximum = glm::ivec2(width, height);
@@ -234,19 +162,12 @@ void View::resize(const Int32 width, const Int32 height)
 
 
 
-
-
-	// OLD CAMERA
 	// Recalculate Projection
 	glm::fvec2 display(_display.size());
 
-
-	// NEW CAMERA
-	// Resize the new Camera
-//	_camera->resize(display.x, display.y);
-
-	for (const auto & it : _layerGroups)
-		it.second->getCamera()->resize(display.x, display.y);
+	// Resize the Renderer
+	for (const auto & renderer : _renderer)
+		renderer.second->resize(display.x, display.y);
 
 	return;
 }
@@ -258,10 +179,6 @@ void View::resize(const Int32 width, const Int32 height)
 */
 void View::render()
 {
-//	assert(_camera);
-//	assert(_sceneGraph);
-
-
 	/*
 		This should be an automatic component of the Graphics API when setting a weighted viewport
 	*/
@@ -295,41 +212,15 @@ void View::render()
 
 
 
-	// TODO: Update LayerGroups
-	// Layer groups contain the camera, for all the layers
 
+	// Update the Renderer Caches, Cameras, etc
+	for (const auto & renderer : _renderer)
+		renderer.second->update();
 
-	// Update Camera Position
-//	_camera->update();
+	// Render Renderer
+	for (const auto & renderer : _renderer)
+		renderer.second->render();
 
-	// Process the SceneGraph :: With respect to the Camera and the SceneGraphViewCache
-//	_sceneGraph->process(_camera, _sceneGraphViewCache);
-
-
-
-	// Update Layer Groups
-	for (const auto & lg : _layerGroups)
-	{
-		lg.second->render();
-	}
-
-
-	// Draw the Layers
-	for (const auto & layer : _layers)
-	{
-		layer.second->render();
-	}
-
-
-
-	// Render layers
-//	for (const auto & layer : _layers)
-//	{
-		// Render the Layer
-	//	layer.second->render(_camera);
-
-	//	layer.second->render(_projection, _camera);
-//	}
 
 
 
@@ -344,47 +235,3 @@ void View::render()
 }
 
 
-
-
-
-#if 0
-/*
-	Set Camera Target using a default Camera
-*/
-Boolean View::setCameraTarget()
-{
-	return setCameraTarget(CameraBuilder().create());
-}
-
-/*
-	Set Camera Target using a GameObject. GameObject must be in the SceneGraph
-*/
-Boolean View::setCameraTarget(const std::string & name)
-{
-	// Look for the Object in the SceneGraph
-	std::shared_ptr<GameObject> go = _sceneGraph->getGameObject(name);
-
-	if (!go)
-		return false;
-
-	// Create the Camera
-	std::shared_ptr<ICamera> camera = CameraBuilder().create(go);
-
-	if (camera)
-		return setCameraTarget(camera);
-
-	return false;
-}
-
-/*
-	Set Camera Target using a Custom Camera
-*/
-Boolean View::setCameraTarget(std::shared_ptr<ICamera> & camera)
-{
-	assert(camera);
-
-	_camera = camera;
-
-	return !!_camera;
-}
-#endif

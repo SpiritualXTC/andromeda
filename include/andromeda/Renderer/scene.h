@@ -3,15 +3,16 @@
 #include <string>
 #include <set>
 #include <memory>
+#include <unordered_map>
 
 #include <andromeda/stddef.h>
-#include <andromeda/Renderer/layer_group.h>
-#include <andromeda/Renderer/view.h>
+//#include <andromeda/Renderer/view.h>
 
 
 namespace andromeda
 {
 	class SceneGraph;
+	class View;
 
 
 	/*
@@ -80,7 +81,7 @@ namespace andromeda
 		/*
 			Adds a SceneGraph
 		*/
-		Boolean addSceneGraph(std::shared_ptr<SceneGraph> & sg, const std::string & groupName = "");
+		Boolean addSceneGraph(const std::shared_ptr<SceneGraph> & sg, const std::string & groupName = "");
 
 
 		/*
@@ -93,10 +94,11 @@ namespace andromeda
 		}
 
 
+
 		/*
 			Gets Constant Reference to the SceneGraph
 		*/
-		const std::shared_ptr<SceneGraph> & getSceneGraph(const std::string & groupName = "") const 
+		const inline std::shared_ptr<SceneGraph> getSceneGraph(const std::string & groupName = "") const 
 		{ 
 			const auto & it = _graphs.find(groupName);
 			return it == _graphs.end() ? nullptr : it->second;
@@ -133,6 +135,7 @@ namespace andromeda
 		
 
 		// Map of Scene Graphs used by this scene
+		// Why does a Scene need multiple Graphs???? -- This is can be achieved by multiple scenes... and would make more sense that way :)
 		std::unordered_map<std::string, std::shared_ptr<SceneGraph>> _graphs;
 
 

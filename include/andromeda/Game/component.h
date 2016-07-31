@@ -1,5 +1,4 @@
-#ifndef _ANDROMEDA_GAME_COMPONENT_H_
-#define _ANDROMEDA_GAME_COMPONENT_H_
+#pragma once
 
 #include <vector>
 #include <cassert>
@@ -13,7 +12,15 @@
 
 namespace andromeda
 {
-	class View;
+	class IRenderableManager;
+
+
+	/*
+		TODO:
+		Render events need to be only for a specific component... not on all components :)
+	*/
+
+
 
 	/*
 	
@@ -27,22 +34,22 @@ namespace andromeda
 		/*
 			Activation that occurs when ANY view activates the object
 		*/
-		virtual inline void onViewActivate() = 0;
+		virtual inline void onRenderActivate() = 0;
 
 		/*
 			Deactivation that occurs when ANY view deactivates the objects
 		*/
-		virtual inline void onViewDeactivate() = 0;
+		virtual inline void onRenderDeactivate() = 0;
 
 		/*
 			Activation that occurs when a SPECIFIC view activates the object
 		*/
-		virtual inline void onViewActivate(View * view) = 0;
+		virtual inline void onRenderActivate(IRenderableManager * view) = 0;
 
 		/*
 			Deactivation that occurs when a SPECIFIC view activates the object
 		*/
-		virtual inline void onViewDeactivate(View * view) = 0;
+		virtual inline void onRenderDeactivate(IRenderableManager * view) = 0;
 
 
 		/*
@@ -67,22 +74,22 @@ namespace andromeda
 
 
 
-		virtual inline void onViewActivate() override
+		virtual inline void onRenderActivate() override
 		{
 			// Do Nothing
 		}
-		virtual inline void onViewDeactivate() override
+		virtual inline void onRenderDeactivate() override
 		{
 			// Do Nothing
 		}
 
 
 
-		virtual inline void onViewActivate(View * view) override
+		virtual inline void onRenderActivate(IRenderableManager * view) override
 		{
 			// Do Nothing
 		}
-		virtual inline void onViewDeactivate(View * view) override
+		virtual inline void onRenderDeactivate(IRenderableManager * view) override
 		{
 			// Do Nothing
 		}
@@ -98,5 +105,3 @@ namespace andromeda
 
 	};
 }
-
-#endif

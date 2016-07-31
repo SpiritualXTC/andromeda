@@ -58,6 +58,12 @@ namespace andromeda
 		{
 			return -DBL_MAX;
 		}
+
+
+
+
+
+
 	}
 }
 

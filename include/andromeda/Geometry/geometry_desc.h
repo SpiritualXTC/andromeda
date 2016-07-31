@@ -11,7 +11,10 @@
 namespace andromeda
 {
 
-
+	/*
+		TODO:
+		Remove the GL-centric enums.
+	*/
 	class GeometryDescription
 	{
 	private:
@@ -65,6 +68,7 @@ namespace andromeda
 
 
 		//Boolean addDeclaration(const Int32 elements, const Int32 offset, const GLenum datatype, const Int32 stride, const Int32 location = -1);
+		Boolean addDeclaration(const Int32 elements, const GLenum dataType, const Int32 stride, const GeometryLocation location = GeometryLocation::Auto);
 		Boolean addDeclaration(const Int32 elements, const Int32 offset, const GLenum datatype, const Int32 stride, const GeometryLocation location = GeometryLocation::Auto);
 
 	private:

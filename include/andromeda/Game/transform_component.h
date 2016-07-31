@@ -21,8 +21,8 @@ namespace andromeda
 		/* Setters */
 		inline void position(Float x, Float y, Float z) override { _position = glm::vec3(x, y, z); }
 
-		inline void x(Float x) { _position.y = x; }
-		inline void y(Float y) { _position.x = y; }
+		inline void x(Float x) { _position.x = x; }
+		inline void y(Float y) { _position.y = y; }
 		inline void z(Float z) { _position.z = z; }
 
 		inline void yaw(Float f) { _rotation.y = f; }

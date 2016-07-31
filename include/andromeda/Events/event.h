@@ -26,7 +26,7 @@ namespace andromeda
 	/*
 	
 	*/
-	template <class EVENT>
+	template <typename EVENT>
 	class Event : public IEvent
 	{
 	private:

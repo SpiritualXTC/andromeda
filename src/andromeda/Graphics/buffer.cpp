@@ -49,14 +49,29 @@ void Buffer::data(const GLvoid * ptr, const GLsizeiptr length)
 {
 	assert(ptr);
 
+	_length = length;
+
 	bind();
 
-	glBufferData(_type, length, ptr, GL_STATIC_DRAW);
+	glBufferData(_type, _length, ptr, GL_STATIC_DRAW);
 	
 	unbind();
 }
 
+/*
 
+*/
+void Buffer::subdata(const GLvoid * ptr, GLintptr offset, GLsizeiptr length)
+{
+	assert(ptr);
+	assert(offset + length <= length);
+
+	bind();
+
+	glBufferSubData(_type, offset, length, ptr);
+
+	unbind();
+}
 
 
 

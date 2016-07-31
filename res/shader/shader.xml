@@ -16,6 +16,13 @@
   <state name="normal">
     <depth enable="true" />
     <polygon>fill</polygon>
+
+    <blending enable="true">
+      <source>sourcealpha</source>
+      <destination>oneminussourcealpha</destination>
+      <equation>multiply</equation>
+    </blending>
+    
   </state>
 
   <!-- Wireframe View -->

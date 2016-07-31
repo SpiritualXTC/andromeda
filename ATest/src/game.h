@@ -14,7 +14,7 @@
 #include <andromeda/Renderer/renderable.h>
 
 #include <andromeda/Input/mouse.h>
-
+#include <andromeda/Input/keyboard.h>
 
 // Forward Declarations :: Engine
 namespace andromeda
@@ -29,7 +29,7 @@ namespace andromeda
 	class Effect;
 	class Font;
 
-	class Renderer;
+	class SceneManager;
 }
 
 
@@ -42,10 +42,10 @@ class Player;
 /*
 
 */
-class Game : public andromeda::MouseListener
+class Game : public andromeda::MouseListener, public andromeda::KeyboardListener
 {
 public:
-	Game(std::shared_ptr<andromeda::Renderer> renderer);
+	Game();
 	virtual ~Game();
 
 
@@ -59,9 +59,11 @@ protected:
 	aBoolean mouseMove(andromeda::MouseMoveEventArgs & e) override;
 	aBoolean mouseWheel(andromeda::MouseWheelEventArgs & e) override { return true; };
 
-private:
-	//Ents<10000> _entities;
+	aBoolean keyDown(andromeda::KeyEventArgs & e) override { return true; };
+	aBoolean keyUp(andromeda::KeyEventArgs & e) override;
+	aBoolean keyRepeat(andromeda::KeyEventArgs & e) override { return true; };
 
+private:
 	std::shared_ptr<Player> createPlayer(aFloat x, aFloat y, aFloat w, aFloat h);
 
 	std::shared_ptr<andromeda::GameObject> createGround();
@@ -72,9 +74,10 @@ private:
 	std::shared_ptr<andromeda::GameObject> createMesh(const std::string & name);
 
 
-	
-	std::weak_ptr<andromeda::Renderer> _renderer;	// Reference to the Renderer
-	std::shared_ptr<andromeda::Scene> _scene;		// Scene
+	// TEsT
+	void createText();
+
+	std::shared_ptr<andromeda::Scene> _scene;					// Scene
 
 
 	// TEMPORARY :: Need a way of pulling views from the Renderer

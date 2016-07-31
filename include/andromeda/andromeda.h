@@ -12,8 +12,7 @@
 
 
 
-// TMEP
-#include <andromeda/Utilities/log.h>
+
 
 
 #if BOOST_OS_WINDOWS
@@ -38,7 +37,7 @@ namespace andromeda
 	struct DisplayParameters;
 	class Engine;
 	class Config;
-	class Renderer;
+	class SceneManager;
 	class System;
 	class Timing;
 	
@@ -61,7 +60,6 @@ namespace andromeda
 
 
 
-
 	class IAndromeda
 	{
 	public:
@@ -74,10 +72,10 @@ namespace andromeda
 
 		virtual inline std::shared_ptr<Timing> & getTiming() = 0;
 
-		virtual inline std::shared_ptr<Renderer> & getRenderer() = 0;
+		virtual inline std::shared_ptr<SceneManager> & getSceneManager() = 0;
 
 
-		virtual void run(std::shared_ptr<Application> & app) = 0;
+		virtual void run(std::shared_ptr<Application> app) = 0;
 		virtual void quit() = 0;
 
 		virtual void pause() = 0;
@@ -119,13 +117,9 @@ namespace andromeda
 
 
 	/*
-		This is going to be the new access point rather than the engine...
-
-		This access point will be able to access quite a lot of things... engine, resources, configs, etc
-
 		It will control how each platform loads
 
-		This COULD be a singleton, however it will depend on how it gets initialise whether it will work as a singleton... :)
+		TODO: It could be possible to use a templateless PIMPLE pattern
 	*/
 	class Andromeda : virtual public IAndromeda
 	{
@@ -135,37 +129,12 @@ namespace andromeda
 		/*
 			Initialise Andromeda
 		*/
-		static Boolean initialise(IAndromedaConfig * config)
-		{
-			assert(!_instance);
-
-			log_debugp("Andromeda :: initialise();");
-
-			// Create Instance
-			_instance = std::make_shared<Andromeda>(config);
-			 
-
-			log_debugp("Andromeda :: initialisation() done;");
-
-			return !!_instance;
-		}
-
+		static Boolean initialise(IAndromedaConfig * config);
 
 		/*
 			Destroy Andromeda
 		*/
-		static Boolean destroy()
-		{
-			log_debugp("Andromeda :: destroy();");
-
-			assert(_instance);
-			_instance->quit();
-
-			// Lower Reference Count
-			_instance.reset();
-
-			return true;
-		}
+		static Boolean destroy();
 
 
 		/*
@@ -210,9 +179,9 @@ namespace andromeda
 
 		inline std::shared_ptr<Timing> & getTiming() override {return _timing;}
 
-		inline std::shared_ptr<Renderer> & getRenderer() override { return _renderer; }
+		inline std::shared_ptr<SceneManager> & getSceneManager() override { return _scenes; }
 
-		void run(std::shared_ptr<Application> & app);
+		void run(std::shared_ptr<Application> app);
 		void quit();
 
 		void pause();
@@ -230,7 +199,7 @@ namespace andromeda
 		std::shared_ptr<Graphics> _graphics;
 
 		std::shared_ptr<Timing> _timing;
-		std::shared_ptr<Renderer> _renderer;
+		std::shared_ptr<SceneManager> _scenes;
 
 		std::shared_ptr<ResourceManager> _resources;
 	};
@@ -244,7 +213,7 @@ namespace andromeda
 
 
 	/* Run */
-	inline void run(std::shared_ptr<Application> & app)
+	inline void run(std::shared_ptr<Application> app)
 	{
 		Andromeda::instance()->run(app);
 	}
@@ -262,11 +231,20 @@ namespace andromeda
 		return Andromeda::instance()->getResourceManager();
 	}
 
+	/* Scene Manager */
+	inline std::shared_ptr<SceneManager> scenes()
+	{
+		return Andromeda::instance()->getSceneManager();
+	}
+
 	/* Graphics API */
 	inline std::shared_ptr<Graphics> graphics()
 	{
 		return Andromeda::instance()->getGraphics();
 	}
+
+
+
 
 
 
@@ -281,6 +259,10 @@ namespace andromeda
 	{
 		return Andromeda::instance()->getResourceManager()->loadResource<RESOURCE>(filename, locationName);
 	}
+
+
+
+
 
 
 

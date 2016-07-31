@@ -9,7 +9,9 @@
 #include <andromeda/Renderer/camera.h>
 #include <andromeda/Renderer/projection.h>
 #include <andromeda/Renderer/renderable.h>
-#include "render_group.h"
+
+
+#include "renderable_group.h"
 
 #include <andromeda/Utilities/log.h>
 
@@ -33,7 +35,7 @@ using namespace andromeda;
 /*
 
 */
-Layer::Layer(std::shared_ptr<Camera> & camera, std::shared_ptr<Effect> & effect, std::shared_ptr<RenderGroup> rg)
+Layer::Layer(const std::shared_ptr<Camera> & camera, const std::shared_ptr<Effect> & effect, const std::shared_ptr<RenderableGroup> rg)
 	: _camera(camera)
 	, _effect(effect)
 	, _renderGroup(rg)

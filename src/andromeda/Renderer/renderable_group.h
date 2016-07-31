@@ -54,11 +54,11 @@ namespace andromeda
 	/*
 	
 	*/
-	class RenderGroup
+	class RenderableGroup
 	{
 	public:
-		RenderGroup(const std::string & groupName);
-		virtual ~RenderGroup();
+		RenderableGroup(const std::string & groupName);
+		virtual ~RenderableGroup();
 
 
 		// Get Group Name
@@ -77,6 +77,8 @@ namespace andromeda
 	private:
 		std::string _groupName;
 
+
+		// This should really be sorted .... by something useful :P
 		std::set<IRenderable*> _renderables;
 	};
 }

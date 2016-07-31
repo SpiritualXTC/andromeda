@@ -161,7 +161,7 @@ void Camera::notify(const IProjectionMatrix * const pm)
 */
 void Camera::notify(const IViewMatrix * const vm)
 {
-	log_warn("View matrix updated");
+//	log_warn("View matrix updated");
 	if (_view)
 		_viewMatrix = _view->matrix();
 }

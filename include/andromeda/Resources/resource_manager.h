@@ -248,6 +248,12 @@ namespace andromeda
 	class Mesh;
 	class Texture;
 
+
+
+
+	class FontFace;
+
+
 	template<>
 	std::shared_ptr<Effect> ResourceLoader::build<Effect>(std::shared_ptr<File> file);
 
@@ -256,6 +262,13 @@ namespace andromeda
 
 	template<>
 	std::shared_ptr<Texture> ResourceLoader::build<Texture>(std::shared_ptr<File> file);
+
+
+	/*
+		TODO: Rename to Font when the class is done...ish
+	*/
+	template<>
+	std::shared_ptr<FontFace> ResourceLoader::build<FontFace>(std::shared_ptr<File> file);
 }
 
 #include "resource_manager.hpp"

@@ -24,11 +24,11 @@ namespace andromeda
 			Cube(Float f);
 			Cube(Float fw, Float fh, Float fd);
 			
-			UInt32 getVertexCount() const
+			UInt32 getVertexCount() const override
 			{
 				return VERTICES;
 			}
-			UInt32 getFaceCount() const
+			UInt32 getFaceCount() const override
 			{
 				return FACES;
 			}

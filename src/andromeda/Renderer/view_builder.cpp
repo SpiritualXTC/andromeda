@@ -49,13 +49,13 @@ ViewBuilder & ViewBuilder::addLayer(LayerBuilder & lb)
 /*
 
 */
-ViewBuilder & ViewBuilder::addLayerGroup(const std::string & name, const std::shared_ptr<SceneGraph> sceneGraph)
+ViewBuilder & ViewBuilder::addGroup(const std::string & name, const std::shared_ptr<SceneGraph> sceneGraph)
 {
-	_LayerGroup lg;
-	lg.groupName = name;
-	lg.sceneGraph = sceneGraph;
+	_Group g;
+	g.groupName = name;
+	g.sceneGraph = sceneGraph;
 
-	_layerGroups.push_back(lg);
+	_groups.push_back(g);
 
 	return *this;
 }
@@ -72,7 +72,7 @@ std::shared_ptr<View> ViewBuilder::build()
 		This requires a method for the View to auto-resize when the Screen/Display resolution is changed
 	*/
 
-	std::shared_ptr<View> view = std::make_shared<ScreenView>(_screen.minimum.x, _screen.minimum.y, _screen.size().x, _screen.size().y);
+	std::shared_ptr<View> view = std::make_shared<View>(_screen.minimum.x, _screen.minimum.y, _screen.size().x, _screen.size().y);
 
 	
 	// Rebuild the View
@@ -94,17 +94,33 @@ std::shared_ptr<View> & ViewBuilder::rebuild(std::shared_ptr<View> & view)
 
 	
 	// Build Layer Groups ... and attach the apprioriate layers
-	for (const auto & it : _layerGroups)
-		view->addLayerGroup(it.groupName, it.sceneGraph);
+	for (const auto & it : _groups)
+	{
+//		view->addGroup(it.groupName, it.sceneGraph);	// TODO: Remove meh when changes are made to view layers
+	}
 
+
+	// New
+
+
+
+
+
+
+
+	/*
+		TODO:
+		Remove
+	*/
+	// Old
 	// Build Layers
 	for (const auto & it : _layers)
 	{
 		// Load/Get the Effect
-		std::shared_ptr<Effect> effect = LoadResource<Effect>(it.getEffectName());
+	//	std::shared_ptr<Effect> effect = LoadResource<Effect>(it.getEffectName());
 
 		// Add Layer
-		view->addLayer(it.getName(), effect, it.getTechniqueName(), it.getLayerGroup(), it.getRenderGroup());
+	//	view->addLayer(it.getName(), effect, it.getTechniqueName(), it.getGroup(), it.getRenderGroup());
 	}
 
 	return view;

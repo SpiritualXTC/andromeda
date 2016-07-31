@@ -177,6 +177,8 @@ namespace andromeda
 		UnsignedByte,
 		Short,
 		UnsignedShort,
+		Int,
+		UnsignedInt,
 		Float,
 		Fixed,
 	};
@@ -270,6 +272,51 @@ namespace andromeda
 		Repeat,
 		ClampToEdge,
 	};
+
+
+
+
+
+	/*
+		TODO: 
+		Work out a better system to generate the formats.
+
+		There are a lot of formats. There should be a much simpler way of tying them together in a simpler manner.
+			(The code to do the tying together, wont be quite as simple)
+	*/
+	// Not sure how many of these are useful!
+	enum class StorageFormat
+	{
+		RGBA,
+
+		RGBA16F,
+		RGBA32F,
+
+
+		Depth16,
+		Depth24,
+		Depth32,
+		DepthStencil,
+	};
+
+	/*
+	GL_RED, 
+	GL_RG, 
+		GL_RGB, 
+		GL_BGR, 
+		GL_RGBA, 
+		GL_BGRA, 
+		GL_RED_INTEGER, 
+		GL_RG_INTEGER, 
+		GL_RGB_INTEGER, 
+		GL_BGR_INTEGER, 
+		GL_RGBA_INTEGER, 
+		GL_BGRA_INTEGER, 
+		GL_STENCIL_INDEX, 
+		GL_DEPTH_COMPONENT, 
+		GL_DEPTH_STENCIL.
+		*/
+
 
 
 

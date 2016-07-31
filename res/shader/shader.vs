@@ -34,7 +34,7 @@ out vec3 v_normal;
 void main()
 {
 	// Texture Coordinates - Including Inversions
-	v_diffuseTextureCoord = vec2(a_texture.x, 1.0 - a_texture.y);
+	v_diffuseTextureCoord = vec2(a_texture.x, a_texture.y);
 	
 	// Normals
 	// TODO: This needs the normal matrix as well

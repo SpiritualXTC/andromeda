@@ -54,10 +54,8 @@ void GeometryRenderComponent::render(const std::shared_ptr<andromeda::IShader> s
 
 	/* Animation -- Subset of Data only. Each Subset *MAY*  contain its own Materials, etc */
 
-	/* Effect: Set Materials, Textures, Colors */
-	/* Effect: Set Transformations */
-	
-	//effect->
+	/* Shader: Set Materials, Textures, Colors */
+	/* Shader: Set Transformations */
 
 	// Push Matrix
 	ms.push();

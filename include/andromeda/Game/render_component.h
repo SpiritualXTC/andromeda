@@ -1,5 +1,4 @@
-#ifndef _ANDROMEDA_GAME_RENDER_COMPONENT_H_
-#define _ANDROMEDA_GAME_RENDER_COMPONENT_H_
+#pragma once
 
 #include <andromeda/Renderer/renderable.h>
 
@@ -14,16 +13,16 @@ namespace andromeda
 	{
 	public:
 		RenderComponent();
+		RenderComponent(const std::string & renderGroup);
 		virtual ~RenderComponent();
 
-		void onViewActivate(View * view) override;
-		void onViewDeactivate(View * view) override;
+		void onRenderActivate(IRenderableManager * manager) override;
+		void onRenderDeactivate(IRenderableManager * manager) override;
 		
 		
 	private:
-
+		std::string _renderGroup;
 	};
 }
 
 
-#endif

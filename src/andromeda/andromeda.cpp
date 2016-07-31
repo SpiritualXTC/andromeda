@@ -8,7 +8,7 @@
 #include <andromeda/Platform/platform.h>
 
 #include <andromeda/Renderer/context.h>
-#include <andromeda/Renderer/renderer.h>
+#include <andromeda/Renderer/scene_manager.h>
 
 #include <andromeda/Resources/resource_manager.h>
 #include <andromeda/Resources/resource_location_filesystem.h>
@@ -35,6 +35,55 @@ using namespace andromeda;
 
 
 std::shared_ptr<Andromeda> Andromeda::_instance = nullptr;
+
+/*
+
+*/
+Boolean Andromeda::initialise(IAndromedaConfig * config)
+{
+	assert(!_instance);
+
+	log_debugp("Andromeda :: initialise();");
+
+	// Create Instance
+	_instance = std::make_shared<Andromeda>(config);
+
+
+	log_debugp("Andromeda :: initialisation() done;");
+
+	return !!_instance;
+}
+
+
+
+/*
+
+*/
+Boolean Andromeda::destroy()
+{
+	log_debugp("Andromeda :: destroy();");
+
+	assert(_instance);
+	_instance->quit();
+
+	// Lower Reference Count
+	_instance.reset();
+
+	return true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -116,11 +165,17 @@ Andromeda::Andromeda(IAndromedaConfig * config)
 	_engine->addModule<Platform>(_system->getPlatform());
 	_engine->addModule<Context>(_system->getContext());
 
-	// Create Renderer
-	log_verbosep("Andromeda :: <init>() :: Add Renderer");
-	_renderer = std::make_shared<Renderer>();
-	_engine->addModule<Renderer>(_renderer);
+
+
+
+	// Create SceneManager
+	log_verbosep("Andromeda :: <init>() :: Add Scene Manager");
+	_scenes = std::make_shared<SceneManager>();
+	_engine->addModule<SceneManager>(_scenes);
 	
+	// Create Updater for Updating
+
+	// Create Updater for Rendering
 
 
 
@@ -169,7 +224,7 @@ Andromeda::~Andromeda()
 /*
 
 */
-void Andromeda::run(std::shared_ptr<Application> & app)
+void Andromeda::run(std::shared_ptr<Application> app)
 {
 	assert(_system);
 	assert(_engine);

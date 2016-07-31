@@ -7,11 +7,39 @@
 
 #include <andromeda/Utilities/log.h>
 
+#include <gl\wglext.h>
 
 #include "../Platform/platform_windows.h"
 
 using namespace andromeda;
 using namespace andromeda::windows;
+
+
+
+bool WGLExtensionSupported(const char *extension_name) 
+{
+	PFNWGLGETEXTENSIONSSTRINGEXTPROC _wglGetExtensionsStringEXT = NULL;
+
+	_wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)wglGetProcAddress("wglGetExtensionsStringEXT");
+
+	if (strstr(_wglGetExtensionsStringEXT(), extension_name) == NULL) 
+	{
+		return false;
+	}
+
+	return true;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*
@@ -34,6 +62,7 @@ ContextWindows::ContextWindows(HDC hDC)
 	pfd.cDepthBits = 24;
 	pfd.cStencilBits = 8;
 	
+	
 	pfd.iLayerType = PFD_MAIN_PLANE;
 
 	// Choose Pixel Format
@@ -50,6 +79,29 @@ ContextWindows::ContextWindows(HDC hDC)
 	}
 
 	wglMakeCurrent(_hDC, _hGL);
+
+
+
+	// Additional Extensions
+	PFNWGLSWAPINTERVALEXTPROC       wglSwapIntervalEXT = NULL;
+	PFNWGLGETSWAPINTERVALEXTPROC    wglGetSwapIntervalEXT = NULL;
+
+	if (WGLExtensionSupported("WGL_EXT_swap_control"))
+	{
+		// Extension is supported, init pointers.
+		wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+
+		// this is another function from WGL_EXT_swap_control extension
+		wglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC)wglGetProcAddress("wglGetSwapIntervalEXT");
+
+
+		wglSwapIntervalEXT(0);
+	}
+
+
+
+
+
 
 	// Initialise GLEW
 	if (glewInit() != GLEW_OK)

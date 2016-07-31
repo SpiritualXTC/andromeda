@@ -9,6 +9,17 @@
 
 namespace andromeda
 {
+	/*
+		TODO:
+		Observers & Observables need to be made more "user-friendly" rather than requiring numerous fuckarounds to get them working "naturally"
+
+
+
+		The ONLY reason why a weak_ptr<> is used in the observable is for removal, when the reference is uninitialised, but not removed from the list.
+	*/
+
+
+
 	template <typename T>
 	class Observable
 	{
@@ -60,7 +71,7 @@ namespace andromeda
 		}
 #endif
 
-		protected:
+	protected:
 		/*
 			Generic Notification
 		*/

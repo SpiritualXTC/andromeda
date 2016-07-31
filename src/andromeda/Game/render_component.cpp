@@ -1,6 +1,6 @@
 #include <andromeda/Game/render_component.h>
 
-#include <andromeda/Renderer/view.h>
+#include <andromeda/Renderer/scene_graph_cache.h>
 
 using namespace andromeda;
 
@@ -11,6 +11,16 @@ RenderComponent::RenderComponent()
 {
 
 }
+
+/*
+
+*/
+RenderComponent::RenderComponent(const std::string & renderGroup)
+	: _renderGroup(renderGroup)
+{
+
+}
+
 
 
 /*
@@ -25,15 +35,15 @@ RenderComponent::~RenderComponent()
 /*
 
 */
-void RenderComponent::onViewActivate(View * view)
+void RenderComponent::onRenderActivate(IRenderableManager * manager)
 {
-	view->addRenderable(this);
+	manager->addRenderable(this, _renderGroup);
 }
 
 /*
 
 */
-void RenderComponent::onViewDeactivate(View * view)
+void RenderComponent::onRenderDeactivate(IRenderableManager * manager)
 {
-	view->removeRenderable(this);
+	manager->removeRenderable(this, _renderGroup);
 }

@@ -67,8 +67,8 @@ PlatformWindows::PlatformWindows(HINSTANCE hInstance)
 	DisplayMode mode = DisplayMode::Windowed;// sys->displayMode();
 
 	// Screen Width / Height
-	Int32 width = 800;// sys->displayWidth();
-	Int32 height = 600;// sys->displayHeight();
+	Int32 width = 1600;// sys->displayWidth();
+	Int32 height = 1200;// sys->displayHeight();
 
 
 	// Create Mouse and Keyboard
@@ -77,8 +77,9 @@ PlatformWindows::PlatformWindows(HINSTANCE hInstance)
 
 
 	// Needs to be reactive, depending on whether its fullscreen/borderless/windowed.
-	// Fullscreen and Borderless will need to call changeScreenResolution. for example!
+	// Fullscreen will need to call changeScreenResolution. for example!
 
+#if 0
 	if (mode != DisplayMode::Windowed)
 	{
 		// Check if its a supported resolution!
@@ -99,7 +100,7 @@ PlatformWindows::PlatformWindows(HINSTANCE hInstance)
 			reconfigure = true;
 		}
 	}
-
+#endif
 
 	/*
 		Validate Windowed Mode.

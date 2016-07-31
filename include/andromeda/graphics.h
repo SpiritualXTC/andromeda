@@ -21,6 +21,13 @@
 #include "Graphics/texture.h"
 
 
+#include "Graphics/font_atlas.h"
+
+
+
+
+
+
 #include "graphics_types.h"
 
 /*
@@ -42,12 +49,12 @@
 
 namespace andromeda
 {
+	// Forward Declarations
+	class IFrameBuffer;
+
+
+
 	/*
-		This is an abstract class :D
-
-		TODO: 
-		Tie to the resize event() to store screen dimensions
-
 		TODO:
 		Batch Rendering Setup
 
@@ -66,6 +73,35 @@ namespace andromeda
 		Graphics();
 		virtual ~Graphics();
 
+#if 0
+		void update()
+		{
+			// clear();
+
+			// render all scenes
+
+			// swap();
+		}
+#endif
+
+	public:
+
+
+
+
+
+
+		
+
+
+
+
+
+
+
+
+
+
 		// Getters
 		const inline Int32 getDisplayWidth() const { return _displayWidth; }
 		const inline Int32 getDipslayHeight() const { return _displayHeight; }
@@ -78,6 +114,7 @@ namespace andromeda
 		// API Information
 
 		// Create / Load Resources
+		virtual std::shared_ptr<IFrameBuffer> createFrameBuffer(Int32 width, Int32 height) = 0;
 	//	virtual inline std::shared_ptr<Effect> createEffect() = 0;
 	//	virtual inline std::shared_ptr<Mesh> createMesh() = 0;
 	//	virtual inline std::shared_ptr<Texture> createTexture() = 0;
@@ -134,10 +171,27 @@ namespace andromeda
 
 
 
+
+
+
+
 		// Drawing :: Get these Going ASAP
+		/*
+			TODO: Clear needs to be altered:
+			clear() clears all buffers that are "active"
+			clear(...) clears just the selected buffers.
+		*/
+		virtual inline void clear() = 0;
 		virtual inline void draw() {}
 
 	
+
+		// Behavior
+		/*
+			TODO: Add an enum class for errors...
+		*/
+		virtual Int32 getLastError() = 0;
+		virtual void errorCheck() = 0;
 		 
 
 	protected:
@@ -147,6 +201,8 @@ namespace andromeda
 		Int32 _displayWidth = 0;
 		Int32 _displayHeight = 0;
 
+		// Store the current state as it gets assigned...
+		// Do this from the implementation side of things for speeeeeeeed
 	};
 }
 

@@ -9,11 +9,14 @@
 #include <andromeda/Engine/system.h>
 #include <andromeda/Platform/platform.h>
 
-#include <andromeda/Renderer/renderer.h>
-
 #include <andromeda/Utilities/log.h>
 
 
+/*
+	TODO:
+	This isn't needed. It could just be forward declared
+*/
+#include <andromeda/Renderer/scene_manager.h>
 
 
 
@@ -65,13 +68,9 @@ App::App()
 
 
 
-	// Get the Renderer
-	std::shared_ptr<andromeda::Renderer> renderer = andromeda::Andromeda::instance()->getRenderer();
-
-
 	// Create Game Instance
 #if 1
-	_game = std::make_shared<Game>(renderer);
+	_game = std::make_shared<Game>();
 #else
 	log_warnp("===========================");
 	log_errp("====== Game Disabled ======");
@@ -169,7 +168,7 @@ aBoolean App::keyUp(andromeda::KeyEventArgs & e)
 		else if (params.mode == andromeda::DisplayMode::Borderless)
 		{
 #if 0
-			// This is actually for exclusive fullscreen
+			// This is for exclusive fullscreen
 			aInt32 i = 0;
 			aInt32 index = e.key - '1';
 
@@ -200,7 +199,7 @@ aBoolean App::keyUp(andromeda::KeyEventArgs & e)
 		}
 	}
 
-	//log_eventp("KeyUp: %1%", e.key);
+//	log_eventp("KeyUp: %1%", e.key);
 
 	return true;
 }
@@ -211,7 +210,7 @@ aBoolean App::keyUp(andromeda::KeyEventArgs & e)
 */
 aBoolean App::keyDown(andromeda::KeyEventArgs & e)
 {
-	//log_eventp("KeyDown: %1%", e.key);
+//	log_eventp("KeyDown: %1%", e.key);
 
 	return true;
 }
@@ -221,7 +220,7 @@ aBoolean App::keyDown(andromeda::KeyEventArgs & e)
 */
 aBoolean App::keyRepeat(andromeda::KeyEventArgs & e)
 {
-	//log_event("KeyRepeat:", e.key);
+//	log_eventp("KeyRepeat: %1%", e.key);
 
 	return true;
 }
