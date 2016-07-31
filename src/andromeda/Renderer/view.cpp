@@ -71,7 +71,7 @@ void View::notify(const IViewTarget * const vt)
 /*
 
 */
-Boolean View::addRenderer(const std::string & rendererName, std::shared_ptr<IRenderer> & renderer)
+Boolean View::addRenderer(const std::string & rendererName, const std::shared_ptr<IRenderer> & renderer)
 {
 	assert(renderer);
 

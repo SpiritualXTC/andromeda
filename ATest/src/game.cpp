@@ -13,6 +13,7 @@
 #include <andromeda/geometry.h>
 
 #include <andromeda/graphics.h>
+#include <andromeda/Graphics/frame_buffer.h>
 
 #include <andromeda/Renderer/camera.h>
 #include <andromeda/Renderer/renderer.h>
@@ -35,7 +36,7 @@
 #include "plane_test_component.h"
 
 #include "player.h"
-
+#include "factory.h"
 
 
 /*
@@ -89,35 +90,24 @@ Game::Game()
 	// Create Some Objects
 	createGround();
 
-	createMesh("mesh_0");
+	//createMesh("mesh_0");
 
 
+	// Create Spheres
 	aInt32 objs = 5;// 50;
 
 	for (aInt32 i = 0; i < objs; i++)
 	{
-		// Create a bunch of entities in a circle with matching sizes and shapes
-
-		std::stringstream name;
-		name << "entity_" << i;
-
-		// Create Entity
-		std::shared_ptr<andromeda::GameObject> go = createEntity(name.str());
-
-		// Set Initial Transform
-		std::shared_ptr<andromeda::TransformComponent> transform = go->getComponentPtr<andromeda::TransformComponent>();
-
 		aFloat angle = i / (aFloat)objs * glm::pi<aFloat>() * 2.0f;
-		//aFloat radius = 2.0f;
 
-		//transform->position(cosf(angle) * radius, 0.0f, sinf(angle) * radius);
-		//transform->calculate();
+		std::shared_ptr<andromeda::GameObject> obj = Factory::createSphere(angle);
 
-
-		// Setup Pathing
-		std::shared_ptr<CircularPathComponent> circle = std::make_shared<CircularPathComponent>(transform, angle);
-		go->addComponent<CircularPathComponent>(circle);
+		// Add Game Object to Scene
+		_scene->getSceneGraph()->addGameObject(obj);
 	}
+
+
+
 
 
 
@@ -148,14 +138,11 @@ Game::Game()
 			go->addComponent<RandomPathComponent>(std::make_shared<RandomPathComponent>(transform));
 		}
 
-		// Assign the View to the Target
-//		view->setCameraTarget(name.str());
-//		view->camera()->distance(15.0f);
-
 		++i;
 	}
 
 
+	// Creates Text
 	createText();
 
 }
@@ -234,6 +221,8 @@ void Game::createText()
 		std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::FontRenderComponent>(fa, transform);
 
 		obj->addComponent<andromeda::RenderComponent>(render);
+
+
 	}
 
 	// Add Game Object to Scene
@@ -245,27 +234,28 @@ void Game::createText()
 
 
 
+
+
+
+
+
 /*
 
 */
-std::shared_ptr<Player> Game::createPlayer(aFloat x, aFloat y, aFloat w, aFloat h)
+std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, aFloat h)
 {
+	// Load/Get Effects
+	std::shared_ptr<andromeda::Effect> effect = andromeda::LoadResource<andromeda::Effect>("shader.xml");
+	std::shared_ptr<andromeda::Effect> defEffect = andromeda::LoadResource<andromeda::Effect>("deferred.xml");
+
+
 
 
 	andromeda::ViewBuilder vb;
 
 	// Add ViewGroup
 	vb.addGroup("", _scene->getSceneGraph());
-	
-	vb.addLayer(andromeda::LayerBuilder("normal").setEffect("shader.xml"));
-
-	vb.addLayer(andromeda::LayerBuilder("vector").setEffect("vector.xml").setRenderGroup("vector"));
-
 	vb.setRegion(x, y, w, h);
-
-
-
-
 
 
 	// Create a View
@@ -275,97 +265,101 @@ std::shared_ptr<Player> Game::createPlayer(aFloat x, aFloat y, aFloat w, aFloat 
 
 
 
-	// Load/Get the Effect
-	std::shared_ptr<andromeda::Effect> effect = andromeda::LoadResource<andromeda::Effect>("shader.xml");
-
-	/*
-		TODO. Fix the Deferred Shader.... lololol
-	*/
-	std::shared_ptr<andromeda::Effect> defEffect = andromeda::LoadResource<andromeda::Effect>("shader.xml");
-
-
-
-
+	// Get the Main SceneGraph
 	std::shared_ptr<andromeda::SceneGraph> sg = _scene->getSceneGraph();
+
 
 	// Create Renderer
 	std::shared_ptr<andromeda::IRenderer> renderer = std::make_shared<andromeda::Renderer>(sg);
+	renderer->getCamera()->setPerspectiveFov(glm::pi<aFloat>() / 3.0f, 0.01f, 1000.0f);
+	renderer->getCamera()->setView(28.0f);
 	view->addRenderer("default", renderer);
 	view->addRendererLayer("default", "", "", effect, "");
 
 	// Create Deferred Renderer
-	std::shared_ptr<andromeda::IRenderer> deferred = std::make_shared<andromeda::DeferredRenderer>(sg);
+	std::shared_ptr<andromeda::DeferredRenderer> deferred = std::make_shared<andromeda::DeferredRenderer>(sg);
+	deferred->getCamera()->setPerspectiveFov(glm::pi<aFloat>() / 3.0f, 0.01f, 1000.0f);
+	deferred->getCamera()->setView(28.0f);
 	view->addRenderer("deferred", deferred);
-	view->addRendererLayer("deferred", "", "", effect, "");
+	view->addRendererLayer("deferred", "", "geometry", defEffect, "objects");
 
 
 
-	// Add View to temp list
-	_views.push_back(view);
 
 
+
+	// Create Local SceneGraph :: No Idea where this graph gets updated :O (LOLOLOLOLOLOLOLOL) doesn't matter for now though... none of the components would get updated.
+	std::shared_ptr<andromeda::SceneGraph> dsg = std::make_shared<andromeda::BasicSceneGraph>();
+
+	// Create Debug Renderer :: This needs a different SceneGraph :O
+	std::shared_ptr<andromeda::IRenderer> debug = std::make_shared<andromeda::Renderer>(dsg);
+	debug->getCamera()->setOrthogonal(1.0f, -1.0f, 1.0f);
+	view->addRenderer("debug", debug);
+	view->addRendererLayer("debug", "debug", "", effect, "");
+
+
+
+
+	for (aInt32 i = 0; i < 3; ++i)
+	{
+		std::stringstream name("debug");
+		name << i;
+
+
+		// Create a Debug Game Object to Display
+		std::shared_ptr<andromeda::GameObject> obj = std::make_shared<andromeda::GameObject>(name.str());
+
+		// Add Transform Components
+		std::shared_ptr<andromeda::TransformComponent> transform = std::make_shared<andromeda::TransformComponent>();
+		obj->addComponent<andromeda::TransformComponent>(transform);
+		transform->position(1.0f, i * 0.5f - 0.5f, 0.0f);
+		transform->update(0.0f);
+
+		// Create Geometry
+		andromeda::geometry::Cube geom(0.5f);
+
+		std::shared_ptr<andromeda::Geometry> geometry = geom.build(andromeda::geometry::GeometryGenerate::Texture | andromeda::geometry::GeometryGenerate::Normals);
+
+
+		std::shared_ptr<andromeda::GeometryRenderComponent> render =
+			std::make_shared<andromeda::GeometryRenderComponent>(geometry, transform);
+
+		render->setRenderGroup("debug");
+
+		obj->addComponent<andromeda::GeometryRenderComponent>(render);
+
+		render->getMaterial().setDiffuseTexture(deferred->getGBuffer()->getTexture(i));
+
+		// Add to debug scene graph
+		dsg->addGameObject(obj);
+	}
 	
 
 
 
+	return view;
+}
 
 
 
+/*
 
-	// Create Object
-	std::shared_ptr<andromeda::GameObject> obj = std::make_shared<andromeda::GameObject>(name);
-
-
-
-
-	// Create Standard Components
-	std::shared_ptr<andromeda::TransformComponent> transform = std::make_shared<andromeda::TransformComponent>();
-
-	// Add Components
-	obj->addComponent<andromeda::TransformComponent>(transform);
-
-	transform->x(-0.0f);
-	transform->y( 0.0f);
+*/
+std::shared_ptr<Player> Game::createPlayer(aFloat x, aFloat y, aFloat w, aFloat h)
+{
 
 
 
 
 
+	std::shared_ptr<andromeda::View> view = createView(x, y, w, h);
 
-	// Create Geometry
-	//andromeda::geometry::Cube geom(4.0f, 0.5f, 0.1f);
+	// Add View to temp list
+	_views.push_back(view);
 
-	// Create Material
-	std::shared_ptr<andromeda::Texture> tex = andromeda::LoadResource<andromeda::Texture>("pattern0.png");
-	andromeda::Material material;
-
-	material.setDiffuse(0, 1, 1)
-		.setDiffuseTexture(tex);
-
-
+	std::shared_ptr<andromeda::GameObject> obj = Factory::createCube();
+	
 #if 0
-	andromeda::geometry::Polygon geom;
-
-
-	geom.moveTo(glm::vec3(-1.0f, 0.0f, 0));
-
-	geom.bezierTo(glm::vec3(-1.0f, 1.0f, 0.0f), glm::vec3( 0.0f, 1.0f, 0.0f));
-	geom.bezierTo(glm::vec3( 1.0f, 1.0f, 0.0f), glm::vec3( 1.0f, 0.0f, 0.0f));
-	geom.bezierTo(glm::vec3( 1.0f,-1.0f, 0.0f), glm::vec3( 0.0f,-1.0f, 0.0f));
-	geom.bezierTo(glm::vec3(-1.0f,-1.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
-
-
-
-
-
-	std::shared_ptr<andromeda::Geometry> geometry = geom.build(andromeda::geometry::GeometryGenerate::Texture | andromeda::geometry::GeometryGenerate::Normals);
-#else
-	//std::shared_ptr<andromeda::Geometry> geometry = _font->getGeometry(0x4E83);
-#endif
-
-
-
-
 	// Add RenderComponent
 	if (_font)
 	{
@@ -375,16 +369,16 @@ std::shared_ptr<Player> Game::createPlayer(aFloat x, aFloat y, aFloat w, aFloat 
 
 		obj->addComponent<andromeda::RenderComponent>(render);
 	}
+#endif
+
+
+
 
 	// Add Game Object to Scene
 	_scene->getSceneGraph()->addGameObject(obj);
 
-
-
-
-
 	// Add to Players Array
-	_players.push_back(std::make_shared<Player>(view, renderer->getCamera(), obj));
+	_players.push_back(std::make_shared<Player>(view, view->getRenderer("deferred")->getCamera(), obj));
 
 
 	return nullptr;
@@ -447,53 +441,6 @@ std::shared_ptr<andromeda::GameObject> Game::createGround()
 	return obj;
 }
 
-
-/*
-
-*/
-std::shared_ptr<andromeda::GameObject> Game::createEntity(const std::string & name)
-{
-	// Create Game Object
-	std::shared_ptr<andromeda::GameObject> obj = std::make_shared<andromeda::GameObject>(name);
-
-	// Create Standard Components
-	std::shared_ptr<andromeda::TransformComponent> transform = std::make_shared<andromeda::TransformComponent>();
-
-	// Add Components
-	obj->addComponent<andromeda::TransformComponent>(transform);
-
-
-	// Create Geometry
-	//andromeda::geometry::Cube geom(0.25f, 2.0f, 0.125f);
-	andromeda::geometry::Ellipse geom(0.5f);
-	geom.setSlices(32).setStacks(16);
-
-
-	std::shared_ptr<andromeda::Geometry> geometry = geom.build(andromeda::geometry::GeometryGenerate::Texture | andromeda::geometry::GeometryGenerate::Normals);
-
-	// Add RenderComponent
-	if (geometry)
-	{
-		std::shared_ptr<andromeda::GeometryRenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, transform);
-		obj->addComponent<andromeda::GeometryRenderComponent>(render);
-
-		render->getMaterial().setDiffuseTexture(andromeda::LoadResource<andromeda::Texture>("white.png"));
-
-		// Add Plane Test Component
-		std::shared_ptr<PlaneTestComponent> planeTest = std::make_shared<PlaneTestComponent>(render, transform);
-		obj->addComponent<PlaneTestComponent>(planeTest);
-	}
-	else
-		return nullptr;
-
-
-
-
-	// Add Game Object to Scene
-	_scene->getSceneGraph()->addGameObject(obj);
-
-	return obj;
-}
 
 
 /*

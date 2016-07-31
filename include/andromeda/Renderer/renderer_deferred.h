@@ -19,11 +19,12 @@ namespace andromeda
 		DeferredRenderer(const std::shared_ptr<SceneGraph> & sg);
 
 
-		
-		void render() override;
+		const std::shared_ptr<IFrameBuffer> getGBuffer() const { return _gBuffer; }
 
 	protected:
 		void onResize(Float width, Float height) override;
+		void onBegin() override;
+		void onEnd() override;
 
 	private:
 		std::shared_ptr<IFrameBuffer> _gBuffer;

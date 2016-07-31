@@ -38,6 +38,7 @@ namespace andromeda
 			void unbind();
 
 
+			void setSize(Int32 width, Int32 height);
 
 
 		private:

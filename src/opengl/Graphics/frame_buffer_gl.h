@@ -41,6 +41,9 @@ namespace andromeda
 			void unbind() override;
 
 
+			// Resize the FrameBuffer
+			void resize(Int32 width, Int32 height) override;
+
 
 
 			Boolean status();

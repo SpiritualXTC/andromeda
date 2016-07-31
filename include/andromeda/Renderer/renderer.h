@@ -72,8 +72,8 @@ namespace andromeda
 
 		// THIS SECTION NEEDS TO DO CLASS SPECIFIC STUFF...
 		// FOR NOW ... NOTHING IS OK :)
-		void begin();	// Begin Technique Setup
-		void end();		// End Technique Setup
+		virtual void begin();	// Begin Technique Setup
+		virtual void end();		// End Technique Setup
 
 		void render();	// Render all the layers
 
@@ -99,6 +99,8 @@ namespace andromeda
 		virtual ~Renderer();
 
 
+		// Adds a Method
+		Boolean addMethod(const std::string & methodName, const std::shared_ptr<RendererMethod> & method);
 
 
 		// Adds a Layer
@@ -128,7 +130,8 @@ namespace andromeda
 
 	protected:
 		virtual void onResize(Float width, Float height) {}
-
+		virtual void onBegin(){}
+		virtual void onEnd() {}
 
 	private:
 		

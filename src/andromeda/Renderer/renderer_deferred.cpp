@@ -1,10 +1,13 @@
 #include <andromeda/Renderer/renderer_deferred.h>
 
-#include <andromeda/Graphics/frame_buffer.h>
 
+#include <andromeda/Graphics/frame_buffer.h>
+#include <andromeda/Renderer/camera.h>
 
 #include <andromeda/andromeda.h>
 #include <andromeda/graphics.h>
+
+#include <andromeda/Utilities/log.h>
 
 
 using namespace andromeda;
@@ -14,8 +17,60 @@ using namespace andromeda;
 
 
 
+class DeferredRendererGeometryMethod : public RendererMethod
+{
+public:
+	DeferredRendererGeometryMethod(std::shared_ptr<IFrameBuffer> & gBuffer)
+		: _gBuffer(gBuffer)
+	{
+	}
+
+	void begin() override
+	{
+		_gBuffer->bind();
+
+		// Clear the GBuffer
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+	}
+
+	void end() override
+	{
+		_gBuffer->unbind();
 
 
+
+	}
+
+private:
+	std::shared_ptr<IFrameBuffer> _gBuffer;
+};
+
+
+class DeferredRendererLightingMethod : public RendererMethod
+{
+public:
+	DeferredRendererLightingMethod(std::shared_ptr<IFrameBuffer> & gBuffer)
+		: _gBuffer(gBuffer)
+	{
+	}
+
+
+
+	void begin() override
+	{
+
+	}
+
+	void end() override
+	{
+
+	}
+
+private:
+	std::shared_ptr<IFrameBuffer> _gBuffer;
+};
 
 
 
@@ -30,6 +85,15 @@ DeferredRenderer::DeferredRenderer(const std::shared_ptr<SceneGraph> & sg)
 {
 	// Create GBuffer
 	_gBuffer = andromeda::graphics()->createFrameBuffer(512, 512);
+
+
+
+	// Create Methods
+	addMethod("geometry", std::make_shared<DeferredRendererGeometryMethod>(_gBuffer));
+	addMethod("lighting", std::make_shared<DeferredRendererLightingMethod>(_gBuffer));
+
+	
+
 }
 
 
@@ -38,18 +102,51 @@ DeferredRenderer::DeferredRenderer(const std::shared_ptr<SceneGraph> & sg)
 */
 void DeferredRenderer::onResize(Float width, Float height)
 {
+	log_verbosep("Camera = %1%x%2%", getCamera()->getWidth(), getCamera()->getHeight());
+	_gBuffer->resize((Int32)width, (Int32)height);
+}
+
+
+/*
+
+*/
+void DeferredRenderer::onBegin()
+{
+
+}
+
+/*
+
+*/
+void DeferredRenderer::onEnd()
+{
 
 }
 
 
 
 
+
+
+#if 0
 /*
 
 */
 void DeferredRenderer::render()
 {
-	// "bind" G-Buffer as a FrameBuffer
+	// Bind the Geometry Buffer
+
+	_gBuffer->bind();
+
+
+
+
+
+
+
+	// Unbind the Geometry Buffer
+	_gBuffer->unbind();
+
 
 	/*
 		G-Buffer (Aka Geometry Buffer)
@@ -114,3 +211,4 @@ void DeferredRenderer::render()
 
 
 }
+#endif

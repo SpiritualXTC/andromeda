@@ -78,7 +78,7 @@ void MeshRenderComponent::render(const std::shared_ptr<andromeda::IShader> shade
 		shader->setUniform("g_diffuse", material.getDiffuse());
 		shader->setUniform("g_specular", material.getSpecular());
 
-		const std::shared_ptr<Texture> & diffuseTex = material.getDiffuseTexture();
+		const std::shared_ptr<ITexture> & diffuseTex = material.getDiffuseTexture();
 
 		if (diffuseTex)
 		{

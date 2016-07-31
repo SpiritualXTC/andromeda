@@ -35,12 +35,24 @@ Renderer::Renderer(const std::shared_ptr<SceneGraph> & sg)
 	_cache = std::make_shared<RenderCache>(_camera.get());
 }
 
+
 /*
 
 */
 Renderer::~Renderer()
 {
 
+}
+
+/*
+	Basic implementation for adding an Method
+*/
+Boolean Renderer::addMethod(const std::string & methodName, const std::shared_ptr<RendererMethod> & method)
+{
+	// Insert it
+	_methods.insert({ methodName, method });
+
+	return true;
 }
 
 /*

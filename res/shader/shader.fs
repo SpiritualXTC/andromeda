@@ -35,6 +35,8 @@ void main()
 	vec4 texDif = texture2D(g_diffuseTexture, v_diffuseTextureCoord);
 
 	if (texDif.a == 0.0) discard;
+//	if (texDif.a == 0.0f)
+//		texDif.a = 0.5f;
 
 	vec4 dif = vec4(g_diffuse, 1);
 

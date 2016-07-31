@@ -7,9 +7,15 @@
   
   <shader name="defRendererVert" source="deferredRenderer.vs" />
   <shader name="defRendererFrag" source="deferredRenderer.fs" />
-  
-  
-  <!--
+
+  <state name="geometry">
+    <depth enable="true" />
+    <polygon>fill</polygon>
+    <cull>none</cull>
+  </state>
+
+
+    <!--
     
   -->
   
@@ -34,7 +40,7 @@
       Renders Objects into the GBuffer
   -->
   <technique name="objects">
-    <pass name="objects">
+    <pass name="objects" state="geometry">
       <vertexShader shader="defGeometryVert" />
       <fragmentShader shader="defgeometryFrag" />
     </pass>
@@ -48,10 +54,12 @@
   <technique name="lightBounded">
 
     <!-- Render Geometry that Represents Lighting Cones -->
+    <!--
     <pass name="lights">
       <vertexShader shader="defRendererVert" />
       <fragmentShader shader="defRendererFrag" />
     </pass>
+    -->
   </technique>
   
   <!--
@@ -60,12 +68,14 @@
   <technique name="lightDirectional">
     
     <!-- Renders an Entire Quad Across the Screen -->
+    <!--
     <pass name="directional">
       <vertexShader shader="defRendererVert" />
       <fragmentShader shader="defRendererFrag" />
     </pass>
+    -->
   </technique>
-  
+
 
 </effect>
 

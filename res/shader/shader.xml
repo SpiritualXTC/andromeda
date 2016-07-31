@@ -22,7 +22,9 @@
       <destination>oneminussourcealpha</destination>
       <equation>multiply</equation>
     </blending>
-    
+
+    <cull>none</cull>
+
   </state>
 
   <!-- Wireframe View -->
@@ -64,7 +66,7 @@
     </pass>
     
     <!-- Display Wireframe -->
-    <pass name="debug_Wireframe" state="wireframe" enabled="false">
+    <pass name="debug_Wireframe" state="wireframe" enabled="true">
       <uniform name="u_color" value="{0.0, 1.0, 0.0, 1.0}" />
 
       <vertexShader shader="vs" />

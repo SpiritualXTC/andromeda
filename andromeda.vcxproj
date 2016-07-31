@@ -119,7 +119,6 @@
     <ClInclude Include="include\andromeda\Game\view_component.h" />
     <ClInclude Include="include\andromeda\glm.h" />
     <ClInclude Include="include\andromeda\Graphics\effect.h" />
-    <ClInclude Include="src\andromeda\Renderer\gbuffer.h" />
     <ClInclude Include="include\andromeda\Resources\resource_manager.hpp" />
     <ClInclude Include="include\andromeda\Utilities\convert.h" />
     <ClInclude Include="include\andromeda\Utilities\Image\image_convert.h" />
@@ -254,7 +253,6 @@
     <ClCompile Include="src\andromeda\Graphics\font_atlas.cpp" />
     <ClCompile Include="src\opengl\Graphics\frame_buffer_gl.cpp" />
     <ClCompile Include="src\opengl\Graphics\render_buffer_gl.cpp" />
-    <ClCompile Include="src\andromeda\Renderer\gbuffer.cpp" />
     <ClCompile Include="src\andromeda\Renderer\renderer.cpp" />
     <ClCompile Include="src\andromeda\Renderer\renderer_deferred.cpp" />
     <ClCompile Include="src\andromeda\Resources\font_resource.cpp" />

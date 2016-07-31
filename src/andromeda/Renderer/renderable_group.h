@@ -64,6 +64,8 @@ namespace andromeda
 		// Get Group Name
 		const std::string & group() const { return _groupName; }
 
+		// Get Number of Renderables
+		const UInt32 size() const { return _renderables.size(); }
 
 		Boolean addRenderable(IRenderable * renderable);
 		Boolean removeRenderable(IRenderable * renderable);

@@ -131,7 +131,7 @@ namespace andromeda
 
 
 		// Adds a Renderer to the View
-		Boolean addRenderer(const std::string & rendererName, std::shared_ptr<IRenderer> & renderer);
+		Boolean addRenderer(const std::string & rendererName, const std::shared_ptr<IRenderer> & renderer);
 
 
 		// Adds a Layer to a Renderer

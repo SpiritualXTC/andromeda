@@ -70,7 +70,7 @@ void GeometryRenderComponent::render(const std::shared_ptr<andromeda::IShader> s
 	shader->setUniform("g_specular", _material.getSpecular());
 
 	// Get Texture
-	const std::shared_ptr<Texture> & diffuseTex = _material.getDiffuseTexture();
+	const std::shared_ptr<ITexture> & diffuseTex = _material.getDiffuseTexture();
 
 	if (diffuseTex)
 	{

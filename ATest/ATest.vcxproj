@@ -73,6 +73,7 @@
     <ClCompile Include="src\app.cpp" />
     <ClCompile Include="src\circular_path_component.cpp" />
     <ClCompile Include="src\console.cpp" />
+    <ClCompile Include="src\factory.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\plane_test_component.cpp" />
@@ -83,6 +84,7 @@
     <ClInclude Include="src\app.h" />
     <ClInclude Include="src\circular_path_component.h" />
     <ClInclude Include="src\console.h" />
+    <ClInclude Include="src\factory.h" />
     <ClInclude Include="src\game.h" />
     <ClInclude Include="src\plane_test_component.h" />
     <ClInclude Include="src\player.h" />

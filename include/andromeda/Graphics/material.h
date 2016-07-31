@@ -12,7 +12,7 @@
 
 namespace andromeda
 {
-	class Texture;
+	class ITexture;
 
 	/*
 		Depending on how the material/mesh/geometry is all integrated this interface may be completely uneeded
@@ -122,19 +122,19 @@ namespace andromeda
 			return *this;
 		}
 		
-		const inline std::shared_ptr<Texture> getDiffuseTexture() const { return _diffuseTexture; }
-		const inline std::shared_ptr<Texture> getNormalTexture() const { return _normalTexture; }
+		const inline std::shared_ptr<ITexture> getDiffuseTexture() const { return _diffuseTexture; }
+		const inline std::shared_ptr<ITexture> getNormalTexture() const { return _normalTexture; }
 
 
 		/* Set Diffuse Texture */
-		inline Material & setDiffuseTexture(const std::shared_ptr<Texture> & tex)
+		inline Material & setDiffuseTexture(const std::shared_ptr<ITexture> & tex)
 		{
 			_diffuseTexture = tex;
 			return *this;
 		}
 
 		/* Set Normal Texture */
-		inline Material & setNormalTexture(const std::shared_ptr<Texture> & tex)
+		inline Material & setNormalTexture(const std::shared_ptr<ITexture> & tex)
 		{
 			_normalTexture = tex;
 			return *this;
@@ -154,8 +154,8 @@ namespace andromeda
 		MatColor _specular;			// Specular Color
 
 		// Texturing
-		std::shared_ptr<Texture> _diffuseTexture;	// Diffuse Texture
-		std::shared_ptr<Texture> _normalTexture;	// Normal Texture
+		std::shared_ptr<ITexture> _diffuseTexture;	// Diffuse Texture
+		std::shared_ptr<ITexture> _normalTexture;	// Normal Texture
 
 	};
 }

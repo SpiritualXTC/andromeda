@@ -30,6 +30,7 @@ namespace andromeda
 	*/
 	class IFrameBuffer
 	{
+	public:
 		virtual const Int32 width() const = 0;
 		virtual const Int32 height() const = 0;
 
@@ -43,6 +44,8 @@ namespace andromeda
 		*/
 		virtual void unbind() = 0;
 
+		// Resize the FrameBuffer
+		virtual void resize(Int32 width, Int32 height) = 0;
 
 
 

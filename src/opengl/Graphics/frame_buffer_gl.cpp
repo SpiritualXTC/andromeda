@@ -143,8 +143,34 @@ Boolean FrameBufferGL::status()
 /*
 
 */
+void FrameBufferGL::resize(Int32 width, Int32 height)
+{
+	_width = width;
+	_height = height;
+
+	// Bind FrameBuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
+
+	for (const auto & it : _buffers)
+		it->setSize(width, height);
+
+	_depth->setSize(width, height);
+
+
+	// Unbind
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+
+
+
+/*
+
+*/
 void FrameBufferGL::bind()
 {
+
+
 	// Bind the FrameBuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
 

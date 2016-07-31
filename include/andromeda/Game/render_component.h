@@ -19,6 +19,8 @@ namespace andromeda
 		void onRenderActivate(IRenderableManager * manager) override;
 		void onRenderDeactivate(IRenderableManager * manager) override;
 		
+
+		void setRenderGroup(const std::string & renderGroup) { _renderGroup = renderGroup; }
 		
 	private:
 		std::string _renderGroup;

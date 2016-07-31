@@ -1,23 +1,10 @@
 // Uber Shader V0.1
 // Used for rendering all game objects :)
 
-#define MAX_LIGHT 8
-
-
 // Matrix Constants
 uniform mat4 u_projection;		// Projection Matrix
 uniform mat4 u_modelview;		// ModelView Matrix
 uniform mat4 u_normalMatrix;	// Normal Matrix
-
-// Material
-//uniform Material u_material;
-
-// Lighting
-//uniform Light u_lights[MAX_LIGHT];
-uniform int u_lightCount;
-
-// Texture
-uniform sampler2D g_diffuseTexture;
 
 
 // Vertex Data

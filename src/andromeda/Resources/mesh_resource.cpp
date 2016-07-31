@@ -18,6 +18,7 @@
 #include <andromeda/Geometry/geometry_builder.h>
 
 #include <andromeda/Graphics/material.h>
+#include <andromeda/Graphics/texture.h>
 
 #include <andromeda/Utilities/io.h>
 #include <andromeda/Utilities/log.h>
@@ -256,8 +257,8 @@ void MeshLoader::loadMaterial(const aiMaterial * pmaterial)
 	pmaterial->Get(AI_MATKEY_OPACITY, opacity);
 
 	// Load only the First Texture
-	std::shared_ptr<Texture> difTex = loadTexture(pmaterial, aiTextureType_DIFFUSE, 0);
-	std::shared_ptr<Texture> normTex = loadTexture(pmaterial, aiTextureType_NORMALS, 0);
+	std::shared_ptr<ITexture> difTex = loadTexture(pmaterial, aiTextureType_DIFFUSE, 0);
+	std::shared_ptr<ITexture> normTex = loadTexture(pmaterial, aiTextureType_NORMALS, 0);
 
 	// Create the Material
 	Material material(name.C_Str());

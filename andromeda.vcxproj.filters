@@ -429,9 +429,6 @@
     <ClInclude Include="include\andromeda\Renderer\renderer_deferred.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\andromeda\Renderer\gbuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\andromeda\Graphics\frame_buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -729,9 +726,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Renderer\renderer_deferred.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Renderer\gbuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Renderer\renderable_group.cpp">
