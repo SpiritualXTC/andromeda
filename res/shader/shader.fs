@@ -35,14 +35,11 @@ void main()
 	vec4 texDif = texture2D(g_diffuseTexture, v_diffuseTextureCoord);
 
 	if (texDif.a == 0.0) discard;
-//	if (texDif.a == 0.0f)
-//		texDif.a = 0.5f;
 
 	vec4 dif = vec4(g_diffuse, 1);
 
 
 	// Calculate Lighting
-
 	float lightIntensity = max(dot(v_normal, -g_lightDirection), 0.0);
 
 	vec4 lightDiffuse = vec4(lightIntensity * g_lightDiffuse, 1.0);

@@ -1,5 +1,4 @@
-#ifndef _ANDROMEDA_GRAPHICS_OPENGL_H_
-#define _ANDROMEDA_GRAPHICS_OPENGL_H_
+#pragma once
 
 /*
 	Selects which OpenGL Libraries to include!
@@ -36,4 +35,3 @@
 #endif
 
 
-#endif

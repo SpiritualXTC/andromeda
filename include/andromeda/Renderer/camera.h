@@ -20,7 +20,9 @@
 
 #include "transform.h"
 
-#include "projection.h"
+#include <andromeda/Math/projection_matrix.h>
+#include <andromeda/Math/view_matrix.h>
+
 
 namespace andromeda
 {
@@ -103,6 +105,11 @@ namespace andromeda
 			Sets an Orthogonal Matrix [Projection]
 		*/
 		std::shared_ptr<OrthogonalMatrix> setOrthogonal(Float mul, Float zN, Float zF);
+
+
+		// Sets an Orthogonal Screen Matrix [Projection]
+		std::shared_ptr<ScreenMatrix> setOrthogonalScreen(Float zN, Float zF);
+
 
 		/*
 			Sets up a simple view matrix

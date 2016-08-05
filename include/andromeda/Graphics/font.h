@@ -29,7 +29,7 @@ namespace andromeda
 {
 	class IShader;
 
-	class Texture;
+	class ITexture;
 	class Geometry;
 	class MatrixStack;
 
@@ -285,7 +285,7 @@ namespace andromeda
 
 		std::unordered_map<ULong, _Character> _characters;
 
-		std::shared_ptr<Texture> _texture;
+		std::shared_ptr<ITexture> _texture;
 
 
 

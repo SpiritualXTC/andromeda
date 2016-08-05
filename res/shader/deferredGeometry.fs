@@ -21,8 +21,9 @@ varying vec3		v_position;
 varying vec3		v_normal;
 varying vec2		v_diffuseTextureCoord;
 
-
-
+// TODO: Add a binary input image mask that can be used to discard pixels
+// TODO: Add a specular output image that contains the specular color (rgb) and specular power (alpha)
+// TOOD: Add a second diffuse Texture Channel
 
 void main( void )
 {
@@ -31,7 +32,7 @@ void main( void )
 	// Alpha Discard
 	if (difTexRGB.a == 0.0) discard;
 
-	// Output to Diffuse Texture
+	// Output to Diffuse Texture :: Can the gl_Position.w be used here to show depth?? (in the alpha channel)
 	gl_FragData[0]		= difTexRGB * vec4(g_diffuse, 1.0);
 
 	// Output to Position Texture

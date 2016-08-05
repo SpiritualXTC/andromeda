@@ -55,6 +55,25 @@ Boolean Renderer::addMethod(const std::string & methodName, const std::shared_pt
 	return true;
 }
 
+
+/*
+	Check whether the renderer has a method with that specific name
+*/
+Boolean Renderer::hasRenderMethod(const std::string & methodName)
+{
+	const auto & it = _methods.find(methodName);
+
+	return it != _methods.end();
+}
+
+std::shared_ptr<RendererMethod> Renderer::getRenderMethod(const std::string & methodName)
+{
+	const auto & it = _methods.find(methodName);
+
+	return it != _methods.end() ? it->second : nullptr;
+}
+
+
 /*
 
 */
@@ -195,7 +214,7 @@ RendererMethod::~RendererMethod()
 /*
 
 */
-void RendererMethod::addLayer(const std::shared_ptr<Camera> & camera, const std::shared_ptr<RenderableGroup> & rg, const std::shared_ptr<Effect> & effect, const std::string & technique)
+std::shared_ptr<ILayer> RendererMethod::addLayer(const std::shared_ptr<Camera> & camera, const std::shared_ptr<RenderableGroup> & rg, const std::shared_ptr<Effect> & effect, const std::string & technique)
 {
 	// Create Layer
 	std::shared_ptr<Layer> layer = std::make_shared<Layer>(camera, effect, rg);
@@ -206,6 +225,8 @@ void RendererMethod::addLayer(const std::shared_ptr<Camera> & camera, const std:
 
 	// Add Layer
 	_layers.push_back(layer);
+
+	return layer;
 }
 
 /*

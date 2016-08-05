@@ -273,17 +273,19 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 	std::shared_ptr<andromeda::IRenderer> renderer = std::make_shared<andromeda::Renderer>(sg);
 	renderer->getCamera()->setPerspectiveFov(glm::pi<aFloat>() / 3.0f, 0.01f, 1000.0f);
 	renderer->getCamera()->setView(28.0f);
-	view->addRenderer("default", renderer);
-	view->addRendererLayer("default", "", "", effect, "");
+//	view->addRenderer("default", renderer);
+//	view->addRendererLayer("default", "", "", effect, "");
+//	view->addRendererLayer("default", "text", "", effect, "");
 
 	// Create Deferred Renderer
-	std::shared_ptr<andromeda::DeferredRenderer> deferred = std::make_shared<andromeda::DeferredRenderer>(sg);
+	std::shared_ptr<andromeda::DeferredRenderer> deferred = std::make_shared<andromeda::DeferredRenderer>(sg, defEffect, "lightDirectional");
 	deferred->getCamera()->setPerspectiveFov(glm::pi<aFloat>() / 3.0f, 0.01f, 1000.0f);
 	deferred->getCamera()->setView(28.0f);
 	view->addRenderer("deferred", deferred);
 	view->addRendererLayer("deferred", "", "geometry", defEffect, "objects");
+	view->addRendererLayer("deferred", "text", "geometry", defEffect, "objects");
 
-
+	deferred->addDirectionalLight();
 
 
 
@@ -295,7 +297,7 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 	std::shared_ptr<andromeda::IRenderer> debug = std::make_shared<andromeda::Renderer>(dsg);
 	debug->getCamera()->setOrthogonal(1.0f, -1.0f, 1.0f);
 	view->addRenderer("debug", debug);
-	view->addRendererLayer("debug", "debug", "", effect, "");
+	view->addRendererLayer("debug", "debug", "", effect, "debug");
 
 
 

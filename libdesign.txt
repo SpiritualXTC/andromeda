@@ -1,0 +1,46 @@
+   _____              .___                                .___       
+  /  _  \   ____    __| _/______  ____   _____   ____   __| _/____   
+ /  /_\  \ /    \  / __ |\_  __ \/  _ \ /     \_/ __ \ / __ |\__  \  
+/    |    \   |  \/ /_/ | |  | \(  <_> )  Y Y  \  ___// /_/ | / __ \_
+\____|__  /___|  /\____ | |__|   \____/|__|_|  /\___  >____ |(____  /
+        \/     \/      \/                    \/     \/     \/     \/ 
+
+
+
+Notes related to the Library Refactor:
+
+
+
+Directory Structure
+
+andromeda				
+	/andromeda			
+		/andromeda		:: Core Library
+		/opengl			:: OpenGL Library
+		/windows		:: Windows Platform Implementation
+		/android		:: Android Platform Implementation
+		/sdl			:: SDL2 Platform Implementation
+		/xeffect		:: XEffect Library
+
+	/build				:: Project Files
+		/vs2015			:: Visual Studio Files
+
+	/include			:: Header Library
+		/andromeda
+		/xeffect
+
+	/extern				:: External Library Headers
+		/<lib-name>		:: External Library
+	/lib				:: External Libraries
+		/<platform>
+			/<arch>
+	/res				:: Resources used by samples/tests
+		/fonts
+		/models
+		/shaders
+		/textures
+		/xml
+	/resources			:: "Production" resources used by samples/tests
+
+
+	/samples			:: Test Crap

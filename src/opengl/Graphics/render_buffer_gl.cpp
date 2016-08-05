@@ -72,7 +72,7 @@ void RenderBufferGL::setSize(Int32 width, Int32 height)
 
 
 	// Bind Texture Handle
-	bind();
+	bind(0);
 
 	// Allocate Memory
 	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, _width, _height, 0, glFormat, dt, NULL);
@@ -93,7 +93,7 @@ void RenderBufferGL::setSize(Int32 width, Int32 height)
 
 
 	// Unbind Buffers
-	unbind();
+	unbind(0);
 	unbindBuffer();
 }
 
@@ -120,8 +120,17 @@ void RenderBufferGL::unbindBuffer()
 /*
 
 */
+#if 0
 void RenderBufferGL::bind()
 {
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _texture);
+}
+#endif
+
+void RenderBufferGL::bind(UInt32 activeIndex) const
+{
+	glActiveTexture(GL_TEXTURE0 + activeIndex);
 	glBindTexture(GL_TEXTURE_2D, _texture);
 }
 
@@ -130,7 +139,16 @@ void RenderBufferGL::bind()
 /*
 
 */
+#if 0
 void RenderBufferGL::unbind()
 {
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+#endif
+
+void RenderBufferGL::unbind(UInt32 activeIndex) const
+{
+	glActiveTexture(GL_TEXTURE0 + activeIndex);
+	glBindTexture(GL_TEXTURE_2D, _texture);
 }

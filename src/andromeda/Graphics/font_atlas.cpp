@@ -278,7 +278,7 @@ Boolean FontAtlas::begin()
 
 	// Bind Texture
 	if (_texture)
-		_texture->bind();
+		_texture->bind(0);
 
 	return true;
 }
@@ -291,7 +291,7 @@ Boolean FontAtlas::end()
 {
 	// Unbind Texture
 	if (_texture)
-		_texture->unbind();
+		_texture->unbind(0);
 
 	// Unbind Desc
 	if (_desc)

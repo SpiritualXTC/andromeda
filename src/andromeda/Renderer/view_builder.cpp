@@ -1,7 +1,8 @@
 #include <andromeda/Renderer/view_builder.h>
 
 #include <andromeda/Renderer/view.h>
-#include <andromeda/Renderer/projection.h>
+#include <andromeda/Math/projection_matrix.h>
+#include <andromeda/Math/view_matrix.h>
 
 #include <andromeda/andromeda.h>
 

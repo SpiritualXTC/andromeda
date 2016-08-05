@@ -4,6 +4,9 @@
 
 using namespace andromeda;
 
+
+
+#if 0
 /*
 
 */
@@ -145,3 +148,4 @@ void RenderTarget2::unbindFrame()
 	// Assign Current Frame
 	_buffer = _buffers[_index];
 }
+#endif

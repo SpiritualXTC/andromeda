@@ -28,9 +28,13 @@ namespace andromeda
 		ITexture() {}
 		virtual ~ITexture(){}
 
-		virtual void bind() = 0;
-		virtual void unbind() = 0;
+		inline void bind() { bind(0); }
+		inline void unbind() { unbind(0); }
 
+		//virtual void bind() = 0;
+		virtual void bind(UInt32 activeIndex) const = 0;
+		//virtual void unbind() = 0;
+		virtual void unbind(UInt32 activeIndex) const = 0;
 
 	private:
 	};
@@ -43,7 +47,7 @@ namespace andromeda
 
 		TODO: Rename to Texture
 	*/
-	class ITexture2D : public ITexture
+	class ITexture2D : virtual public ITexture
 	{
 	public:
 		virtual const Int32 width() const = 0;
@@ -73,9 +77,10 @@ namespace andromeda
 		Texture(Int32 width, Int32 height);
 		virtual ~Texture();
 
-		void bind();
-		void unbind();
-
+	//	void bind() override;
+		void bind(UInt32 activeIndex) const override;
+	//	void unbind() override;
+		void unbind(UInt32 activeIndex) const override;
 
 		void resize(const UInt8 * ptr, Int32 width, Int32 height);
 

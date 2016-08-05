@@ -2,9 +2,6 @@
 // Renders Geometry to a Series of RenderBuffers
 
 
-//uniform mat4 ModelMatrix;
-//uniform mat4 WorldMatrix;
-
 uniform mat4 u_projection;		// Projection Matrix
 uniform mat4 u_modelview;		// ModelView Matrix
 

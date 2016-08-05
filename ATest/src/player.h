@@ -9,7 +9,10 @@
 
 #include <andromeda/stddef.h>
 #include <andromeda/Renderer/camera.h>
-#include <andromeda/Renderer/projection.h>
+
+#include <andromeda/Math/projection_matrix.h>
+#include <andromeda/Math/view_matrix.h>
+
 
 namespace andromeda
 {

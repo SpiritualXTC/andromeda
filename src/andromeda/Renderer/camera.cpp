@@ -65,6 +65,23 @@ std::shared_ptr<OrthogonalMatrix> Camera::setOrthogonal(Float mul, Float zN, Flo
 }
 
 /*
+	Sets an Orthogonal Screen Matrix [Projection]
+*/
+std::shared_ptr<ScreenMatrix> Camera::setOrthogonalScreen(Float zN, Float zF)
+{
+	std::shared_ptr<ScreenMatrix> screen = std::make_shared<ScreenMatrix>();
+
+	screen->zNear(zN);
+	screen->zFar(zF);
+
+	setProjection(screen);
+
+	return screen;
+}
+
+
+
+/*
 	Set a basic View Matrix
 */
 std::shared_ptr<ViewMatrix> Camera::setView(Float distance)

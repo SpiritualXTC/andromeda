@@ -11,6 +11,9 @@
 
 namespace andromeda
 {
+	class ITexture;
+	class Texture;
+
 	class VertexBuffer;
 	class IndexBuffer;
 

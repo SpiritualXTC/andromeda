@@ -64,7 +64,7 @@ void Texture::resize(const UInt8 * ptr, Int32 width, Int32 height)
 	_height = height;
 
 	// Bind
-	bind();
+	bind(0);
 
 	// Send Image Data to GPU
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, ptr);
@@ -74,7 +74,7 @@ void Texture::resize(const UInt8 * ptr, Int32 width, Int32 height)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 	// Unbind
-	unbind();
+	unbind(0);
 }
 
 
@@ -83,12 +83,12 @@ void Texture::resize(const UInt8 * ptr, Int32 width, Int32 height)
 */
 void Texture::data(const UInt8 * ptr)
 {
-	bind();
+	bind(0);
 
 	// Send Image Data to GPU
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _width, _height, GL_RGBA, GL_UNSIGNED_BYTE, ptr);
 
-	unbind();
+	unbind(0);
 }
 
 /*
@@ -96,31 +96,51 @@ void Texture::data(const UInt8 * ptr)
 */
 void Texture::data(const UInt8 * ptr, Int32 xOffset, Int32 yOffset, Int32 width, Int32 height)
 {
-	bind();
+	bind(0);
 
 	// Send Image Data to GPU
 	glTexSubImage2D(GL_TEXTURE_2D, 0, xOffset, yOffset, width, height, GL_RGBA, GL_UNSIGNED_BYTE, ptr);
 
-	unbind();
+	unbind(0);
 }
 
 
 
 
+#if 0
+void Texture::bind()
+{
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _handle);
+}
+#endif
 
 /*
 
 */
-void Texture::bind()
+void Texture::bind(UInt32 activeIndex) const
 {
+	glActiveTexture(GL_TEXTURE0 + activeIndex);
 	glBindTexture(GL_TEXTURE_2D, _handle);
 }
 
 
+
+#if 0
+
+void Texture::unbind()
+{
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+#endif
+
+
 /*
 
 */
-void Texture::unbind()
+void Texture::unbind(UInt32 activeIndex) const
 {
+	glActiveTexture(GL_TEXTURE0 + activeIndex);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }

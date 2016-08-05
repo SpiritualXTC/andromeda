@@ -3,20 +3,40 @@
 
 #include <andromeda/Graphics/frame_buffer.h>
 #include <andromeda/Renderer/camera.h>
+#include <andromeda/Renderer/layer.h>
 
 #include <andromeda/andromeda.h>
 #include <andromeda/graphics.h>
 
+
+
 #include <andromeda/Utilities/log.h>
 
+#include "renderable_group.h"
+#include "Deferred/deferred_directional_light.h"
 
 using namespace andromeda;
 
 
 
+/*
+	TODO:
+	Move the additional classes to the deferred renderer
+*/
 
 
 
+
+
+
+
+
+
+
+
+/*
+
+*/
 class DeferredRendererGeometryMethod : public RendererMethod
 {
 public:
@@ -27,9 +47,10 @@ public:
 
 	void begin() override
 	{
+		// Bind the Buffer
 		_gBuffer->bind();
 
-		// Clear the GBuffer
+		// Clear the GBuffer :: Must clear to black
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
@@ -38,9 +59,6 @@ public:
 	void end() override
 	{
 		_gBuffer->unbind();
-
-
-
 	}
 
 private:
@@ -48,29 +66,119 @@ private:
 };
 
 
-class DeferredRendererLightingMethod : public RendererMethod
+
+/*
+
+*/
+namespace andromeda
 {
-public:
-	DeferredRendererLightingMethod(std::shared_ptr<IFrameBuffer> & gBuffer)
-		: _gBuffer(gBuffer)
+	class DeferredGBufferLayerExtension : public ILayerExtension
 	{
-	}
+	public:
+		DeferredGBufferLayerExtension(std::shared_ptr<IFrameBuffer> & fb)
+			: _gBuffer(fb)
+		{
+
+		}
 
 
+		void begin(const std::shared_ptr<IShader> & shader) override
+		{
+			static std::string uniforms[] = {
+				"g_gBufferDiffuse", 
+				"g_gBufferPosition",
+				"g_gBufferNormal"
+			};
 
-	void begin() override
+			assert(shader);
+
+			for (UInt32 i = 0; i < _gBuffer->getBufferCount(); ++i)
+			{
+				std::shared_ptr<ITexture> t = _gBuffer->getTexture(i);
+
+				t->bind(i); 
+				shader->setUniformTexture(uniforms[i], i);
+			}
+		}
+
+		void end(const std::shared_ptr<IShader> & shader) override
+		{
+			for (UInt32 i = 0; i < _gBuffer->getBufferCount(); ++i)
+			{
+				std::shared_ptr<ITexture> t = _gBuffer->getTexture(i);
+
+				t->unbind(i);
+			}
+		}
+
+
+	private:
+		std::shared_ptr<IFrameBuffer> _gBuffer;
+	};
+
+
+	class  DeferredRenderer::DeferredRendererLightingMethod : public RendererMethod
 	{
+	public:
+		DeferredRendererLightingMethod(std::shared_ptr<IFrameBuffer> & gBuffer, const std::shared_ptr<Effect> & effect, const std::string & directionalTechnique)
+			: _gBuffer(gBuffer)
+		{
+			// Create a custom Camera
+			_directionalCamera = std::make_shared<Camera>();
+			_directionalCamera->setOrthogonalScreen(-1.0f, 1.0f);
+			_directionalCamera->setView(-1.0f);
+		
+			// Create a custom RenderableGroup
+			_directionalLights = std::make_shared<RenderableGroup>("directional");
 
-	}
 
-	void end() override
-	{
+			// Adds a special layer for Directional Lights
+			// Directional Lights use a completely different camera, and a special RenderableGroup
+			std::shared_ptr<ILayer> layer = addLayer(_directionalCamera, _directionalLights, effect, directionalTechnique);
 
-	}
+			layer->addExtension(std::make_shared<DeferredGBufferLayerExtension>(_gBuffer));
+		}
 
-private:
-	std::shared_ptr<IFrameBuffer> _gBuffer;
-};
+
+
+		void begin() override
+		{
+
+		}
+
+		void end() override
+		{
+
+		}
+
+
+
+
+		/*
+
+		*/
+		void addDirectionalLight()
+		{
+			// Only support for one directional light.
+			if (_renderable)
+				return;
+
+			// Create Renderable
+			_renderable = std::make_shared<deferred::DeferredRendererDirectionalLight>();
+
+			_directionalLights->addRenderable(_renderable.get());
+		}
+
+
+	private:
+		std::shared_ptr<IFrameBuffer> _gBuffer;
+
+		std::shared_ptr<Camera> _directionalCamera;
+		std::shared_ptr<RenderableGroup> _directionalLights;
+
+		std::shared_ptr<IRenderable> _renderable;//TEMP
+	};
+}
 
 
 
@@ -80,7 +188,7 @@ private:
 /*
 
 */
-DeferredRenderer::DeferredRenderer(const std::shared_ptr<SceneGraph> & sg)
+DeferredRenderer::DeferredRenderer(const std::shared_ptr<SceneGraph> & sg, const std::shared_ptr<Effect> & effect, const std::string & directionalTechnique)
 	: Renderer(sg)
 {
 	// Create GBuffer
@@ -90,10 +198,10 @@ DeferredRenderer::DeferredRenderer(const std::shared_ptr<SceneGraph> & sg)
 
 	// Create Methods
 	addMethod("geometry", std::make_shared<DeferredRendererGeometryMethod>(_gBuffer));
-	addMethod("lighting", std::make_shared<DeferredRendererLightingMethod>(_gBuffer));
 
-	
+	_lightingMethod = std::make_shared<DeferredRendererLightingMethod>(_gBuffer, effect, directionalTechnique);
 
+	addMethod("lighting", _lightingMethod);
 }
 
 
@@ -107,6 +215,8 @@ void DeferredRenderer::onResize(Float width, Float height)
 }
 
 
+
+#if 0
 /*
 
 */
@@ -122,8 +232,21 @@ void DeferredRenderer::onEnd()
 {
 
 }
+#endif
 
 
+
+/*
+
+*/
+void DeferredRenderer::addDirectionalLight()
+{
+	// TODO: Pass through parameters. Not sure how this will be achieved.
+	// It may need to be an object, that is dependancy-injected into the Renderable...
+
+	// Add the Light.
+	_lightingMethod->addDirectionalLight();
+}
 
 
 

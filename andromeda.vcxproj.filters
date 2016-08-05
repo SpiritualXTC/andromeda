@@ -195,9 +195,6 @@
     <ClInclude Include="include\andromeda\Game\camera_component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\andromeda\Renderer\projection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\andromeda\Graphics\effect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -450,6 +447,24 @@
     <ClInclude Include="src\opengl\Graphics\render_buffer_gl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\andromeda\andromeda_main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Math\projection_matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Math\view_matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Math\camera_matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_directional_light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\opengl\Graphics\texture_gl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Docs\readme.txt" />
@@ -461,7 +476,8 @@
     <Text Include="res\shader\passthru.vs" />
     <Text Include="res\shader\display_wireframe.gs" />
     <Text Include="res\shader\deferredRenderer.vs" />
-    <Text Include="design.txt" />
+    <Text Include="pimple.txt" />
+    <Text Include="libdesign.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\andromeda\Engine\engine.cpp">
@@ -507,9 +523,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Graphics\particle_system.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Graphics\render_target.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Graphics\texture.cpp">
@@ -741,6 +754,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\opengl\Graphics\shader_gl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_directional_light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\opengl\Graphics\texture_gl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -14,8 +14,12 @@
     <cull>none</cull>
   </state>
 
+  <state name="lighting">
+    <depth enable="true" />
+    <blending enable="false" />
+  </state>
 
-    <!--
+  <!--
     
   -->
   
@@ -46,6 +50,19 @@
     </pass>
   </technique>
 
+
+  <!--
+    Renders Directional Light
+  -->
+  <technique name="lightDirectional">
+
+    <!-- Renders an Entire Quad Across the Screen -->
+    <pass name="directional" state="lighting">
+      <vertexShader shader="defRendererVert" />
+      <fragmentShader shader="defRendererFrag" />
+    </pass>
+  </technique>
+  
   
   
   <!--
@@ -62,19 +79,7 @@
     -->
   </technique>
   
-  <!--
-    Renders Directional Light
-  -->
-  <technique name="lightDirectional">
-    
-    <!-- Renders an Entire Quad Across the Screen -->
-    <!--
-    <pass name="directional">
-      <vertexShader shader="defRendererVert" />
-      <fragmentShader shader="defRendererFrag" />
-    </pass>
-    -->
-  </technique>
+
 
 
 </effect>

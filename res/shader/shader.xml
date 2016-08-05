@@ -31,8 +31,9 @@
 
   <state name="wireframe">
     <depth enable="false" />
-    <cull>back</cull>
+    <cull>none</cull>
     <polygon>wireframe</polygon>
+    <blending enable="false" />
   </state>
 
 
@@ -48,7 +49,6 @@
       <vertexShader shader="vs" />
       <fragmentShader shader="fs" />
     </pass>
-
 
     <!-- Display Face Normals -->
     <pass name="debug_Normals" enabled="false">
@@ -66,13 +66,24 @@
     </pass>
     
     <!-- Display Wireframe -->
-    <pass name="debug_Wireframe" state="wireframe" enabled="true">
+    <pass name="debug_Wireframe" state="wireframe" enabled="false">
       <uniform name="u_color" value="{0.0, 1.0, 0.0, 1.0}" />
 
       <vertexShader shader="vs" />
       <fragmentShader shader="constantColor" />
     </pass>
     
+    
+  </technique>
+
+  <technique name="debug">
+    <pass state="normal">
+      <state>
+        <depth enable="false" />
+      </state>
+      <vertexShader shader="vs" />
+      <fragmentShader shader="fs" />
+    </pass>
     
   </technique>
   

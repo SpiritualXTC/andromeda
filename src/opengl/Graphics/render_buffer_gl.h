@@ -12,7 +12,7 @@ namespace andromeda
 		/*
 		
 		*/
-		class RenderBufferGL : public ITexture2D
+		class RenderBufferGL : virtual public ITexture2D
 		{
 		public:
 			RenderBufferGL(Int32 width, Int32 height, UInt32 attachment, StorageFormat format = StorageFormat::RGBA, DataType dataType = DataType::UnsignedByte);
@@ -32,10 +32,12 @@ namespace andromeda
 
 
 			// Binds the RenderBuffer as a texture
-			void bind();
+		//	void bind();
+			void bind(UInt32 activeIndex) const override;
 
 			// Unbinds the RenderBuffer as a texture
-			void unbind();
+		//	void unbind();
+			void unbind(UInt32 activeIndex) const override;
 
 
 			void setSize(Int32 width, Int32 height);

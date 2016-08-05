@@ -18,8 +18,8 @@ using namespace andromeda;
 
 */
 TextRenderComponent::TextRenderComponent(std::shared_ptr<Font> font, std::shared_ptr<ITransform> transform)
-//	: RenderComponent("vector")
-	: _font(font)
+	: RenderComponent("text")
+	, _font(font)
 	, _transform(transform)
 {
 	_string = andromeda::LoadFile("../res/star_wars.txt");
@@ -61,7 +61,8 @@ void TextRenderComponent::render(const std::shared_ptr<andromeda::IShader> shade
 
 */
 FontRenderComponent::FontRenderComponent(std::shared_ptr<IFont> font, std::shared_ptr<ITransform> transform)
-	: _font(font)
+	: RenderComponent("text")
+	, _font(font)
 	, _transform(transform)
 {
 

@@ -37,32 +37,8 @@ namespace andromeda
 
 
 
+
 #if 0
-	/*
-		RenderTargets can be made up of 1 or more textures.
-
-		However the lazy version just extends texture!
-	*/
-	class RenderTarget : public Texture, public IRenderTarget
-	{
-	public:
-		RenderTarget(Int32 width, Int32 height);
-		virtual ~RenderTarget();
-
-		void clear() override;
-
-		void bindFrame() override;
-		void unbindFrame() override;
-
-		const inline Int32 width() const override { return Texture::width(); }
-		const inline Int32 height() const override { return Texture::height(); }
-
-	private:
-		GLuint _frameBuffer = 0;
-	};
-#endif
-
-
 	/*
 	
 	*/
@@ -98,6 +74,7 @@ namespace andromeda
 		GLuint _buffer = -1;	// Current Frame buffer
 		UInt32 _index = 0;		// Current Index
 	};
+#endif
 }
 
 

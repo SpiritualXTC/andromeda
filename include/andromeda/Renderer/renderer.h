@@ -15,7 +15,7 @@ namespace andromeda
 	class SceneGraph;
 
 	class Camera;
-	class Layer;
+	class ILayer;
 	
 	class RenderableGroup;
 	class RenderCache;
@@ -77,11 +77,11 @@ namespace andromeda
 
 		void render();	// Render all the layers
 
-		void addLayer(const std::shared_ptr<Camera> & camera, const std::shared_ptr<RenderableGroup> & rg,
+		std::shared_ptr<ILayer> addLayer(const std::shared_ptr<Camera> & camera, const std::shared_ptr<RenderableGroup> & rg,
 			const std::shared_ptr<Effect> & effect, const std::string & technique = "");
 
 	private:
-		std::vector<std::shared_ptr<Layer>> _layers;
+		std::vector<std::shared_ptr<ILayer>> _layers;
 	};
 
 
@@ -130,8 +130,15 @@ namespace andromeda
 
 	protected:
 		virtual void onResize(Float width, Float height) {}
-		virtual void onBegin(){}
-		virtual void onEnd() {}
+	//	virtual void onBegin(){}
+	//	virtual void onEnd() {}
+
+
+
+
+		Boolean hasRenderMethod(const std::string & methodName);
+
+		std::shared_ptr<RendererMethod> getRenderMethod(const std::string & methodName);
 
 	private:
 		

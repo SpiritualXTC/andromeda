@@ -5,9 +5,11 @@
 #include <andromeda/Graphics/effect.h>
 
 #include <andromeda/Math/matrix_stack.h>
+#include <andromeda/Math/projection_matrix.h>
+#include <andromeda/Math/view_matrix.h>
+
 
 #include <andromeda/Renderer/camera.h>
-#include <andromeda/Renderer/projection.h>
 #include <andromeda/Renderer/renderable.h>
 
 
@@ -16,7 +18,6 @@
 #include <andromeda/Utilities/log.h>
 
 using namespace andromeda;
-
 
 
 
@@ -78,6 +79,22 @@ Boolean Layer::setActiveTechnique(const std::string & technique)
 
 
 
+/*
+
+*/
+Boolean Layer::addExtension(const std::shared_ptr<ILayerExtension> & extension)
+{
+	assert(extension);
+
+	_extensions.push_back(extension);
+
+	return true;
+}
+
+
+
+
+
 
 
 
@@ -109,12 +126,30 @@ Boolean Layer::render()
 			continue;
 
 		// Set Projection Matrix
+		/*
+			TODO: Setup an annotations somewhere...
+		*/
 		p->setUniform("u_projection", _camera->getProjectionMatrix());
+
+		for (const auto & ext : _extensions)
+			ext->begin(p);
 
 		// Render the RenderGroup
 		if (_renderGroup)
 			_renderGroup->render(_camera, p);
+
+		for (const auto & ext : _extensions)
+			ext->end(p);
 	}
 
 	return true;
 }
+
+
+
+
+
+
+
+
+
