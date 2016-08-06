@@ -113,12 +113,32 @@ namespace andromeda
 
 		// API Information
 
-		// Create / Load Resources
-		virtual std::shared_ptr<IFrameBuffer> createFrameBuffer(Int32 width, Int32 height) = 0;
-	//	virtual inline std::shared_ptr<Effect> createEffect() = 0;
+		/*
+			Create / Load Resources
+		*/
+		// Create FrameBuffer
+		virtual std::shared_ptr<IFrameBuffer> createFrameBuffer(UInt32 width, UInt32 height) = 0;
+
+		// Create Texture
+		virtual std::shared_ptr<Texture> createTexture(UInt32 width, UInt32 height) = 0;
+
+		// Create Cube Texture
+		virtual std::shared_ptr<CubeTexture> createCubeTexture(UInt32 width, UInt32 height) = 0;
+
+		// Create Volume Texture
+		virtual std::shared_ptr<VolumeTexture> createVolumeTexture() = 0;
+
+
+		// Create Effect [No Implementation :: This may not need to be fully abstracted]
+		virtual std::shared_ptr<Effect> createEffect() { return nullptr; }
+
+
 	//	virtual inline std::shared_ptr<Mesh> createMesh() = 0;
-	//	virtual inline std::shared_ptr<Texture> createTexture() = 0;
-	//	virtual inline std::shared_ptr<RenderTarget> createRenderTarget() = 0;
+	
+
+
+
+
 
 		// Important States
 		/*

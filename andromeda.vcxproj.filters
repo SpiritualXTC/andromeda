@@ -465,6 +465,9 @@
     <ClInclude Include="src\opengl\Graphics\texture_gl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\andromeda\Graphics\text.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Docs\readme.txt" />
@@ -523,9 +526,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Graphics\particle_system.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Graphics\texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Engine\application.cpp">
@@ -760,6 +760,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\opengl\Graphics\texture_gl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Graphics\text.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

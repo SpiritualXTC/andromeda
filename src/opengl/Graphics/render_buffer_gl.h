@@ -10,16 +10,17 @@ namespace andromeda
 	namespace opengl
 	{
 		/*
-		
+			TODO: 
+			Change to extend TextureGL
 		*/
-		class RenderBufferGL : virtual public ITexture2D
+		class RenderBufferGL : virtual public ITexture
 		{
 		public:
 			RenderBufferGL(Int32 width, Int32 height, UInt32 attachment, StorageFormat format = StorageFormat::RGBA, DataType dataType = DataType::UnsignedByte);
 			virtual ~RenderBufferGL();
 
-			const Int32 width() const override { return _width; }
-			const Int32 height() const override { return _height; }
+			const Int32 width() const { return _width; }
+			const Int32 height() const { return _height; }
 
 
 			// Binds the RenderBuffer
@@ -32,11 +33,9 @@ namespace andromeda
 
 
 			// Binds the RenderBuffer as a texture
-		//	void bind();
 			void bind(UInt32 activeIndex) const override;
 
 			// Unbinds the RenderBuffer as a texture
-		//	void unbind();
 			void unbind(UInt32 activeIndex) const override;
 
 
@@ -49,6 +48,7 @@ namespace andromeda
 
 			DataType _dataType = DataType::UnsignedByte;
 			StorageFormat _format = StorageFormat::RGBA;
+
 			UInt32 _attachment = 0;
 
 

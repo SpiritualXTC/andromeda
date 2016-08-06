@@ -77,6 +77,10 @@ namespace andromeda
 		FontAtlas(const std::shared_ptr<FontFace> & ft, UInt32 fontSize);
 
 		
+		// Generate Geometry
+		std::shared_ptr<Geometry> generateText(const std::wstring & string) override;
+
+
 
 	protected:
 		Boolean begin() override;
@@ -84,6 +88,7 @@ namespace andromeda
 
 		UInt32 loadChar(const GlyphMetric & metric) override;
 
+		
 
 		
 		// Draw the Character

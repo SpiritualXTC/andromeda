@@ -104,6 +104,7 @@
     <ClInclude Include="include\andromeda\Geometry\tesselation.h" />
     <ClInclude Include="include\andromeda\Graphics\font_atlas.h" />
     <ClInclude Include="include\andromeda\Graphics\frame_buffer.h" />
+    <ClInclude Include="include\andromeda\Graphics\text.h" />
     <ClInclude Include="include\andromeda\Math\camera_matrix.h" />
     <ClInclude Include="include\andromeda\Math\view_matrix.h" />
     <ClInclude Include="include\andromeda\Renderer\renderer.h" />
@@ -259,6 +260,7 @@
     <ClCompile Include="src\andromeda\graphics.cpp" />
     <ClCompile Include="src\andromeda\Graphics\font_atlas.cpp" />
     <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_directional_light.cpp" />
+    <ClCompile Include="src\andromeda\Graphics\text.cpp" />
     <ClCompile Include="src\opengl\Graphics\frame_buffer_gl.cpp" />
     <ClCompile Include="src\opengl\Graphics\render_buffer_gl.cpp" />
     <ClCompile Include="src\andromeda\Renderer\renderer.cpp" />
@@ -302,7 +304,6 @@
     <ClCompile Include="src\andromeda\Renderer\renderable.cpp" />
     <ClCompile Include="src\andromeda\Renderer\scene_manager.cpp" />
     <ClCompile Include="src\andromeda\Graphics\render_target2.cpp" />
-    <ClCompile Include="src\andromeda\Graphics\texture.cpp" />
     <ClCompile Include="src\andromeda\Renderer\view.cpp" />
     <ClCompile Include="src\andromeda\Input\keyboard.cpp" />
     <ClCompile Include="src\andromeda\Input\keyboard_listener.cpp" />

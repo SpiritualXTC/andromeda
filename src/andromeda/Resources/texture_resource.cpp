@@ -5,12 +5,18 @@
 
 #include <andromeda/Platform/file.h>
 
+
+#include <andromeda/andromeda.h>
+#include <andromeda/graphics.h>
+
+
 #include <andromeda/Utilities/log.h>
 
 #include <SOIL/SOIL.h>
 
 using namespace andromeda;
 
+#if 0
 /*
 	Loads a Texture :: This hasn't been tested since a change was made
 */
@@ -20,7 +26,7 @@ std::shared_ptr<Texture> andromeda::LoadTexture(const std::string & filename)
 
 	return loader.getTexture();
 }
-
+#endif
 
 
 
@@ -72,7 +78,8 @@ TextureLoader::TextureLoader(const std::string & filename)
 		log_verbosep("TextureLoader :: <init>() :: Texture Loaded: %1%x%2%", width, height);
 
 	// Create Texture
-	_texture = std::make_shared<Texture>(width, height);
+//	_texture = std::make_shared<Texture>(width, height);
+	_texture = graphics()->createTexture(width, height);
 
 	// Set Data
 	_texture->data((UInt8*)data);
@@ -108,7 +115,8 @@ TextureLoader::TextureLoader(const std::shared_ptr<File> & file)
 		log_verbosep("TextureLoader :: <init>() :: Texture Loaded: %1%x%2%x%3%", width, height, channels);
 
 	// Create Texture
-	_texture = std::make_shared<Texture>(width, height);
+	//_texture = std::make_shared<Texture>(width, height);
+	_texture = graphics()->createTexture(width, height);
 
 	// Set Data
 	_texture->data((UInt8*)data);

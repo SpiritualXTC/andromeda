@@ -1,6 +1,7 @@
 #include <andromeda/Graphics/font_atlas.h>
 
-//#include <andromeda/glm.h>
+#include <andromeda/andromeda.h>
+#include <andromeda/graphics.h>
 
 #include <andromeda/Graphics/buffer.h>
 #include <andromeda/Graphics/texture.h>
@@ -14,17 +15,22 @@
 
 
 #include <andromeda/Utilities/image.h>
-
-
 #include <andromeda/Utilities/log.h>
 
-#include <andromeda/andromeda.h>	//TEMP
+
+
+
+#include <andromeda/opengl.h>	//TEMP
+
+
+
+
 
 /*
 	This is a basic implementation :)
 
 	TODO:
-	Switch to a Volumetric Texture (Multiple Layers, to support more characters
+	Switch to a Volumetric Texture (Multiple Layers, to support more characters if it looks like it might be needed
 */
 
 
@@ -83,7 +89,8 @@ void FontAtlas::createBuffers()
 	_desc->addDeclaration(2, GL_FLOAT, sizeof(Float) * 2, GeometryLocation::Texture0);
 
 	// Create the Texture
-	_texture = std::make_shared<Texture>(IMAGE_WIDTH, IMAGE_HEIGHT);
+	//_texture = std::make_shared<Texture>(IMAGE_WIDTH, IMAGE_HEIGHT);
+	_texture = graphics()->createTexture(IMAGE_WIDTH, IMAGE_HEIGHT);
 }
 
 
@@ -163,11 +170,11 @@ UInt32 FontAtlas::loadChar(const GlyphMetric & metric)
 
 	// Assign Metrics
 	//metric.hori.advance * XYZ;
-	c.metrics.advance = metric.hori.advance;
-	c.metrics.bearingX = metric.hori.bearingX;
-	c.metrics.bearingY = metric.hori.bearingY;
-	c.metrics.width = metric.width;
-	c.metrics.height = metric.height;
+	c.metrics.advance = (Float)metric.hori.advance;
+	c.metrics.bearingX = (Float)metric.hori.bearingX;
+	c.metrics.bearingY = (Float)metric.hori.bearingY;
+	c.metrics.width = (Float)metric.width;
+	c.metrics.height = (Float)metric.height;
 	
 	// Set Character Dimensions [Pixels]
 	c.dimensions = glm::ivec2(charImage.width, charImage.height);
@@ -338,4 +345,14 @@ Float FontAtlas::drawCharacter(const std::shared_ptr<andromeda::IShader> shader,
 	
 
 	return c.metrics.advance / FONT_SCALE;
+}
+
+
+
+/*
+
+*/
+std::shared_ptr<Geometry> FontAtlas::generateText(const std::wstring & string)
+{
+	return nullptr;
 }

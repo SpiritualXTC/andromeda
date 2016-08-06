@@ -64,15 +64,18 @@ namespace andromeda
 
 		Rename to Font once the rest of the changes are made
 	*/
-#if 0
-	class IFontHandle
-	{
-	public:
 
-	private:
-	};
-#endif
 
+
+
+
+
+
+
+
+	/*
+		Text
+	*/
 	class IFont
 	{
 	private:
@@ -102,6 +105,14 @@ namespace andromeda
 
 		// Maps the CharCode to Glyph/Character Information
 		UInt32 mapIndex(UInt32 charCode);
+
+
+
+		/*
+			Generates a precached version of the text for faster rendering of static text
+		*/
+		virtual std::shared_ptr<Geometry> generateText(const std::wstring & string) = 0;
+
 
 
 

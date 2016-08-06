@@ -37,6 +37,11 @@ namespace andromeda
 	class GraphicsOpenGL : virtual public Graphics
 	{
 	public:
+
+		/*
+			TODO: 
+			Put static conversion functions to a separate class
+		*/
 		static inline void setEnable(GLenum glCap, Boolean enable)
 		{
 			if (enable)
@@ -253,9 +258,16 @@ namespace andromeda
 		/*
 			Creation
 		*/
-		std::shared_ptr<IFrameBuffer> createFrameBuffer(Int32 width, Int32 height) override;
+		std::shared_ptr<IFrameBuffer> createFrameBuffer(UInt32 width, UInt32 height) override;
 
+		// Create Texture
+		std::shared_ptr<Texture> createTexture(UInt32 width, UInt32 height) override;
 
+		// Create Cube Texture [No Implementation]
+		std::shared_ptr<CubeTexture> createCubeTexture(UInt32 width, UInt32 height) override;
+
+		// Create Volume Texture [No Implementation]
+		std::shared_ptr<VolumeTexture> createVolumeTexture() override;
 
 
 		/*

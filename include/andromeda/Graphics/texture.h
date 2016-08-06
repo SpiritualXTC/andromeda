@@ -1,5 +1,4 @@
-#ifndef _ANDROMEDA_GRAPHICS_TEXTURE_H_
-#define _ANDROMEDA_GRAPHICS_TEXTURE_H_
+#pragma once
 
 #include <memory>
 #include <string>
@@ -7,6 +6,9 @@
 #include "../stddef.h"
 
 #include <andromeda/opengl.h>	// Remove Meh
+
+
+#include <andromeda/graphics_types.h>
 
 namespace andromeda
 {
@@ -22,18 +24,24 @@ namespace andromeda
 
 		+ others
 	*/
+
+	/*
+		Common Interface shared by all texture types
+	*/
 	class ITexture
 	{
 	public:
 		ITexture() {}
 		virtual ~ITexture(){}
 
+	
 		inline void bind() { bind(0); }
 		inline void unbind() { unbind(0); }
 
-		//virtual void bind() = 0;
+		// Binds to the active texture index 	
 		virtual void bind(UInt32 activeIndex) const = 0;
-		//virtual void unbind() = 0;
+	
+		// Binds to the active texture index
 		virtual void unbind(UInt32 activeIndex) const = 0;
 
 	private:
@@ -42,16 +50,38 @@ namespace andromeda
 
 
 
-	/*
-		2D Texture
 
-		TODO: Rename to Texture
+
+	/*
+		Abstract 2D Texture
 	*/
-	class ITexture2D : virtual public ITexture
+	class Texture : virtual public ITexture
 	{
 	public:
-		virtual const Int32 width() const = 0;
-		virtual const Int32 height() const = 0;
+		// Resize the Texture [Currently Loses all information]
+		virtual void resize(const UInt8 * ptr, UInt32 width, UInt32 height) = 0;
+
+		virtual void data(const UInt8 * ptr) = 0;
+		virtual void data(const UInt8 * ptr, Int32 xOffset, Int32 yOffset, UInt32 width, UInt32 height) = 0;
+
+		virtual const inline UInt32 width() const = 0;
+		virtual const inline UInt32 height() const = 0;
+	};
+
+
+
+
+
+
+	/*
+		Abstract Cube Texture
+	*/
+	class CubeTexture : public ITexture
+	{
+	public:
+
+		virtual const inline UInt32 width() const = 0;
+		virtual const inline UInt32 height() const = 0;
 	};
 
 
@@ -60,50 +90,28 @@ namespace andromeda
 
 
 
-
-
 	/*
-		TODO:
-		Move to the OpenGL library
+		Abstract Volume Texture
 	*/
-
-
-	/*
-		Simple 2D Texture
-	*/
-	class Texture : public ITexture2D
+	class VolumeTexture : public ITexture
 	{
 	public:
-		Texture(Int32 width, Int32 height);
-		virtual ~Texture();
-
-	//	void bind() override;
-		void bind(UInt32 activeIndex) const override;
-	//	void unbind() override;
-		void unbind(UInt32 activeIndex) const override;
-
-		void resize(const UInt8 * ptr, Int32 width, Int32 height);
-
-		void data(const UInt8 * ptr);
-		void data(const UInt8 * ptr, Int32 xOffset, Int32 yOffset, Int32 width, Int32 height);
-
-
-		const inline UInt32 handle() const { return _handle; }
-
-		const inline Int32 width() const { return _width; }
-		const inline Int32 height() const { return _height; }
+		virtual const inline UInt32 width() const = 0;
+		virtual const inline UInt32 height() const = 0;
+		virtual const inline UInt32 depth() const = 0;
 
 	private:
-		Int32 _width = 0;
-		Int32 _height = 0;
-
-		UInt32 _handle = 0;
 	};
 
 
-	std::shared_ptr<Texture> LoadTexture(const std::string & filename);
+
+
+
+	/*
+		Look for this function in use... lololol
+	*/
+	//std::shared_ptr<Texture> LoadTexture(const std::string & filename);
 }
 
 typedef andromeda::Texture aTexture;
 
-#endif

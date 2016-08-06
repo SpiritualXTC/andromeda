@@ -103,6 +103,30 @@ void test(const glm::vec2 & v0, const glm::vec2 & v1, const glm::vec2 & c)
 
 
 
+
+
+/*
+	TODO:
+	This is something that is needed to be handled by the engine,
+	and the andromeda configuration file
+*/
+void configResources(andromeda::ResourceManager * fs)
+{
+	// Resources
+	/*
+	TODO
+	- Move this to some automated aspect with the engine :: Potentially using the config
+	*/
+	fs->addResourceType<andromeda::Mesh>("models", andromeda::ResourceManager::Binary);
+	fs->addResourceType<andromeda::Effect>("shader");
+	fs->addResourceType<andromeda::Texture>("textures", andromeda::ResourceManager::Binary);
+
+	log_warn("main() :: TODO: Rename to Font when Font library is setup fully.");	// This is being logged for a reason :p
+	fs->addResourceType<andromeda::FontFace>("fonts", andromeda::ResourceManager::Binary);
+}
+
+
+
 /*
 
 */
@@ -132,23 +156,9 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	// Initialise the Engine
 	andromeda::initialise(hInstance);
 
+
 	// Resource management
-	andromeda::ResourceManager * fs = andromeda::Andromeda::Andromeda::instance()->getResourceManager().get();
-
-	// Resources
-	/*
-		TODO
-		- Move this to some automated aspect with the engine :: Potentially using the config
-	*/
-	fs->addResourceType<andromeda::Mesh>("models", andromeda::ResourceManager::Binary);
-	fs->addResourceType<andromeda::Effect>("shader");
-	fs->addResourceType<andromeda::Texture>("textures", andromeda::ResourceManager::Binary);
-
-	log_warn("main() :: TODO: Rename to Font when Font library is setup fully.");	// This is being logged for a reason :p
-	fs->addResourceType<andromeda::FontFace>("fonts", andromeda::ResourceManager::Binary);
-
-
-
+	configResources(andromeda::Andromeda::Andromeda::instance()->getResourceManager().get());
 
 
 	// Create Application!

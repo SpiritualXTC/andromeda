@@ -106,7 +106,7 @@ namespace andromeda
 		{
 			// "Draw" Image to Texture Data
 			// This shouldn't be here :)
-			for (Int32 y = 0; y < image.height; ++y)
+			for (Int32 y = 0; y < (Int32)image.height; ++y)
 			{
 				// Out of Range :: Pre
 				if (y + offsetY < 0) continue;
@@ -114,7 +114,7 @@ namespace andromeda
 				// Out of Range :: Post
 				if (y + offsetY >= _height) break;
 
-				for (Int32 x = 0; x < image.width; ++x)
+				for (Int32 x = 0; x < (Int32)image.width; ++x)
 				{
 					// Out of Range :: Pre
 					if (x + offsetX < 0) continue;

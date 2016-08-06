@@ -2,7 +2,7 @@
 
 // Include OpenGL Graphic Objects
 #include "Graphics/frame_buffer_gl.h"
-
+#include "Graphics/texture_gl.h"
 
 // Include Log
 #include <andromeda/Utilities/log.h>
@@ -39,7 +39,33 @@ void GraphicsOpenGL::errorCheck()
 /*
 
 */
-std::shared_ptr<IFrameBuffer> GraphicsOpenGL::createFrameBuffer(Int32 width, Int32 height)
+std::shared_ptr<IFrameBuffer> GraphicsOpenGL::createFrameBuffer(UInt32 width, UInt32 height)
 {
 	return std::make_shared<opengl::FrameBufferGL>(width, height);
+}
+
+
+/*
+	Create Texture
+*/
+std::shared_ptr<Texture> GraphicsOpenGL::createTexture(UInt32 width, UInt32 height)
+{
+	return std::make_shared<opengl::TextureGL>(width, height);
+}
+
+
+/*
+	Create Cube Texture [No Implementation]
+*/
+std::shared_ptr<CubeTexture> GraphicsOpenGL::createCubeTexture(UInt32 width, UInt32 height)
+{
+	return nullptr;
+}
+
+/*
+	Create Volume Texture [No Implementation]
+*/
+std::shared_ptr<VolumeTexture> GraphicsOpenGL::createVolumeTexture()
+{
+	return nullptr;
 }
