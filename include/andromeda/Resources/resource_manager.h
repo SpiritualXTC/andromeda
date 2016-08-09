@@ -157,8 +157,6 @@ namespace andromeda
 		Boolean addLocation(const std::string & name, std::shared_ptr<ResourceLocation> location);
 
 
-
-
 		/*
 			TODO: Setup an ASync Method for loading textures
 
@@ -182,18 +180,17 @@ namespace andromeda
 		template <typename RESOURCE>
 		std::shared_ptr<RESOURCE> loadResource(const std::string & filename, const std::string & locationName = "");
 
+		/*
+		
+		*/
+		template <typename RESOURCE, typename ARGS>
+		std::shared_ptr<RESOURCE> loadResource(const std::string & name, const ARGS * args, const std::string & locationName);
 
 		/*
 		
 		*/
 		template <typename RESOURCE>
 		std::shared_ptr<File> loadResourceSupport(const std::string & filename, const std::string & locationName = "");
-
-
-
-
-
-
 
 		/*
 			Gets the Resource Directory

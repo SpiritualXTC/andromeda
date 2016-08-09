@@ -11,9 +11,6 @@
 
 namespace andromeda
 {
-	class ITexture;
-	class Texture;
-
 	class VertexBuffer;
 	class IndexBuffer;
 
@@ -76,6 +73,8 @@ namespace andromeda
 	public:
 		FontAtlas(const std::shared_ptr<FontFace> & ft, UInt32 fontSize);
 
+
+		const std::shared_ptr<Texture> getTexture() const override { return _texture; }
 		
 		// Generate Geometry
 		std::shared_ptr<Geometry> generateText(const std::wstring & string) override;
@@ -103,8 +102,12 @@ namespace andromeda
 
 
 		void addGeometry(const _Character & ch);
+		void addGeometry(const _Character & ch, std::vector<Float> & verts, Float offX, Float offY);
+
 
 		Boolean getNextTextureCoordinate(const glm::ivec2 & dimensions, glm::ivec2 & texCoord);
+
+
 
 	private:
 		Image _image;

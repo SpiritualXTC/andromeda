@@ -1,8 +1,12 @@
 ﻿#include <andromeda/Game/text_component.h>
 
 #include <andromeda/Graphics/font.h>
-#include <andromeda/Geometry/geometry.h>
+#include <andromeda/Graphics/text.h>
 #include <andromeda/Graphics/effect.h>
+#include <andromeda/Graphics/texture.h>
+
+#include <andromeda/Geometry/geometry.h>
+
 #include <andromeda/Math/matrix_stack.h>
 #include <andromeda/Renderer/transform.h>
 
@@ -70,6 +74,10 @@ FontRenderComponent::FontRenderComponent(std::shared_ptr<IFont> font, std::share
 
 	std::string s = andromeda::LoadFile("../res/star_wars.txt");
 	_string = converter.from_bytes(s);;
+
+
+	_text = std::make_shared<Text>(_font, _string);
+
 }
 
 
@@ -84,9 +92,36 @@ void FontRenderComponent::render(const std::shared_ptr<andromeda::IShader> shade
 	ms.push();
 	ms.multiply(_transform->matrix());
 
+	// Update the Model View Matrix
+	shader->setUniform("u_modelview", ms.top());
 
-	// Draw String
-	_font->drawText(shader, _string, ms);
+
+	// Get Material
+	shader->setUniform("g_ambient", _material.getAmbient());
+	shader->setUniform("g_diffuse", _material.getDiffuse());
+	shader->setUniform("g_specular", _material.getSpecular());
+
+	// Get Texture
+	const std::shared_ptr<ITexture> & diffuseTex = _material.getDiffuseTexture();
+
+	if (diffuseTex)
+	{
+		// TODO: See Mesh Class
+		diffuseTex->bind();
+		shader->setUniformTexture("g_diffuseTexture", 0);
+	}
+
+	// Render Text
+	_text->render();
+
+
+	if (diffuseTex)
+	{
+		diffuseTex->unbind();
+	}
+
+
+//	_font->drawText(shader, _string, ms);
 
 	// Pop the matrix
 	ms.pop();

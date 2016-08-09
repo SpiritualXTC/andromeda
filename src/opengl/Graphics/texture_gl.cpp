@@ -4,6 +4,9 @@ using namespace andromeda;
 using namespace andromeda::opengl;
 
 
+/*
+
+*/
 TextureGL::TextureGL(UInt32 width, UInt32 height)
 {
 	// Generate Handle
@@ -13,6 +16,10 @@ TextureGL::TextureGL(UInt32 width, UInt32 height)
 	resize(nullptr, width, height);
 }
 
+
+/*
+
+*/
 TextureGL::~TextureGL()
 {
 	if (_handle)
@@ -37,6 +44,7 @@ void TextureGL::resize(const UInt8 * ptr, UInt32 width, UInt32 height)
 	// Send Image Data to GPU
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, ptr);
 
+	// TODO: Move this to a filter section
 	// Set Texture Parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

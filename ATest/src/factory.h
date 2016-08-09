@@ -19,6 +19,8 @@ class Factory
 {
 public:
 
+	static std::shared_ptr<andromeda::GameObject> createSkybox();
+
 
 	static std::shared_ptr<andromeda::GameObject> createCube();
 

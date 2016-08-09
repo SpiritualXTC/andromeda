@@ -71,21 +71,18 @@ namespace andromeda
 		// Get Resource Type
 		std::shared_ptr<ResourceType<RESOURCE>> type = getResourceType<RESOURCE>();
 
-		if (! type)
-			return nullptr;
+		if (! type) return nullptr;
 
 		// Look for the Resource in the Cache
 		 std::shared_ptr<RESOURCE> resource = type->getResource(filename, locationName);
 
-		if (resource)
-			return resource;
+		if (resource) return resource;
 
 		// Load the File
 		std::shared_ptr<File> file = loadResourceSupport<RESOURCE>(filename, locationName);
 
 
-		if (file == nullptr)
-			return nullptr;
+		if (file == nullptr) return nullptr;
 
 		// Process the File using the Resources Loading Mechanism
 		ResourceLoader loader;
@@ -96,6 +93,38 @@ namespace andromeda
 
 		return resource;
 	}
+
+
+
+	/*
+	
+	*/
+	template <typename RESOURCE, typename ARGS>
+	std::shared_ptr<RESOURCE> ResourceManager::loadResource(const std::string & name, const ARGS * args, const std::string & locationName)
+	{
+		// Get Resource Type
+		std::shared_ptr<ResourceType<RESOURCE>> type = getResourceType<RESOURCE>();
+
+		if (!type) return nullptr;
+
+		// Look for the Resource in the Cache
+		std::shared_ptr<RESOURCE> resource = type->getResource(name, locationName);
+
+		if (resource) return resource;
+
+		// If we got this far, the resource doesn't exist and we don't have any information on how to load it.
+		assert(args);
+
+		// Build the Resource
+		ResourceBuilder loader;
+		resource = loader.build<RESOURCE, ARGS>(args);
+
+		// Add to Cache
+		type->addResource(name, locationName, resource);
+
+		return resource;
+	}
+
 
 
 	/*

@@ -2,6 +2,7 @@
 
 // dont really wanna include this everywhere ...
 #include <andromeda/andromeda.h>
+#include <andromeda/resources.h>
 
 
 #include <andromeda/Game/game_object.h>
@@ -63,9 +64,21 @@ Game::Game()
 
 
 	// Effect Test
-	std::shared_ptr<andromeda::Effect> effect = andromeda::LoadResource<andromeda::Effect>("shader.xml");
+	std::shared_ptr<andromeda::Effect> effect = andromeda::LoadEffect("shader.xml");
+
+
+	// Create Skybox
+	std::shared_ptr<andromeda::GameObject> skybox = Factory::createSkybox();
+
+	// Create Some Objects
+	createGround();
+
+
 
 	// Create the Views
+	// TODO: There is a bug since moving to the deferred renderer when it comes to split/multi screen, 
+	// as the viewport is altered when rendering to the offscreen targets but not restored when 
+	// doing the lighting pass
 	aInt32 players = 1;
 
 	if (players == 1)
@@ -87,8 +100,13 @@ Game::Game()
 
 
 
-	// Create Some Objects
-	createGround();
+	// Add Game Object to Scene
+	_scene->getSceneGraph()->addGameObject(skybox);
+
+
+
+
+
 
 	//createMesh("mesh_0");
 
@@ -144,7 +162,6 @@ Game::Game()
 
 	// Creates Text
 	createText();
-
 }
 
 
@@ -167,28 +184,7 @@ void Game::createText()
 	// TODO: Needs to be Font
 	std::shared_ptr<andromeda::FontFace> f = std::make_shared<andromeda::FontFace>("../res/fonts/arial.ttf");
 	//std::shared_ptr<andromeda::FontFace> f = std::make_shared<andromeda::FontFace>("../res/fonts/CODE2000.ttf");
-	
-	//
-	//
-#if 0
-	if (!f->setFontSize(96))
-	{
-		log_errp("Error setting font size");
-	}
 
-
-	// TesT
-	if (!f->getCharacterOutline((aUInt32)'0'))
-	{
-		log_errp("Error loading character shape");
-	}
-
-	// TesT
-	if (!f->getCharacterBitmap((aUInt32)'0'))
-	{
-		log_errp("Error loading character bitmap");
-	}
-#endif
 
 	// Create Font Atlas
 	std::shared_ptr<andromeda::FontAtlas> fa = std::make_shared<andromeda::FontAtlas>(f, 128);
@@ -216,13 +212,12 @@ void Game::createText()
 	// Add RenderComponent
 	if (f)
 	{
-		//	std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, material, transform);
+		std::shared_ptr<andromeda::FontRenderComponent> render = std::make_shared<andromeda::FontRenderComponent>(fa, transform);
 
-		std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::FontRenderComponent>(fa, transform);
+		render->getMaterial().setDiffuse(1.0f, 0.0f, 1.0f);
+		render->getMaterial().setDiffuseTexture(andromeda::LoadTexture("pattern0.png"));
 
-		obj->addComponent<andromeda::RenderComponent>(render);
-
-
+		obj->addComponent(render);
 	}
 
 	// Add Game Object to Scene
@@ -245,8 +240,8 @@ void Game::createText()
 std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, aFloat h)
 {
 	// Load/Get Effects
-	std::shared_ptr<andromeda::Effect> effect = andromeda::LoadResource<andromeda::Effect>("shader.xml");
-	std::shared_ptr<andromeda::Effect> defEffect = andromeda::LoadResource<andromeda::Effect>("deferred.xml");
+	std::shared_ptr<andromeda::Effect> effect = andromeda::LoadEffect("shader.xml");
+	std::shared_ptr<andromeda::Effect> defEffect = andromeda::LoadEffect("deferred.xml");
 
 
 
@@ -281,6 +276,8 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 	std::shared_ptr<andromeda::DeferredRenderer> deferred = std::make_shared<andromeda::DeferredRenderer>(sg, defEffect, "lightDirectional");
 	deferred->getCamera()->setPerspectiveFov(glm::pi<aFloat>() / 3.0f, 0.01f, 1000.0f);
 	deferred->getCamera()->setView(28.0f);
+	deferred->setEnvironmentReflectionmap(andromeda::LoadCubeTexture("skybox", nullptr));
+
 	view->addRenderer("deferred", deferred);
 	view->addRendererLayer("deferred", "", "geometry", defEffect, "objects");
 	view->addRendererLayer("deferred", "text", "geometry", defEffect, "objects");
@@ -306,7 +303,6 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 	{
 		std::stringstream name("debug");
 		name << i;
-
 
 		// Create a Debug Game Object to Display
 		std::shared_ptr<andromeda::GameObject> obj = std::make_shared<andromeda::GameObject>(name.str());
@@ -335,9 +331,6 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 		// Add to debug scene graph
 		dsg->addGameObject(obj);
 	}
-	
-
-
 
 	return view;
 }
@@ -417,7 +410,7 @@ std::shared_ptr<andromeda::GameObject> Game::createGround()
 	obj->addComponent(transform);
 
 	// Create Material
-	std::shared_ptr<andromeda::Texture> tex = andromeda::LoadResource<andromeda::Texture>("pattern0.png");
+	std::shared_ptr<andromeda::Texture> tex = andromeda::LoadTexture("pattern0.png");
 	andromeda::Material material;
 
 	material.setDiffuse(1, 1, 1)

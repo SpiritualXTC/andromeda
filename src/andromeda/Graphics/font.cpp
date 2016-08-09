@@ -9,6 +9,7 @@
 #include <boost/algorithm/string.hpp>
 
 // Andromeda
+#include <andromeda/resources.h>
 #include <andromeda/Geometry/geometry.h>
 #include <andromeda/Geometry/geometry_polygon.h>
 #include <andromeda/Graphics/effect.h>
@@ -24,9 +25,6 @@
 #define GLYPH_METRIC_SCALE_FACTOR (64.0f)
 #define GLYPH_VECTOR_SCALE_FACTOR (6400.0f)
 
-
-// REmove meh
-#include <SOIL/SOIL.h>
 
 using namespace andromeda;
 
@@ -182,6 +180,7 @@ void IFont::drawText(const std::shared_ptr<andromeda::IShader> shader, const std
 			ms.pop();
 
 			/*
+				TODO:
 				Move the Font Scaler to the "interface"
 			*/
 			glm::mat4 m(1.0f);
@@ -218,34 +217,6 @@ void IFont::drawString(const std::shared_ptr<andromeda::IShader> shader, const s
 	// Pop Matrix
 	// Do not Continue Function!
 
-#if 0
-	if (string.find_first_of('\n') != std::string::npos)
-	{
-		std::vector<std::string> lines;
-
-
-
-
-
-		for (const auto & s : lines)
-		{
-			drawString(shader, s, ms);
-
-
-			// Update Matrix
-			glm::mat4 m(1.0f);	// This needs to be based on the font-width & additional spacing
-
-								// Translate Matrix
-								// This is the fonts "lineGap" 
-								//m = glm::translate(m, glm::vec3(0.0f, -_lineGap, 0.0f));
-			m = glm::translate(m, glm::vec3(0.0f, -1.0f, 0.0f));
-
-			ms.multiply(m);
-		}
-
-		return;
-	}
-#endif
 
 
 	// If Justify is enabled....
@@ -418,7 +389,7 @@ Font::Font(const std::string & font, Int32 size)
 #endif
 
 	// Load the Bezier Texture
-	_texture = andromeda::LoadResource<Texture>("bezier.png");
+	_texture = andromeda::LoadTexture("bezier.png");
 
 	// Load the Font
 	loadFont(font, size);

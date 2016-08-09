@@ -8,10 +8,9 @@
 #include <andromeda/Game/geometry_component.h>
 #include <andromeda/Game/transform_component.h>
 
-
-#include <andromeda/andromeda.h>
 #include <andromeda/geometry.h>
 #include <andromeda/graphics.h>
+#include <andromeda/resources.h>
 
 #include "plane_test_component.h"
 #include "circular_path_component.h"
@@ -19,6 +18,31 @@
 
 using namespace andromeda;
 
+
+
+std::shared_ptr<andromeda::GameObject> Factory::createSkybox()
+{
+	// Create Game Object
+	std::shared_ptr<andromeda::GameObject> obj = std::make_shared<andromeda::GameObject>("skybox");
+
+
+	// Load a Cube Texture
+	CubeTextureLoadArgs args;
+	args.filename_posX = "skybox_xpos.png";
+	args.filename_negX = "skybox_xneg.png";
+
+	args.filename_posY = "skybox_ypos.png";
+	args.filename_negY = "skybox_yneg.png";
+
+	args.filename_posZ = "skybox_zpos.png";
+	args.filename_negZ = "skybox_zneg.png";
+
+
+	std::shared_ptr<andromeda::CubeTexture> cubeTex = andromeda::LoadCubeTexture("skybox", &args);
+
+
+	return obj;
+}
 
 
 /*
@@ -44,7 +68,7 @@ std::shared_ptr<andromeda::GameObject> Factory::createCube()
 
 
 	// Create Material
-	std::shared_ptr<andromeda::Texture> tex = andromeda::LoadResource<andromeda::Texture>("pattern0.png");
+	std::shared_ptr<andromeda::Texture> tex = andromeda::LoadTexture("pattern0.png");
 	andromeda::Material material;
 
 	material.setDiffuse(1, 1, 1)
@@ -111,7 +135,7 @@ std::shared_ptr<andromeda::GameObject> Factory::createSphere(aFloat angle)
 		std::shared_ptr<andromeda::GeometryRenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, transform);
 		obj->addComponent<andromeda::GeometryRenderComponent>(render);
 
-		render->getMaterial().setDiffuseTexture(andromeda::LoadResource<andromeda::Texture>("white.png"));
+		render->getMaterial().setDiffuseTexture(andromeda::LoadTexture("white.png"));
 
 		// Add Plane Test Component
 		std::shared_ptr<PlaneTestComponent> planeTest = std::make_shared<PlaneTestComponent>(render, transform);

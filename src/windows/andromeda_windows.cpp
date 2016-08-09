@@ -1,6 +1,7 @@
 #include "andromeda_windows.h"
 
 // Library Includes
+#include <andromeda/andromeda.h>
 #include <andromeda/Engine/display.h>
 #include <andromeda/Engine/engine.h>
 #include <andromeda/Engine/system.h>

@@ -109,6 +109,11 @@ void FontAtlas::addGeometry(const _Character & ch)
 		Texture dimensions
 	*/
 
+	addGeometry(ch, _vertices, 0.0f, 0.0f);
+}
+
+void FontAtlas::addGeometry(const _Character & ch, std::vector<Float> & verts, Float offX, Float offY)
+{
 	Float tu0 = ch.offset.x / (Float)IMAGE_WIDTH;
 	Float tv0 = ch.offset.y / (Float)IMAGE_HEIGHT;
 
@@ -123,33 +128,32 @@ void FontAtlas::addGeometry(const _Character & ch)
 	Float x1 = x0 + w;
 	Float y1 = y0 - h;
 
-	glm::vec3 verts[] = {
-		{x0, y0, 0.0f},
-		{x1, y0, 0.0f},
-		{x0, y1, 0.0f},
-		{x1, y1, 0.0f}
+	glm::vec3 pos[] = {
+		{ x0, y0, 0.0f },
+		{ x1, y0, 0.0f },
+		{ x0, y1, 0.0f },
+		{ x1, y1, 0.0f }
 	};
 
 	glm::vec2 tex[] = {
-		{tu0, tv0},
-		{tu1, tv0},
-		{tu0, tv1},
-		{tu1, tv1}
+		{ tu0, tv0 },
+		{ tu1, tv0 },
+		{ tu0, tv1 },
+		{ tu1, tv1 }
 	};
 
 
 	for (UInt32 i = 0; i < 4; ++i)
 	{
 		// Position
-		//_vertices.push_back(verts[i].x);
-		_vertices.insert(_vertices.end(), { verts[i].x, verts[i].y, verts[i].z });
+		verts.insert(verts.end(), { pos[i].x + offX, pos[i].y + offY, pos[i].z });
 
 		// Texture
-		_vertices.insert(_vertices.end(), { tex[i].x, tex[i].y });
+		verts.insert(verts.end(), { tex[i].x, tex[i].y });
 	}
-
-
 }
+
+
 
 
 /*
@@ -349,10 +353,82 @@ Float FontAtlas::drawCharacter(const std::shared_ptr<andromeda::IShader> shader,
 
 
 
-/*
 
+
+
+/*
+	Some of this code could be moved to IFont (the parent class)
 */
 std::shared_ptr<Geometry> FontAtlas::generateText(const std::wstring & string)
 {
-	return nullptr;
+	std::vector<std::wstring> lines;
+
+	std::vector<Float> vertices;
+	std::vector<UInt32> indices;
+	
+	UInt32 index[] = { 0, 1, 2, 2, 1, 3 };
+
+	log_warnp("Generate Static Text");
+	log_tree();
+
+	// Split text
+	if (!splitText(string, lines))
+		return false;
+
+
+	Float offsetX = 0.0f;
+	Float offsetY = 0.0f;
+	UInt32 offsetIndex = 0;
+
+	// Loop through Lines
+	for (const auto & line : lines)
+	{
+		// Loop Through Characters
+		for (const auto & ch : line)
+		{
+			UInt32 charIndex = mapIndex(ch);
+
+			if (charIndex >= _characters.size())
+				continue;
+
+			_Character & c = _characters[charIndex];
+
+			// Add Vertices
+			addGeometry(c, vertices, offsetX, offsetY);
+				
+			// Add Indices
+			for (UInt32 i = 0; i < 6; ++i)
+			{
+				UInt32 val = index[i] + offsetIndex;
+				indices.push_back(val);
+			}
+			
+			// Advance
+			offsetX += c.metrics.advance / FONT_SCALE;
+			offsetIndex += 4;
+		}
+
+		// Reset X, Adjust Line Spacing
+		offsetX = 0.0f;
+		offsetY -= getLineSpacing() / FONT_SCALE;
+	}
+
+	log_debugp("Vertices Generated = %1%", vertices.size());
+	log_debugp("Indices Generated = %1%", indices.size());
+
+
+	// Create Vertex Buffer
+	std::shared_ptr<VertexBuffer> vb = std::make_shared<VertexBuffer>();
+	std::shared_ptr<IndexBuffer> ib = std::make_shared<IndexBuffer>();
+
+	vb->data((void*)vertices.data(), vertices.size() * sizeof(Float));
+	ib->data((void*)indices.data(), indices.size() * sizeof(UInt32));
+
+	// Create Declaration :: Doing here, as the 2nd set of texture coords could be built-in
+	std::shared_ptr<GeometryDescription> desc = std::make_shared<GeometryDescription>(GL_TRIANGLES, vertices.size(), indices.size(), GL_UNSIGNED_INT);
+
+	desc->addDeclaration(3, GL_FLOAT, sizeof(Float) * 3, GeometryLocation::Position);
+	desc->addDeclaration(2, GL_FLOAT, sizeof(Float) * 2, GeometryLocation::Texture0);
+
+	return std::make_shared<Geometry>(vb, desc, ib);;
 }

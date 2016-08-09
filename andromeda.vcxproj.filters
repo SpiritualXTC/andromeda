@@ -324,12 +324,6 @@
     <ClInclude Include="src\andromeda\Resources\texture_resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\nvfx\nv_effect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nvfx\nv_effect_buffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\xeffect\x_uniform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -447,9 +441,6 @@
     <ClInclude Include="src\opengl\Graphics\render_buffer_gl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\andromeda\andromeda_main.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\andromeda\Math\projection_matrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -466,6 +457,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\andromeda\Graphics\text.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\opengl\Graphics\cube_texture_gl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\resources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\andromeda_init.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -672,12 +672,6 @@
     <ClCompile Include="src\andromeda\Resources\effect_resource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\nvfx\nv_effect.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\nvfx\nv_effect_material_buffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\xeffect\x_uniform_builder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -763,6 +757,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Graphics\text.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\opengl\Graphics\cube_texture_gl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\resources.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

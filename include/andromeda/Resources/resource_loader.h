@@ -21,14 +21,12 @@ namespace andromeda
 
 
 	/*
-		Unknown Resource
+		Loads a Resource
 	*/
 	class ResourceLoader
 	{
 	public:
-		ResourceLoader()
-		{
-		}
+		ResourceLoader() {}
 
 
 		template <typename RESOURCE>
@@ -39,5 +37,28 @@ namespace andromeda
 			return nullptr;
 		}
 		
+
+
 	};
+
+
+
+	/*
+		Builds a Resource
+	*/
+	class ResourceBuilder
+	{
+	public:
+		ResourceBuilder() {}
+
+
+		template <typename RESOURCE, typename ARGS>
+		std::shared_ptr<RESOURCE> build(const ARGS & args)
+		{
+			log_errp("No Resource Loading Implemented. Unable to load Resource");
+
+			return nullptr;
+		}
+	};
+
 }

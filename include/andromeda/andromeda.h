@@ -1,6 +1,4 @@
-#ifndef _ANDROMEDA_ANDROMEDA_H_
-#define _ANDROMEDA_ANDROMEDA_H_
-
+#pragma once
 
 // Standard Library
 #include <memory>
@@ -8,58 +6,32 @@
 // Andromeda
 #include "stddef.h"
 
-#include "Utilities/singleton.h"
-
-
-
-
-
-
-#if BOOST_OS_WINDOWS
-#include <Windows.h>
-#endif
-
-
-
-
-
-// TEMP
-#include <andromeda/Resources/resource_manager.h>
-
-
 
 
 namespace andromeda
 {
 	// Forward Declarations
 	class Application;
-	class Display;
-	struct DisplayParameters;
-	class Engine;
 	class Config;
+	class Engine;
+	class Graphics;
+	class ResourceManager;
 	class SceneManager;
 	class System;
 	class Timing;
 	
-	class ResourceManager;
-
-	class Platform;
-	class Context;
-
-
-	class Mouse;
-	class Keyboard;
+	
+	// TEMP
+	class IAndromedaConfig;
 
 
-	class Graphics;
+
+
+
 
 	/*
-		Namespace Functionality :)
+		Namespace Functionality
 	*/
-
-
-
-
 	class IAndromeda
 	{
 	public:
@@ -87,11 +59,8 @@ namespace andromeda
 
 
 
-	/*
-	
-		Move this OUT of the interface library
-	
-	*/
+
+
 
 
 
@@ -100,30 +69,13 @@ namespace andromeda
 
 
 	/*
-		Class used to initialise the engine
-	*/
-	class IAndromedaConfig
-	{
-	public:
-		virtual void init() = 0;
 
-		virtual std::shared_ptr<Display> initDisplay(const DisplayParameters & dp) = 0;
-		virtual std::shared_ptr<Platform> initPlatform() = 0;
-		virtual std::shared_ptr<Context> initContext() = 0;
-		virtual std::shared_ptr<Graphics> initGraphics() = 0;
-	};
-
-
-
-
-	/*
-		It will control how each platform loads
-
-		TODO: It could be possible to use a templateless PIMPLE pattern
 	*/
 	class Andromeda : virtual public IAndromeda
 	{
-		// Static :: Special Case Singleton :: This could even be moved to another class altogether, once namespace functions are in use.
+		// Static :: Special Case Singleton
+		// TODO: Move to another class, that isn't exposed to the API
+
 	public:
 
 		/*
@@ -138,7 +90,7 @@ namespace andromeda
 
 
 		/*
-			Get Instance of the Engine :: MOST functionality should have namespace-level functions
+			Get Instance :: MOST functionality should have namespace-level functions
 		*/
 		static inline IAndromeda * instance() 
 		{ 
@@ -242,38 +194,4 @@ namespace andromeda
 	{
 		return Andromeda::instance()->getGraphics();
 	}
-
-
-
-
-
-
-	/*
-		Namespace level "quick" functions
-
-		Not sure if they should exist in THIS file or not...
-	*/
-
-	template <typename RESOURCE>
-	inline std::shared_ptr<RESOURCE> LoadResource(const std::string filename, const std::string locationName = "")
-	{
-		return Andromeda::instance()->getResourceManager()->loadResource<RESOURCE>(filename, locationName);
-	}
-
-
-
-
-
-
-
-
-	/* Initialise - Platform Specific */
-#if BOOST_OS_WINDOWS
-	Boolean initialise(HINSTANCE hInstance);
-#endif
-
 }
-
-
-
-#endif

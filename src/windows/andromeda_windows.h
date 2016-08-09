@@ -1,6 +1,7 @@
 #pragma once
 
-#include <andromeda/andromeda.h>
+#include <andromeda/andromeda_init.h>
+
 #include "../andromeda/andromeda_config.h"
 
 #include <andromeda/Utilities/log.h>

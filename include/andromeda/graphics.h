@@ -128,9 +128,14 @@ namespace andromeda
 		// Create Volume Texture
 		virtual std::shared_ptr<VolumeTexture> createVolumeTexture() = 0;
 
+		// Create Shader
+		virtual std::shared_ptr<IShader> createShader() = 0;
 
 		// Create Effect [No Implementation :: This may not need to be fully abstracted]
 		virtual std::shared_ptr<Effect> createEffect() { return nullptr; }
+
+
+
 
 
 	//	virtual inline std::shared_ptr<Mesh> createMesh() = 0;

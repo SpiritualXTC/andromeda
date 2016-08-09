@@ -10,6 +10,7 @@ namespace andromeda
 
 	class Effect;
 
+	class CubeTexture;
 
 	/*
 	
@@ -26,6 +27,11 @@ namespace andromeda
 
 		void addDirectionalLight();
 
+
+		// Set Environment Mapping
+		inline void setEnvironmentReflectionmap(const std::shared_ptr<CubeTexture> & cubeTex) { _reflection = cubeTex; }
+
+
 	protected:
 		void onResize(Float width, Float height) override;
 	//	void onBegin() override;
@@ -34,6 +40,8 @@ namespace andromeda
 	private:
 		std::shared_ptr<IFrameBuffer> _gBuffer;
 
+
+		std::shared_ptr<CubeTexture> _reflection;
 
 
 

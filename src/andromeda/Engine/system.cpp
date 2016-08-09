@@ -3,6 +3,7 @@
 #include <cassert>
 
 #include <andromeda/andromeda.h>
+#include <andromeda/andromeda_init.h>
 
 #include <andromeda/Events/event_manager.h>
 

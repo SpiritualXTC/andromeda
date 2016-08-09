@@ -3,6 +3,7 @@
 // Include OpenGL Graphic Objects
 #include "Graphics/frame_buffer_gl.h"
 #include "Graphics/texture_gl.h"
+#include "Graphics/cube_texture_gl.h"
 
 // Include Log
 #include <andromeda/Utilities/log.h>
@@ -59,13 +60,21 @@ std::shared_ptr<Texture> GraphicsOpenGL::createTexture(UInt32 width, UInt32 heig
 */
 std::shared_ptr<CubeTexture> GraphicsOpenGL::createCubeTexture(UInt32 width, UInt32 height)
 {
-	return nullptr;
+	return std::make_shared<opengl::TextureCubeGL>(width, height);
 }
 
 /*
 	Create Volume Texture [No Implementation]
 */
 std::shared_ptr<VolumeTexture> GraphicsOpenGL::createVolumeTexture()
+{
+	return nullptr;
+}
+
+/*
+	Creates a Shader
+*/
+std::shared_ptr<IShader> GraphicsOpenGL::createShader()
 {
 	return nullptr;
 }

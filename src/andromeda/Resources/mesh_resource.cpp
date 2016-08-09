@@ -12,7 +12,7 @@
 
 
 
-#include <andromeda/andromeda.h>
+#include <andromeda/resources.h>
 
 #include <andromeda/Geometry/geometry.h>
 #include <andromeda/Geometry/geometry_builder.h>
@@ -213,7 +213,7 @@ std::shared_ptr<Texture> MeshLoader::loadTexture(const aiMaterial * pmaterial, a
 	std::string fn = GetFilename(std::string(filename.C_Str()));
 
 	// Load Texture :: This can't be loaded via a separate thread
-	std::shared_ptr<Texture> texture = andromeda::LoadResource<Texture>(fn.c_str());
+	std::shared_ptr<Texture> texture = andromeda::LoadTexture(fn.c_str());
 
 	if (texture)
 		log_infop("-- Valid Texture");

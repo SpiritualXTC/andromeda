@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "../stddef.h"
 
@@ -24,6 +25,77 @@ namespace andromeda
 
 		+ others
 	*/
+
+
+
+	/*
+		Options for Loading a 2D Texture
+	*/
+	struct TextureLoadArgs
+	{
+		// Filtering Options
+		// Format
+	};
+
+	/*
+		Options for Loading a Cube Texture
+	*/
+	struct CubeTextureLoadArgs
+	{
+		// Filtering Options
+		// Format
+
+		std::string filename_posX;
+		std::string filename_negX;
+		
+		std::string filename_posY;
+		std::string filename_negY;
+
+		std::string filename_posZ;
+		std::string filename_negZ;
+	};
+
+	/*
+		Options for Loading a Volume Texture
+	*/
+	struct VolumeTextureLoadArgs
+	{
+		// Filtering Options
+		// Format
+
+		std::vector<std::string> filenames;
+	};
+
+
+
+
+
+	/*
+		Face Direction for CubeTextures
+
+		TODO: This may be better in graphics_types.h
+	*/
+	enum class CubeTextureFace
+	{
+		X_Positive,
+		X_Negative,
+		Y_Positive,
+		Y_Negative,
+		Z_Positive,
+		Z_Negative,
+	};
+
+
+
+
+
+
+
+
+
+
+
+
 
 	/*
 		Common Interface shared by all texture types
@@ -58,7 +130,7 @@ namespace andromeda
 	class Texture : virtual public ITexture
 	{
 	public:
-		// Resize the Texture [Currently Loses all information]
+		// Resize the Texture
 		virtual void resize(const UInt8 * ptr, UInt32 width, UInt32 height) = 0;
 
 		virtual void data(const UInt8 * ptr) = 0;
@@ -73,6 +145,9 @@ namespace andromeda
 
 
 
+
+
+
 	/*
 		Abstract Cube Texture
 	*/
@@ -80,8 +155,14 @@ namespace andromeda
 	{
 	public:
 
+		// Resize the Texture
+		virtual void resize(UInt32 width, UInt32 height) = 0;
+
 		virtual const inline UInt32 width() const = 0;
 		virtual const inline UInt32 height() const = 0;
+
+		virtual void data(CubeTextureFace face, const UInt8 * ptr) = 0;
+		virtual void data(CubeTextureFace face, const UInt8 * ptr, Int32 xOffset, Int32 yOffset, UInt32 width, UInt32 height) = 0;
 	};
 
 
@@ -102,15 +183,6 @@ namespace andromeda
 
 	private:
 	};
-
-
-
-
-
-	/*
-		Look for this function in use... lololol
-	*/
-	//std::shared_ptr<Texture> LoadTexture(const std::string & filename);
 }
 
 typedef andromeda::Texture aTexture;

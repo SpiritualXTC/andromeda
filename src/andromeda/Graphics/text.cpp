@@ -2,7 +2,11 @@
 
 #include <cassert>
 
+#include <andromeda/Geometry/geometry.h>
 #include <andromeda/Graphics/font.h>
+#include <andromeda/Graphics/texture.h>
+
+#include <andromeda/Geometry/geometry_cube.h>
 
 using namespace andromeda;
 
@@ -11,7 +15,7 @@ using namespace andromeda;
 /*
 
 */
-Text::Text(const std::shared_ptr<IFont> & font, const std::string & text)
+Text::Text(const std::shared_ptr<IFont> & font, const std::wstring & text)
 	: _font(font)
 {
 	assert(font);
@@ -35,7 +39,7 @@ Text::~Text()
 /*
 
 */
-Boolean Text::setText(const std::string & text)
+Boolean Text::setText(const std::wstring & text)
 {
 	if (_font.expired())
 		return false;
@@ -45,6 +49,13 @@ Boolean Text::setText(const std::string & text)
 
 	std::shared_ptr<IFont> font = _font.lock();
 
+	// Generate Text
+	_geometry = font->generateText(text);
+
+	// Get Texture
+	_texture = font->getTexture();
+
+	return true;
 }
 
 
@@ -55,6 +66,12 @@ Boolean Text::setText(const std::string & text)
 */
 void Text::render()
 {
+	// TODO: set texture [This should be binding 1, but multiple textures can't be used yet]
+	_texture->bind(0);
 
+	// render Geometry
+	_geometry->render();
 
+	//
+	_texture->unbind(0);
 }

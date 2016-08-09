@@ -16,27 +16,13 @@
 
 using namespace andromeda;
 
-#if 0
-/*
-	Loads a Texture :: This hasn't been tested since a change was made
-*/
-std::shared_ptr<Texture> andromeda::LoadTexture(const std::string & filename)
-{
-	TextureLoader loader(filename);
-
-	return loader.getTexture();
-}
-#endif
-
-
-
 
 
 /*
 	Template Specialisation for Loading a Texture
 
 	TODO:
-	- The Texture needs to be created and returned, irrespective of when/where the mesh gets loaded
+	- The Texture needs to be created and returned, irrespective of when/where the texture gets loaded
 	- Add threading support somewhere ...
 */
 template<>
@@ -78,7 +64,6 @@ TextureLoader::TextureLoader(const std::string & filename)
 		log_verbosep("TextureLoader :: <init>() :: Texture Loaded: %1%x%2%", width, height);
 
 	// Create Texture
-//	_texture = std::make_shared<Texture>(width, height);
 	_texture = graphics()->createTexture(width, height);
 
 	// Set Data

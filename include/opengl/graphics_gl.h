@@ -269,6 +269,9 @@ namespace andromeda
 		// Create Volume Texture [No Implementation]
 		std::shared_ptr<VolumeTexture> createVolumeTexture() override;
 
+		// Create Shader
+		std::shared_ptr<IShader> createShader() override;
+
 
 		/*
 			Important Functions

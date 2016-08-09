@@ -1,5 +1,7 @@
 #include <andromeda/andromeda.h>
 
+#include <andromeda/andromeda_init.h>
+
 #include <andromeda/Engine/application.h>
 #include <andromeda/Engine/config.h>
 #include <andromeda/Engine/engine.h>

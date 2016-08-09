@@ -79,7 +79,8 @@
   <ItemGroup>
     <ClInclude Include="Docs\docs.txt" />
     <ClInclude Include="include\andromeda\andromeda.h" />
-    <ClInclude Include="include\andromeda\andromeda_main.h" />
+    <ClInclude Include="include\andromeda\andromeda_init.h" />
+    <ClInclude Include="include\andromeda\resources.h" />
     <ClInclude Include="include\andromeda\Containers\template_map.h" />
     <ClInclude Include="include\andromeda\Containers\Deprecated\vector.h" />
     <ClInclude Include="include\andromeda\Containers\template_multimap.h" />
@@ -128,16 +129,15 @@
     <ClInclude Include="include\andromeda\Utilities\convert.h" />
     <ClInclude Include="include\andromeda\Utilities\Image\image_convert.h" />
     <ClInclude Include="include\andromeda\Utilities\observable.h" />
-    <ClInclude Include="include\nvfx\nv_effect_buffer.h" />
     <ClInclude Include="include\andromeda\Renderer\layer.h" />
     <ClInclude Include="include\andromeda\Math\projection_matrix.h" />
     <ClInclude Include="include\andromeda\Renderer\scene.h" />
     <ClInclude Include="include\andromeda\Renderer\scene_graph_basic.h" />
     <ClInclude Include="include\andromeda\Renderer\scene_graph_cache.h" />
     <ClInclude Include="include\andromeda\Renderer\view_builder.h" />
-    <ClInclude Include="include\nvfx\nv_effect.h" />
     <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_directional_light.h" />
     <ClInclude Include="src\andromeda\Renderer\renderable_group.h" />
+    <ClInclude Include="src\opengl\Graphics\cube_texture_gl.h" />
     <ClInclude Include="src\opengl\Graphics\frame_buffer_gl.h" />
     <ClInclude Include="src\opengl\Graphics\render_buffer_gl.h" />
     <ClInclude Include="src\opengl\Graphics\shader_gl.h" />
@@ -244,6 +244,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\andromeda\andromeda.cpp" />
+    <ClCompile Include="src\andromeda\resources.cpp" />
     <ClCompile Include="src\andromeda\Engine\application.cpp" />
     <ClCompile Include="src\andromeda\Engine\config.cpp" />
     <ClCompile Include="src\andromeda\Engine\display.cpp" />
@@ -261,6 +262,7 @@
     <ClCompile Include="src\andromeda\Graphics\font_atlas.cpp" />
     <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_directional_light.cpp" />
     <ClCompile Include="src\andromeda\Graphics\text.cpp" />
+    <ClCompile Include="src\opengl\Graphics\cube_texture_gl.cpp" />
     <ClCompile Include="src\opengl\Graphics\frame_buffer_gl.cpp" />
     <ClCompile Include="src\opengl\Graphics\render_buffer_gl.cpp" />
     <ClCompile Include="src\andromeda\Renderer\renderer.cpp" />
@@ -269,7 +271,6 @@
     <ClCompile Include="src\andromeda\Renderer\camera.cpp" />
     <ClCompile Include="src\andromeda\Renderer\layer_builder.cpp" />
     <ClCompile Include="src\andromeda\Renderer\renderable_group.cpp" />
-    <ClCompile Include="src\nvfx\nv_effect_material_buffer.cpp" />
     <ClCompile Include="src\andromeda\Graphics\font.cpp" />
     <ClCompile Include="src\andromeda\Graphics\material.cpp" />
     <ClCompile Include="src\andromeda\Graphics\mesh.cpp" />
@@ -279,7 +280,6 @@
     <ClCompile Include="src\andromeda\Game\game_object.cpp" />
     <ClCompile Include="src\andromeda\Game\geometry_component.cpp" />
     <ClCompile Include="src\andromeda\Game\render_component.cpp" />
-    <ClCompile Include="src\nvfx\nv_effect.cpp" />
     <ClCompile Include="src\andromeda\Renderer\layer.cpp" />
     <ClCompile Include="src\andromeda\Renderer\scene.cpp" />
     <ClCompile Include="src\andromeda\Renderer\scene_graph_basic.cpp" />

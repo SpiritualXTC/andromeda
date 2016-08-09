@@ -28,10 +28,12 @@
 namespace andromeda
 {
 	class IShader;
-
 	class ITexture;
+
+
 	class Geometry;
 	class MatrixStack;
+	class Texture;
 
 	class FontFace;
 
@@ -101,7 +103,8 @@ namespace andromeda
 		
 		inline Int32 getLineSpacing() const { return _lineSpacing; }
 
-
+		
+		
 
 		// Maps the CharCode to Glyph/Character Information
 		UInt32 mapIndex(UInt32 charCode);
@@ -112,7 +115,7 @@ namespace andromeda
 			Generates a precached version of the text for faster rendering of static text
 		*/
 		virtual std::shared_ptr<Geometry> generateText(const std::wstring & string) = 0;
-
+		virtual const std::shared_ptr<Texture> getTexture() const = 0;
 
 
 

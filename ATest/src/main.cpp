@@ -8,6 +8,8 @@
 
 
 #include <andromeda/andromeda.h>
+#include <andromeda/andromeda_init.h>
+
 #include <andromeda/graphics.h>
 #include <andromeda/Resources/resource_manager.h>
 #include <andromeda/Utilities/io.h>
@@ -120,6 +122,9 @@ void configResources(andromeda::ResourceManager * fs)
 	fs->addResourceType<andromeda::Mesh>("models", andromeda::ResourceManager::Binary);
 	fs->addResourceType<andromeda::Effect>("shader");
 	fs->addResourceType<andromeda::Texture>("textures", andromeda::ResourceManager::Binary);
+	fs->addResourceType<andromeda::CubeTexture>("textures", andromeda::ResourceManager::Binary);
+	fs->addResourceType<andromeda::VolumeTexture>("textures", andromeda::ResourceManager::Binary);
+
 
 	log_warn("main() :: TODO: Rename to Font when Font library is setup fully.");	// This is being logged for a reason :p
 	fs->addResourceType<andromeda::FontFace>("fonts", andromeda::ResourceManager::Binary);

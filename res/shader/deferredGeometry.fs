@@ -14,6 +14,7 @@ uniform float g_opacity;
 uniform sampler2D g_diffuseTexture;
 
 
+uniform samplerCube u_envReflection;
 
 
 // Varying
@@ -27,10 +28,17 @@ varying vec2		v_diffuseTextureCoord;
 
 void main( void )
 {
+	// Sample Diffuse Texture :: Currently using this texture for the AlphaMask as well
 	vec4 difTexRGB = texture2D(g_diffuseTexture, v_diffuseTextureCoord);
 
 	// Alpha Discard
 	if (difTexRGB.a == 0.0) discard;
+
+
+	// Sample the Environment map for Reflections
+
+
+
 
 	// Output to Diffuse Texture :: Can the gl_Position.w be used here to show depth?? (in the alpha channel)
 	gl_FragData[0]		= difTexRGB * vec4(g_diffuse, 1.0);
@@ -40,4 +48,7 @@ void main( void )
 
 	// Output to Normal Texture
 	gl_FragData[2]		= vec4(v_normal, 1.0);
+
+	// Output to Specular Texture
+	//gl_fragData[x]	= vec4(g_specular, shininess);
 }
