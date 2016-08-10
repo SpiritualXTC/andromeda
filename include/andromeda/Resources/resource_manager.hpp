@@ -180,7 +180,7 @@ namespace andromeda
 
 		if (it == _resourceType.end())
 		{
-			log_errp("ResourceManager :: getResourceDirectory() :: Invalid Resource Type [%1%]", type);
+			log_errp("ResourceManager :: getResourceType() :: Invalid Resource Type [%1%]", type);
 			throw ResourceException("Invalid Resource Type");
 		}
 

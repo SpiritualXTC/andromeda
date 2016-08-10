@@ -19,6 +19,19 @@ namespace andromeda
 	// Forward Declarations
 	class File;
 
+	/*
+		Base Class
+	*/
+	class IResourceLoader
+	{
+	public:
+
+	};
+
+
+
+
+
 
 	/*
 		Loads a Resource
@@ -53,7 +66,7 @@ namespace andromeda
 
 
 		template <typename RESOURCE, typename ARGS>
-		std::shared_ptr<RESOURCE> build(const ARGS & args)
+		std::shared_ptr<RESOURCE> build(const ARGS * args)
 		{
 			log_errp("No Resource Loading Implemented. Unable to load Resource");
 

@@ -143,7 +143,6 @@ namespace andromeda
 		ResourceManager();
 		virtual ~ResourceManager();
 
-
 		/*
 			Adds a resource type
 		*/
@@ -181,7 +180,7 @@ namespace andromeda
 		std::shared_ptr<RESOURCE> loadResource(const std::string & filename, const std::string & locationName = "");
 
 		/*
-		
+			Loads a Resource
 		*/
 		template <typename RESOURCE, typename ARGS>
 		std::shared_ptr<RESOURCE> loadResource(const std::string & name, const ARGS * args, const std::string & locationName);
@@ -218,6 +217,10 @@ namespace andromeda
 			return Resource<RESOURCE>::getResourceId();
 		}
 
+		// Mapping :: ResourceType :: IResourceLoader :: All Built in Resources will have their loaded 
+		// added by the engine during initialisation
+		std::unordered_map<ResourceTypeId, std::shared_ptr<IResourceLoader>> _resourceLoader;
+
 
 		// Mapping :: ResourceType :: ResourceDirectory
 		std::unordered_map<ResourceTypeId, std::shared_ptr<IResourceType>> _resourceType;
@@ -240,13 +243,14 @@ namespace andromeda
 
 		TODO:
 		This setup may lead to issues when it comes to loading custom types with the resource manager
+
+		ands its highly unclean with a little too much coupling between the resource manager and the individual resources that needs to be loaded.
 	*/
 	class Effect;
 	class Mesh;
 	class Texture;
-
-
-
+	class CubeTexture;
+	class VolumeTexture;
 
 	class FontFace;
 
@@ -259,6 +263,10 @@ namespace andromeda
 
 	template<>
 	std::shared_ptr<Texture> ResourceLoader::build<Texture>(std::shared_ptr<File> file);
+
+
+	template<>
+	std::shared_ptr<CubeTexture> ResourceBuilder::build<CubeTexture, CubeTextureLoadArgs>(const CubeTextureLoadArgs * args);
 
 
 	/*
