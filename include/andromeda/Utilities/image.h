@@ -1,15 +1,34 @@
 #pragma once
 
+#include <memory>
+#include <string>
+
 #include <andromeda/stddef.h>
+
+#include <cimg/CImg.h>
 
 #include "Image/image_convert.h"
 
 namespace andromeda
 {
+	// Forward Declaration
+	class File;
+
+
 	/*
 		TODO:
 		Add a format enum class
 	*/
+
+
+	enum class ImageFormat
+	{
+		RGBA,
+		Grayscale,
+	};
+
+
+
 
 
 
@@ -29,6 +48,7 @@ namespace andromeda
 
 
 
+	
 
 
 
@@ -44,6 +64,10 @@ namespace andromeda
 	class Image
 	{
 	public:
+		static std::shared_ptr<Image> LoadImageFromFile(const std::string & filename);
+		static std::shared_ptr<Image> LoadImageFromMemory(const File * file);
+
+	public:
 		Image()
 		{
 			_width = 0;
@@ -53,6 +77,12 @@ namespace andromeda
 		{
 			resize(w, h);
 		}
+		Image(Int32 w, Int32 h, UInt32 * ptr, UInt32 size)
+		{
+			resize(w, h, ptr, size);
+		}
+
+		
 
 		virtual ~Image()
 		{
@@ -97,12 +127,31 @@ namespace andromeda
 		}
 
 
-
 		/*
 		
 		*/
+		Boolean resize(Int32 w, Int32 h, UInt32 * ptr, UInt32 size)
+		{
+			Boolean result = true;
+			
+			// Clear Image
+			result = resize(w, h);
+			
+			// Copy
+			for (UInt32 i = 0; i < size; ++i)
+				_data[i] = ptr[i];
+
+			return result;
+		}
+
+
+
+		/*
+			TODO:
+			Rename to blit
+		*/
 		template <typename _T>
-		Boolean draw(Int32 offsetX, Int32 offsetY, const ImageData<_T> & image)
+		Boolean blit(Int32 offsetX, Int32 offsetY, const ImageData<_T> & image)
 		{
 			// "Draw" Image to Texture Data
 			// This shouldn't be here :)

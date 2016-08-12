@@ -23,13 +23,26 @@ namespace andromeda
 	/*
 		AttributeLocation:
 
+		TODO:
+
 		Matches up to a description of the geometry for the shader to use.
+
+		This enum should be used for shader annotations.
+
+		in GLSL:
+		layout(location={ANNOTATION}) in <type> <name>
+
+		Rename to ShaderAnnotation
 	*/
 	enum class GeometryLocation
 	{
 		Position,
 		Normal,
 		Texture0,
+		Texture1,
+
+		Color,
+
 
 		Auto = 0xFF,
 	};

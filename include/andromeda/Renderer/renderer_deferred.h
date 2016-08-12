@@ -12,6 +12,14 @@ namespace andromeda
 
 	class CubeTexture;
 
+	// Forward Declaration
+	namespace deferred
+	{
+		class DeferredRendererLightingMethod;
+	}
+
+
+
 	/*
 	
 	*/
@@ -45,7 +53,7 @@ namespace andromeda
 
 
 
-		class DeferredRendererLightingMethod;
-		std::shared_ptr<DeferredRendererLightingMethod> _lightingMethod;
+		
+		std::shared_ptr<deferred::DeferredRendererLightingMethod> _lightingMethod;
 	};
 }

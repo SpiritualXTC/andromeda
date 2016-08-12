@@ -136,6 +136,9 @@
     <ClInclude Include="include\andromeda\Renderer\scene_graph_cache.h" />
     <ClInclude Include="include\andromeda\Renderer\view_builder.h" />
     <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_directional_light.h" />
+    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_gbuffer_layer_extension.h" />
+    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_geometry_method.h" />
+    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_lighting_method.h" />
     <ClInclude Include="src\andromeda\Renderer\renderable_group.h" />
     <ClInclude Include="src\opengl\Graphics\cube_texture_gl.h" />
     <ClInclude Include="src\opengl\Graphics\frame_buffer_gl.h" />
@@ -244,6 +247,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\andromeda\andromeda.cpp" />
+    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_gbuffer_layer_extension.cpp" />
+    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_geometry_method.cpp" />
+    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_lighting_method.cpp" />
     <ClCompile Include="src\andromeda\resources.cpp" />
     <ClCompile Include="src\andromeda\Engine\application.cpp" />
     <ClCompile Include="src\andromeda\Engine\config.cpp" />
@@ -262,6 +268,7 @@
     <ClCompile Include="src\andromeda\Graphics\font_atlas.cpp" />
     <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_directional_light.cpp" />
     <ClCompile Include="src\andromeda\Graphics\text.cpp" />
+    <ClCompile Include="src\andromeda\Utilities\image.cpp" />
     <ClCompile Include="src\opengl\Graphics\cube_texture_gl.cpp" />
     <ClCompile Include="src\opengl\Graphics\frame_buffer_gl.cpp" />
     <ClCompile Include="src\opengl\Graphics\render_buffer_gl.cpp" />
@@ -364,6 +371,8 @@
     <None Include="res\shader\shader.fs" />
     <None Include="res\shader\shader.vs" />
     <None Include="res\shader\old\types.glsl" />
+    <None Include="res\shader\skybox.fs" />
+    <None Include="res\shader\skybox.vs" />
     <None Include="res\shader\vector.fs" />
     <None Include="res\shader\vector.vs" />
   </ItemGroup>

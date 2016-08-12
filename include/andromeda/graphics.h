@@ -21,9 +21,6 @@
 #include "Graphics/texture.h"
 
 
-#include "Graphics/font_atlas.h"
-
-
 
 
 
@@ -139,13 +136,14 @@ namespace andromeda
 
 
 	//	virtual inline std::shared_ptr<Mesh> createMesh() = 0;
-	
 
 
 
 
 
 		// Important States
+		virtual inline void setClearColor(Float r, Float g, Float b, Float a) = 0;
+
 		/*
 			TODO:
 			This is directly effected by what the render target is as well

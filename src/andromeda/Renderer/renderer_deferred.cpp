@@ -13,7 +13,10 @@
 #include <andromeda/Utilities/log.h>
 
 #include "renderable_group.h"
+
 #include "Deferred/deferred_directional_light.h"
+#include "Deferred/deferred_geometry_method.h"
+#include "Deferred/deferred_lighting_method.h"
 
 using namespace andromeda;
 
@@ -27,159 +30,9 @@ using namespace andromeda;
 
 
 
-
-
-
-
-
-
-
 /*
 
 */
-class DeferredRendererGeometryMethod : public RendererMethod
-{
-public:
-	DeferredRendererGeometryMethod(std::shared_ptr<IFrameBuffer> & gBuffer)
-		: _gBuffer(gBuffer)
-	{
-	}
-
-	void begin() override
-	{
-		// Bind the Buffer
-		_gBuffer->bind();
-
-		// Clear the GBuffer :: Must clear to black
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-	}
-
-	void end() override
-	{
-		_gBuffer->unbind();
-	}
-
-private:
-	std::shared_ptr<IFrameBuffer> _gBuffer;
-};
-
-
-
-/*
-
-*/
-namespace andromeda
-{
-	class DeferredGBufferLayerExtension : public ILayerExtension
-	{
-	public:
-		DeferredGBufferLayerExtension(std::shared_ptr<IFrameBuffer> & fb)
-			: _gBuffer(fb)
-		{
-
-		}
-
-
-		void begin(const std::shared_ptr<IShader> & shader) override
-		{
-			static std::string uniforms[] = {
-				"g_gBufferDiffuse", 
-				"g_gBufferPosition",
-				"g_gBufferNormal"
-			};
-
-			assert(shader);
-
-			for (UInt32 i = 0; i < _gBuffer->getBufferCount(); ++i)
-			{
-				std::shared_ptr<ITexture> t = _gBuffer->getTexture(i);
-
-				t->bind(i); 
-				shader->setUniformTexture(uniforms[i], i);
-			}
-		}
-
-		void end(const std::shared_ptr<IShader> & shader) override
-		{
-			for (UInt32 i = 0; i < _gBuffer->getBufferCount(); ++i)
-			{
-				std::shared_ptr<ITexture> t = _gBuffer->getTexture(i);
-
-				t->unbind(i);
-			}
-		}
-
-
-	private:
-		std::shared_ptr<IFrameBuffer> _gBuffer;
-	};
-
-
-	class  DeferredRenderer::DeferredRendererLightingMethod : public RendererMethod
-	{
-	public:
-		DeferredRendererLightingMethod(std::shared_ptr<IFrameBuffer> & gBuffer, const std::shared_ptr<Effect> & effect, const std::string & directionalTechnique)
-			: _gBuffer(gBuffer)
-		{
-			// Create a custom Camera
-			_directionalCamera = std::make_shared<Camera>();
-			_directionalCamera->setOrthogonalScreen(-1.0f, 1.0f);
-			_directionalCamera->setView(-1.0f);
-		
-			// Create a custom RenderableGroup
-			_directionalLights = std::make_shared<RenderableGroup>("directional");
-
-
-			// Adds a special layer for Directional Lights
-			// Directional Lights use a completely different camera, and a special RenderableGroup
-			std::shared_ptr<ILayer> layer = addLayer(_directionalCamera, _directionalLights, effect, directionalTechnique);
-
-			layer->addExtension(std::make_shared<DeferredGBufferLayerExtension>(_gBuffer));
-		}
-
-
-
-		void begin() override
-		{
-
-		}
-
-		void end() override
-		{
-
-		}
-
-
-
-
-		/*
-
-		*/
-		void addDirectionalLight()
-		{
-			// Only support for one directional light.
-			if (_renderable)
-				return;
-
-			// Create Renderable
-			_renderable = std::make_shared<deferred::DeferredRendererDirectionalLight>();
-
-			_directionalLights->addRenderable(_renderable.get());
-		}
-
-
-	private:
-		std::shared_ptr<IFrameBuffer> _gBuffer;
-
-		std::shared_ptr<Camera> _directionalCamera;
-		std::shared_ptr<RenderableGroup> _directionalLights;
-
-		std::shared_ptr<IRenderable> _renderable;//TEMP
-	};
-}
-
 
 
 
@@ -196,10 +49,14 @@ DeferredRenderer::DeferredRenderer(const std::shared_ptr<SceneGraph> & sg, const
 
 
 
-	// Create Methods
-	addMethod("geometry", std::make_shared<DeferredRendererGeometryMethod>(_gBuffer));
+	
 
-	_lightingMethod = std::make_shared<DeferredRendererLightingMethod>(_gBuffer, effect, directionalTechnique);
+	// Create Methods
+	addMethod("background", std::make_shared<RendererMethod>());
+
+	addMethod("geometry", std::make_shared<deferred::DeferredRendererGeometryMethod>(_gBuffer));
+
+	_lightingMethod = std::make_shared<deferred::DeferredRendererLightingMethod>(_gBuffer, effect, directionalTechnique);
 
 	addMethod("lighting", _lightingMethod);
 }
@@ -210,7 +67,6 @@ DeferredRenderer::DeferredRenderer(const std::shared_ptr<SceneGraph> & sg, const
 */
 void DeferredRenderer::onResize(Float width, Float height)
 {
-	log_verbosep("Camera = %1%x%2%", getCamera()->getWidth(), getCamera()->getHeight());
 	_gBuffer->resize((Int32)width, (Int32)height);
 }
 

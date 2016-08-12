@@ -2,9 +2,9 @@
 
 
 // G Buffer
-uniform sampler2D g_gBufferDiffuse;
-uniform sampler2D g_gBufferPosition;
-uniform sampler2D g_gBufferNormal;
+uniform sampler2D u_gBufferDiffuse;
+uniform sampler2D u_gBufferPosition;
+uniform sampler2D u_gBufferNormal;
 
 
 
@@ -21,9 +21,9 @@ out vec4 o_color;
 void main(void)
 {
 	// Read G-Buffer
-	vec4 diffuse = texture2D(g_gBufferDiffuse, v_textureCoordinate);
-	vec4 position = texture2D(g_gBufferPosition, v_textureCoordinate);
-	vec4 normal = texture2D(g_gBufferNormal, v_textureCoordinate);
+	vec4 diffuse = texture2D(u_gBufferDiffuse, v_textureCoordinate);
+	vec4 position = texture2D(u_gBufferPosition, v_textureCoordinate);
+	vec4 normal = texture2D(u_gBufferNormal, v_textureCoordinate);
 
 	// Culling Phase 
 	// Do not continue unless geometry has been rendered to this pixel :)

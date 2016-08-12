@@ -2,27 +2,44 @@
 <effect version="400">
 
   <!-- Setup Shaders -->
+  <shader name="skyboxVert" source="skybox.vs" />
+  <shader name="skyboxFrag" source="skybox.fs" />
+  
   <shader name="defGeometryVert" source="deferredGeometry.vs" />
   <shader name="defgeometryFrag" source="deferredGeometry.fs" />
   
   <shader name="defRendererVert" source="deferredRenderer.vs" />
   <shader name="defRendererFrag" source="deferredRenderer.fs" />
 
+
+  <state name="skybox">
+    <cull>front</cull>
+  </state>
+  
   <state name="geometry">
     <depth enable="true" />
     <polygon>fill</polygon>
-    <cull>none</cull>
+    <cull>back</cull>
   </state>
 
   <state name="lighting">
     <depth enable="true" />
     <blending enable="false" />
+    <cull>none</cull>
   </state>
 
   <!--
     
   -->
-  
+
+
+  <!-- Renders the Skybox to the background -->
+  <technique name="skybox">
+    <pass state="skybox">
+      <vertexShader shader="skyboxVert" />
+      <fragmentShader shader="skyboxFrag" />
+    </pass>
+  </technique>
 
   <!--
     Renders Geometry into the GBuffer

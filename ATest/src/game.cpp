@@ -15,6 +15,7 @@
 
 #include <andromeda/graphics.h>
 #include <andromeda/Graphics/frame_buffer.h>
+#include <andromeda/Graphics/font_atlas.h>
 
 #include <andromeda/Renderer/camera.h>
 #include <andromeda/Renderer/renderer.h>
@@ -70,6 +71,13 @@ Game::Game()
 	// Create Skybox
 	std::shared_ptr<andromeda::GameObject> skybox = Factory::createSkybox();
 
+
+	// Add Game Object to Scene
+	_scene->getSceneGraph()->addGameObject(skybox);
+
+
+
+
 	// Create Some Objects
 	createGround();
 
@@ -100,8 +108,6 @@ Game::Game()
 
 
 
-	// Add Game Object to Scene
-	_scene->getSceneGraph()->addGameObject(skybox);
 
 
 
@@ -265,9 +271,9 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 
 
 	// Create Renderer
-	std::shared_ptr<andromeda::IRenderer> renderer = std::make_shared<andromeda::Renderer>(sg);
-	renderer->getCamera()->setPerspectiveFov(glm::pi<aFloat>() / 3.0f, 0.01f, 1000.0f);
-	renderer->getCamera()->setView(28.0f);
+//	std::shared_ptr<andromeda::IRenderer> renderer = std::make_shared<andromeda::Renderer>(sg);
+//	renderer->getCamera()->setPerspectiveFov(glm::pi<aFloat>() / 3.0f, 0.01f, 1000.0f);
+//	renderer->getCamera()->setView(28.0f);
 //	view->addRenderer("default", renderer);
 //	view->addRendererLayer("default", "", "", effect, "");
 //	view->addRendererLayer("default", "text", "", effect, "");
@@ -279,6 +285,7 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 	deferred->setEnvironmentReflectionmap(andromeda::LoadCubeTexture("skybox", nullptr));
 
 	view->addRenderer("deferred", deferred);
+	view->addRendererLayer("deferred", "background", "background", defEffect, "skybox");
 	view->addRendererLayer("deferred", "", "geometry", defEffect, "objects");
 	view->addRendererLayer("deferred", "text", "geometry", defEffect, "objects");
 

@@ -28,8 +28,6 @@ ViewScreen::~ViewScreen()
 */
 Boolean ViewScreen::onResize(ResizeEventArgs & e)
 {
-	log_errp("SCREEN RESIZE BY WEIRD SPOT %1%x%2%", e.displayWidth, e.displayHeight);
-
 	_width = e.displayWidth;
 	_height = e.displayHeight;
 

@@ -24,6 +24,7 @@ namespace andromeda
 		private:
 			// These attributes need to be stored somewhere where the application can gain direct access to them...
 			// For Real-time lighting adjustments...
+			// This will do for now, however :)
 			glm::vec3 _lightDirection;
 			glm::vec3 _lightDiffuse;
 

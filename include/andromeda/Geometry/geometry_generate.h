@@ -6,10 +6,8 @@
 #include <andromeda/stddef.h>
 #include <andromeda/glm.h>
 
-/*
-	TODO:
-	Make the Geometry Generators OOP'd
-*/
+#include <andromeda/graphics_types.h>
+
 namespace andromeda
 {
 	// Forward-Declarations
@@ -49,6 +47,7 @@ namespace andromeda
 
 
 			GeometryGenerate();
+			GeometryGenerate(PrimitiveMode mode);
 			virtual ~GeometryGenerate();
 
 			std::shared_ptr<Geometry> build(UInt32 genFlags);
@@ -62,6 +61,9 @@ namespace andromeda
 				Make this function able to return the appropriate class (as a typical builder) -- 
 				will require some templating :: but the templating CANNOT be on this class
 			*/
+
+
+			// Set Post Process Transformation
 			void setTransformation(glm::mat4 & m)
 			{
 				_matrix = m;
@@ -96,6 +98,9 @@ namespace andromeda
 			void transformNormals();
 			
 			UInt32 _postProcessFlags = GeometryGenerate::None;
+
+
+			PrimitiveMode _mode = PrimitiveMode::Triangles;
 
 			
 			glm::vec3 * _position = nullptr;

@@ -66,6 +66,21 @@ namespace andromeda
 	};
 #endif
 
+	/*
+		TODO:
+		Implement this... lol
+	*/
+	enum ClearMask
+	{
+		Color = 0x01,
+		Depth = 0x02,
+		Stencil = 0x04,
+	};
+
+
+
+
+
 	// [Required]
 	enum class PolygonMode
 	{

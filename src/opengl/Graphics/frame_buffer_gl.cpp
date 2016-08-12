@@ -27,6 +27,10 @@ FrameBufferGL::FrameBufferGL(Int32 width, Int32 height)
 	log_verbose("Attaching RenderBuffers to FrameBuffer");
 	
 
+	/*
+		TODO: 
+		Do this process where hte frame buffer itself is created/needed
+	*/
 	// Attach Color Buffers
 	attach(GL_COLOR_ATTACHMENT0, StorageFormat::RGBA, DataType::UnsignedByte);
 	attach(GL_COLOR_ATTACHMENT1, StorageFormat::RGBA32F, DataType::Float);

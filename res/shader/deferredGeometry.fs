@@ -11,6 +11,7 @@ uniform vec3 g_specular;
 uniform float g_opacity;
 
 // Textures
+uniform sampler2D u_alphaMask;
 uniform sampler2D g_diffuseTexture;
 
 
@@ -28,10 +29,15 @@ varying vec2		v_diffuseTextureCoord;
 
 void main( void )
 {
+	// Sample Alpha Mask
+
+	// Alpha Discard from the Mask
+
+
 	// Sample Diffuse Texture :: Currently using this texture for the AlphaMask as well
 	vec4 difTexRGB = texture2D(g_diffuseTexture, v_diffuseTextureCoord);
 
-	// Alpha Discard
+	// Alpha Discard :: This might be better to be done from the Alpha Mask Image
 	if (difTexRGB.a == 0.0) discard;
 
 

@@ -276,6 +276,19 @@ namespace andromeda
 		/*
 			Important Functions
 		*/
+
+
+
+
+
+
+		// Important States
+		inline void setClearColor(Float r, Float g, Float b, Float a) override
+		{
+			glClearColor(r, g, b, a);
+		}
+
+
 		inline void setViewport(Int32 x, Int32 y, Int32 width, Int32 height) override
 		{
 			glViewport(x, y, width, height);

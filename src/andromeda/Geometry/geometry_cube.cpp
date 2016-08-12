@@ -43,23 +43,24 @@ void Cube::buildPosition(glm::vec3 * pvertices, UInt32 count)
 {
 	glm::vec3 position[VERTICES] = 
 	{
-		// Pos Z
-		{ -1, 1, 1 }, { 1, 1, 1 }, { -1, -1, 1 }, { 1, -1, 1 },
+		// Pos Z - FRONT
+		{ 1, 1, 1 },{ -1, 1, 1 },{ 1, -1, 1 },{ -1, -1, 1 },
 
-		// Neg X
-		{ -1, 1, -1 }, { -1, 1, 1 }, { -1, -1, -1 }, { -1, -1, 1 },
+		// Neg X - LEFT
+		{ -1, 1, 1 },{ -1, 1, -1 },{ -1, -1, 1 },{ -1, -1, -1 },
+		
 
-		// Neg Z
-		{ 1, 1, -1 }, { -1, 1, -1 }, { 1, -1, -1 }, { -1, -1, -1 },
+		// Neg Z - BACK
+		{ -1, 1, -1 },{ 1, 1, -1 },{ -1, -1, -1 },{ 1, -1, -1 },
 
-		// Pos X
-		{ 1, 1, 1 }, { 1, 1, -1 }, { 1, -1, 1 }, { 1, -1, -1 },
+		// Pos X - RIGHT
+		{ 1, 1, -1 },{ 1, 1, 1 },{ 1, -1, -1 },{ 1, -1, 1 },
 
-		// Pos Y
-		{ -1, 1, -1 }, { 1, 1, -1 }, { -1, 1, 1 }, { 1, 1, 1 },
-
-		// Neg Y
-		{ -1, -1, 1 }, { 1, -1, 1 }, { -1, -1, -1 }, { 1, -1, -1 }
+		// Pos Y - TOP
+		{ -1, 1, 1 },{ 1, 1, 1 },{ -1, 1, -1 },{ 1, 1, -1 },
+		
+		// Neg Y - BOTTOM
+		{ -1, -1, -1 },{ 1, -1, -1 },{ -1, -1, 1 },{ 1, -1, 1 },
 	};
 
 	glm::vec3 size = glm::vec3(_width * 0.5f, _height * 0.5f, _depth * 0.5f);
@@ -78,22 +79,22 @@ void Cube::buildNormals(glm::vec3 * pvertices, UInt32 count)
 {
 	glm::vec3 normal[SIDES] =
 	{
-		// Pos Z - Back
+		// Pos Z - FRONT
 		{ 0, 0, 1 },
 		
-		// Neg X - Left
+		// Neg X - LEFT
 		{ -1, 0, 0 },
 
-		// Neg Z - Front
+		// Neg Z - BACK
 		{ 0, 0, -1 },
 
-		// Pos X - Right
+		// Pos X - RIGHT
 		{ 1, 0, 0 },
 
-		// Pos Y - Top
+		// Pos Y - TOP
 		{ 0, 1, 0 },
 
-		// Neg Y - Bottom
+		// Neg Y - BOTTOM
 		{ 0, -1, 0 }
 	};
 
@@ -113,7 +114,7 @@ void Cube::buildNormals(glm::vec3 * pvertices, UInt32 count)
 */
 void Cube::buildTexCoords(glm::vec2 * pvertices, UInt32 count)
 {
-	glm::vec2 tex[VERTICES_PER_SIDE] = { { 0, 1 }, { 1, 1 }, { 0, 0 }, { 1, 0 } };
+	glm::vec2 tex[VERTICES_PER_SIDE] = { {1, 1}, {0, 1}, {1, 0}, {0, 0} };
 
 	for (Int32 i = 0; i < SIDES; ++i)
 	{

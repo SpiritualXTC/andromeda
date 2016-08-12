@@ -4,6 +4,8 @@
 	Currently just a typedef for a vector, rather than a class of it's own.
 
 	TODO: Make it a wrapper for a vector
+
+	TODO: Move to Utilities
 */
 
 #include <memory>

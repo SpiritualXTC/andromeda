@@ -6,11 +6,24 @@
         \/     \/      \/                    \/     \/     \/     \/ 
 
 TODO:
-- Finish the TODO List :)
+- Abstract OpenGL out of the core Library.
+	- All calls related to graphics will need to go through the Graphics API.
+	- Slowly Migrating this across
+	- There should not be a single 'gl...()' OR 'GL_...' anywhere in the core library
 - XML Helper Library (XML is loaded via Boost into a Boost::property_tree)
- - Implement so it could be JSON friendly as well
+	- Implement so it could be JSON friendly as well
 - zLib Support
-- Break the mega-library up into chunks:
+
+- Change ALL header include gates to '#pragma once' rather than the old style gates
+	(In Progress... Thanks VS2013... >.<)
+
+- Define Forward Declaration style, so forward declarations are obvious.
+- Resource Management needs to be completely overhauled, current implementation is flawed
+	
+
+
+Library:
+- Break the mega-library up into chunks / Move Project over to CMake
 	AndromedaCore			: Platform Agnostic
 	AndomredaSDL			: SDL "Platform" Implementation (HAHA - Ezy Mode)
 	AndromedaWindows		: Windows Functionality
@@ -21,11 +34,6 @@ TODO:
 	AndromedaXEffect		: XML Effect/Shader System
 	AndromedaZLib			: ZLib support via a wrapper that taps into the virtual resource management
  
- - Change ALL header include gates to '#pragma once' rather than the old style gates
-
- - Setup Forward Declaration style
-	class XYZ {};
-	typdef andromeda::XYZ a_XYZ;
 
 
 
@@ -64,7 +72,7 @@ SDL (Remove)
  - Used by a temporary testing framework
 
 
-SOIL (Look for an alternative)
+SOIL (Look for an alternative) - May use DevIL
  - Currently Required
  - Loads images
  - Doesn't like loading from images memory for some file types?

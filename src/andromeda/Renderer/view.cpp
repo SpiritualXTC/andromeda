@@ -58,8 +58,6 @@ View::~View()
 */
 void View::notify(const IViewTarget * const vt)
 {
-	log_errp("SCREEN RESIZE BY WEIRD SPOT IN THE VIEW %1%x%2%", vt->width(), vt->height());
-
 	resize(vt->width(), vt->height());
 }
 

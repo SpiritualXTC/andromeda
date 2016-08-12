@@ -24,7 +24,7 @@ Player::Player(std::shared_ptr<andromeda::View> & view, std::shared_ptr<andromed
 	// Create Proj matrix
 	_projMatrix = std::make_shared<andromeda::PerspectiveMatrix>();
 	_projMatrix->fov(glm::pi<aFloat>() / 3.0f);
-
+	_projMatrix->zFar(1000.0f);
 
 	// Setup "Player" Camera
 	_camera->setView(_viewMatrix);

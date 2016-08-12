@@ -9,10 +9,8 @@
 #include <andromeda/andromeda.h>
 #include <andromeda/graphics.h>
 
-
+#include <andromeda/Utilities/image.h>
 #include <andromeda/Utilities/log.h>
-
-#include <SOIL/SOIL.h>
 
 using namespace andromeda;
 
@@ -35,11 +33,6 @@ std::shared_ptr<Texture> ResourceLoader::build<Texture>(std::shared_ptr<File> fi
 	return loader.getTexture();
 }
 
-
-
-
-
-
 /*
 
 */
@@ -47,35 +40,18 @@ TextureLoader::TextureLoader(const std::string & filename)
 {
 	log_debugp("TextureLoader :: <init>() :: Loading Texture: %1%", filename);
 
-	Int32 width = 0;
-	Int32 height = 0;
-	Int32 channels = 0;
-
-
 	// Load Image
-	unsigned char * data = SOIL_load_image(filename.c_str(), &width, &height, &channels, SOIL_LOAD_RGBA);
-
-	if (!data)
-	{
-		log_errp("TextureLoader :: <init>() :: Texture not Loaded: %1%", filename.c_str());
-		return;
-	}
-	else
-		log_verbosep("TextureLoader :: <init>() :: Texture Loaded: %1%x%2%", width, height);
+	std::shared_ptr<Image> image = Image::LoadImageFromFile(filename);
 
 	// Create Texture
-	_texture = graphics()->createTexture(width, height);
+	_texture = graphics()->createTexture(image->width(), image->height());
 
 	// Set Data
-	_texture->data((UInt8*)data);
+	_texture->data((UInt8*)image->data());
 
 	if (_texture)
 		log_infop("TextureLoader :: <init>() :: Valid Texture");
-
-	SOIL_free_image_data(data);
 }
-
-
 
 /*
 
@@ -84,40 +60,18 @@ TextureLoader::TextureLoader(const std::shared_ptr<File> & file)
 {
 	log_debugp("TextureLoader :: <init>() :: Loading Texture from Memory");
 
-	Int32 width = 0;
-	Int32 height = 0;
-	Int32 channels = 0;
-
-
-	unsigned char * data = SOIL_load_image_from_memory((const unsigned char *)file->data(), file->length(), &width, &height, &channels, SOIL_LOAD_RGBA);
-
-	if (!data)
-	{
-		log_errp("TextureLoader :: <init>() :: Texture not Loaded");
-		return;
-	}
-	else
-		log_verbosep("TextureLoader :: <init>() :: Texture Loaded: %1%x%2%x%3%", width, height, channels);
+	// Load Image
+	std::shared_ptr<Image> image = Image::LoadImageFromMemory(file.get());
 
 	// Create Texture
-	//_texture = std::make_shared<Texture>(width, height);
-	_texture = graphics()->createTexture(width, height);
+	_texture = graphics()->createTexture(image->width(), image->height());
 
 	// Set Data
-	_texture->data((UInt8*)data);
+	_texture->data((UInt8*)image->data());
 
 	if (_texture)
 		log_infop("TextureLoader :: <init>() :: Valid Texture");
-
-
-	std::string fn = "../test/" + file->filename() + ".png";
-	SOIL_save_image(fn.c_str(), SOIL_SAVE_TYPE_BMP, width, height, channels, data);
-
-
-	SOIL_free_image_data(data);
 }
-
-
 
 /*
 

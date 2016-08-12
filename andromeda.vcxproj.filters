@@ -468,6 +468,15 @@
     <ClInclude Include="include\andromeda\andromeda_init.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_geometry_method.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_lighting_method.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_gbuffer_layer_extension.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Docs\readme.txt" />
@@ -765,6 +774,18 @@
     <ClCompile Include="src\andromeda\resources.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\andromeda\Utilities\image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_geometry_method.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_lighting_method.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_gbuffer_layer_extension.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="res\shader\shader_example.xml" />
@@ -786,5 +807,7 @@
     <None Include="res\shader\old\types.glsl" />
     <None Include="res\shader\deferredGeometry.fs" />
     <None Include="res\shader\deferredRenderer.fs" />
+    <None Include="res\shader\skybox.fs" />
+    <None Include="res\shader\skybox.vs" />
   </ItemGroup>
 </Project>

@@ -17,13 +17,21 @@ GeometryGenerate::GeometryGenerate()
 
 }
 
+/*
+
+*/
+GeometryGenerate::GeometryGenerate(PrimitiveMode mode)
+	: _mode(mode)
+{
+
+}
+
 
 /*
 
 */
 GeometryGenerate::~GeometryGenerate()
 {
-
 	if (_indices)
 		delete[] _indices;
 	_indices = nullptr;
@@ -114,7 +122,30 @@ std::shared_ptr<Geometry> GeometryGenerate::build(UInt32 genFlags)
 	// Create Buffers
 	std::shared_ptr<VertexBuffer> vb = std::make_shared<VertexBuffer>();
 	std::shared_ptr<IndexBuffer> ib = std::make_shared<IndexBuffer>();
-	std::shared_ptr<GeometryDescription> desc = std::make_shared<GeometryDescription>(GL_TRIANGLES, vertices, faces * 3, GL_UNSIGNED_INT);
+
+
+
+	// TODO: REWRITE THIS. The GeometryDescription needs to be altered to be API Agnostic
+	GLenum mode = GL_TRIANGLES;
+
+	switch (_mode)
+	{
+	case PrimitiveMode::Triangles: mode = GL_TRIANGLES; break;
+	case PrimitiveMode::TriangleStrip: mode = GL_TRIANGLE_STRIP; break;
+	case PrimitiveMode::TriangleFan: mode = GL_TRIANGLE_FAN; break;
+
+	case PrimitiveMode::Lines: mode = GL_LINES; break;
+	case PrimitiveMode::LineStrip: mode = GL_LINE_STRIP; break;
+	case PrimitiveMode::LineLoop: mode = GL_LINE_LOOP; break;
+	
+	case PrimitiveMode::Points: mode = GL_POINTS; break;
+	}
+
+
+	std::shared_ptr<GeometryDescription> desc = std::make_shared<GeometryDescription>(mode, vertices, faces * 3, GL_UNSIGNED_INT);
+
+
+
 
 	// Copy Index Data
 	ib->data(_indices, faces * 3 * sizeof(UInt32));

@@ -130,15 +130,15 @@ void FontAtlas::addGeometry(const _Character & ch, std::vector<Float> & verts, F
 
 	glm::vec3 pos[] = {
 		{ x0, y0, 0.0f },
-		{ x1, y0, 0.0f },
 		{ x0, y1, 0.0f },
+		{ x1, y0, 0.0f },
 		{ x1, y1, 0.0f }
 	};
 
 	glm::vec2 tex[] = {
 		{ tu0, tv0 },
-		{ tu1, tv0 },
 		{ tu0, tv1 },
+		{ tu1, tv0 },
 		{ tu1, tv1 }
 	};
 
@@ -204,7 +204,7 @@ UInt32 FontAtlas::loadChar(const GlyphMetric & metric)
 
 
 	// Update the Image
-	_image.draw(c.offset.x, c.offset.y, charImage);
+	_image.blit(c.offset.x, c.offset.y, charImage);
 
 	// Update the Geometry
 	addGeometry(c);
