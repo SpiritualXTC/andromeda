@@ -28,10 +28,6 @@
     <cull>none</cull>
   </state>
 
-  <!--
-    
-  -->
-
 
   <!-- Renders the Skybox to the background -->
   <technique name="skybox">

@@ -6,6 +6,15 @@
 
 	This makes it easy to access different implementations of an interface, in a hashmap (for example)
 */
+
+
+/*
+	TODO:
+	It appears as though some of the "special" class inheritance early classes went through to use the system wasn't even required ..... :S HAHAHAHAHAHAHAHAHAHAHAHA
+
+	Clean it up :)
+*/
+
 #include <cassert>
 
 #include <andromeda/stddef.h>
@@ -49,7 +58,7 @@ namespace andromeda
 
 
 	/*
-		Handles the Automagically Identification of template classes that need to be accessed by ID (eg: in a map)
+		Handles the Automagically Identification of template classes that need to be accessed by ID
 	*/
 	template <typename _CLASS_, typename _INTERFACE_>
 	class TemplateIndex
@@ -72,10 +81,15 @@ namespace andromeda
 
 
 
+
+
 	/*
 		Gives a slightly less "human" error prone method for obtaining the Template ID
 
-		Might not need this class, if the generic template containers work :)
+		Might not need this class, if the generic template containers work -- WHICH NEED TO BE ADJUSTED :(
+
+
+		Rename to Template MAP. Remove the bloody containers
 	*/
 	template <typename _INTERFACE_>
 	class TemplateContainer

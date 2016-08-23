@@ -12,6 +12,10 @@ namespace andromeda
 	/*
 		Container for accessing an unordered_map via template ID
 		The Template ID is the key to the map
+
+
+		TODO:
+		Change to use unique_ptr
 	*/
 	template <typename _INTERFACE_>
 	class TemplateMap

@@ -18,13 +18,18 @@
 
 namespace andromeda
 {
+	class IFileLocation;
+
 	/*
 	
 	*/
 	class File
 	{
 	public:
-		File(const std::string & filename, const std::string & location = "");
+		static std::shared_ptr<File> OpenFile(const std::string & filename, Boolean binary);
+		
+	public:
+		File(const std::string & filename);
 		virtual ~File();
 
 		/*
@@ -47,15 +52,9 @@ namespace andromeda
 		*/
 		const inline std::string & filename() const { return _filename; }
 
-		/*
-			Location where the file was located :: This Could be a Resource Location
-		*/
-		const inline std::string & location() const { return _filename; }
-
 	private:
 		std::string _extension;
 		std::string _filename;
-		std::string _location;
 	};
 
 
@@ -66,7 +65,7 @@ namespace andromeda
 	{
 	public:
 		FileBinary(std::istream & stream);
-		FileBinary(std::istream & stream, const std::string & filename, const std::string & location = "");
+		FileBinary(std::istream & stream, const std::string & filename);
 
 
 		/*
@@ -93,7 +92,7 @@ namespace andromeda
 	public:
 
 		FileText(std::istream & stream);
-		FileText(std::istream & stream, const std::string & filename, const std::string & location = "");
+		FileText(std::istream & stream, const std::string & filename);
 
 		/*
 			Get Data
@@ -109,14 +108,4 @@ namespace andromeda
 	private:
 		std::string _contents;
 	};
-
-
-
-
-
-
-
-
-	// These functions are defined in platform specific areas....
-	std::shared_ptr<File> OpenFile(const std::string & filepath, Boolean binary);
 }

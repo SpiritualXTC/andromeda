@@ -1,0 +1,147 @@
+   _____              .___                                .___       
+  /  _  \   ____    __| _/______  ____   _____   ____   __| _/____   
+ /  /_\  \ /    \  / __ |\_  __ \/  _ \ /     \_/ __ \ / __ |\__  \  
+/    |    \   |  \/ /_/ | |  | \(  <_> )  Y Y  \  ___// /_/ | / __ \_
+\____|__  /___|  /\____ | |__|   \____/|__|_|  /\___  >____ |(____  /
+        \/     \/      \/                    \/     \/     \/     \/ 
+
+TODO: (Detail)
+--------------
+
+Resource Management:											(In Progress)
+ - Load resource in the background								(In Progress)
+ - Container for the resource exists across program lifespan	(Done)
+	- Loaded only when its required								(Done)
+	- Unloaded when all references are released					(Not Started)
+Skeleton code has been done for unloading when all references 
+are released -- however the potential for bugs with resources
+that aren't managed by the ResourceManager is very high - specifically
+if a resource is shared.
+.......
+It might be possible to just add the reference counter directly 
+into a base class. When release() is called it only releases 
+when it hits zero. (This class is extended by ITexture, IEffect, etc)
+	 - This pulls the reference counter away from the container...
+
+
+File Support: (See Below)										(Review)
+
+zLib Support:													(Not Started)
+
+RocketLib Support:												(Not Started)
+
+XML Helper Library:												(In Progress)
+XML is loaded via Boost into a Boost::property_tree)
+- Implement so it could be JSON friendly as well
+- Wrapping the Ptree class with numerous helpers could 
+  be really beneficial
+
+Header include gates: (In Progress)
+- Change include gates to '#pragma once' rather than the old style gates
+(Thanks VS2013... >.<)
+
+Abstract Graphics API:											(In Progress)
+- Strip OpenGL out of the core Library.							(In Progress)
+  All calls related to graphics will need to go through 
+  the Graphics API. There should not be a single 'gl...()' 
+  OR 'GL_...' anywhere in the core library
+	- Texture													(Done-ish)
+	- CubeTexture												(Done-ish)												
+	- VolumeTexture												(Not Started)
+	- Effect													(In Progress)
+	- Shader													(In Progress)
+	- Mesh														(Not Started)
+	- Geometry													(Not Started)
+	- GeometryDeclaration (VertexArray Object)					(Not Started)
+	- Font														(In Progress)
+	- Buffer (VertexBuffer / IndexBuffer)						(Not Started)
+	- FrameBuffer / RenderBuffer								(Done)
+	- Views														(In Progress)
+	- Renderer													(In Progress)
+	- Enums and conversions										(In Progress)
+
+Graphics: 
+- Resource Creation												(In Progress)
+- Abstraction													(In Progress)
+- State Change "friendliness"									(Not Started)
+	- push/pop states
+
+- Viewport control												(Not Started)
+- More Shape Builders
+	- Cylinder													(Not Started)
+	- Lots of 2D Shapes.										(Not Started)
+	  (Lets face it, 3D shapes drawn with an orthogonal 
+	  projection matrix are not 2D.)
+	- Torus														(Not Started)
+	- ...
+	- Teapot. Cos YOLO
+
+CMake / Sub-Library
+- Make the project into a CMake project							(Not Started)
+- Split the library into smaller modules						(Not Started)
+	- Andromeda Core
+	- XEffect
+	- Graphics	(This may be more difficult than it's worth)	(Review)
+		- OpenGL												(In Progress)
+		- OpenGL ES
+		- Vulkan (?)
+	- Platform
+		- Windows
+		- SDL
+		- Android
+		- Linux
+		
+- Restructure the library										(Not Started)
+
+Rendering														(In Progress)
+- Reflections													(In Progress)
+	- Fix the reflection texture banding bug!
+	- Fix the reflection coloring
+- Shadowing														(Not Started)
+	- This may require a minor refactor with relation to views
+Shadows Maps are rendered to a depth texture, using the lights' 
+position/orientation to construct a view/perspective matrix,
+consequently, objects that may cast a visible shadow on the scene, may
+NOT be part of the visible region as viewed from the view camera.
+
+Annotations														(Not Started)
+- Texture Annotations											(Not Started)
+  Define an enum class containing use cases for textures' binding index
+  This is more for consistancy than any requirement
+- Shader Annotations											(Not Started)
+  Define an enum class containing use cases for uniforms and attributes.
+  This will make loading shaders and assigning properties to shaders 
+  much simpler - the name of the uniform/attribute wont matter only the 
+  annotation given to the name will.
+  This will require a fallback, in the event that annotations aren't defined
+
+NOTES:
+------
+
+File Support: (Review First)
+The current system opens a file via an abstraction layer to hide how the file is being loaded
+The file is opened, and the contents, copied into memory as a string or blob.
+It can be extended to support any form of file loading - file system, zip, a custom application defined format, etc
+
+However the process of loading the file into memory means the file needs to be processed 
+twice - once into memory and once by the library that parses the contents of the file.
+	-- Is this a problem?
+	PROS:
+		- It's Flexible
+		- 3rd party libs typically support loading from memory or from file.
+		- Compressed files are handled without a problem as the compressed file will be decompressed directly into memory 
+			- No 3rd party is going to be able to know how to load a compressed file
+		- Typically, the game assets would be stored in a packaged file, whether its compressed or not.
+	CONS
+		- It's slower - especially for large files where only a subset of the data is required (IE: Fonts)
+
+The alternative will require a lot of work - rather than abstracting the file loading away, wrappers
+will need to be used for every library.
+	PROS:
+		- It *should* be faster to load files - IFF the library supports loading from streams
+	CONS:
+		- Game assets will typically be stored in a package file, so the library will need to supprt loading from streams
+		  otherwise the contents will need to be loaded into a file and then loaded into memory
+		
+		
+

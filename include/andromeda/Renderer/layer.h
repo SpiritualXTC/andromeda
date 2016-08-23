@@ -32,12 +32,22 @@ namespace andromeda
 	class RenderableGroup;
 
 
-	// Layer Extension :: This ended up not being needed, but leaving it here anyway. Something else might use it.
+	// Layer Extension :: This ended up not being needed, but leaving it here anyway. Something might need it eventually.
 	class ILayerExtension
 	{
 	public:
 		virtual void begin(const std::shared_ptr<IShader> & shader) = 0;
 		virtual void end(const std::shared_ptr<IShader> & shader) = 0;
+	};
+
+	// Customise numerous options that need to be applied to many layers :: This is a temporary setup
+	// May Change it to be a list of uniforms
+	// The Environment incorporates such things as Light Settings, Environment Mapping options - but ONLY when it applies to ALL objects being drawn
+	class ILayerEnvironment
+	{
+	public:
+		virtual void begin(const IShader * shader) = 0;
+		virtual void end(const IShader * shader) = 0;
 	};
 
 
@@ -48,24 +58,15 @@ namespace andromeda
 	public:
 		virtual Boolean setActiveTechnique(const std::string & techniqueName) = 0;
 
-		virtual Boolean render() = 0;
+		virtual Boolean render(ILayerEnvironment * environment) = 0;
 
 		virtual Boolean addExtension(const std::shared_ptr<ILayerExtension> & extension) = 0;
 	};
 
 
 
-
 	/*
-		TODO: 
-		Some form of abstraction for layers so code isn't duplicated
-	*/
-
-
-
-
-	/*
-		A layer consists of a single effect, an "active" techniques and processes multiple passes
+		A layer consists of a single effect, an "active" technique that renderes multiple passes
 	*/
 	class Layer : virtual public ILayer
 	{
@@ -76,7 +77,7 @@ namespace andromeda
 
 		Boolean setActiveTechnique(const std::string & techniqueName);
 
-		Boolean render();							
+		Boolean render(ILayerEnvironment * environment) override;							
 
 
 		Boolean addExtension(const std::shared_ptr<ILayerExtension> & extension) override;

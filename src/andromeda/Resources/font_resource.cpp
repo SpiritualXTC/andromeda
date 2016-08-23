@@ -11,7 +11,7 @@
 
 // Andromeda
 #include <andromeda/Geometry/shape.h>
-#include <andromeda/Platform/file.h>
+#include <andromeda/IO/file.h>
 #include <andromeda/Utilities/image.h>
 
 #include <andromeda/Utilities/log.h>

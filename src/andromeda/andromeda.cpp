@@ -5,6 +5,7 @@
 #include <andromeda/Engine/application.h>
 #include <andromeda/Engine/config.h>
 #include <andromeda/Engine/engine.h>
+#include <andromeda/Engine/invoker.h>
 #include <andromeda/Engine/system.h>
 
 #include <andromeda/Platform/platform.h>
@@ -12,18 +13,22 @@
 #include <andromeda/Renderer/context.h>
 #include <andromeda/Renderer/scene_manager.h>
 
-#include <andromeda/Resources/resource_manager.h>
-#include <andromeda/Resources/resource_location_filesystem.h>
+#include <andromeda/Resources/resource_manager.h>				// REMOVE
+#include <andromeda/Resources/resource_location_filesystem.h>	// REMOVE
+#include <andromeda/Resources2/resource_factory.h>				// NEW
+
 
 #include <andromeda/Utilities/log.h>
 #include <andromeda/Utilities/timing.h>
 
 #include <andromeda/Events/event_manager.h>
 
+
 // TEMP
 #include <andromeda/Input/input.h>
 #include <andromeda/Input/mouse.h>
 #include <andromeda/Input/keyboard.h>
+
 
 using namespace andromeda;
 
@@ -100,7 +105,13 @@ Andromeda::Andromeda(IAndromedaConfig * config)
 	assert(config);
 
 	// Initialise the Resource Manager
-	_resources = std::make_shared<ResourceManager>();
+	_resources = std::make_shared<ResourceManager>();	// REMOVE
+
+	// Initialise the New Resource Manager
+	_resFactory = std::make_shared<ResourceFactory>();
+
+
+
 
 	// Set Loading Methods for KNOWN File Extensions
 	// _resources.addType("txt", "conf");				// Generic File resource :: For unknown filetypes
@@ -148,6 +159,9 @@ Andromeda::Andromeda(IAndromedaConfig * config)
 	log_verbosep("Andromeda :: <init>() :: Create System");
 	_system = std::make_shared<System>(config);
 
+
+
+
 	// Initialise the Graphics API
 	_graphics = config->initGraphics();
 
@@ -155,6 +169,10 @@ Andromeda::Andromeda(IAndromedaConfig * config)
 	log_verbosep("Andromeda :: <init>() :: Create Engine");
 	_engine = std::make_shared<Engine>();
 
+	// Create Invoker
+	log_verbosep("Andromeda :: <init>() :: Add Invoker Module");
+	_invoker = std::make_shared<Invoker>();
+	_engine->addModule<Invoker>(_invoker);
 	
 
 	// Create Timing

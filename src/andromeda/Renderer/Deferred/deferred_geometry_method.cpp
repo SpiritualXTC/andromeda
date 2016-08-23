@@ -12,9 +12,11 @@ using namespace andromeda::deferred;
 /*
 
 */
-DeferredRendererGeometryMethod::DeferredRendererGeometryMethod(std::shared_ptr<IFrameBuffer> & gBuffer)
-	: _gBuffer(gBuffer)
+DeferredRendererGeometryMethod::DeferredRendererGeometryMethod(const std::shared_ptr<IFrameBuffer> & gBuffer, const std::shared_ptr<ILayerEnvironment> & enviro)
+	: RendererMethod(enviro)
+	, _gBuffer(gBuffer)
 {
+
 }
 
 

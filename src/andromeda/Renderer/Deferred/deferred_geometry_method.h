@@ -11,7 +11,7 @@ namespace andromeda
 		class DeferredRendererGeometryMethod : public RendererMethod
 		{
 		public:
-			DeferredRendererGeometryMethod(std::shared_ptr<IFrameBuffer> & gBuffer);
+			DeferredRendererGeometryMethod(const std::shared_ptr<IFrameBuffer> & gBuffer, const std::shared_ptr<ILayerEnvironment> & enviro);
 
 
 			void begin() override;

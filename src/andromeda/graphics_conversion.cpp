@@ -1,14 +1,52 @@
-#include "x_type_conversion.h"
+#include <andromeda/graphics_conversion.h>
+
+#include <unordered_map>
+
+
+#include <boost/algorithm/string.hpp>
+
 
 using namespace andromeda;
-using namespace andromeda::xeffect;
+
+
+
+
+
+
+
+
+
+// Helper to access the conversion functions
+template <class T>
+T getFromMap(const std::unordered_map<std::string, T> & map, const std::string & key, T def)
+{
+	/*
+	TODO:
+	Should display an error for invalid values!
+
+	Probably via an exception -- which could be caught by the loader
+	*/
+
+	T val = def;
+
+	std::string k = boost::to_lower_copy(key);
+
+	const auto & it = map.find(k);
+
+	if (it != map.end())
+		val = it->second;
+
+	return val;
+}
+
+
 
 
 
 /*
 
 */
-Boolean XTypeConversion::convBoolean(const std::string & value, Boolean def)
+Boolean util::convertToBoolean(const std::string & value, Boolean def)
 {
 	static std::unordered_map<std::string, Boolean> values =
 	{
@@ -31,7 +69,7 @@ Boolean XTypeConversion::convBoolean(const std::string & value, Boolean def)
 /*
 
 */
-PolygonMode XTypeConversion::convPolygonMode(const std::string & value, PolygonMode def)
+PolygonMode util::convertToPolygonMode(const std::string & value, PolygonMode def)
 {
 	static std::unordered_map<std::string, PolygonMode> values =
 	{
@@ -46,7 +84,7 @@ PolygonMode XTypeConversion::convPolygonMode(const std::string & value, PolygonM
 /*
 
 */
-CullMode XTypeConversion::convCullMode(const std::string & value, CullMode def)
+CullMode util::convertToCullMode(const std::string & value, CullMode def)
 {
 	static std::unordered_map<std::string, CullMode> values =
 	{
@@ -65,7 +103,7 @@ CullMode XTypeConversion::convCullMode(const std::string & value, CullMode def)
 /*
 
 */
-FaceMode XTypeConversion::convFaceMode(const std::string & value, FaceMode def)
+FaceMode util::convertToFaceMode(const std::string & value, FaceMode def)
 {
 	static std::unordered_map<std::string, FaceMode> values =
 	{
@@ -82,7 +120,7 @@ FaceMode XTypeConversion::convFaceMode(const std::string & value, FaceMode def)
 /*
 
 */
-FaceDirection XTypeConversion::convFaceDirection(const std::string & value, FaceDirection def)
+FaceDirection util::convertToFaceDirection(const std::string & value, FaceDirection def)
 {
 	static std::unordered_map<std::string, FaceDirection> values =
 	{
@@ -98,7 +136,7 @@ FaceDirection XTypeConversion::convFaceDirection(const std::string & value, Face
 /*
 
 */
-Function XTypeConversion::convFunction(const std::string & value, Function def)
+Function util::convertToFunction(const std::string & value, Function def)
 {
 	static std::unordered_map<std::string, Function> values =
 	{
@@ -124,14 +162,14 @@ Function XTypeConversion::convFunction(const std::string & value, Function def)
 /*
 
 */
-BlendFunction XTypeConversion::convBlendFunction(const std::string & value, BlendFunction def)
+BlendFunction util::convertToBlendFunction(const std::string & value, BlendFunction def)
 {
 	static std::unordered_map<std::string, BlendFunction> values =
 	{
-		{ "zero", BlendFunction::Zero},
+		{ "zero", BlendFunction::Zero },
 		{ "one", BlendFunction::One },
 
-		{ "srccolor", BlendFunction::SourceColor},
+		{ "srccolor", BlendFunction::SourceColor },
 		{ "sourcecolor", BlendFunction::SourceColor },
 		{ "oneminussrccolor", BlendFunction::OneMinusSourceColor },
 		{ "oneminussourcecolor", BlendFunction::OneMinusSourceColor },
@@ -172,9 +210,9 @@ BlendFunction XTypeConversion::convBlendFunction(const std::string & value, Blen
 /*
 
 */
-BlendEquation XTypeConversion::convBlendEquation(const std::string & value, BlendEquation def)
+BlendEquation util::convertToBlendEquation(const std::string & value, BlendEquation def)
 {
-	static std::unordered_map<std::string, BlendEquation> values = 
+	static std::unordered_map<std::string, BlendEquation> values =
 	{
 		{ "add", BlendEquation::Add },
 		{ "subtract", BlendEquation::Subtract },
@@ -190,9 +228,12 @@ BlendEquation XTypeConversion::convBlendEquation(const std::string & value, Blen
 }
 
 
-StencilOperation XTypeConversion::convStencilOperation(const std::string & value, StencilOperation def)
+/*
+
+*/
+StencilOperation util::convertToStencilOperation(const std::string & value, StencilOperation def)
 {
-	static std::unordered_map<std::string, StencilOperation> values = 
+	static std::unordered_map<std::string, StencilOperation> values =
 	{
 		{ "zero", StencilOperation::Zero },
 		{ "keep", StencilOperation::Keep },
@@ -212,4 +253,60 @@ StencilOperation XTypeConversion::convStencilOperation(const std::string & value
 	};
 
 	return getFromMap(values, value, def);
+}
+
+
+
+
+
+/*
+
+*/
+TextureMinFilter util::convertToTextureMinFilter(const std::string & value, TextureMinFilter def)
+{
+	static std::unordered_map<std::string, TextureMinFilter> values =
+	{
+		{ "nearest", TextureMinFilter::Nearest },
+		{ "linear", TextureMinFilter::Linear },
+
+		{ "nearestmipmapnearest", TextureMinFilter::NearestMipmapNearest },
+		{ "linearmipmapnearest", TextureMinFilter::LinearMipmapNearest },
+
+		{ "nearestmipmaplinear", TextureMinFilter::NearestMipmapLinear },
+		{ "linearmipmaplinear", TextureMinFilter::LinearMipmapLinear },
+	};
+
+	return getFromMap(values, value, def);
+}
+
+
+/*
+
+*/
+TextureMagFilter util::convertToTextureMagFilter(const std::string & value, TextureMagFilter def)
+{
+	static std::unordered_map<std::string, TextureMagFilter> values =
+	{
+		{"nearest", TextureMagFilter::Nearest},
+		{"linear", TextureMagFilter::Linear}
+	};
+
+	return getFromMap(values, value, def);
+}
+
+
+
+/*
+	TODO:
+	Add Support for more formats :)
+*/
+StorageFormat util::convertToStorageFormat(const std::string & value, StorageFormat def)
+{
+	static std::unordered_map<std::string, StorageFormat> values =
+	{
+		{ "rgba", StorageFormat::RGBA },
+	};
+
+	return getFromMap(values, value, def);
+
 }

@@ -26,7 +26,10 @@
 #include <andromeda/Renderer/view.h>
 #include <andromeda/Renderer/view_builder.h>
 
+
 #include <andromeda/Resources/font_resource.h>
+#include <andromeda/Resources2/resource_factory.h>
+
 
 #include <andromeda/Utilities/log.h>
 
@@ -270,6 +273,60 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 	std::shared_ptr<andromeda::SceneGraph> sg = _scene->getSceneGraph();
 
 
+
+
+	/*
+		TODO: This is fucking stupid
+	*/
+
+#if 0
+	// Load a Cube Texture
+	andromeda::CubeTextureLoadArgs args;
+
+#if 1
+	args.filename_posX = "../res/textures/skybox_xpos.png";
+	args.filename_negX = "../res/textures/skybox_xneg.png";
+
+	args.filename_posY = "../res/textures/skybox_ypos.png";
+	args.filename_negY = "../res/textures/skybox_yneg.png";
+
+	args.filename_posZ = "../res/textures/skybox_zpos.png";
+	args.filename_negZ = "../res/textures/skybox_zneg.png";
+#else
+	args.filename_posX = "../res/textures/icyhell/icyhell_rt.png";
+	args.filename_negX = "../res/textures/icyhell/icyhell_lf.png";
+
+	args.filename_posY = "../res/textures/icyhell/icyhell_up.png";
+	args.filename_negY = "../res/textures/icyhell/icyhell_dn.png";
+
+	args.filename_posZ = "../res/textures/icyhell/icyhell_ft.png";
+	args.filename_negZ = "../res/textures/icyhell/icyhell_bk.png";
+#endif
+
+	// Create a Cube Texture
+	std::shared_ptr<andromeda::CubeTexture> cubeTex = andromeda::graphics()->createCubeTexture(1024, 1024);
+
+	// Load the 6 Images Manually
+	std::shared_ptr<andromeda::Image> posX = andromeda::Image::LoadImageFromFile(args.filename_posX);
+	std::shared_ptr<andromeda::Image> posY = andromeda::Image::LoadImageFromFile(args.filename_posY);
+	std::shared_ptr<andromeda::Image> posZ = andromeda::Image::LoadImageFromFile(args.filename_posZ);
+	std::shared_ptr<andromeda::Image> negX = andromeda::Image::LoadImageFromFile(args.filename_negX);
+	std::shared_ptr<andromeda::Image> negY = andromeda::Image::LoadImageFromFile(args.filename_negY);
+	std::shared_ptr<andromeda::Image> negZ = andromeda::Image::LoadImageFromFile(args.filename_negZ);
+
+	cubeTex->data(andromeda::CubeTextureFace::X_Positive, (aUInt8*)posX->data());
+	cubeTex->data(andromeda::CubeTextureFace::Y_Positive, (aUInt8*)posY->data());
+	cubeTex->data(andromeda::CubeTextureFace::Z_Positive, (aUInt8*)posZ->data());
+	cubeTex->data(andromeda::CubeTextureFace::X_Negative, (aUInt8*)negX->data());
+	cubeTex->data(andromeda::CubeTextureFace::Y_Negative, (aUInt8*)negY->data());
+	cubeTex->data(andromeda::CubeTextureFace::Z_Negative, (aUInt8*)negZ->data());
+#endif
+
+	// Load the Cube Texture
+	std::shared_ptr<andromeda::CubeTexture> cubeTex = andromeda::resourceFactory()->getResource<andromeda::CubeTexture>("skybox");
+
+
+
 	// Create Renderer
 //	std::shared_ptr<andromeda::IRenderer> renderer = std::make_shared<andromeda::Renderer>(sg);
 //	renderer->getCamera()->setPerspectiveFov(glm::pi<aFloat>() / 3.0f, 0.01f, 1000.0f);
@@ -282,7 +339,7 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 	std::shared_ptr<andromeda::DeferredRenderer> deferred = std::make_shared<andromeda::DeferredRenderer>(sg, defEffect, "lightDirectional");
 	deferred->getCamera()->setPerspectiveFov(glm::pi<aFloat>() / 3.0f, 0.01f, 1000.0f);
 	deferred->getCamera()->setView(28.0f);
-	deferred->setEnvironmentReflectionmap(andromeda::LoadCubeTexture("skybox", nullptr));
+	deferred->setEnvironmentReflectionmap(cubeTex);
 
 	view->addRenderer("deferred", deferred);
 	view->addRendererLayer("deferred", "background", "background", defEffect, "skybox");
@@ -417,14 +474,20 @@ std::shared_ptr<andromeda::GameObject> Game::createGround()
 	obj->addComponent(transform);
 
 	// Create Material
-	std::shared_ptr<andromeda::Texture> tex = andromeda::LoadTexture("pattern0.png");
+	//std::shared_ptr<andromeda::Texture> tex = andromeda::LoadTexture("pattern0.png");
+	std::shared_ptr<andromeda::Texture> tex = andromeda::resourceFactory()->getResource<andromeda::Texture>("pattern");
 	andromeda::Material material;
 
 	material.setDiffuse(1, 1, 1)
 		.setDiffuseTexture(tex);
 
+	if (!tex)
+	{
+		log_err("No Texture for Ground");
+	}
 
-	aInt32 divisions = 100;
+
+	aInt32 divisions = 80;
 
 	// Create Geometry
 	andromeda::geometry::Surface surface;

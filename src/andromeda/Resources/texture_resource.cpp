@@ -3,7 +3,7 @@
 #include <andromeda/Graphics/texture.h>
 #include <andromeda/Resources/resource_manager.h>
 
-#include <andromeda/Platform/file.h>
+#include <andromeda/IO/file.h>
 
 
 #include <andromeda/andromeda.h>
@@ -20,7 +20,7 @@ using namespace andromeda;
 	Template Specialisation for Loading a Texture
 
 	TODO:
-	- The Texture needs to be created and returned, irrespective of when/where the texture gets loaded
+	- The Texture needs to be created and returned, irrespective of when/where/how the texture gets loaded
 	- Add threading support somewhere ...
 */
 template<>

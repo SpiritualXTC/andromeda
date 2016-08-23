@@ -1,4 +1,4 @@
-#include <andromeda/Platform/file.h>
+#include <andromeda/IO/file.h>
 
 #include <fstream>
 #include <sstream>
@@ -12,7 +12,7 @@ using namespace andromeda;
 
 */
 FileText::FileText(std::istream & stream)
-	: FileText(stream, "", "")
+	: FileText(stream, "")
 {
 
 }
@@ -21,8 +21,8 @@ FileText::FileText(std::istream & stream)
 /*
 
 */
-FileText::FileText(std::istream & stream, const std::string & filename, const std::string & location)
-	: File(filename, location)
+FileText::FileText(std::istream & stream, const std::string & filename)
+	: File(filename)
 {
 	std::stringstream contents;
 

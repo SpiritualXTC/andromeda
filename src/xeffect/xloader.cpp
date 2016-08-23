@@ -10,6 +10,9 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/regex.hpp>
 
+
+#include <andromeda/graphics_conversion.h>
+
 #include <andromeda/Utilities/chain.h>
 #include <andromeda/Utilities/io.h>
 #include <andromeda/Utilities/log.h>
@@ -25,7 +28,6 @@
 #include "x_state.h"
 #include "x_state_builder.h"
 #include "x_technique.h"
-#include "x_type_conversion.h"
 #include "x_uniform_builder.h"
 
 using namespace andromeda;
@@ -523,7 +525,7 @@ std::shared_ptr<XPass> XEffectLoader::loadPass(XNode & node, const std::shared_p
 	if (enabled.is_initialized())
 	{
 		log_debugp("Pass <%1%> :: Set Enabled = %2%", name, enabled);
-		pass->setEnabled(XTypeConversion::convBoolean(enabled.get(), true));
+		pass->setEnabled(util::convertToBoolean(enabled.get(), true));
 	}
 
 	// Load States

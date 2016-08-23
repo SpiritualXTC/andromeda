@@ -18,9 +18,6 @@
 #include "Graphics/font.h"
 #include "Graphics/effect.h"
 #include "Graphics/mesh.h"
-#include "Graphics/texture.h"
-
-
 
 
 
@@ -47,6 +44,10 @@
 namespace andromeda
 {
 	// Forward Declarations
+	class Texture;
+	class CubeTexture;
+	class VolumeTexture;
+
 	class IFrameBuffer;
 
 
@@ -85,20 +86,6 @@ namespace andromeda
 
 
 
-
-
-
-		
-
-
-
-
-
-
-
-
-
-
 		// Getters
 		const inline Int32 getDisplayWidth() const { return _displayWidth; }
 		const inline Int32 getDipslayHeight() const { return _displayHeight; }
@@ -117,7 +104,7 @@ namespace andromeda
 		virtual std::shared_ptr<IFrameBuffer> createFrameBuffer(UInt32 width, UInt32 height) = 0;
 
 		// Create Texture
-		virtual std::shared_ptr<Texture> createTexture(UInt32 width, UInt32 height) = 0;
+		virtual std::shared_ptr<Texture> createTexture(UInt32 width, UInt32 height, StorageFormat format = StorageFormat::RGBA) = 0;
 
 		// Create Cube Texture
 		virtual std::shared_ptr<CubeTexture> createCubeTexture(UInt32 width, UInt32 height) = 0;

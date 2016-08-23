@@ -1,7 +1,9 @@
 #include <andromeda/resources.h>
 
 #include <andromeda/andromeda.h>
-#include <andromeda/Resources/resource_manager.h>
+#include <andromeda/Resources/resource_manager.h>	//remove
+
+#include <andromeda/Resources2/resource_factory.h>
 
 using namespace andromeda;
 
@@ -18,10 +20,9 @@ std::shared_ptr<Texture> andromeda::LoadTexture(const std::string & filename, co
 
 
 // Loads a Cube Texture
-std::shared_ptr<CubeTexture> andromeda::LoadCubeTexture(const std::string & alias, const CubeTextureLoadArgs * args, const std::string & locationName)
+std::shared_ptr<CubeTexture> andromeda::LoadCubeTexture(const std::string & name)
 {
-
-	return nullptr;
+	return andromeda::resourceFactory()->getResource<CubeTexture>(name);
 }
 
 

@@ -14,6 +14,8 @@
 #include <andromeda/Game/geometry_component.h>
 #include <andromeda/Game/transform_component.h>
 
+#include <andromeda/Graphics/texture.h>
+
 #include <andromeda/Utilities/image.h>
 
 #include "plane_test_component.h"
@@ -32,6 +34,7 @@ std::shared_ptr<andromeda::GameObject> Factory::createSkybox()
 
 	// Load a Cube Texture
 	CubeTextureLoadArgs args;
+#if 1
 	args.filename_posX = "../res/textures/skybox_xpos.png";
 	args.filename_negX = "../res/textures/skybox_xneg.png";
 
@@ -40,6 +43,16 @@ std::shared_ptr<andromeda::GameObject> Factory::createSkybox()
 
 	args.filename_posZ = "../res/textures/skybox_zpos.png";
 	args.filename_negZ = "../res/textures/skybox_zneg.png";
+#else
+	args.filename_posX = "../res/textures/icyhell/icyhell_rt.png";
+	args.filename_negX = "../res/textures/icyhell/icyhell_ft.png";
+
+	args.filename_posY = "../res/textures/icyhell/icyhell_up.png";
+	args.filename_negY = "../res/textures/icyhell/icyhell_dn.png";
+
+	args.filename_posZ = "../res/textures/icyhell/icyhell_ft.png";
+	args.filename_negZ = "../res/textures/icyhell/icyhell_bk.png";
+#endif
 
 
 	// Manually Build the Skybox :: Only way for now until the resource manager is rewritten
@@ -132,7 +145,7 @@ std::shared_ptr<andromeda::GameObject> Factory::createCube()
 
 
 	// Create Material
-	std::shared_ptr<andromeda::Texture> tex = andromeda::LoadTexture("pattern0.png");
+	std::shared_ptr<andromeda::Texture> tex = andromeda::LoadTexture("white.png");
 	andromeda::Material material;
 
 	material.setDiffuse(1, 1, 1)
@@ -140,8 +153,12 @@ std::shared_ptr<andromeda::GameObject> Factory::createCube()
 
 
 	// Temp Visualisation for GBuffer
-	andromeda::geometry::Cube geom;
-
+#if 1
+	andromeda::geometry::Cube geom(5.0f);
+#else
+	andromeda::geometry::Ellipse geom(5.0f);
+	geom.setSlices(64).setStacks(32);
+#endif
 	std::shared_ptr<andromeda::Geometry> geometry = geom.build(andromeda::geometry::GeometryGenerate::Texture | andromeda::geometry::GeometryGenerate::Normals);
 
 	if (geometry)

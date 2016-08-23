@@ -49,9 +49,9 @@ std::shared_ptr<IFrameBuffer> GraphicsOpenGL::createFrameBuffer(UInt32 width, UI
 /*
 	Create Texture
 */
-std::shared_ptr<Texture> GraphicsOpenGL::createTexture(UInt32 width, UInt32 height)
+std::shared_ptr<Texture> GraphicsOpenGL::createTexture(UInt32 width, UInt32 height, StorageFormat format)
 {
-	return std::make_shared<opengl::TextureGL>(width, height);
+	return std::make_shared<opengl::TextureGL>(width, height, format);
 }
 
 

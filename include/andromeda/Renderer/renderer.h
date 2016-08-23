@@ -16,6 +16,7 @@ namespace andromeda
 
 	class Camera;
 	class ILayer;
+	class ILayerEnvironment;
 	
 	class RenderableGroup;
 	class RenderCache;
@@ -62,12 +63,13 @@ namespace andromeda
 
 
 	/*
-		Better name pl0x
+		TODO: Better name pl0x
 	*/
 	class RendererMethod
 	{
 	public:
 		RendererMethod();
+		RendererMethod(const std::shared_ptr<ILayerEnvironment> & enviroment);
 		virtual ~RendererMethod();
 
 		// THIS SECTION NEEDS TO DO CLASS SPECIFIC STUFF...
@@ -81,6 +83,7 @@ namespace andromeda
 			const std::shared_ptr<Effect> & effect, const std::string & technique = "");
 
 	private:
+		std::shared_ptr<ILayerEnvironment> _environment;
 		std::vector<std::shared_ptr<ILayer>> _layers;
 	};
 

@@ -17,6 +17,11 @@ out vec3 v_position;
 out vec3 v_normal;
 out vec2 v_diffuseTextureCoord;
 
+// Varying for Refelections
+out vec3 v_eyePosition;
+out vec3 v_eyeNormal;
+
+
 void main( void )
 {
 
@@ -32,10 +37,14 @@ void main( void )
 	v_diffuseTextureCoord	= a_texture;
 
 
+
+	// Environment Mapping Variables
+	// TODO:: Optimize (v_eyePosition = v_position)
+	//	   :: Normals will need to use the "normal matrix"
+	v_eyePosition = vec3 (u_modelview * a_position);
+	v_eyeNormal = vec3 (mat3(u_modelview) * a_normal);
+
+
 	// Calculate Position
 	gl_Position = u_projection * u_modelview * a_position;	
-
-
-	// No Idea what this does :)
-	//    gl_FrontColor = vec4(1.0, 1.0, 1.0, 1.0);
 }

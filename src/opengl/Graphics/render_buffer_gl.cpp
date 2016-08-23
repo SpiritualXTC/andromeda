@@ -52,14 +52,16 @@ RenderBufferGL::~RenderBufferGL()
 
 void RenderBufferGL::setSize(Int32 width, Int32 height)
 {
+	// Set Dimensions
 	_width = width;
 	_height = height;
 
-	// Convert DataType
-	GLenum dt = GraphicsOpenGL::convDataType(_dataType);
 
-	GLenum internalFormat = GraphicsOpenGL::convStorageFormatInternal(_format);
-	GLenum glFormat = GraphicsOpenGL::convStorageFormat(_format);
+	// Convert DataType
+	GLenum dt = opengl::convDataType(_dataType);
+
+	GLenum internalFormat = opengl::convStorageFormatInternal(_format);
+	GLenum glFormat = opengl::convStorageFormat(_format);
 
 
 	// Bind RenderBuffer Handle
@@ -77,10 +79,6 @@ void RenderBufferGL::setSize(Int32 width, Int32 height)
 	// Allocate Memory
 	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, _width, _height, 0, glFormat, dt, NULL);
 
-	/*
-	TODO:
-	Setup Texture Filtering in graphics_types.h and the conversions.
-	*/
 	// Set Texture Filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

@@ -45,11 +45,18 @@ namespace andromeda
 			void resize(Int32 width, Int32 height) override;
 
 
+			// Color Buffer Attachment
+			Boolean attach(FrameBufferAttachment attachment, StorageFormat format, DataType dataType) override;
+
 
 			Boolean status();
 
+
+			
+
 		protected:
-			void attach(UInt32 attachment, StorageFormat format, DataType dataType);
+			void attachColor(UInt32 attachment, StorageFormat format, DataType dataType);
+			void attachDepth(UInt32 attachment, StorageFormat format, DataType dataType);
 
 		private:
 			Int32 _width = 0;

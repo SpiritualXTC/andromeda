@@ -27,7 +27,7 @@ namespace andromeda
 	std::shared_ptr<Texture> LoadTexture(const std::string & filename, const std::string & locationName = "");
 
 	// Loads a Cube Texture
-	std::shared_ptr<CubeTexture> LoadCubeTexture(const std::string & alias, const CubeTextureLoadArgs * args, const std::string & locationName = "");
+	std::shared_ptr<CubeTexture> LoadCubeTexture(const std::string & name);
 
 	// Loads a Volme Texture
 	std::shared_ptr<VolumeTexture> LoadVolumeTexture(const std::string & alias, const VolumeTextureLoadArgs * args, const std::string & locationName = "");

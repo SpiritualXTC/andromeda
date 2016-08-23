@@ -54,7 +54,7 @@
 #include <andromeda/exception.h>
 #include <andromeda/stddef.h>
 
-#include <andromeda/Platform/file.h>
+#include <andromeda/IO/file.h>
 
 #include <andromeda/Utilities/log.h>
 #include <andromeda/Utilities/singleton.h>
@@ -253,6 +253,8 @@ namespace andromeda
 	class VolumeTexture;
 
 	class FontFace;
+
+	struct CubeTextureLoadArgs;
 
 
 	template<>

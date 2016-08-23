@@ -2,6 +2,8 @@
 
 #include <array>
 
+#include <opengl/graphics_gl_conversions.h>
+
 #include <andromeda/Utilities/log.h>
 
 using namespace andromeda;
@@ -12,13 +14,13 @@ using namespace andromeda::opengl;
 /*
 
 */
-TextureCubeGL::TextureCubeGL(UInt32 width, UInt32 height)
+TextureCubeGL::TextureCubeGL(UInt32 width, UInt32 height, StorageFormat storageFormat)
 {
 	// Generate Handle
 	glGenTextures(1, &_handle);
 
 	// Resize Texture
-	resize(width, height);
+	resize(width, height, storageFormat);
 }
 
 
@@ -40,9 +42,10 @@ TextureCubeGL::~TextureCubeGL()
 /*
 
 */
-void TextureCubeGL::resize(UInt32 width, UInt32 height)
+void TextureCubeGL::resize(UInt32 width, UInt32 height, StorageFormat storageFormat)
 {
-	static std::array<GLenum, 6> faces = {
+	static std::array<GLenum, 6> faces = 
+	{
 		GL_TEXTURE_CUBE_MAP_POSITIVE_X,
 		GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
 
@@ -56,6 +59,12 @@ void TextureCubeGL::resize(UInt32 width, UInt32 height)
 	// Set Dimensions
 	_width = width;
 	_height = height;
+	_format = storageFormat;
+
+
+	// Convert Format to GLenum
+	GLenum internalFormat = opengl::convStorageFormatInternal(_format);
+	GLenum glFormat = opengl::convStorageFormat(_format);
 
 	// Bind
 	bind(0);
@@ -66,15 +75,14 @@ void TextureCubeGL::resize(UInt32 width, UInt32 height)
 		log_debugp("Generate Cube Face : %1%", face);
 
 		// Create the Face
-		glTexImage2D(face, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-
-		// TODO: Move this to a filter section
-		// Set Texture Parameters
-
+		glTexImage2D(face, 0, internalFormat, width, height, 0, glFormat, GL_UNSIGNED_BYTE, nullptr);
 	}
 
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	// Set Filter
+	filter(_magFilter, _minFilter);
+
+	// Set Wrapping Options
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -100,12 +108,14 @@ void TextureCubeGL::data(CubeTextureFace face, const UInt8 * ptr)
 		GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
 	};
 
+	GLenum glFormat = opengl::convStorageFormat(_format);
+
 	GLenum faceIndex = faces.at((UInt32)face);
 
 	bind(0);
 
 	// Send Image Data to GPU
-	glTexSubImage2D(faceIndex, 0, 0, 0, _width, _height, GL_RGBA, GL_UNSIGNED_BYTE, ptr);
+	glTexSubImage2D(faceIndex, 0, 0, 0, _width, _height, glFormat, GL_UNSIGNED_BYTE, ptr);
 
 	unbind(0);
 }
@@ -120,6 +130,31 @@ void TextureCubeGL::data(CubeTextureFace face, const UInt8 * ptr, Int32 xOffset,
 }
 
 
+
+
+/*
+
+*/
+void TextureCubeGL::filter(TextureMagFilter magFilter, TextureMinFilter minFilter)
+{
+	// Assign
+	_magFilter = magFilter;
+	_minFilter = minFilter;
+
+	// Convert Filtering Options
+	GLint min = opengl::convTextureMinFilter(_minFilter);
+	GLint mag = opengl::convTextureMagFilter(_magFilter);
+
+	// Bind
+	bind(0);
+
+	// Set Texture Parameters
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, mag);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, min);
+
+	// Unbind
+	unbind(0);
+}
 
 
 

@@ -15,6 +15,8 @@ namespace andromeda
 	class Config;
 	class Engine;
 	class Graphics;
+	class Invoker;
+	class ResourceFactory;
 	class ResourceManager;
 	class SceneManager;
 	class System;
@@ -31,12 +33,17 @@ namespace andromeda
 
 	/*
 		Namespace Functionality
+
+		TODO:
+		Make the functions all return RAW pointers.
 	*/
 	class IAndromeda
 	{
 	public:
 
-		virtual inline std::shared_ptr<ResourceManager> & getResourceManager() = 0;
+		virtual inline std::shared_ptr<ResourceManager> & getResourceManager() = 0;	// REMOVE
+		virtual inline std::shared_ptr<ResourceFactory> & getResourceFactory() = 0;	// NEW
+
 		virtual inline std::shared_ptr<Config> & getConfig() = 0;
 		virtual inline std::shared_ptr<System> & getSystem() = 0;
 		virtual inline std::shared_ptr<Engine> & getEngine() = 0;
@@ -45,6 +52,8 @@ namespace andromeda
 		virtual inline std::shared_ptr<Timing> & getTiming() = 0;
 
 		virtual inline std::shared_ptr<SceneManager> & getSceneManager() = 0;
+
+		virtual inline Invoker * getInvoker() = 0;
 
 
 		virtual void run(std::shared_ptr<Application> app) = 0;
@@ -69,7 +78,8 @@ namespace andromeda
 
 
 	/*
-
+		TODO:
+		Make all the members unique_ptr<>
 	*/
 	class Andromeda : virtual public IAndromeda
 	{
@@ -122,7 +132,8 @@ namespace andromeda
 		
 
 
-		inline std::shared_ptr<ResourceManager> & getResourceManager() override { return _resources; }
+		inline std::shared_ptr<ResourceManager> & getResourceManager() override { return _resources; }	// REMOVE
+		inline std::shared_ptr<ResourceFactory> & getResourceFactory() override { return _resFactory; }	// NEW
 		
 		inline std::shared_ptr<Config> & getConfig() override{ return _config; };
 		inline std::shared_ptr<System> & getSystem() override { return _system; };
@@ -133,6 +144,11 @@ namespace andromeda
 
 		inline std::shared_ptr<SceneManager> & getSceneManager() override { return _scenes; }
 
+
+		inline Invoker * getInvoker() override { return _invoker.get(); }
+
+
+
 		void run(std::shared_ptr<Application> app);
 		void quit();
 
@@ -142,10 +158,10 @@ namespace andromeda
 
 
 	private:
-
-
 		std::shared_ptr<Config> _config;
 		std::shared_ptr<System> _system;
+		std::shared_ptr<Invoker> _invoker;
+
 
 		std::shared_ptr<Engine> _engine;
 		std::shared_ptr<Graphics> _graphics;
@@ -153,7 +169,13 @@ namespace andromeda
 		std::shared_ptr<Timing> _timing;
 		std::shared_ptr<SceneManager> _scenes;
 
-		std::shared_ptr<ResourceManager> _resources;
+		std::shared_ptr<ResourceFactory> _resFactory;	// New Resource Manager
+
+
+
+
+
+		std::shared_ptr<ResourceManager> _resources;	// REMOVE
 	};
 
 
@@ -177,10 +199,22 @@ namespace andromeda
 	}
 
 
+
+
+
+
+
+
 	/* Resource Manager */
 	inline std::shared_ptr<ResourceManager> resources()
 	{
 		return Andromeda::instance()->getResourceManager();
+	}
+
+	/* Resource Factory */
+	inline std::shared_ptr<ResourceFactory> resourceFactory()
+	{
+		return Andromeda::instance()->getResourceFactory();
 	}
 
 	/* Scene Manager */

@@ -11,6 +11,7 @@
 #include <andromeda/andromeda_init.h>
 
 #include <andromeda/graphics.h>
+#include <andromeda/IO/file_queue.h>
 #include <andromeda/Resources/resource_manager.h>
 #include <andromeda/Utilities/io.h>
 #include <andromeda/Utilities/log.h>
@@ -32,18 +33,7 @@
 
 
 
-// nvFX Library
-#if defined(_DEBUG) 
-#pragma comment(lib, "fxLibD.lib")
-#pragma comment(lib, "fxLibGLD.lib")
-#pragma comment(lib, "fxParserD.lib")
-#pragma comment(lib, "nvFxcc.lib")
-#else
-#pragma comment(lib, "fxLib.lib")
-#pragma comment(lib, "fxLibGL.lib")
-#pragma comment(lib, "fxParser.lib")
-#pragma comment(lib, "nvFxcc.lib")
-#endif
+
 
 // Boost Auto Links its libraries?? 
 
@@ -109,15 +99,14 @@ void test(const glm::vec2 & v0, const glm::vec2 & v1, const glm::vec2 & c)
 
 /*
 	TODO:
-	This is something that is needed to be handled by the engine,
-	and the andromeda configuration file
+	Remove Meh
 */
 void configResources(andromeda::ResourceManager * fs)
 {
 	// Resources
 	/*
 	TODO
-	- Move this to some automated aspect with the engine :: Potentially using the config
+	- Remove Me
 	*/
 	fs->addResourceType<andromeda::Mesh>("models", andromeda::ResourceManager::Binary);
 	fs->addResourceType<andromeda::Effect>("shader");
@@ -129,6 +118,36 @@ void configResources(andromeda::ResourceManager * fs)
 	log_warn("main() :: TODO: Rename to Font when Font library is setup fully.");	// This is being logged for a reason :p
 	fs->addResourceType<andromeda::FontFace>("fonts", andromeda::ResourceManager::Binary);
 }
+
+
+
+
+
+#include <andromeda/Graphics/texture.h>
+#include <andromeda/Resources2/resource_factory.h>
+#include <andromeda/Resources2/resource_builder.h>
+
+/*
+	The new resource engine :: Testing Phase
+*/
+void configResourcesV2(andromeda::ResourceFactory * rf)
+{
+	log_debugp("New Resource Engine");
+	
+	// Create Builders :: This needs to be done by the engine, however the resource management could be extended to include
+	// custom resource types, these will need to be managed by the application
+	
+
+
+
+	// Load Resource XML :: This call needs to be done by the application
+	rf->loadResources("../res", "resources.xml");
+
+	// Load Packaged Files! (Loop through all .pak(?) files in ../res/)
+}
+
+
+
 
 
 
@@ -165,9 +184,22 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	// Resource management
 	configResources(andromeda::Andromeda::Andromeda::instance()->getResourceManager().get());
 
+	// New Resource Management
+	configResourcesV2(andromeda::resourceFactory().get());
+
+
+
+	// Test the File Queue
+	andromeda::FileQueue fq;
+	//fq.start();
+
+
 
 	// Create Application!
 	std::shared_ptr<andromeda::Application> app = std::make_shared<App>();
+
+
+
 
 	// Run Engine
 	andromeda::run(app);
@@ -178,6 +210,21 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	andromeda::destroy();
 
 	log_debug("main() :: Fin");
+
+
+	fq.loadFile("test1.png", true, nullptr, nullptr);
+	fq.loadFile("test2.png", true, nullptr, nullptr);
+	fq.loadFile("test3.png", true, nullptr, nullptr);
+	fq.loadFile("test4.png", true, nullptr, nullptr);
+	fq.loadFile("test5.png", true, nullptr, nullptr);
+	fq.loadFile("test6.png", true, nullptr, nullptr);
+	fq.loadFile("test7.png", true, nullptr, nullptr);
+
+	// TEMP
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+
+	fq.stop();
+
 
 	return 0;
 }

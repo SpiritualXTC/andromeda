@@ -1,13 +1,17 @@
-#ifndef _ANDROMEDA_UTILITIES_LOG_H_
-#define _ANDROMEDA_UTILITIES_LOG_H_
-
+#pragma once
 /*
 	TODO:
-	Add a begin/end indent system to allow for a more detailed set of logging where implementations can auto-tab correctly
-	and other implementations could in theory set up a expandable tree UI
+	- Make Thread Safe
+	- Add a channel system
+		Different logging channels should be able to be configured. Configuration should be "soft" :: IE, "registration" only occurs when a filter is first used - and it would also ONLY be relevant to the logger
+		A channel would logically group logs.
+		It can be used for filtering, alternate "roots" in a tree structure, or labels.
+		REASON:
+		Multi-threaded code that has logging can output logs mixed in with different threads, making the logs harder to follow
 */
 
 #include <list>
+#include <mutex>
 #include <string>
 #include <sstream>
 #include <cstdarg>
@@ -49,20 +53,6 @@
 
 #define log_tracep(...) andromeda::Log::instance()->logp(andromeda::Log::Trace, __VA_ARGS__)
 
-
-
-/*
-	Increase/Decrease the Logging Depth.
-	This allows the logging system to better show log "flow"
-
-	Recieving push/pop messages allows the log display to:
-	- For example, increase TAB depth
-	- Add Depth Heirarchy to a tree based log
-
-	From now on, use the log_tree() system defined below :D
-*/
-//#define log_push() andromeda::Log::instance()->log(andromeda::Log::Push, "")
-//#define log_pop() andromeda::Log::instance()->log(andromeda::Log::Pop, "")
 
 #define log_break() andromeda::Log::instance()->log(andromeda::Log::Break, "'")
 
@@ -115,10 +105,14 @@ namespace andromeda
 
 		inline void push()
 		{
+		//	std::lock_guard<std::mutex> guard(_mutex);
+
 			log(Log::Push, "");
 		}
 		inline void pop()
 		{
+		//	std::lock_guard<std::mutex> guard(_mutex);
+
 			log(Log::Pop, "");
 		}
 	
@@ -130,6 +124,8 @@ namespace andromeda
 		template <typename ... Args>
 		void logp(LogLevel level, const std::string & format, Args const & ... args) noexcept
 		{
+		//	std::lock_guard<std::mutex> guard(_mutex);
+
 			boost::format fmt = boost::format(format);
 
 			int a[] = { 0, ((void)(fmt % argument(args)), 0) ... };
@@ -138,6 +134,9 @@ namespace andromeda
 		}
 
 	private:
+
+	//	std::mutex _mutex;
+
 
 		/*
 			Passes the argument straight though
@@ -249,4 +248,3 @@ namespace andromeda
 #endif
 
 
-#endif

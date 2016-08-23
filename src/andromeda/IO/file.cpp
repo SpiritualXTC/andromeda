@@ -1,9 +1,10 @@
-#include <andromeda/Platform/file.h>
+#include <andromeda/IO/file.h>
+#include <andromeda/IO/file_location.h>
 
 #include <cassert>
 
 
-#define BOOST_FILESYSTEM_NO_DEPRECATED 
+#define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
 
@@ -17,9 +18,9 @@ using namespace boost;
 /*
 
 */
-std::shared_ptr<File> andromeda::OpenFile(const std::string & filepath, Boolean binary)
+std::shared_ptr<File> File::OpenFile(const std::string & filepath, Boolean binary)
 {
-	log_infop("Common FS :: Load File: %1%, Binary = %2%", filepath, binary);
+	log_infop("File :: Load File() :: Filename = %1%, Binary = %2%", filepath, binary);
 
 
 	// Validate if File Exists
@@ -45,12 +46,12 @@ std::shared_ptr<File> andromeda::OpenFile(const std::string & filepath, Boolean 
 	if (binary)
 	{
 		// Binary File
-		f = std::make_shared<FileBinary>(file, filepath, "");
+		f = std::make_shared<FileBinary>(file, filepath);
 	}
 	else
 	{
 		// Text File
-		f = std::make_shared<FileText>(file, filepath, "");
+		f = std::make_shared<FileText>(file, filepath);
 	}
 
 	// Close File
@@ -61,12 +62,17 @@ std::shared_ptr<File> andromeda::OpenFile(const std::string & filepath, Boolean 
 
 
 
+
+
+
+
+
+
 /*
 
 */
-File::File(const std::string & filename, const std::string & location)
+File::File(const std::string & filename)
 	: _filename(filename)
-	, _location(location)
 {
 	// Get File Extension
 	_extension = GetFileExtension(_filename);

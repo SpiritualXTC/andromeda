@@ -1,9 +1,17 @@
-#ifndef _ANDROMEDA_UTILITIES_IO_H_
-#define _ANDROMEDA_UTILITIES_IO_H_
+#pragma once 
 
 #include <string>
 
 #include <andromeda/stddef.h>
+
+/*
+	TODO:
+	Move to Utilities/Util
+
+	Place in the ::util namespace
+
+	Lowercase the first letter
+*/
 
 namespace andromeda
 {
@@ -12,9 +20,6 @@ namespace andromeda
 
 	// TODO: Remove Me [Maybe] :)
 	std::string LoadFile(const std::string & filename);
-
-
-
 
 
 	/*
@@ -32,5 +37,3 @@ namespace andromeda
 	*/
 	std::string GetFileExtension(const std::string & filepath);
 }
-
-#endif

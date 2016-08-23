@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<resources>
+
+  <!-- This file should be autogen'd for the most part, or should be setup to list directories -->
+
+  <!-- Common Format -->
+  <resource>
+    <name>[name]</name>
+    <source>[fileName</source>
+  </resource>
+  
+
+  <text>andromeda.txt</text>
+  
+  
+  <!--
+  <directory>
+    <resource>textures</resource>
+    <filter>*.png;*.jpg</filter>
+  </directory>
+  -->
+  
+
+  <texture>
+    <name>pattern</name>
+    <filename>textures/pattern0.png</filename>
+    <filter>linear</filter>
+  </texture>
+
+
+  
+  <texture>
+    <name></name>
+    <filename></filename>
+    <maxfilter></maxfilter>
+    <minfilter></minfilter>
+  </texture>
+
+
+
+
+  <cubetexture>
+    <name>skybox</name>
+    <xpos>textures/icyhell/icyhell_rt.png</xpos>
+    <ypos>textures/icyhell/icyhell_up.png</ypos>
+    <zpos>textures/icyhell/icyhell_ft.png</zpos>
+
+    <xneg>textures/icyhell/icyhell_lf.png</xneg>
+    <yneg>textures/icyhell/icyhell_dn.png</yneg>
+    <zneg>textures/icyhell/icyhell_bk.png</zneg>
+  </cubetexture>
+
+  <cubetexture>
+    <name>skybox2</name>
+    <xpos>textures/skybox/xpos.png</xpos>
+    <ypos>textures/skybox/ypos.png</ypos>
+    <zpos>textures/skybox/zpos.png</zpos>
+
+    <xneg>textures/skybox/xneg.png</xneg>
+    <yneg>textures/skybox/yneg.png</yneg>
+    <zneg>textures/skybox/zneg.png</zneg>
+  </cubetexture>
+
+
+
+  <!-- List of all Resources that should be preloaded when the Resource XML File is loaded-->
+  <!-- This does not necessarily mean the resources have to be located in this specific file -->
+  <!-- For example level.blah may contain a resources.xml that contain shared resources defined in global resources -->
+  <preload>
+    <resource></resource>
+  </preload>
+  
+</resources>

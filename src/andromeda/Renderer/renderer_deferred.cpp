@@ -15,6 +15,7 @@
 #include "renderable_group.h"
 
 #include "Deferred/deferred_directional_light.h"
+#include "Deferred/deferred_environment.h"
 #include "Deferred/deferred_geometry_method.h"
 #include "Deferred/deferred_lighting_method.h"
 
@@ -48,13 +49,25 @@ DeferredRenderer::DeferredRenderer(const std::shared_ptr<SceneGraph> & sg, const
 	_gBuffer = andromeda::graphics()->createFrameBuffer(512, 512);
 
 
+	log_verbose("Attaching RenderBuffers to FrameBuffer");
+	_gBuffer->attach(FrameBufferAttachment::Color, StorageFormat::RGBA, DataType::UnsignedByte);
+	_gBuffer->attach(FrameBufferAttachment::Color, StorageFormat::RGBA32F, DataType::Float);
+	_gBuffer->attach(FrameBufferAttachment::Color, StorageFormat::RGBA16F, DataType::Float);
+
+	// Depth Buffer
+	log_verbose("Attaching DepthBuffer to FrameBuffer");
+	_gBuffer->attach(FrameBufferAttachment::Depth, StorageFormat::Depth24, DataType::UnsignedInt);
+
+
+	// Create Environment Options for Deferred Renderer
+	_environment = std::make_shared<deferred::DeferredEnvironment>();
 
 	
 
 	// Create Methods
 	addMethod("background", std::make_shared<RendererMethod>());
 
-	addMethod("geometry", std::make_shared<deferred::DeferredRendererGeometryMethod>(_gBuffer));
+	addMethod("geometry", std::make_shared<deferred::DeferredRendererGeometryMethod>(_gBuffer, _environment));
 
 	_lightingMethod = std::make_shared<deferred::DeferredRendererLightingMethod>(_gBuffer, effect, directionalTechnique);
 
@@ -102,6 +115,18 @@ void DeferredRenderer::addDirectionalLight()
 
 	// Add the Light.
 	_lightingMethod->addDirectionalLight();
+}
+
+
+/*
+
+*/
+void DeferredRenderer::setEnvironmentReflectionmap(const std::shared_ptr<CubeTexture> & cubeTex)
+{
+	if (_environment)
+	{
+		_environment->setEnvironmentReflectionmap(cubeTex);
+	}
 }
 
 

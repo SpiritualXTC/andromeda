@@ -106,9 +106,11 @@ namespace andromeda
 		ITexture() {}
 		virtual ~ITexture(){}
 
-	
-		inline void bind() { bind(0); }
-		inline void unbind() { unbind(0); }
+		// Binds to the First Texture Index
+		inline void bind() const { bind(0); }
+
+		// Unbinds from the First Texture Index
+		inline void unbind() const { unbind(0); }
 
 		// Binds to the active texture index 	
 		virtual void bind(UInt32 activeIndex) const = 0;
@@ -125,19 +127,64 @@ namespace andromeda
 
 
 	/*
+		TODO:
+
+		Setup datatype options for the data being passed in... 
+		
+		for now it only uses UInt8
+
+		however it may need to use other data at some stage.
+	*/
+
+	/*
 		Abstract 2D Texture
 	*/
 	class Texture : virtual public ITexture
 	{
 	public:
-		// Resize the Texture
-		virtual void resize(const UInt8 * ptr, UInt32 width, UInt32 height) = 0;
 
+
+		// Resize the Texture
+		virtual void resize(UInt32 width, UInt32 height)
+		{
+			resize(width, height, format(), nullptr);
+		}
+
+		// Resize the Texture and Change StorageFormat
+		inline void resize(UInt32 width, UInt32 height, StorageFormat storageFormat)
+		{
+			resize(width, height, storageFormat, nullptr);
+		}
+
+		// Resize the Texture and Set Data
+		inline void resize(UInt32 width, UInt32 height, const UInt8 * ptr)
+		{
+			resize(width, height, format(), ptr);
+		}
+
+
+
+
+		// Get Width
+		virtual const inline UInt32 width() const = 0;
+
+		// Get Height
+		virtual const inline UInt32 height() const = 0;
+
+		// Get Format
+		virtual const inline StorageFormat format() const = 0;
+
+		// Resize the Texture, Change StorageFormat and sets Data
+		virtual void resize(UInt32 width, UInt32 height, StorageFormat storageFormat, const UInt8 * ptr) = 0;
+
+		// Send Data to the Texture
 		virtual void data(const UInt8 * ptr) = 0;
+
+		// Send only partial data to the Texture
 		virtual void data(const UInt8 * ptr, Int32 xOffset, Int32 yOffset, UInt32 width, UInt32 height) = 0;
 
-		virtual const inline UInt32 width() const = 0;
-		virtual const inline UInt32 height() const = 0;
+		// Set Filtering Options
+		virtual void filter(TextureMagFilter magFilter, TextureMinFilter minFilter) = 0;
 	};
 
 
@@ -151,18 +198,39 @@ namespace andromeda
 	/*
 		Abstract Cube Texture
 	*/
-	class CubeTexture : public ITexture
+	class CubeTexture : virtual public ITexture
 	{
 	public:
 
 		// Resize the Texture
-		virtual void resize(UInt32 width, UInt32 height) = 0;
+		virtual void resize(UInt32 width, UInt32 height)
+		{
+			resize(width, height, format());
+		}
 
+
+		// Get Width
 		virtual const inline UInt32 width() const = 0;
+
+		// Get Height
 		virtual const inline UInt32 height() const = 0;
 
+		// Get Format
+		virtual const inline StorageFormat format() const = 0;
+
+
+
+		// Resize the Texture
+		virtual void resize(UInt32 width, UInt32 height, StorageFormat storageFormat) = 0;
+
+		// Send Data to the Textures' Face
 		virtual void data(CubeTextureFace face, const UInt8 * ptr) = 0;
+
+		// Send only Partial Data to the Textures' Face
 		virtual void data(CubeTextureFace face, const UInt8 * ptr, Int32 xOffset, Int32 yOffset, UInt32 width, UInt32 height) = 0;
+
+		// Set Filtering Options
+		virtual void filter(TextureMagFilter magFilter, TextureMinFilter minFilter) = 0;
 	};
 
 
@@ -174,7 +242,7 @@ namespace andromeda
 	/*
 		Abstract Volume Texture
 	*/
-	class VolumeTexture : public ITexture
+	class VolumeTexture : virtual public ITexture
 	{
 	public:
 		virtual const inline UInt32 width() const = 0;

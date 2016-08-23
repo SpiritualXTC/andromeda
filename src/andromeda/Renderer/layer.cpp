@@ -50,7 +50,6 @@ Layer::Layer(const std::shared_ptr<Camera> & camera, const std::shared_ptr<Effec
 
 
 
-
 /*
 
 */
@@ -102,7 +101,7 @@ Boolean Layer::addExtension(const std::shared_ptr<ILayerExtension> & extension)
 /*
 	
 */
-Boolean Layer::render()
+Boolean Layer::render(ILayerEnvironment * environment)
 {
 	assert(_effect);
 	assert(_camera);
@@ -125,18 +124,29 @@ Boolean Layer::render()
 		if (!p || !p->isEnabled() || !p->apply())
 			continue;
 
-		// Set Projection Matrix
 		/*
 			TODO: Setup an annotations somewhere...
 		*/
-		p->setUniform("u_projection", _camera->getProjectionMatrix());
 
+		// Set Projection Matrix
+		p->setUniform("u_view", _camera->getViewMatrix());
+		p->setUniform("u_projection", _camera->getProjectionMatrix());
+		
+		// Apply Environment Options
+		if (environment)
+			environment->begin(p.get());
+
+		// Apply Extensions
 		for (const auto & ext : _extensions)
 			ext->begin(p);
 
 		// Render the RenderGroup
 		if (_renderGroup)
 			_renderGroup->render(_camera, p);
+
+		// Apply Environment Options
+		if (environment)
+			environment->end(p.get());
 
 		for (const auto & ext : _extensions)
 			ext->end(p);

@@ -28,6 +28,7 @@
 
 	This can ONLY be done after the Core Library has been divided into sub-libraries
 */
+#include "graphics_gl_conversions.h"
 
 
 namespace andromeda
@@ -36,213 +37,6 @@ namespace andromeda
 	
 	class GraphicsOpenGL : virtual public Graphics
 	{
-	public:
-
-		/*
-			TODO: 
-			Put static conversion functions to a separate class
-		*/
-		static inline void setEnable(GLenum glCap, Boolean enable)
-		{
-			if (enable)
-				glEnable(glCap);
-			else
-				glDisable(glCap);
-		}
-
-		// May move these to another class who's entire purpose is the conversions
-		// Conversion Functions
-		static inline GLenum convFaceDirection(FaceDirection face)
-		{
-			static GLenum dat[]
-			{
-				GL_CW,
-				GL_CCW
-			};
-
-			return dat[(Int32)face];
-		}
-
-		static inline GLenum convCullMode(CullMode cull)
-		{
-			static GLenum dat[]
-			{
-				GL_FRONT,
-				GL_BACK,
-				GL_FRONT_AND_BACK,
-				GL_INVALID_ENUM
-			};
-
-			return dat[(Int32)cull];
-		}
-
-		static inline GLenum convFaceMode(FaceMode face)
-		{
-			static GLenum dat[]
-			{
-				GL_FRONT,
-				GL_BACK,
-				GL_FRONT_AND_BACK
-			};
-
-			return dat[(Int32)face];
-		}
-
-		static inline GLenum convPolygonMode(PolygonMode polygon)
-		{
-			static GLenum dat[]
-			{
-				GL_FILL,
-				GL_LINE
-			};
-
-			return dat[(Int32)polygon];
-		}
-
-
-		static inline GLenum convFunction(Function func)
-		{
-			static GLenum dat[]
-			{
-				GL_NEVER,
-				GL_LESS,
-				GL_EQUAL,
-				GL_LEQUAL,
-				GL_GREATER,
-				GL_NOTEQUAL,
-				GL_GEQUAL,
-				GL_ALWAYS
-			};
-
-			return dat[(Int32)func];
-		}
-
-		static inline GLenum convBlendEquation(BlendEquation equation)
-		{
-			static GLenum dat[]
-			{
-				GL_FUNC_ADD,
-				GL_FUNC_SUBTRACT,
-				GL_FUNC_REVERSE_SUBTRACT,
-				GL_MIN,
-				GL_MAX
-			};
-
-			return dat[(Int32)equation];
-		}
-
-		static inline GLenum convBlendFunction(BlendFunction function)
-		{
-			static GLenum dat[]
-			{
-				GL_ZERO,
-				GL_ONE,
-
-				GL_SRC_COLOR,
-				GL_ONE_MINUS_SRC_COLOR,
-
-				GL_DST_COLOR,
-				GL_ONE_MINUS_DST_COLOR,
-
-				GL_SRC_ALPHA,
-				GL_ONE_MINUS_SRC_ALPHA,
-
-				GL_DST_ALPHA,
-				GL_ONE_MINUS_DST_ALPHA,
-
-				GL_CONSTANT_COLOR,
-				GL_ONE_MINUS_CONSTANT_COLOR,
-
-				GL_CONSTANT_ALPHA,
-				GL_ONE_MINUS_CONSTANT_ALPHA,
-
-				GL_SRC_ALPHA_SATURATE
-			};
-
-			return dat[(Int32)function];
-		}
-
-
-
-		static inline GLenum convStencilOperation(StencilOperation op)
-		{
-			static GLenum dat[]
-			{
-				GL_ZERO,
-				GL_KEEP,
-				GL_REPLACE,
-				GL_INCR,
-				GL_INCR_WRAP,
-				GL_DECR,
-				GL_DECR_WRAP,
-				GL_INVERT
-			};
-
-			return dat[(Int32)op];
-		}
-
-
-		static inline GLenum convDataType(DataType dataType)
-		{
-			static GLenum dat[]
-			{
-				GL_BYTE,
-				GL_UNSIGNED_BYTE,
-				GL_SHORT,
-				GL_UNSIGNED_SHORT,
-				GL_INT,
-				GL_UNSIGNED_INT,
-				GL_FLOAT,
-				GL_FIXED,
-			};
-
-			return dat[(Int32)dataType];
-		}
-
-
-		static inline GLenum convStorageFormatInternal(StorageFormat format)
-		{
-			static GLenum dat[]
-			{
-				GL_RGBA,
-
-				GL_RGBA16F,
-				GL_RGBA32F,
-
-				GL_DEPTH_COMPONENT16,
-				GL_DEPTH_COMPONENT24,
-				GL_DEPTH_COMPONENT32,
-
-				GL_DEPTH_STENCIL
-			};
-
-			
-			return dat[(Int32)format];
-		}
-		static inline GLenum convStorageFormat(StorageFormat format)
-		{
-			// Same as above... only the simpler version... lol
-			// https://www.opengl.org/sdk/docs/man/html/glTexImage2D.xhtml
-			static GLenum dat[]
-			{
-				GL_RGBA,
-
-				GL_RGBA,
-				GL_RGBA,
-
-				GL_DEPTH_COMPONENT,
-				GL_DEPTH_COMPONENT,
-				GL_DEPTH_COMPONENT,
-
-				GL_DEPTH_STENCIL
-			};
-
-
-			return dat[(Int32)format];
-		}
-
-
-
 	public:
 		GraphicsOpenGL() 
 		{
@@ -255,15 +49,27 @@ namespace andromeda
 		virtual ~GraphicsOpenGL() {}
 
 
+
+		// Change Internal State
+		inline void setEnable(GLenum glCap, Boolean enable)
+		{
+			if (enable)
+				glEnable(glCap);
+			else
+				glDisable(glCap);
+		}
+
+
+
 		/*
 			Creation
 		*/
 		std::shared_ptr<IFrameBuffer> createFrameBuffer(UInt32 width, UInt32 height) override;
 
 		// Create Texture
-		std::shared_ptr<Texture> createTexture(UInt32 width, UInt32 height) override;
+		std::shared_ptr<Texture> createTexture(UInt32 width, UInt32 height, StorageFormat format) override;
 
-		// Create Cube Texture [No Implementation]
+		// Create Cube Texture
 		std::shared_ptr<CubeTexture> createCubeTexture(UInt32 width, UInt32 height) override;
 
 		// Create Volume Texture [No Implementation]
@@ -300,7 +106,7 @@ namespace andromeda
 		*/
 		inline void setFrontFace(FaceDirection face) override
 		{
-			glFrontFace(convFaceDirection(face));
+			glFrontFace(opengl::convFaceDirection(face));
 		}
 		inline void setCulling(CullMode cull) override
 		{
@@ -313,13 +119,13 @@ namespace andromeda
 			else
 			{
 				glEnable(GL_CULL_FACE);
-				glCullFace(convCullMode(cull));
+				glCullFace(opengl::convCullMode(cull));
 			}
 		}
 
 		inline void setPolygonMode(FaceMode face, PolygonMode mode) override
 		{
-			glPolygonMode(convFaceMode(face), convPolygonMode(mode));
+			glPolygonMode(opengl::convFaceMode(face), opengl::convPolygonMode(mode));
 		}
 
 
@@ -340,7 +146,7 @@ namespace andromeda
 		}
 		inline void setBlendEquation(BlendEquation rgbEquation, BlendEquation alphaEquation)
 		{
-			glBlendEquationSeparate(convBlendEquation(rgbEquation), convBlendEquation(alphaEquation));
+			glBlendEquationSeparate(opengl::convBlendEquation(rgbEquation), opengl::convBlendEquation(alphaEquation));
 		}
 
 		inline void setBlendFunction(BlendFunction source, BlendFunction destination)
@@ -351,8 +157,8 @@ namespace andromeda
 			, BlendFunction alphaSource, BlendFunction alphaDest
 			)
 		{
-			glBlendFuncSeparate(convBlendFunction(rgbSource), convBlendFunction(rgbDest)
-				, convBlendFunction(alphaSource), convBlendFunction(alphaDest));
+			glBlendFuncSeparate(opengl::convBlendFunction(rgbSource), opengl::convBlendFunction(rgbDest)
+				, opengl::convBlendFunction(alphaSource), opengl::convBlendFunction(alphaDest));
 		}
 
 
@@ -365,7 +171,7 @@ namespace andromeda
 		}
 		inline void setDepthFunction(Function func) override
 		{
-			glDepthFunc(convFunction(func));
+			glDepthFunc(opengl::convFunction(func));
 		}
 		inline void setDepthWriteEnable(Boolean enable) override
 		{
@@ -388,12 +194,12 @@ namespace andromeda
 
 		inline void setStencilFunction(Function function, Int32 ref, UInt32 mask, FaceMode face = FaceMode::FrontAndBack) override
 		{
-			glStencilFuncSeparate(convFaceMode(face), convFunction(function), ref, mask);
+			glStencilFuncSeparate(opengl::convFaceMode(face), opengl::convFunction(function), ref, mask);
 		}
 
 		inline void setStencilMask(UInt32 mask, FaceMode face = FaceMode::FrontAndBack) override
 		{
-			glStencilMaskSeparate(convFaceMode(face), mask);
+			glStencilMaskSeparate(opengl::convFaceMode(face), mask);
 		}
 
 		inline void setStencilOperation(StencilOperation stencilFail
@@ -402,8 +208,8 @@ namespace andromeda
 			, FaceMode face = FaceMode::FrontAndBack
 			) override
 		{
-			glStencilOpSeparate(convFaceMode(face), convStencilOperation(stencilFail)
-				, convStencilOperation(depthFail), convStencilOperation(depthPass));
+			glStencilOpSeparate(opengl::convFaceMode(face), opengl::convStencilOperation(stencilFail)
+				, opengl::convStencilOperation(depthFail), opengl::convStencilOperation(depthPass));
 		}
 
 

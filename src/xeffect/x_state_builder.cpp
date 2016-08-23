@@ -4,12 +4,16 @@
 #include <boost/exception/exception.hpp>
 #include <boost/property_tree/ptree.hpp>
 
+
+
+#include <andromeda/graphics_conversion.h>
 #include <andromeda/Utilities/log.h>
 
 #include "x_node.h"
 #include "x_state.h"
-#include "x_type_conversion.h"
 #include "x_variable_map.h"
+
+
 
 using namespace andromeda;
 using namespace andromeda::xeffect;
@@ -127,7 +131,7 @@ std::shared_ptr<IState> XStateBuilder::buildCulling(const XNode & node)
 		return nullptr;
 
 	// Convert
-	CullMode cull = XTypeConversion::convCullMode(value.get(), CullMode::None);
+	CullMode cull = util::convertToCullMode(value.get(), CullMode::None);
 
 	// Create
 	return std::make_shared<XStateCulling>(cull);
@@ -147,13 +151,15 @@ std::shared_ptr<IState> XStateBuilder::buildPolygon(const XNode & node)
 		polygonMode = node.getValue();
 
 	if (polygonMode.is_initialized())
-		state->setPolygonMode(XTypeConversion::convPolygonMode(polygonMode.get(), PolygonMode::Fill));
+		state->setPolygonMode(util::convertToPolygonMode(polygonMode.get(), PolygonMode::Fill));
 
+
+	
 
 	// Face Mode
 	boost::optional<std::string> faceMode = node.getAttribute("face");
 	if (faceMode.is_initialized())
-		state->setFaceMode(XTypeConversion::convFaceMode(faceMode.get(), FaceMode::FrontAndBack));
+		state->setFaceMode(util::convertToFaceMode(faceMode.get(), FaceMode::FrontAndBack));
 
 	return state;
 }
@@ -170,7 +176,7 @@ std::shared_ptr<IState> XStateBuilder::buildBlending(const XNode & node)
 	boost::optional<std::string> enable = node.getAttribute("enable");
 	if (enable.is_initialized())
 	{
-		state->setEnabled(XTypeConversion::convBoolean(enable.get(), true));
+		state->setEnabled(util::convertToBoolean(enable.get(), true));
 	}
 
 	// Color
@@ -198,7 +204,7 @@ std::shared_ptr<IState> XStateBuilder::buildBlending(const XNode & node)
 	boost::optional<std::string> equation = node.getAttribute("equation");
 	if (equation.is_initialized())
 	{
-		state->setEquation(XTypeConversion::convBlendEquation(equation.get(), BlendEquation::Add));
+		state->setEquation(util::convertToBlendEquation(equation.get(), BlendEquation::Add));
 	}
 	else if (node.hasChildNode("equation"))
 	{
@@ -207,16 +213,16 @@ std::shared_ptr<IState> XStateBuilder::buildBlending(const XNode & node)
 		boost::optional<std::string> alpha = eq.getAttribute("alpha");
 
 		if (rgb.is_initialized())
-			state->setRGBEquation(XTypeConversion::convBlendEquation(rgb.get(), BlendEquation::Add));
+			state->setRGBEquation(util::convertToBlendEquation(rgb.get(), BlendEquation::Add));
 		if (alpha.is_initialized())
-			state->setAlphaEquation(XTypeConversion::convBlendEquation(alpha.get(), BlendEquation::Add));
+			state->setAlphaEquation(util::convertToBlendEquation(alpha.get(), BlendEquation::Add));
 	}
 
 	// Source Function
 	boost::optional<std::string> source = node.getAttribute("source");
 	if (source.is_initialized())
 	{
-		state->setSourceFunction(XTypeConversion::convBlendFunction(source.get(), BlendFunction::One));
+		state->setSourceFunction(util::convertToBlendFunction(source.get(), BlendFunction::One));
 	}
 	else if (node.hasChildNode("source"))
 	{
@@ -225,16 +231,16 @@ std::shared_ptr<IState> XStateBuilder::buildBlending(const XNode & node)
 		boost::optional<std::string> alpha = fn.getAttribute("alpha");
 
 		if (rgb.is_initialized())
-			state->setRGBSourceFunction(XTypeConversion::convBlendFunction(rgb.get(), BlendFunction::One));
+			state->setRGBSourceFunction(util::convertToBlendFunction(rgb.get(), BlendFunction::One));
 		if (alpha.is_initialized())
-			state->setAlphaSourceFunction(XTypeConversion::convBlendFunction(alpha.get(), BlendFunction::One));
+			state->setAlphaSourceFunction(util::convertToBlendFunction(alpha.get(), BlendFunction::One));
 	}
 
 	// Destination Function
 	boost::optional<std::string> destination = node.getAttribute("destination");
 	if (destination.is_initialized())
 	{
-		state->setDestinationFunction(XTypeConversion::convBlendFunction(destination.get(), BlendFunction::Zero));
+		state->setDestinationFunction(util::convertToBlendFunction(destination.get(), BlendFunction::Zero));
 	}
 	else if (node.hasChildNode("destination"))
 	{
@@ -243,9 +249,9 @@ std::shared_ptr<IState> XStateBuilder::buildBlending(const XNode & node)
 		boost::optional<std::string> alpha = fn.getAttribute("alpha");
 
 		if (rgb.is_initialized())
-			state->setRGBDestinationFunction(XTypeConversion::convBlendFunction(rgb.get(), BlendFunction::Zero));
+			state->setRGBDestinationFunction(util::convertToBlendFunction(rgb.get(), BlendFunction::Zero));
 		if (alpha.is_initialized())
-			state->setAlphaDestinationFunction(XTypeConversion::convBlendFunction(alpha.get(), BlendFunction::Zero));
+			state->setAlphaDestinationFunction(util::convertToBlendFunction(alpha.get(), BlendFunction::Zero));
 	}
 
 	return state;
@@ -263,21 +269,21 @@ std::shared_ptr<IState> XStateBuilder::buildDepth(const XNode & node)
 	boost::optional<std::string> enable = node.getAttribute("enable");
 	if (enable.is_initialized())
 	{
-		state->setEnabled(XTypeConversion::convBoolean(enable.get(), true));
+		state->setEnabled(util::convertToBoolean(enable.get(), true));
 	}
 
 	// Depth Write Enabled
 	boost::optional<std::string> write = node.getAttribute("write");
 	if (write.is_initialized())
 	{
-		state->setWriteEnabled(XTypeConversion::convBoolean(write.get(), true));
+		state->setWriteEnabled(util::convertToBoolean(write.get(), true));
 	}
 
 	// Function
 	boost::optional<std::string> func = node.getAttribute("function");
 	if (func.is_initialized())
 	{
-		state->setFunction(XTypeConversion::convFunction(func.get(), Function::Less));
+		state->setFunction(util::convertToFunction(func.get(), Function::Less));
 	}
 	
 	// Special!
@@ -321,14 +327,14 @@ std::shared_ptr<IState> XStateBuilder::buildStencil(const XNode & node)
 	boost::optional<std::string> enable = node.getAttribute("enable");
 	if (enable.is_initialized())
 	{
-		state->setEnabled(XTypeConversion::convBoolean(enable.get(), true));
+		state->setEnabled(util::convertToBoolean(enable.get(), true));
 	}
 
 	// Face
 	boost::optional<std::string> face = node.getAttribute("face");
 	if (face.is_initialized())
 	{
-		state->setFaceMode(XTypeConversion::convFaceMode(face.get(), FaceMode::FrontAndBack));
+		state->setFaceMode(util::convertToFaceMode(face.get(), FaceMode::FrontAndBack));
 	}
 
 	// Function
@@ -342,7 +348,7 @@ std::shared_ptr<IState> XStateBuilder::buildStencil(const XNode & node)
 		
 		if (func.is_initialized())
 		{
-			state->setFunction(XTypeConversion::convFunction(func.get(), Function::Always));
+			state->setFunction(util::convertToFunction(func.get(), Function::Always));
 		}
 
 		boost::optional<Int32> ref = function.getAttribute<Int32>("ref");
@@ -369,13 +375,13 @@ std::shared_ptr<IState> XStateBuilder::buildStencil(const XNode & node)
 		boost::optional<std::string> depthPass = operation.getAttribute("depthpass");
 
 		if (stenFail.is_initialized())
-			state->setStencilFailOperation(XTypeConversion::convStencilOperation(stenFail.get(), StencilOperation::Keep));
+			state->setStencilFailOperation(util::convertToStencilOperation(stenFail.get(), StencilOperation::Keep));
 
 		if (depthFail.is_initialized())
-			state->setDepthFailOperation(XTypeConversion::convStencilOperation(depthFail.get(), StencilOperation::Keep));
+			state->setDepthFailOperation(util::convertToStencilOperation(depthFail.get(), StencilOperation::Keep));
 
 		if (depthPass.is_initialized())
-			state->setDepthPassOperation(XTypeConversion::convStencilOperation(depthPass.get(), StencilOperation::Keep));
+			state->setDepthPassOperation(util::convertToStencilOperation(depthPass.get(), StencilOperation::Keep));
 	}
 
 	return state;

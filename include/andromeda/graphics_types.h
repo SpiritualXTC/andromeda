@@ -263,26 +263,26 @@ namespace andromeda
 		Environment,
 	};
 
-	// Used in the creation of a texture
-	enum class TextureMagFilter	// Not sure if this is needed
+	// Used for texturing (How the texture is sampled)
+	enum class TextureMagFilter
 	{
 		Nearest,
 		Linear,
 	};
 
-	// Used in the creation of a texture
-	enum class TextureMinFilter	// Not sure if this is needed
+	// Used for texturing (How the texture is sampled)
+	enum class TextureMinFilter
 	{
 		Nearest,
 		Linear,
 		NearestMipmapNearest,
 		LinearMipmapNearest,
-		NearestLinearLinear,
+		NearestMipmapLinear,
 		LinearMipmapLinear,
 	};
 
 	// Not sure if used in creation of a texture or during rendering. lol
-	enum class TextureWrapMode	// Not sure if this is needed
+	enum class TextureWrapMode
 	{
 		Repeat,
 		ClampToEdge,
@@ -295,6 +295,22 @@ namespace andromeda
 	/*
 		TODO: 
 		Work out a better system to generate the formats.
+
+		https://www.opengl.org/sdk/docs/man/html/glTexImage2D.xhtml
+
+
+		This enum needs to define the Following (Related to OpenGL Textures)
+			- Internal Format : Number of Color Components in the Texture
+				R
+				RG
+				RGB
+				RGBA
+				Depth
+				DepthStencil
+
+			- Format of the Pixel Data
+
+
 
 		There are a lot of formats. There should be a much simpler way of tying them together in a simpler manner.
 			(The code to do the tying together, wont be quite as simple)
@@ -312,6 +328,10 @@ namespace andromeda
 		Depth24,
 		Depth32,
 		DepthStencil,
+
+
+
+		Unknown,
 	};
 
 	/*

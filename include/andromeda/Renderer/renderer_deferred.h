@@ -12,9 +12,13 @@ namespace andromeda
 
 	class CubeTexture;
 
+
+	
+
 	// Forward Declaration
 	namespace deferred
 	{
+		class DeferredEnvironment;
 		class DeferredRendererLightingMethod;
 	}
 
@@ -32,13 +36,11 @@ namespace andromeda
 		const std::shared_ptr<IFrameBuffer> getGBuffer() const { return _gBuffer; }
 
 
-
+		// Add a Direction Light
 		void addDirectionalLight();
 
-
 		// Set Environment Mapping
-		inline void setEnvironmentReflectionmap(const std::shared_ptr<CubeTexture> & cubeTex) { _reflection = cubeTex; }
-
+		void setEnvironmentReflectionmap(const std::shared_ptr<CubeTexture> & cubeTex);
 
 	protected:
 		void onResize(Float width, Float height) override;
@@ -48,10 +50,7 @@ namespace andromeda
 	private:
 		std::shared_ptr<IFrameBuffer> _gBuffer;
 
-
-		std::shared_ptr<CubeTexture> _reflection;
-
-
+		std::shared_ptr<deferred::DeferredEnvironment> _environment;
 
 		
 		std::shared_ptr<deferred::DeferredRendererLightingMethod> _lightingMethod;

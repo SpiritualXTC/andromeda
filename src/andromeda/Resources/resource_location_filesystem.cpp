@@ -1,6 +1,6 @@
 #include <andromeda/Resources/resource_location_filesystem.h>
 
-#include <andromeda/Platform/file.h>
+#include <andromeda/IO/file.h>
 
 #include <andromeda/Utilities/log.h>
 
@@ -28,5 +28,5 @@ std::shared_ptr<File> ResourceLocationFileSystem::load(const std::string & filen
 	// Build Filepath
 	std::string filepath = getLocation() + "/" + filename;
 
-	return OpenFile(filepath, binary);
+	return File::OpenFile(filepath, binary);
 }
