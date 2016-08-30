@@ -112,21 +112,6 @@ Andromeda::Andromeda(IAndromedaConfig * config)
 
 
 
-
-	// Set Loading Methods for KNOWN File Extensions
-	// _resources.addType("txt", "conf");				// Generic File resource :: For unknown filetypes
-	// _resources.addType("xml");						// XML Files
-	// _resources.addType("obj", "x");					// 3D Models :: Asset Importer
-	// _resources.addType("png", "dds", "tga", "bmp");	// Textures
-	// _resources.addType("glslfx");					// nvFX Shader
-	// _resources.addType("vs", "fs", "gs");			// GLSL Shaders
-
-
-
-
-
-
-
 	// Have the Platform Configure Platform-Dependant Resource Management.
 	// This will include adding the ability to load from the File System 
 
@@ -142,17 +127,9 @@ Andromeda::Andromeda(IAndromedaConfig * config)
 
 
 	// Add Location to Load Resources From
-	// TODO: 
+	// TODO: REMOVE
 	_resources->addLocation("fs", std::make_shared<ResourceLocationFileSystem>("../res"));
 
-
-
-	// Configure the Resource Manager from stored config settings
-
-
-	
-
-	
 	
 
 	// Initialise the System

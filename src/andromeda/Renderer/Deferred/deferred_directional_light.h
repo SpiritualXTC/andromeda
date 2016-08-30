@@ -12,14 +12,15 @@ namespace andromeda
 		/*
 		This class needs to be using an interface to abstract directional lights
 		*/
-		class DeferredRendererDirectionalLight : public IRenderable
+		class DeferredDirectionalLight : public IRenderable
 		{
 		public:
-			DeferredRendererDirectionalLight();
+			DeferredDirectionalLight();
 
 
 
-			void render(const std::shared_ptr<IShader> shader, MatrixStack & ms) override;
+			void render(const std::shared_ptr<IShader> shader, MatrixStack & ms) override; //OLD
+			void render(RenderState & rs) override;	// NEW
 
 		private:
 			// These attributes need to be stored somewhere where the application can gain direct access to them...

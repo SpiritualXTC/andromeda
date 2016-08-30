@@ -462,18 +462,6 @@
     <ClInclude Include="include\andromeda\andromeda_init.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_geometry_method.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_lighting_method.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_gbuffer_layer_extension.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_environment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\andromeda\Resources2\resource_factory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -519,11 +507,28 @@
     <ClInclude Include="include\andromeda\Engine\invoker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\andromeda\Renderer\render_stage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_lighting_stage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_geometry_stage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_lighting_environment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_geometry_environment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Renderer\render_state.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Docs\readme.txt" />
     <Text Include="Docs\notes.txt" />
-    <Text Include="Docs\todo.txt" />
     <Text Include="Docs\code.txt" />
     <Text Include="readme.txt" />
     <Text Include="notes.txt" />
@@ -804,21 +809,6 @@
     <ClCompile Include="src\andromeda\Utilities\image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_geometry_method.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_lighting_method.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_gbuffer_layer_extension.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Renderer\render_method.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_environment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\andromeda\Resources2\resource_factory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -856,6 +846,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Engine\invoker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\render_stage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_lighting_stage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_geometry_stage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_lighting_environment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_geometry_environment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

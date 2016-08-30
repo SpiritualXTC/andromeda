@@ -135,8 +135,8 @@ namespace andromeda
 
 
 		// Adds a Layer to a Renderer
-		Boolean addRendererLayer(const std::string & rendererName, const std::string & renderGroup, const std::string & renderMethod,
-			const std::shared_ptr<Effect> effect, const std::string & technique);
+//		Boolean addRendererLayer(const std::string & rendererName, const std::string & renderGroup, const std::string & renderMethod,
+//			const std::shared_ptr<Effect> effect, const std::string & technique);
 
 		// Render the View
 		void render();
@@ -184,67 +184,67 @@ namespace andromeda
 		std::shared_ptr<ObserverHelper<IViewTarget>> _helper;
 		std::shared_ptr<IViewTarget> _target;
 
-				/*
-					RenderGroup Examples:
+			/*
+				RenderGroup Examples:
 						
-						terrain		
-							- 3D world camera : Camera 1
-							- Shader to render geometry : Shader 1
-								- Technique 1, Pass 1
+					terrain		
+						- 3D world camera : Camera 1
+						- Shader to render geometry : Shader 1
+							- Technique 1, Pass 1
 							
-							- SceneGraph = 'world'
-							- Renderer = Deferred, Method = Terrain
+						- SceneGraph = 'world'
+						- Renderer = Deferred, Method = Terrain
 
-						objects
-							- 3D world camera : Camera 1
-							- Shader to render geometry : Shader 2
-								(Objects and Terrain could share the same shader, but terrain may need be doing tesselation in the shader)
-								- Technique 1, Pass 2
+					objects
+						- 3D world camera : Camera 1
+						- Shader to render geometry : Shader 2
+							(Objects and Terrain could share the same shader, but terrain may need be doing tesselation in the shader)
+							- Technique 1, Pass 2
 							
-							- SceneGraph = 'world'
-							- Renderer = Deferred, Method = Objects
+						- SceneGraph = 'world'
+						- Renderer = Deferred, Method = Objects
 
-						text
-							- 3D world camera : Camera 1
-							- Shader to render text : Shader 6 (Could also be shader 2)
-								(depending on special color options)
-							- This is for 3D text that could be used for "Augmented Reality". So, is "present" in the world
+					text
+						- 3D world camera : Camera 1
+						- Shader to render text : Shader 6 (Could also be shader 2)
+							(depending on special color options)
+						- This is for 3D text that could be used for "Augmented Reality". So, is "present" in the world
 						
-							- SceneGraph = 'world'
-							- Renderer = Deferred, Method = Text/Objects
+						- SceneGraph = 'world'
+						- Renderer = Deferred, Method = Text/Objects
 
-						lights		
-							- 3D world camera : Camera 1
-							- Shader to render lights and process GBuffer : Shader 3 
-								(Deferred Rendering Only - Renders lights to screen by processing values stored in the GBuffer)
-								- Technique 2, Pass 1
-							- It may be required to use multiple light layers. One for directional and one for bounded lights (point/spotlight)
+					lights		
+						- 3D world camera : Camera 1
+						- Shader to render lights and process GBuffer : Shader 3 
+							(Deferred Rendering Only - Renders lights to screen by processing values stored in the GBuffer)
+							- Technique 2, Pass 1
+						- It may be required to use multiple light layers. One for directional and one for bounded lights (point/spotlight)
 
-							- SceneGraph = 'world'
-							- Renderer = Deferred, Method = Deferred
+						- SceneGraph = 'world'
+						- Renderer = Deferred, Method = Deferred
 
-						hud	/ interface		
-							- 2D ortho Camera : Camera 2
-							- Shader to render direct to screen : Shader 4
-							- Hud & Interface are logically separate however are very similiar in the way they work
-								(Should use separate cameras, however would probably use the same shader)
+					hud	/ interface		
+						- 2D ortho Camera : Camera 2
+						- Shader to render direct to screen : Shader 4
+						- Hud & Interface are logically separate however are very similiar in the way they work
+							(Should use separate cameras, however would probably use the same shader)
 
-							- SceneGraph = 'hud' or 'Interface'
-							- Renderer = Simple2D
+						- SceneGraph = 'hud' or 'Interface'
+						- Renderer = Simple2D
 							
-						debug3d		
-							- 3D world camera : Camera 1
-							- Shader to render direct to screen : Shader 5
-							- Shows debug information on objects (Normals, etc)
-							- SceneGraph = 'world'
-							- Renderer = Simple3D
+					debug3d		
+						- 3D world camera : Camera 1
+						- Shader to render direct to screen : Shader 5
+						- Shows debug information on objects (Normals, etc)
+						- SceneGraph = 'world'
+						- Renderer = Simple3D
 
-						debug2d		
-							- 2D world camera : Camera 3
-							- Shows text information to the screen (Console, kinda thing)
-							- SceneGraph = 'debug'
-							- Renderer = Simple 2D
-				*/
+					debug2d		
+						- 2D world camera : Camera 3
+						- Shows text information to the screen (Console, kinda thing)
+						- SceneGraph = 'debug'
+						- Renderer = Simple 2D
+			*/
 	};
 }
 

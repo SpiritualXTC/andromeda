@@ -1,8 +1,8 @@
-// Skybox Shader V0.1
+// Skybox Shader V0.2
 // Used for rendering the Skybox :)
 
 
-uniform samplerCube g_diffuseTexture;
+uniform samplerCube u_diffuseTexture;
 //uniform sampler2D g_diffuseTexture;
 
 // Pass along the Pipeline
@@ -16,7 +16,7 @@ out vec4 o_color;
 void main()
 {
 	// Sample Cube
-	vec4 skybox = texture(g_diffuseTexture, v_cubeTexture);
+	vec4 skybox = texture(u_diffuseTexture, v_cubeTexture);
 	//vec4 skybox = texture(g_diffuseTexture, vec2(v_cubeTexture));
 
 	// Set Output Color

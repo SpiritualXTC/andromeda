@@ -39,6 +39,17 @@ namespace andromeda
 			// Apply the Pass
 			Boolean apply() override;
 
+
+
+
+			/*
+
+			*/
+			const inline void setUniform(const std::string & name, const glm::mat3 &m) const override
+			{
+				assert(_shader);
+				_shader->setUniform(name, m);
+			}
 			/*
 			
 			*/
@@ -94,7 +105,21 @@ namespace andromeda
 				_shader->setUniformTexture(name, bindIndex);
 			}
 
-
+			const inline void setUniform(const std::string &name, const Float f) const override
+			{
+				assert(_shader);
+				_shader->setUniform(name, f);
+			}
+			const inline void setUniform(const std::string &name, const Int32 i) const override
+			{
+				assert(_shader);
+				_shader->setUniform(name, i);
+			}
+			const inline void setUniform(const std::string &name, const Boolean b) const override
+			{
+				assert(_shader);
+				_shader->setUniform(name, b);
+			}
 
 
 

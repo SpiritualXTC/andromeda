@@ -15,9 +15,11 @@
 #include "renderable_group.h"
 
 #include "Deferred/deferred_directional_light.h"
-#include "Deferred/deferred_environment.h"
-#include "Deferred/deferred_geometry_method.h"
-#include "Deferred/deferred_lighting_method.h"
+
+#include "Deferred/deferred_geometry_environment.h"
+#include "Deferred/deferred_geometry_stage.h"
+#include "Deferred/deferred_lighting_environment.h"
+#include "Deferred/deferred_lighting_stage.h"
 
 using namespace andromeda;
 
@@ -60,18 +62,19 @@ DeferredRenderer::DeferredRenderer(const std::shared_ptr<SceneGraph> & sg, const
 
 
 	// Create Environment Options for Deferred Renderer
-	_environment = std::make_shared<deferred::DeferredEnvironment>();
-
+	_geomEnvironment = std::make_shared<deferred::DeferredEnvironment>();
+	_lightingEnvironment = std::make_shared<deferred::DeferredLightingEnvironment>(_gBuffer, getCamera());
 	
 
 	// Create Methods
-	addMethod("background", std::make_shared<RendererMethod>());
+	addMethod("background", std::make_shared<RenderStage>(getCamera()));
 
-	addMethod("geometry", std::make_shared<deferred::DeferredRendererGeometryMethod>(_gBuffer, _environment));
+	_geometryStage = std::make_shared<deferred::DeferredGeometryStage>(_gBuffer, getCamera(), _geomEnvironment);
+	_lightingStage = std::make_shared<deferred::DeferredLightingStage>(_lightingEnvironment, effect, directionalTechnique);
 
-	_lightingMethod = std::make_shared<deferred::DeferredRendererLightingMethod>(_gBuffer, effect, directionalTechnique);
 
-	addMethod("lighting", _lightingMethod);
+	addMethod("geometry", _geometryStage);
+	addMethod("lighting", _lightingStage);
 }
 
 
@@ -114,7 +117,7 @@ void DeferredRenderer::addDirectionalLight()
 	// It may need to be an object, that is dependancy-injected into the Renderable...
 
 	// Add the Light.
-	_lightingMethod->addDirectionalLight();
+	_lightingStage->addDirectionalLight();
 }
 
 
@@ -123,9 +126,9 @@ void DeferredRenderer::addDirectionalLight()
 */
 void DeferredRenderer::setEnvironmentReflectionmap(const std::shared_ptr<CubeTexture> & cubeTex)
 {
-	if (_environment)
+	if (_geomEnvironment)
 	{
-		_environment->setEnvironmentReflectionmap(cubeTex);
+		_geomEnvironment->setEnvironmentReflectionmap(cubeTex);
 	}
 }
 

@@ -9,6 +9,7 @@
 
 #include <andromeda/Math/matrix_stack.h>
 #include <andromeda/Renderer/transform.h>
+#include <andromeda/Renderer/render_state.h>
 
 
 #include <andromeda/Utilities/io.h>
@@ -43,14 +44,22 @@ void TextRenderComponent::render(const std::shared_ptr<andromeda::IShader> shade
 
 	// Draw String
 	//_font->drawText(shader, _string, ms);
-
-
-
-
 	// Pop the matrix
 	ms.pop();
 }
 
+
+/*
+
+*/
+void TextRenderComponent::render(RenderState & rs)
+{
+	// Set Matrix
+	rs.setModelMatrix(_transform->matrix());
+
+	// Draw String
+	//_font->drawText(shader, _string, ms);
+}
 
 
 
@@ -93,7 +102,7 @@ void FontRenderComponent::render(const std::shared_ptr<andromeda::IShader> shade
 	ms.multiply(_transform->matrix());
 
 	// Update the Model View Matrix
-	shader->setUniform("u_modelview", ms.top());
+	shader->setUniform("u_model", ms.top());
 
 
 	// Get Material
@@ -120,9 +129,39 @@ void FontRenderComponent::render(const std::shared_ptr<andromeda::IShader> shade
 		diffuseTex->unbind();
 	}
 
-
+	// Dynamic Method
 //	_font->drawText(shader, _string, ms);
 
 	// Pop the matrix
 	ms.pop();
+}
+
+
+
+/*
+
+*/
+void FontRenderComponent::render(RenderState & rs)
+{
+	assert(_font);
+
+	// Set Model Matrix
+	rs.setModelMatrix(_transform->matrix());
+
+	// Get Textures
+	const std::shared_ptr<ITexture> & diffuseTex = _material.getDiffuseTexture();
+
+	// Bind Texture
+	if (diffuseTex)
+		diffuseTex->bind();
+
+	// Set Material
+	rs.setMaterial(_material);
+	
+	// Render Text
+	_text->render();
+
+	// Unbind Texture
+	if (diffuseTex)
+		diffuseTex->unbind();
 }

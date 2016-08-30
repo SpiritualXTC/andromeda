@@ -71,19 +71,13 @@ Game::Game()
 	std::shared_ptr<andromeda::Effect> effect = andromeda::LoadEffect("shader.xml");
 
 
-	// Create Skybox
+	// Create Objects
 	std::shared_ptr<andromeda::GameObject> skybox = Factory::createSkybox();
-
+	std::shared_ptr<andromeda::GameObject> ground = Factory::createGround();
 
 	// Add Game Object to Scene
 	_scene->getSceneGraph()->addGameObject(skybox);
-
-
-
-
-	// Create Some Objects
-	createGround();
-
+	_scene->getSceneGraph()->addGameObject(ground);
 
 
 	// Create the Views
@@ -108,18 +102,6 @@ Game::Game()
 		createPlayer(0.5f, 0.5f, 0.5f, 0.5f);
 	}
 
-
-
-
-
-
-
-
-
-
-	//createMesh("mesh_0");
-
-
 	// Create Spheres
 	aInt32 objs = 5;// 50;
 
@@ -132,10 +114,6 @@ Game::Game()
 		// Add Game Object to Scene
 		_scene->getSceneGraph()->addGameObject(obj);
 	}
-
-
-
-
 
 
 	// Create some cameras..... if it's NOT a single viewport -- this is only cos (lazy)
@@ -210,9 +188,9 @@ void Game::createText()
 	// Add Components
 	obj->addComponent<andromeda::TransformComponent>(transform);
 
-	transform->x(-0.0f);
-	transform->y( 0.0f);	//2.0f
-	transform->z(-1.0f);
+	transform->x(0.0f);
+	transform->y(5.0f);	//2.0f
+	transform->z(1.0f);
 
 
 
@@ -272,93 +250,43 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 	// Get the Main SceneGraph
 	std::shared_ptr<andromeda::SceneGraph> sg = _scene->getSceneGraph();
 
-
-
-
-	/*
-		TODO: This is fucking stupid
-	*/
-
-#if 0
-	// Load a Cube Texture
-	andromeda::CubeTextureLoadArgs args;
-
-#if 1
-	args.filename_posX = "../res/textures/skybox_xpos.png";
-	args.filename_negX = "../res/textures/skybox_xneg.png";
-
-	args.filename_posY = "../res/textures/skybox_ypos.png";
-	args.filename_negY = "../res/textures/skybox_yneg.png";
-
-	args.filename_posZ = "../res/textures/skybox_zpos.png";
-	args.filename_negZ = "../res/textures/skybox_zneg.png";
-#else
-	args.filename_posX = "../res/textures/icyhell/icyhell_rt.png";
-	args.filename_negX = "../res/textures/icyhell/icyhell_lf.png";
-
-	args.filename_posY = "../res/textures/icyhell/icyhell_up.png";
-	args.filename_negY = "../res/textures/icyhell/icyhell_dn.png";
-
-	args.filename_posZ = "../res/textures/icyhell/icyhell_ft.png";
-	args.filename_negZ = "../res/textures/icyhell/icyhell_bk.png";
-#endif
-
-	// Create a Cube Texture
-	std::shared_ptr<andromeda::CubeTexture> cubeTex = andromeda::graphics()->createCubeTexture(1024, 1024);
-
-	// Load the 6 Images Manually
-	std::shared_ptr<andromeda::Image> posX = andromeda::Image::LoadImageFromFile(args.filename_posX);
-	std::shared_ptr<andromeda::Image> posY = andromeda::Image::LoadImageFromFile(args.filename_posY);
-	std::shared_ptr<andromeda::Image> posZ = andromeda::Image::LoadImageFromFile(args.filename_posZ);
-	std::shared_ptr<andromeda::Image> negX = andromeda::Image::LoadImageFromFile(args.filename_negX);
-	std::shared_ptr<andromeda::Image> negY = andromeda::Image::LoadImageFromFile(args.filename_negY);
-	std::shared_ptr<andromeda::Image> negZ = andromeda::Image::LoadImageFromFile(args.filename_negZ);
-
-	cubeTex->data(andromeda::CubeTextureFace::X_Positive, (aUInt8*)posX->data());
-	cubeTex->data(andromeda::CubeTextureFace::Y_Positive, (aUInt8*)posY->data());
-	cubeTex->data(andromeda::CubeTextureFace::Z_Positive, (aUInt8*)posZ->data());
-	cubeTex->data(andromeda::CubeTextureFace::X_Negative, (aUInt8*)negX->data());
-	cubeTex->data(andromeda::CubeTextureFace::Y_Negative, (aUInt8*)negY->data());
-	cubeTex->data(andromeda::CubeTextureFace::Z_Negative, (aUInt8*)negZ->data());
-#endif
-
 	// Load the Cube Texture
 	std::shared_ptr<andromeda::CubeTexture> cubeTex = andromeda::resourceFactory()->getResource<andromeda::CubeTexture>("skybox");
 
-
-
-	// Create Renderer
-//	std::shared_ptr<andromeda::IRenderer> renderer = std::make_shared<andromeda::Renderer>(sg);
-//	renderer->getCamera()->setPerspectiveFov(glm::pi<aFloat>() / 3.0f, 0.01f, 1000.0f);
-//	renderer->getCamera()->setView(28.0f);
-//	view->addRenderer("default", renderer);
-//	view->addRendererLayer("default", "", "", effect, "");
-//	view->addRendererLayer("default", "text", "", effect, "");
-
 	// Create Deferred Renderer
 	std::shared_ptr<andromeda::DeferredRenderer> deferred = std::make_shared<andromeda::DeferredRenderer>(sg, defEffect, "lightDirectional");
-	deferred->getCamera()->setPerspectiveFov(glm::pi<aFloat>() / 3.0f, 0.01f, 1000.0f);
+	deferred->getCamera()->setPerspectiveFov(glm::pi<aFloat>() / 3.0f * 2.0f, 0.01f, 1000.0f);
 	deferred->getCamera()->setView(28.0f);
 	deferred->setEnvironmentReflectionmap(cubeTex);
 
-	view->addRenderer("deferred", deferred);
-	view->addRendererLayer("deferred", "background", "background", defEffect, "skybox");
-	view->addRendererLayer("deferred", "", "geometry", defEffect, "objects");
-	view->addRendererLayer("deferred", "text", "geometry", defEffect, "objects");
+
+
+	deferred->addLayer("background", "background", defEffect, "skybox");	//addBackgroundLayer
+	deferred->addLayer("geometry", "", defEffect, "objects");				//addDeferredLayer
+	deferred->addLayer("geometry", "text", defEffect, "objects");			//addDeferredLayer
 
 	deferred->addDirectionalLight();
 
+	view->addRenderer("deferred", deferred);
 
 
 
-	// Create Local SceneGraph :: No Idea where this graph gets updated :O (LOLOLOLOLOLOLOLOL) doesn't matter for now though... none of the components would get updated.
+
+
+
+
+
+
+	// Create Local SceneGraph :: This graph doesn't get updated
 	std::shared_ptr<andromeda::SceneGraph> dsg = std::make_shared<andromeda::BasicSceneGraph>();
 
-	// Create Debug Renderer :: This needs a different SceneGraph :O
+	// Create Debug Renderer :: This needs a different SceneGraph
 	std::shared_ptr<andromeda::IRenderer> debug = std::make_shared<andromeda::Renderer>(dsg);
 	debug->getCamera()->setOrthogonal(1.0f, -1.0f, 1.0f);
+	
+	debug->addLayer("", "debug", effect, "debug");
+
 	view->addRenderer("debug", debug);
-	view->addRendererLayer("debug", "debug", "", effect, "debug");
 
 
 
@@ -406,105 +334,24 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 */
 std::shared_ptr<Player> Game::createPlayer(aFloat x, aFloat y, aFloat w, aFloat h)
 {
-
-
-
-
-
+	// Create View for Player
 	std::shared_ptr<andromeda::View> view = createView(x, y, w, h);
 
 	// Add View to temp list
 	_views.push_back(view);
 
+	// Create "Player" Object
 	std::shared_ptr<andromeda::GameObject> obj = Factory::createCube();
 	
-#if 0
-	// Add RenderComponent
-	if (_font)
-	{
-	//	std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, material, transform);
-
-		std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::TextRenderComponent>(_font, transform);
-
-		obj->addComponent<andromeda::RenderComponent>(render);
-	}
-#endif
-
-
-
-
 	// Add Game Object to Scene
 	_scene->getSceneGraph()->addGameObject(obj);
 
 	// Add to Players Array
 	_players.push_back(std::make_shared<Player>(view, view->getRenderer("deferred")->getCamera(), obj));
 
-
 	return nullptr;
 }
 
-
-/*
-
-*/
-std::shared_ptr<andromeda::GameObject> Game::createGround()
-{
-
-	andromeda::geometry::SurfaceFunctionLambda<> lamb(
-		[&](aFloat x, aFloat z)
-	{
-		aFloat fx = 100.0f * x;
-		aFloat fy = -8.0f;
-		aFloat fz = 100.0f * z;
-
-		fy += sinf(x * glm::pi<aFloat>() * 8.0f) * 2.0f;
-		fy += sinf(z * glm::pi<aFloat>() * 8.0f) * 2.0f;
-
-		return glm::vec3(fx, fy, fz);
-	});
-
-
-
-
-	// Create Game Object
-	std::shared_ptr<andromeda::GameObject> obj = std::make_shared<andromeda::GameObject>("ground");
-
-	// Create Standard Components
-	std::shared_ptr<andromeda::TransformComponent> transform = std::make_shared<andromeda::TransformComponent>();
-	obj->addComponent(transform);
-
-	// Create Material
-	//std::shared_ptr<andromeda::Texture> tex = andromeda::LoadTexture("pattern0.png");
-	std::shared_ptr<andromeda::Texture> tex = andromeda::resourceFactory()->getResource<andromeda::Texture>("pattern");
-	andromeda::Material material;
-
-	material.setDiffuse(1, 1, 1)
-		.setDiffuseTexture(tex);
-
-	if (!tex)
-	{
-		log_err("No Texture for Ground");
-	}
-
-
-	aInt32 divisions = 80;
-
-	// Create Geometry
-	andromeda::geometry::Surface surface;
-	surface.setDivisions(divisions, divisions)
-		.setPositionFunction(&lamb);
-
-	std::shared_ptr<andromeda::Geometry> geometry = surface.build(andromeda::geometry::GeometryGenerate::Texture | andromeda::geometry::GeometryGenerate::Normals);
-	
-
-	std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, material, transform);
-	obj->addComponent<andromeda::RenderComponent>(render);
-
-	// Add Game Object to Scene
-	_scene->getSceneGraph()->addGameObject(obj);
-
-	return obj;
-}
 
 
 

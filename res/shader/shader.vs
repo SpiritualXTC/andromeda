@@ -3,7 +3,10 @@
 
 // Matrix Constants
 uniform mat4 u_projection;		// Projection Matrix
-uniform mat4 u_modelview;		// ModelView Matrix
+uniform mat4 u_view;			// View Matrix
+uniform mat4 u_model;			// Model Matrix
+
+
 uniform mat4 u_normalMatrix;	// Normal Matrix
 
 
@@ -26,8 +29,8 @@ void main()
 	// Normals
 	// TODO: This needs the normal matrix as well
 	v_normal = a_normal; //* u_normalMatrix;
-	v_position = vec3(u_modelview * a_position);
+	v_position = vec3(u_view * u_model * a_position);
 
 	// Calculate Position
-	gl_Position = u_projection * u_modelview * a_position;	
+	gl_Position = u_projection * u_view * u_model * a_position;	
 }

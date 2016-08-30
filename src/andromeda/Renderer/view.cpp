@@ -97,6 +97,7 @@ std::shared_ptr<IRenderer> View::getRenderer(const std::string & rendererName)
 }
 
 
+#if 0
 /*
 
 */
@@ -104,24 +105,12 @@ Boolean View::addRendererLayer(const std::string & rendererName, const std::stri
 {
 	std::shared_ptr<IRenderer> renderer = getRenderer(rendererName);
 
+	if (!renderer)
+		return false;
+
 	return renderer->addLayer(renderMethod, renderGroup, effect, technique);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#endif
 
 
 
@@ -134,11 +123,6 @@ void View::clear()
 	for (const auto & it : _renderer)
 		it.second->clear();
 }
-
-
-
-
-
 
 
 /*

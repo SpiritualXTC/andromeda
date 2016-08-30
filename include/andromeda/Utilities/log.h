@@ -105,14 +105,10 @@ namespace andromeda
 
 		inline void push()
 		{
-		//	std::lock_guard<std::mutex> guard(_mutex);
-
 			log(Log::Push, "");
 		}
 		inline void pop()
 		{
-		//	std::lock_guard<std::mutex> guard(_mutex);
-
 			log(Log::Pop, "");
 		}
 	
@@ -124,8 +120,6 @@ namespace andromeda
 		template <typename ... Args>
 		void logp(LogLevel level, const std::string & format, Args const & ... args) noexcept
 		{
-		//	std::lock_guard<std::mutex> guard(_mutex);
-
 			boost::format fmt = boost::format(format);
 
 			int a[] = { 0, ((void)(fmt % argument(args)), 0) ... };

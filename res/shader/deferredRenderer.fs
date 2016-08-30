@@ -1,4 +1,5 @@
-
+// Deferred Shader : Light Shader
+//
 
 
 // G Buffer
@@ -7,11 +8,12 @@ uniform sampler2D u_gBufferPosition;
 uniform sampler2D u_gBufferNormal;
 
 // Camera
-uniform vec3 u_cameraPosition = vec3(0.0, 0.0, 0.0);
+uniform vec3 u_cameraPosition;// = vec3(0.0, 0.0, 0.0);
 
 // Light
-uniform vec3 g_lightDirection = vec3(-0.5, -0.7, -0.5);
-uniform vec3 g_lightDiffuse = vec3(1.0, 1.0, 1.0);
+uniform vec3 u_lightDirection = vec3(-0.5, -0.7, -0.5);
+uniform vec3 u_lightDiffuse = vec3(1.0, 1.0, 1.0);
+uniform vec3 u_lightSpecular = vec3(1.0, 1.0, 1.0);
 
 // Varying
 in vec2		v_textureCoordinate;
@@ -21,12 +23,12 @@ out vec4 o_color;
 
 
 
-
+// diffuseComponent
 vec3 diffuseComponent(in vec3 normal, in vec3 lightDir, in vec3 diffuseColor)
 {
 	float diffuse = clamp(dot(normal, -lightDir), 0, 1);
 
-	return diffuseColor * g_lightDiffuse * diffuse;
+	return diffuseColor * u_lightDiffuse * diffuse;
 }
 
 // specularComponent()
@@ -45,11 +47,15 @@ vec3 specularComponent(in vec3 normal, in vec3 toLight, in vec3 toCamera, in vec
 
 	if (dot(normal, toLight) > 0)
 	{
-		vec3 half = normalize(toLight + toCamera);
-		specular = pow(dot(normal, half), shininess);
+		vec3 vHalf = normalize(toLight + toCamera);
+		specular = pow(dot(normal, vHalf), shininess);
+
+	//	return clamp(vHalf, 0.0, 1.0);
 	}
 
-	return specularColor * lightSpecColor * specular;
+
+	
+	return clamp(specularColor * u_lightSpecular * specular, 0, 1);
 }
 
 
@@ -57,14 +63,13 @@ vec3 specularComponent(in vec3 normal, in vec3 toLight, in vec3 toCamera, in vec
 void main(void)
 {
 	// Read G-Buffer
-	vec4 diffuse = texture2D(u_gBufferDiffuse, v_textureCoordinate);
-	vec4 position = texture2D(u_gBufferPosition, v_textureCoordinate);
-	vec4 normal = texture2D(u_gBufferNormal, v_textureCoordinate);
-
+	vec4 position = texture2D(u_gBufferPosition, v_textureCoordinate);		// modelviewMatrix * position
+	vec4 normal = texture2D(u_gBufferNormal, v_textureCoordinate);			// normalMatrix * normal
+	vec4 diffuseRGB = texture2D(u_gBufferDiffuse, v_textureCoordinate);		// diffuseMaterial * diffuseTexture
 
 	// Lighting Vectors [Directional Light]
-	vec3 toLight = (-g_lightDirection * 10000.0) - position.rgb;
-	vec3 toCamera = u_cameraPosition - position.rgb;
+//	vec3 toLight = normalize(-u_lightDirection - position.rgb);
+//	vec3 toCamera = normalize(u_cameraPosition - position.rgb);
 
 
 	// Culling Phase 
@@ -81,16 +86,173 @@ void main(void)
 
 
 	// Calculate Ambient
-	vec3 i_ambient = diffuse.rgb * 0.15;
+	vec3 i_ambient = diffuseRGB.rgb * 0.15;
 
 	// Calculate Diffuse
-	vec3 i_diffuse = diffuseComponent(normal.rgb, g_lightDirection, diffuse.rgb);//diffuse.rgb * lightDiffuse;
+	vec3 i_diffuse = diffuseComponent(normal.rgb, u_lightDirection, diffuseRGB.rgb);//diffuse.rgb * lightDiffuse;
 
 	// Calculate Specular
-	vec3 i_specular = specularComponent(normal.rgb, toLight, toCamera, vec3(1.0, 1.0 , 1.0), 64.0);
+	//vec3 i_specular = specularComponent(normal.rgb, toLight, toCamera, vec3(1.0, 1.0 , 1.0), 64.0);
+	vec3 i_specular = vec3(0.0, 0.0, 0.0);
+	
+	vec3 n = normalize(normal.rgb);
+	vec3 e = normalize(u_cameraPosition - position.rgb);
+	
+	float intensity = max(dot(n, -u_lightDirection), 0.0);
+	
+	if (intensity > 0.0)
+	{
+		vec3 h = normalize(-u_lightDirection + e);
+		float intSpec = max(dot(h, n), 0.0);
+		
+		i_specular = vec3(1.0, 1.0, 1.0) * pow(intSpec, 64.0);
+	}
+	
 
 	// Set Output Color
 	o_color.rgb = i_ambient + i_diffuse + i_specular;
+	//o_color.rgb = i_specular;
 	o_color.a = 1.0;
 }
+
+
+/*
+Example Shader:
+
+
+
+
+Vertex:
+-----------------
+
+uniform mat4 viewMatrix;
+uniform mat4 modelMatrix;
+uniform mat4 projMatrix;
+
+uniform mat3 normalMatrix;
+
+uniform vec3 lightPosition;
+uniform vec3 cameraPosition;
+
+in vec3 i_position;
+in vec3 i_normal;
+
+
+out vec3 o_normal;
+out vec3 o_toLight;
+out vec3 o_toCamera;
+
+
+main()
+{
+	vec4 worldPosition = modelMatrix * i_position;
+	
+	o_normal = normalize(normalMatrix * i_normal);
+	
+	// Direction to Light
+	o_toLight = normalize(lightPosition - worldPosition.xyz);
+	
+	// Direction to Camera
+	o_toCamera = normalize(cameraPosition - worldPosition.xyz);
+	
+	gl_Position = projMatrix * viewMatrix * worldPosition;
+}
+
+
+
+Fragment:
+--------------------
+
+uniform vec3 lightPosition;
+uniform vec3 cameraPosition;
+
+uniform vec3 lightSpecular;
+
+uniform vec3 materialSpecular;
+uniform float materialShininess;
+
+in vec3 o_normal;
+in vec3 o_toLight;
+in vec3 o_toCamera;
+
+
+out o_color;
+
+
+vec3 specular(in vec3 N, in vec3 L, in vec3 V)
+{
+	float specularTerm = 0;
+	
+	if (dot(N, L) > 0)
+	{
+		vec3 H = normalize(L + V);
+		specularTerm = pow(dot(N, H), materialShininess;
+	}
+	
+	return materialSpecular * lightSpecular * specularTerm;
+}
+
+
+
+main()
+{
+	vec3 L = normalize(o_toLight);		// This needs to 
+	vec3 V = normalize(o_toCamera);
+	vec3 N = normalize(o_normal);
+	
+	float (?) spec = specular(N, L, V);
+	
+	o_color = vec4(spec, 1.0);
+}
+
+
+
+
+Notes:
+----------------------
+worldPosition 
+	
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

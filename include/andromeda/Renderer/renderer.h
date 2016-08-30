@@ -18,8 +18,10 @@ namespace andromeda
 	class ILayer;
 	class ILayerEnvironment;
 	
+
 	class RenderableGroup;
 	class RenderCache;
+	class RenderStage;
 
 
 	/*
@@ -62,30 +64,6 @@ namespace andromeda
 
 
 
-	/*
-		TODO: Better name pl0x
-	*/
-	class RendererMethod
-	{
-	public:
-		RendererMethod();
-		RendererMethod(const std::shared_ptr<ILayerEnvironment> & enviroment);
-		virtual ~RendererMethod();
-
-		// THIS SECTION NEEDS TO DO CLASS SPECIFIC STUFF...
-		// FOR NOW ... NOTHING IS OK :)
-		virtual void begin();	// Begin Technique Setup
-		virtual void end();		// End Technique Setup
-
-		void render();	// Render all the layers
-
-		std::shared_ptr<ILayer> addLayer(const std::shared_ptr<Camera> & camera, const std::shared_ptr<RenderableGroup> & rg,
-			const std::shared_ptr<Effect> & effect, const std::string & technique = "");
-
-	private:
-		std::shared_ptr<ILayerEnvironment> _environment;
-		std::vector<std::shared_ptr<ILayer>> _layers;
-	};
 
 
 
@@ -103,7 +81,7 @@ namespace andromeda
 
 
 		// Adds a Method
-		Boolean addMethod(const std::string & methodName, const std::shared_ptr<RendererMethod> & method);
+		Boolean addMethod(const std::string & methodName, const std::shared_ptr<RenderStage> & method);
 
 
 		// Adds a Layer
@@ -111,7 +89,7 @@ namespace andromeda
 			const std::shared_ptr<Effect> & effect, const std::string & technique = "") override;
 	
 
-
+		// TEMPORARY
 		std::shared_ptr<Camera> & getCamera() { return _camera; }
 		const std::shared_ptr<Camera> & getCamera() const { return _camera; }
 
@@ -141,20 +119,22 @@ namespace andromeda
 
 		Boolean hasRenderMethod(const std::string & methodName);
 
-		std::shared_ptr<RendererMethod> getRenderMethod(const std::string & methodName);
+		std::shared_ptr<RenderStage> getRenderMethod(const std::string & methodName);
 
 	private:
-		
-		std::shared_ptr<Camera> _camera;
 		std::shared_ptr<SceneGraph> _sceneGraph;
 
-		std::shared_ptr<RenderCache> _cache;	// Unique_Ptr<> ??
+
+
+		std::shared_ptr<Camera> _camera;		// Shared Camera :: Could this be a group?
+
+		//std::shared_ptr<RenderCache> _cache;	// Unique_Ptr<> ??
 
 		
 
 		// Make it an unordered map while working out how all this crap gets jammed together
 
-		std::unordered_map<std::string, std::shared_ptr<RendererMethod>> _methods;
+		std::unordered_map<std::string, std::shared_ptr<RenderStage>> _methods;
 	};
 
 

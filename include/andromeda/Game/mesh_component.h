@@ -8,6 +8,8 @@ namespace andromeda
 	class Mesh;
 	class ITransform;
 
+	class RenderState;
+
 	class MeshRenderComponent : public RenderComponent
 	{
 	public:
@@ -15,6 +17,7 @@ namespace andromeda
 		virtual ~MeshRenderComponent();
 
 		void render(const std::shared_ptr<andromeda::IShader> shader, andromeda::MatrixStack & ms) override;
+		void render(RenderState & rs) override;
 
 	private:
 		std::shared_ptr<Mesh> _mesh;

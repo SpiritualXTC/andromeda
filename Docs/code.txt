@@ -6,9 +6,7 @@ Define Coding Standards:
 
 HEADER:
 
-#ifndef _ANDROMEDA_DIRECTORIES_FILENAME_H_
-#define _ANDROMEDA_DIRECTORIES_FILENAME_H_
-
+#pragma once
 /*
 	Description / purpose of file
 */
@@ -32,8 +30,6 @@ namespace andromeda
 }
 
 #include [TEMPLATE_HPP]
-
-#endif
 
 
 

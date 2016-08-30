@@ -1,4 +1,4 @@
-#include "deferred_environment.h"
+#include "deferred_geometry_environment.h"
 
 #include <andromeda/Graphics/texture.h>
 #include <andromeda/Graphics/effect.h>

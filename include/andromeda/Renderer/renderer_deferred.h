@@ -2,6 +2,9 @@
 
 #include "renderer.h"
 
+#include "render_stage.h"
+
+
 namespace andromeda
 {
 	class Camera;
@@ -12,14 +15,18 @@ namespace andromeda
 
 	class CubeTexture;
 
-
+	
 	
 
 	// Forward Declaration
 	namespace deferred
 	{
 		class DeferredEnvironment;
-		class DeferredRendererLightingMethod;
+		
+		class DeferredGeometryStage;
+
+		class DeferredLightingEnvironment;
+		class DeferredLightingStage;
 	}
 
 
@@ -50,9 +57,12 @@ namespace andromeda
 	private:
 		std::shared_ptr<IFrameBuffer> _gBuffer;
 
-		std::shared_ptr<deferred::DeferredEnvironment> _environment;
 
-		
-		std::shared_ptr<deferred::DeferredRendererLightingMethod> _lightingMethod;
+		std::shared_ptr<deferred::DeferredEnvironment> _geomEnvironment;
+		std::shared_ptr<deferred::DeferredLightingEnvironment> _lightingEnvironment;
+
+
+		std::shared_ptr<deferred::DeferredGeometryStage> _geometryStage;
+		std::shared_ptr<deferred::DeferredLightingStage> _lightingStage;
 	};
 }

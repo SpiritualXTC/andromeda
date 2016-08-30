@@ -6,6 +6,7 @@
 #include <andromeda/Graphics/texture.h>
 #include <andromeda/Math/matrix_stack.h>
 #include <andromeda/Renderer/transform.h>
+#include <andromeda/Renderer/render_state.h>
 
 using namespace andromeda;
 
@@ -38,6 +39,33 @@ GeometryRenderComponent::~GeometryRenderComponent()
 }
 
 
+/*
+
+*/
+void GeometryRenderComponent::render(RenderState & rs)
+{
+	// Set Model Matrix
+	rs.setModelMatrix(_transform->matrix());
+
+	
+	// Get Textures
+	const std::shared_ptr<ITexture> & diffuseTex = _material.getDiffuseTexture();
+
+	// Bind Textures
+	if (diffuseTex)
+		diffuseTex->bind();
+
+	// Set Material
+	rs.setMaterial(_material);
+
+	// Render ALL Geometry
+	_geometry->render();
+
+	// Unbind Textures
+	if (diffuseTex)
+		diffuseTex->unbind();
+}
+
 
 /*
 
@@ -62,7 +90,7 @@ void GeometryRenderComponent::render(const std::shared_ptr<andromeda::IShader> s
 	ms.multiply(_transform->matrix());
 
 	// Update the Model View Matrix
-	shader->setUniform("u_modelview", ms.top());
+	shader->setUniform("u_model", ms.top());
 
 	// Get Material
 	shader->setUniform("g_ambient", _material.getAmbient());

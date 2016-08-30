@@ -71,7 +71,8 @@ void RenderableGroup::render(std::shared_ptr<Camera> & camera, std::shared_ptr<I
 
 	// Setup Matrix Stack :: Initialise with Camera View Matrix 
 	// Camera needs to be Rewritten
-	MatrixStack ms(camera->getViewMatrix());
+	//MatrixStack ms(camera->getViewMatrix());
+	MatrixStack ms;
 
 	/*
 		TODO:
@@ -82,5 +83,14 @@ void RenderableGroup::render(std::shared_ptr<Camera> & camera, std::shared_ptr<I
 	{
 		// Render the Renderable
 		r->render(shader, ms);
+	}
+}
+
+
+void RenderableGroup::render(RenderState & rs)
+{
+	for (const auto r : _renderables)
+	{
+		r->render(rs);
 	}
 }

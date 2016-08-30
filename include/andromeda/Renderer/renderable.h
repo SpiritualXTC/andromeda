@@ -13,6 +13,7 @@ namespace andromeda
 	class IShader;
 	class MatrixStack;
 
+	class RenderState;
 
 
 	/*
@@ -35,10 +36,14 @@ namespace andromeda
 
 
 		/*
-			Render
+			Render :: OLD
 		*/
 		virtual void render(const std::shared_ptr<IShader> shader, MatrixStack & ms) = 0;
 
+		/*
+			Render :: NEW
+		*/
+		virtual void render(RenderState & rs) = 0;
 
 
 		/*

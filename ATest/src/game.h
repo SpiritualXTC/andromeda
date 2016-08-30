@@ -67,7 +67,6 @@ private:
 	std::shared_ptr<andromeda::View> createView(aFloat x, aFloat y, aFloat w, aFloat h);
 	std::shared_ptr<Player> createPlayer(aFloat x, aFloat y, aFloat w, aFloat h);
 
-	std::shared_ptr<andromeda::GameObject> createGround();
 	std::shared_ptr<andromeda::GameObject> createCamera(const std::string & name);
 
 

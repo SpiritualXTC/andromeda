@@ -1,5 +1,4 @@
-#ifndef _ANDROMEDA_MATH_MATRIX_STACK_H_
-#define _ANDROMEDA_MATH_MATRIX_STACK_H_
+#pragma once
 
 #include <stack>
 
@@ -157,6 +156,3 @@ namespace andromeda
 
 	};
 }
-
-
-#endif

@@ -7,23 +7,28 @@ uniform mat4 u_view;		// View Matrix
 
 
 // Material
-uniform vec3 g_ambient;
-uniform vec3 g_diffuse;
-uniform vec3 g_specular;
-uniform float g_opacity;
+uniform vec3 u_ambientMaterial;
+uniform vec3 u_diffuseMaterial;
+uniform vec3 u_specularMaterial;
+uniform vec3 u_shininessMaterial;
+
+uniform float u_materialOpacity;
+
+
 
 // Textures
 uniform sampler2D u_alphaMask;
 uniform sampler2D g_diffuseTexture;
 
 
+// Environment
 uniform samplerCube u_envReflection;
 
 
 // Varying
-in vec3		v_position;
-in vec3		v_normal;
-in vec2		v_diffuseTextureCoord;
+in vec3	v_position;
+in vec3	v_normal;
+in vec2	v_diffuseTextureCoord;
 
 // Varying for Refelections
 in vec3 v_eyePosition;
@@ -42,10 +47,10 @@ void main( void )
 
 
 	// Sample Diffuse Texture :: Currently using this texture for the AlphaMask as well
-	vec4 difTexRGB = texture(g_diffuseTexture, v_diffuseTextureCoord);
+	vec4 diffuseRGB = texture(g_diffuseTexture, v_diffuseTextureCoord);
 
 	// Alpha Discard :: This might be better to be done from the Alpha Mask Image
-	if (difTexRGB.a == 0.0) discard;
+	if (diffuseRGB.a == 0.0) discard;
 
 
 
@@ -68,8 +73,8 @@ void main( void )
 
 
 	// Output to Diffuse Texture :: Can the gl_Position.w be used here to show depth?? (in the alpha channel)
-	gl_FragData[0]		= difTexRGB * vec4(g_diffuse, 1.0);
-	//gl_FragData[0]		= difTexRGB * vec4(g_diffuse, 1.0)  * 0.5 + envRGB * 0.5;
+	gl_FragData[0]		= diffuseRGB * vec4(u_diffuseMaterial, 1.0);
+	//gl_FragData[0]		= diffuseRGB * vec4(u_diffuseMaterial, 1.0)  * 0.5 + envRGB * 0.5;
 	//gl_FragData[0]		= envRGB;
 	//gl_FragData[0]		= vec4(v_eyeNormal, 1.0);
 	

@@ -16,6 +16,8 @@
 
 #include <andromeda/Graphics/texture.h>
 
+#include <andromeda/Resources2/resource_factory.h>
+
 #include <andromeda/Utilities/image.h>
 
 #include "plane_test_component.h"
@@ -120,6 +122,68 @@ std::shared_ptr<andromeda::GameObject> Factory::createSkybox()
 
 	return obj;
 }
+
+
+
+/*
+
+*/
+std::shared_ptr<andromeda::GameObject> Factory::createGround()
+{
+	andromeda::geometry::SurfaceFunctionLambda<> lamb(
+		[&](aFloat x, aFloat z)
+	{
+		aFloat fx = 100.0f * x;
+		aFloat fy = -8.0f;
+		aFloat fz = 100.0f * z;
+
+		fy += sinf(x * glm::pi<aFloat>() * 8.0f) * 2.0f;
+		fy += sinf(z * glm::pi<aFloat>() * 8.0f) * 2.0f;
+
+		return glm::vec3(fx, fy, fz);
+	});
+
+
+
+
+	// Create Game Object
+	std::shared_ptr<andromeda::GameObject> obj = std::make_shared<andromeda::GameObject>("ground");
+
+	// Create Standard Components
+	std::shared_ptr<andromeda::TransformComponent> transform = std::make_shared<andromeda::TransformComponent>();
+	obj->addComponent(transform);
+
+	// Create Material
+	//std::shared_ptr<andromeda::Texture> tex = andromeda::LoadTexture("pattern0.png");
+	std::shared_ptr<andromeda::Texture> tex = andromeda::resourceFactory()->getResource<andromeda::Texture>("pattern");
+	andromeda::Material material;
+
+	material.setDiffuse(0.5f, 0.8f, 0.5f)
+		.setDiffuseTexture(tex);
+
+	if (!tex)
+	{
+		log_err("No Texture for Ground");
+	}
+
+
+	aInt32 divisions = 250;
+
+	// Create Geometry
+	andromeda::geometry::Surface surface;
+	surface.setDivisions(divisions, divisions)
+		.setPositionFunction(&lamb);
+
+	std::shared_ptr<andromeda::Geometry> geometry = surface.build(andromeda::geometry::GeometryGenerate::Texture | andromeda::geometry::GeometryGenerate::Normals);
+
+
+	std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, material, transform);
+	obj->addComponent<andromeda::RenderComponent>(render);
+
+	return obj;
+}
+
+
 
 
 /*

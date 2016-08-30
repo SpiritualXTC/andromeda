@@ -5,10 +5,10 @@
 
 
 // Material
-uniform vec3 g_ambient;
-uniform vec3 g_diffuse;
-uniform vec3 g_specular;
-uniform float g_opacity;
+uniform vec3 u_ambientMaterial;
+uniform vec3 u_diffuseMaterial;
+uniform vec3 u_specularMaterial;
+uniform float u_opacityMaterial;
 
 // Light [Testing]
 uniform vec3 g_lightDirection = vec3(-0.5, -0.7, -0.7);
@@ -20,9 +20,11 @@ uniform sampler2D g_diffuseTexture;
 
 
 // Passed Along the Pipe
-in vec2 v_diffuseTextureCoord;
+
 in vec3 v_position;
 in vec3 v_normal;
+in vec2 v_diffuseTextureCoord;
+
 
 // Output
 out vec4 o_color;
@@ -36,14 +38,13 @@ void main()
 
 	if (texDif.a == 0.0) discard;
 
-	vec4 dif = vec4(g_diffuse, 1);
+	vec4 diffuseRGB = vec4(u_diffuseMaterial, 1);
 
 
 	// Calculate Lighting
 	float lightIntensity = max(dot(v_normal, -g_lightDirection), 0.0);
-
 	vec4 lightDiffuse = vec4(lightIntensity * g_lightDiffuse, 1.0);
 
 	// Set Output Color
-	o_color = dif * lightDiffuse * texDif;
+	o_color = diffuseRGB * lightDiffuse * texDif;
 }

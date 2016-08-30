@@ -10,7 +10,7 @@ namespace andromeda
 	class Texture;
 	class ITransform;
 	
-
+	class RenderState;
 
 	class GeometryRenderComponent : public RenderComponent
 	{
@@ -19,7 +19,11 @@ namespace andromeda
 		GeometryRenderComponent(std::shared_ptr<Geometry> geometry, const Material & material, std::shared_ptr<ITransform> transform);
 		virtual ~GeometryRenderComponent();
 
+
+
 		void render(const std::shared_ptr<andromeda::IShader> shader, andromeda::MatrixStack & ms) override;
+		void render(RenderState & rs) override;
+
 
 		Material & getMaterial() { return _material; }
 

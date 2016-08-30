@@ -123,7 +123,7 @@ namespace andromeda
 		/*
 			Updates the Camera
 		*/
-		void update();
+	//	void update();
 		void resize(Float width, Float height);
 
 
@@ -138,10 +138,13 @@ namespace andromeda
 		void notify(const IProjectionMatrix * const pm) override;
 		void notify(const IViewMatrix * const vm) override;
 
+		void calculate();
+
 	private:
 		Float _width = 1.0f;
 		Float _height = 1.0f;
 
+		// Cached Matrices
 		glm::mat4 _projectionMatrix{ 1.0f };
 		glm::mat4 _viewMatrix{ 1.0f };
 

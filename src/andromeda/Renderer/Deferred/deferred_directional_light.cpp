@@ -7,6 +7,8 @@
 
 #include <andromeda/Math/matrix_stack.h>
 
+#include <andromeda/Renderer/render_state.h>
+
 using namespace andromeda;
 using namespace andromeda::deferred;
 
@@ -14,7 +16,7 @@ using namespace andromeda::deferred;
 /*
 
 */
-DeferredRendererDirectionalLight::DeferredRendererDirectionalLight()
+DeferredDirectionalLight::DeferredDirectionalLight()
 {
 	_lightDirection = glm::vec3(-0.5, -0.7, -0.7);
 	_lightDiffuse = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -58,13 +60,28 @@ DeferredRendererDirectionalLight::DeferredRendererDirectionalLight()
 /*
 
 */
-void DeferredRendererDirectionalLight::render(const std::shared_ptr<IShader> shader, MatrixStack & ms)
+void DeferredDirectionalLight::render(const std::shared_ptr<IShader> shader, MatrixStack & ms)
 {
 	// Configure Light Settings
 
 	//glm::mat4 identity(1.0f);
 
 	shader->setUniform("u_modelview", ms.top());
+
+	// Render Full Screen Quad
+	_geometry->render();
+}
+
+
+/*
+	render():
+
+*/
+void DeferredDirectionalLight::render(RenderState & rs)
+{
+	// Set Identity Matrix
+	rs.setModelMatrix();
+
 
 	// Render Full Screen Quad
 	_geometry->render();

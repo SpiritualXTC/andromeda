@@ -26,5 +26,6 @@ public:
 
 	static std::shared_ptr<andromeda::GameObject> createSphere(aFloat angle);
 
+	static std::shared_ptr<andromeda::GameObject> createGround();
 
 };

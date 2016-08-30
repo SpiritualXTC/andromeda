@@ -6,6 +6,7 @@
 
 #include <andromeda/Renderer/camera.h>
 #include <andromeda/Renderer/layer.h>
+#include <andromeda/Renderer/render_stage.h>
 
 
 #include <andromeda/Renderer/scene_graph.h>
@@ -30,9 +31,11 @@ Renderer::Renderer(const std::shared_ptr<SceneGraph> & sg)
 
 	// Create Camera
 	_camera = std::make_shared<Camera>();
+	_camera->setView(1.0f);
+	_camera->setOrthogonal(1.0f, 0.01f, 1000.0f);
 
 	// Create Cache
-	_cache = std::make_shared<RenderCache>(_camera.get());
+//	_cache = std::make_shared<RenderCache>(_camera.get());
 }
 
 
@@ -47,7 +50,7 @@ Renderer::~Renderer()
 /*
 	Basic implementation for adding an Method
 */
-Boolean Renderer::addMethod(const std::string & methodName, const std::shared_ptr<RendererMethod> & method)
+Boolean Renderer::addMethod(const std::string & methodName, const std::shared_ptr<RenderStage> & method)
 {
 	// Insert it
 	_methods.insert({ methodName, method });
@@ -66,7 +69,7 @@ Boolean Renderer::hasRenderMethod(const std::string & methodName)
 	return it != _methods.end();
 }
 
-std::shared_ptr<RendererMethod> Renderer::getRenderMethod(const std::string & methodName)
+std::shared_ptr<RenderStage> Renderer::getRenderMethod(const std::string & methodName)
 {
 	const auto & it = _methods.find(methodName);
 
@@ -85,13 +88,13 @@ Boolean Renderer::addLayer(const std::string & method, const std::string & rende
 	// Find RendererMethod
 	const auto & it = _methods.find(method);
 
-	std::shared_ptr<RendererMethod> m;
+	std::shared_ptr<RenderStage> m;
 
 	// Not Found?
 	if (it == _methods.end())
 	{
 		// Create Basic RendererMethod
-		m = std::make_shared<RendererMethod>();
+		m = std::make_shared<RenderStage>(getCamera());
 		
 		// Insert it
 		_methods.insert({method, m});
@@ -102,11 +105,13 @@ Boolean Renderer::addLayer(const std::string & method, const std::string & rende
 	assert(m);
 
 	// Gets the Render Group
-	std::shared_ptr<RenderableGroup> rg = _cache->getRenderGroup(renderGroup);
+//	std::shared_ptr<RenderableGroup> rg = _cache->getRenderGroup(renderGroup);
 
 	// Add a Layer to the rendering method
-	m->addLayer(_camera, rg, effect, technique);
+//	m->addLayer(_camera, rg, effect, technique);
 	
+	m->addLayer(renderGroup, effect, technique);
+
 	return true;
 }
 
@@ -130,10 +135,10 @@ void Renderer::resize(Float width, Float height)
 */
 void Renderer::clear()
 {
-	assert(_cache);
+//	assert(_cache);
 	
 	// Clear the Cache
-	_cache->clearObjects();
+//	_cache->clearObjects();
 }
 
 
@@ -144,14 +149,22 @@ void Renderer::clear()
 void Renderer::update()
 {
 	assert(_camera);
-	assert(_cache);
 	assert(_sceneGraph);
+	//	assert(_cache);
 
-	// Update the Camera
-	_camera->update();
+	// Update the Camera :: This is done during the notification when the camera is moved
+//	_camera->update();
+
+
 
 	// Process the Scene Graph
-	_sceneGraph->process(_cache);
+	//_sceneGraph->process(_cache);
+
+	// Update All Render Stages
+	for (const auto & method : _methods)
+	{
+		method.second->update(_sceneGraph.get());
+	}
 }
 
 
@@ -160,28 +173,27 @@ void Renderer::update()
 */
 void Renderer::render()
 {
-	// Renders all the methods
-
+	// Renders all the Stages
 	for (const auto & method : _methods)
 	{
-		RendererMethod * m = method.second.get();
+		RenderStage * m = method.second.get();
 
-
+		// Configure the Stage
 		m->begin();
 
 		// Render the Scene
 		m->render();
 
-		// Configure the Method :: Example (Revert back to the Normal FrameBuffer)
+		// Configure the Stage :: Example (Revert back to the Normal FrameBuffer)
 		m->end();
 	}
 
 
 	/*
 		For Example:
-		Deferred Rendering would require, 2 rendering methods. 
-			The first would setup the GBuffer for rendering.
-			The second would setup the Lighting for rendering, while using the GBuffers' textures as the source for world geometry
+		Deferred Rendering would require at least, 2 render stage. 
+			The first required stage requires setting the GBuffer up for rendering too
+			The second required stage would setup the Lighting for rendering, while using the GBuffers' textures as the source for world geometry
 	*/
 }
 

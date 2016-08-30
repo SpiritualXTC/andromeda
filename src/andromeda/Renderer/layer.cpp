@@ -2,6 +2,7 @@
 
 #include <cassert>
 
+
 #include <andromeda/Graphics/effect.h>
 
 #include <andromeda/Math/matrix_stack.h>
@@ -10,6 +11,7 @@
 
 
 #include <andromeda/Renderer/camera.h>
+#include <andromeda/Renderer/render_state.h>
 #include <andromeda/Renderer/renderable.h>
 
 
@@ -124,15 +126,13 @@ Boolean Layer::render(ILayerEnvironment * environment)
 		if (!p || !p->isEnabled() || !p->apply())
 			continue;
 
-		/*
-			TODO: Setup an annotations somewhere...
-		*/
+		// Set Graphics States
+		RenderState gs(p.get(), _camera.get());
+		
 
-		// Set Projection Matrix
-		p->setUniform("u_view", _camera->getViewMatrix());
-		p->setUniform("u_projection", _camera->getProjectionMatrix());
 		
 		// Apply Environment Options
+		// TODO: RenderEnvironment ?
 		if (environment)
 			environment->begin(p.get());
 
@@ -142,7 +142,8 @@ Boolean Layer::render(ILayerEnvironment * environment)
 
 		// Render the RenderGroup
 		if (_renderGroup)
-			_renderGroup->render(_camera, p);
+			_renderGroup->render(gs);
+	//		_renderGroup->render(_camera, p);
 
 		// Apply Environment Options
 		if (environment)

@@ -167,9 +167,11 @@ void Camera::resize(Float width, Float height)
 */
 void Camera::notify(const IProjectionMatrix * const pm)
 {
-	log_warn("Projection matrix updated");
+//	log_warn("Projection matrix updated");
 	if (_projection)
 		_projectionMatrix = _projection->matrix();
+
+	calculate();
 }
 
 
@@ -181,6 +183,8 @@ void Camera::notify(const IViewMatrix * const vm)
 //	log_warn("View matrix updated");
 	if (_view)
 		_viewMatrix = _view->matrix();
+
+	calculate();
 }
 
 
@@ -188,7 +192,7 @@ void Camera::notify(const IViewMatrix * const vm)
 /*
 
 */
-void Camera::update()
+void Camera::calculate()
 {
 //	assert(_projection);
 //	assert(_view);

@@ -51,6 +51,10 @@ namespace andromeda
 
 	class IShader;	// Remove meh
 
+
+	class RenderState;
+	
+
 	/*
 	
 	*/
@@ -74,6 +78,8 @@ namespace andromeda
 
 		// Render all Objects
 		void render(std::shared_ptr<Camera> & camera, std::shared_ptr<IShader> shader);
+
+		void render(RenderState & rs);
 
 
 	private:

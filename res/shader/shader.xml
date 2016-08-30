@@ -77,7 +77,7 @@
   </technique>
 
   <technique name="debug">
-    <pass state="normal">
+    <pass state="normal" enabled="true">
       <state>
         <depth enable="false" />
       </state>

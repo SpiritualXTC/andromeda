@@ -6,6 +6,7 @@
 #include <andromeda/Graphics/texture.h>
 #include <andromeda/Math/matrix_stack.h>
 #include <andromeda/Renderer/transform.h>
+#include <andromeda/Renderer/render_state.h>
 
 using namespace andromeda;
 
@@ -62,10 +63,9 @@ void MeshRenderComponent::render(const std::shared_ptr<andromeda::IShader> shade
 	ms.multiply(_transform->matrix());
 
 	// Update the Model View Matrix
-	shader->setUniform("u_modelview", ms.top());
+	shader->setUniform("u_model", ms.top());
 
 	// Bind Material Uniforms
-
 	for (Int32 i = 0; i < _mesh->getGeometryCount(); ++i)
 	{
 		const Material & material = _mesh->getGeometryMaterial(i);
@@ -98,28 +98,40 @@ void MeshRenderComponent::render(const std::shared_ptr<andromeda::IShader> shade
 			diffuseTex->unbind();
 	}
 
-	// Render ALL Geometry :: Simple version. LOLOLOLOLOLOLOLOLOLOLOLOLOL
-	//_mesh->render(shader);
-
-	/*
-	for (Int32 i=0; i<_mesh->numgeometry(); ++mesh)
-	{
-		ms.push();
-		ms.multiply(anim_matrix);
-
-		// Set Matrix
-
-		// Set Material (?)
-
-		_mesh->render(mesh);
-
-		ms.pop();
-	}
-
-	*/
-	
-	
-
 	// Pop the matrix
 	ms.pop();
+}
+
+
+/*
+
+*/
+void MeshRenderComponent::render(RenderState & rs)
+{
+	// Set Matrix
+	rs.setModelMatrix(_transform->matrix());
+
+	// Loop through geometry
+	for (Int32 i = 0; i < _mesh->getGeometryCount(); ++i)
+	{
+		const Material & material = _mesh->getGeometryMaterial(i);
+
+		// Get Textures
+		const std::shared_ptr<ITexture> & diffuseTex = material.getDiffuseTexture();
+
+		// Bind Texture
+		if (diffuseTex)
+			diffuseTex->bind();
+
+		// Set Material
+		rs.setMaterial(material);
+
+		// Draw Geometry
+		_mesh->drawGeometry(i);
+
+		// Unbind Texture
+		if (diffuseTex)
+			diffuseTex->unbind();
+	}
+
 }

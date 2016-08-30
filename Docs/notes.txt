@@ -22,20 +22,6 @@ Engine / System Modules:
 	onStop():	Stops the System			- When it Gets removed from the sysem completely
 	onStart():	Starts the System			- When it Gets added to the system
                                      
-                                     
-Platform / Context:
--------------------
-Determine if this will be possible to completely remove all trace from teh Include Library :)
-
-OR
-
-Make some of the functions of the platforms protected, but still available to 'System' (Hide via an Interface OR Friend Class?)
-
-Direct Access to Platform / Context could allow some undefined results :(
-
-
-
-
 
 
 src/windows/platform/platform_windows.cpp:
@@ -46,19 +32,6 @@ src/windows/platform/platform_windows.cpp:
 					filter down to the context resize. 
 					And also fire off the resize event twice.
                                      
-
-Initialisation:
----------------
-
-Engine::Run() -> System::Run() -> Platform::Show()
-
-Platform Show, needs to fire the resume events.
-
-In Windows. This is done by calling ShowWindow(<HWND>, SW_SHOWNORMAL);
-The Call to ShowWindow(...), internally fires the WM_ACTIVATEAPP window event, which then causes
-System::Resume() -> Engine::Resume() to run.
-
-Seriously! [It might be possible to remove System::Run(), and have Engine::Run(), call Platform::Show() Directly]
 
 
 
