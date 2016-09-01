@@ -1,6 +1,4 @@
-#ifndef _ANDROMEDA_GAME_TRANSFORM_COMPONENT_H_
-#define _ANDROMEDA_GAME_TRANSFORM_COMPONENT_H_
-
+#pragma once
 
 #include <andromeda/Game/component.h>
 #include <andromeda/Renderer/transform.h>
@@ -9,6 +7,9 @@
 
 namespace andromeda
 {
+	/*
+	
+	*/
 	class TransformComponent : public Component < TransformComponent >, public virtual ITransform
 	{
 	public:
@@ -70,4 +71,3 @@ namespace andromeda
 	};
 }
 
-#endif

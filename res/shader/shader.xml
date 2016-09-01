@@ -29,7 +29,7 @@
 
   <!-- Wireframe View -->
 
-  <state name="wireframe">
+  <state name="debug">
     <depth enable="false" />
     <cull>none</cull>
     <polygon>wireframe</polygon>
@@ -40,20 +40,21 @@
 
 
 
-  <technique name="t1">
-
-    <!--
-      Normal Display
-    -->
+  <!-- NORMAL VIEW -->
+  <technique name="default">
     <pass state="normal">
       <vertexShader shader="vs" />
       <fragmentShader shader="fs" />
-    </pass>
+    </pass>    
+  </technique>
 
-    <!-- Display Face Normals -->
-    <pass name="debug_Normals" enabled="false">
-       
+  
+  <!-- DEBUG VIEW -->
+  <technique name="wireframe">
+    <pass name="normals" state="debug">
+
       <uniform name="u_color" value="{1.0, 0.0, 1.0, 1.0}" />
+      <uniform name="u_length" value="0.25" />
 
       <vertexShader shader="passthru" />
 
@@ -65,17 +66,18 @@
       <fragmentShader shader="constantColor" />
     </pass>
     
-    <!-- Display Wireframe -->
-    <pass name="debug_Wireframe" state="wireframe" enabled="false">
+    
+    <pass name="wireframe" state="debug">
       <uniform name="u_color" value="{0.0, 1.0, 0.0, 1.0}" />
 
       <vertexShader shader="vs" />
       <fragmentShader shader="constantColor" />
     </pass>
-    
-    
   </technique>
-
+  
+  
+  
+  
   <technique name="debug">
     <pass state="normal" enabled="true">
       <state>

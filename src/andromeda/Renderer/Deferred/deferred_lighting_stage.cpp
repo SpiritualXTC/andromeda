@@ -23,23 +23,12 @@ using namespace andromeda::deferred;
 DeferredLightingStage::DeferredLightingStage(const std::shared_ptr<ILayerEnvironment> & enviro, const std::shared_ptr<Effect> & effect, const std::string & directionalTechnique)
 	: RenderStage(nullptr, enviro)
 {
-	// Create a custom Camera
-//	_directionalCamera = std::make_shared<Camera>();
-//	_directionalCamera->setOrthogonalScreen(-1.0f, 1.0f);
-//	_directionalCamera->setView(-1.0f);
-
+	// Setup Camera
 	getCamera()->setOrthogonalScreen(-1.0f, 1.0f);
-	getCamera()->setView(-1.0f);
+	getCamera()->setView(-1.0f);	// Why did this have to be negative?
 
 
-	// Create a custom RenderableGroup
-//	_directionalLights = std::make_shared<RenderableGroup>("directional");
-
-
-
-
-	// Adds a special layer for Directional Lights
-	// Directional Lights use a completely different camera, and a special RenderableGroup
+	// Add the layer for directional lights
 	std::shared_ptr<ILayer> layer = addLayer("directional", effect, directionalTechnique);
 
 	_directionalLights = getCache()->getRenderGroup("directional");
@@ -52,14 +41,14 @@ DeferredLightingStage::DeferredLightingStage(const std::shared_ptr<ILayerEnviron
 /*
 
 */
-void DeferredLightingStage::addDirectionalLight()
+void DeferredLightingStage::addDirectionalLight(const std::shared_ptr<LightDirectional> & directional)
 {
 	// Only support for one directional light.
 	if (_renderable)
 		return;
 
 	// Create Renderable
-	_renderable = std::make_shared<deferred::DeferredDirectionalLight>();
+	_renderable = std::make_shared<deferred::DeferredDirectionalLight>(directional);
 
 	// Add to the Renderable Group
 	_directionalLights->addRenderable(_renderable.get());

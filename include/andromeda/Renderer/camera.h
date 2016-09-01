@@ -116,7 +116,10 @@ namespace andromeda
 		*/
 		std::shared_ptr<ViewMatrix> setView(Float distance);
 
-
+		/*
+			Sets LookAt View Matrix
+		*/
+		std::shared_ptr<LookAtViewMatrix> setView(const glm::vec3 & eye, const glm::vec3 & target, const glm::vec3 & up = glm::vec3(0.0f, 1.0f, 0.0f));
 
 
 

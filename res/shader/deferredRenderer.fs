@@ -12,8 +12,14 @@ uniform vec3 u_cameraPosition;// = vec3(0.0, 0.0, 0.0);
 
 // Light
 uniform vec3 u_lightDirection = vec3(-0.5, -0.7, -0.5);
+
+
+uniform vec3 u_lightAmbient = vec3(0.0, 0.0, 0.0);
 uniform vec3 u_lightDiffuse = vec3(1.0, 1.0, 1.0);
 uniform vec3 u_lightSpecular = vec3(1.0, 1.0, 1.0);
+
+uniform vec3 u_lightPosition = vec3(0.0, 1.0, 0.0);	// Directly Overhead
+
 
 // Varying
 in vec2		v_textureCoordinate;
@@ -23,12 +29,18 @@ out vec4 o_color;
 
 
 
-// diffuseComponent
-vec3 diffuseComponent(in vec3 normal, in vec3 lightDir, in vec3 diffuseColor)
+// ambientComponent
+vec3 ambientComponent(in vec3 diffuseColor)
 {
-	float diffuse = clamp(dot(normal, -lightDir), 0, 1);
+	return diffuseColor * u_lightAmbient;
+}
 
-	return diffuseColor * u_lightDiffuse * diffuse;
+// diffuseComponent
+vec3 diffuseComponent(in vec3 normal, in vec3 diffuseColor)
+{
+	float diffuse = clamp(dot(normal, u_lightPosition), 0, 1);
+
+	return diffuseColor * (u_lightDiffuse - u_lightAmbient) * diffuse;
 }
 
 // specularComponent()
@@ -86,10 +98,10 @@ void main(void)
 
 
 	// Calculate Ambient
-	vec3 i_ambient = diffuseRGB.rgb * 0.15;
+	vec3 i_ambient = ambientComponent(diffuseRGB.rgb);	// diffuse.rgb * lightAmbient
 
 	// Calculate Diffuse
-	vec3 i_diffuse = diffuseComponent(normal.rgb, u_lightDirection, diffuseRGB.rgb);//diffuse.rgb * lightDiffuse;
+	vec3 i_diffuse = diffuseComponent(normal.rgb, diffuseRGB.rgb);//diffuse.rgb * lightDiffuse * lightIntensity;
 
 	// Calculate Specular
 	//vec3 i_specular = specularComponent(normal.rgb, toLight, toCamera, vec3(1.0, 1.0 , 1.0), 64.0);
@@ -98,11 +110,11 @@ void main(void)
 	vec3 n = normalize(normal.rgb);
 	vec3 e = normalize(u_cameraPosition - position.rgb);
 	
-	float intensity = max(dot(n, -u_lightDirection), 0.0);
+	float intensity = max(dot(n, u_lightPosition), 0.0);
 	
 	if (intensity > 0.0)
 	{
-		vec3 h = normalize(-u_lightDirection + e);
+		vec3 h = normalize(u_lightPosition + e);
 		float intSpec = max(dot(h, n), 0.0);
 		
 		i_specular = vec3(1.0, 1.0, 1.0) * pow(intSpec, 64.0);

@@ -6,16 +6,19 @@ namespace andromeda
 {
 	class Geometry;
 
+	class LightDirectional;
+
+
 
 	namespace deferred
 	{
 		/*
-		This class needs to be using an interface to abstract directional lights
+			This class needs to be using an interface to abstract lights
 		*/
 		class DeferredDirectionalLight : public IRenderable
 		{
 		public:
-			DeferredDirectionalLight();
+			DeferredDirectionalLight(const std::shared_ptr<LightDirectional> & directional);
 
 
 
@@ -26,8 +29,10 @@ namespace andromeda
 			// These attributes need to be stored somewhere where the application can gain direct access to them...
 			// For Real-time lighting adjustments...
 			// This will do for now, however :)
-			glm::vec3 _lightDirection;
-			glm::vec3 _lightDiffuse;
+		//	glm::vec3 _lightDirection;
+		//	glm::vec3 _lightDiffuse;
+
+			std::shared_ptr<LightDirectional> _light;
 
 			std::shared_ptr<Geometry> _geometry;
 		};

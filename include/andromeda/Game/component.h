@@ -74,29 +74,29 @@ namespace andromeda
 
 
 
-		virtual inline void onRenderActivate() override
+		virtual void onRenderActivate() override
 		{
 			// Do Nothing
 		}
-		virtual inline void onRenderDeactivate() override
-		{
-			// Do Nothing
-		}
-
-
-
-		virtual inline void onRenderActivate(IRenderableManager * view) override
-		{
-			// Do Nothing
-		}
-		virtual inline void onRenderDeactivate(IRenderableManager * view) override
+		virtual void onRenderDeactivate() override
 		{
 			// Do Nothing
 		}
 
 
 
-		virtual inline void update(const Float timeStep)
+		virtual void onRenderActivate(IRenderableManager * view) override
+		{
+			// Do Nothing
+		}
+		virtual void onRenderDeactivate(IRenderableManager * view) override
+		{
+			// Do Nothing
+		}
+
+
+
+		virtual void update(const Float timeStep)
 		{
 			// Do Nothing
 		}

@@ -16,12 +16,9 @@ using namespace andromeda::deferred;
 /*
 
 */
-DeferredDirectionalLight::DeferredDirectionalLight()
+DeferredDirectionalLight::DeferredDirectionalLight(const std::shared_ptr<LightDirectional> & directional)
+	: _light(directional)
 {
-	_lightDirection = glm::vec3(-0.5, -0.7, -0.7);
-	_lightDiffuse = glm::vec3(1.0f, 1.0f, 1.0f);
-
-
 	// Setup FullScreen Quad
 	glm::vec3 pos[] =
 	{
@@ -82,6 +79,9 @@ void DeferredDirectionalLight::render(RenderState & rs)
 	// Set Identity Matrix
 	rs.setModelMatrix();
 
+	// Set Light Attributes
+	if (_light)
+		rs.setLight(*_light.get());
 
 	// Render Full Screen Quad
 	_geometry->render();

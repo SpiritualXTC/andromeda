@@ -122,9 +122,9 @@ std::shared_ptr<XUniform> XUniformBuilder::buildFloat()
 
 	switch (size)
 	{
-//	case 1:
-//		uniform = std::make_shared<XUniformType<Float>>(v[0]);
-//		break;
+	case 1:
+		uniform = std::make_shared<XUniformType<Float>>(_name, v[0]);
+		break;
 	case 2:
 		uniform = std::make_shared<XUniformType<glm::fvec2>>(_name, glm::fvec2(v[0], v[1]));
 		break;
@@ -159,9 +159,9 @@ std::shared_ptr<XUniform> XUniformBuilder::buildInt()
 
 	switch (size)
 	{
-//	case 1:
-//		uniform = std::make_shared<XUniformType<Int32>>(v[0]);
-//		break;
+	case 1:
+		uniform = std::make_shared<XUniformType<Int32>>(_name, v[0]);
+		break;
 	case 2:
 		uniform = std::make_shared<XUniformType<glm::ivec2>>(_name, glm::ivec2(v[0], v[1]));
 		break;

@@ -37,27 +37,6 @@ RenderStage::~RenderStage()
 }
 
 
-#if 0
-/*
-
-*/
-std::shared_ptr<ILayer> RenderStage::addLayer(const std::shared_ptr<Camera> & camera, const std::shared_ptr<RenderableGroup> & rg, const std::shared_ptr<Effect> & effect, const std::string & technique)
-{
-	// Create Layer
-	std::shared_ptr<Layer> layer = std::make_shared<Layer>(camera, effect, rg);
-
-	// Sets the Layers Technique
-	if (technique.length() != 0)
-		layer->setActiveTechnique(technique);
-
-	// Add Layer
-	_layers.push_back(layer);
-
-	return layer;
-}
-#endif
-
-
 /*
 
 */
@@ -66,9 +45,6 @@ std::shared_ptr<ILayer> RenderStage::addLayer(const std::string & renderGroup,
 {
 	// Gets the Render Group
 	std::shared_ptr<RenderableGroup> rg = _cache->getRenderGroup(renderGroup);
-
-	// Add a Layer to the rendering method
-	//	m->addLayer(_camera, rg, effect, technique);
 
 	// Create Layer
 	std::shared_ptr<Layer> layer = std::make_shared<Layer>(_camera, effect, rg);

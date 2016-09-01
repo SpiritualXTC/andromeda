@@ -62,7 +62,7 @@ namespace andromeda
 			Adds the Component
 		*/
 		template <typename T>
-		Boolean addComponent(std::shared_ptr<T> component);
+		Boolean addComponent(const std::shared_ptr<T> & component);
 
 		/*
 			Remove a Component

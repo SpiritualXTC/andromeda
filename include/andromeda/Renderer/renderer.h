@@ -1,8 +1,11 @@
 #pragma once
 
 #include <memory>
+#include <set>
 #include <unordered_map>
 #include <vector>
+
+#include <boost/multi_index_container.hpp>
 
 #include <andromeda/stddef.h>
 
@@ -128,12 +131,15 @@ namespace andromeda
 
 		std::shared_ptr<Camera> _camera;		// Shared Camera :: Could this be a group?
 
-		//std::shared_ptr<RenderCache> _cache;	// Unique_Ptr<> ??
+	
+	
 
-		
+	//	boost::multi_index_container<std::shared_ptr<RenderStage>> _stages;
 
-		// Make it an unordered map while working out how all this crap gets jammed together
-
+		/*
+			RenderStates need to be sorted by a priority value
+			They also need to be accessed by key (string:name)
+		*/
 		std::unordered_map<std::string, std::shared_ptr<RenderStage>> _methods;
 	};
 

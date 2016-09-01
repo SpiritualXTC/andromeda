@@ -7,6 +7,7 @@
 
 #include <andromeda/graphics/effect.h>
 #include <andromeda/Graphics/material.h>
+#include <andromeda/Graphics/light.h>
 
 #include <andromeda/Renderer/camera.h>
 
@@ -18,6 +19,8 @@ namespace andromeda
 		It is to be used until shader annotations are setup
 
 		Annotations may just go through this class
+
+		Central point to change things :)
 	*/
 	class RenderState //: public IShader
 	{
@@ -41,8 +44,11 @@ namespace andromeda
 
 
 		// Lighting
-		const std::string LIGHT_DIFFUSE = "u_diffuseLighting";
-		const std::string LIGHT_SPECULAR = "u_specularLighting";
+		const std::string LIGHT_AMBIENT = "u_lightAmbient";
+		const std::string LIGHT_DIFFUSE = "u_lightDiffuse";
+		const std::string LIGHT_SPECULAR = "u_lightSpecular";
+
+		const std::string LIGHT_POSITION = "u_lightPosition";
 
 
 		// Environment
@@ -136,6 +142,44 @@ namespace andromeda
 		{
 			_shader->setUniform(TEXTURE_DIFFUSE, bindIndex);
 		}
+
+
+
+
+
+
+
+		// Set Light
+		inline void setLight(const LightDirectional & light)
+		{
+			setLightAmbient(light.getAmbient());
+			setLightDiffuse(light.getDiffuse());
+			setLightSpecular(light.getSpecular());
+
+			setLightPosition(-light.getDirection());
+		}
+
+		// Set Light Ambient Color
+		inline void setLightAmbient(const glm::vec3 & v)
+		{
+			_shader->setUniform(LIGHT_AMBIENT, v);
+		}
+		// Set Light Diffuse Color
+		inline void setLightDiffuse(const glm::vec3 & v)
+		{
+			_shader->setUniform(LIGHT_DIFFUSE, v);
+		}
+		// Set Light Specular Color
+		inline void setLightSpecular(const glm::vec3 & v)
+		{
+			_shader->setUniform(LIGHT_SPECULAR, v);
+		}
+		// Set Light Position
+		inline void setLightPosition(const glm::vec3 & v)
+		{
+			_shader->setUniform(LIGHT_POSITION, v);
+		}
+
 
 
 #if 0

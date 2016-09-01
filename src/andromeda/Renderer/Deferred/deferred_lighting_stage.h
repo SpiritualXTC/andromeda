@@ -9,6 +9,9 @@ namespace andromeda
 	class IRenderable;
 	class ILayerEnvironment;
 
+	
+	class LightDirectional;
+	
 	namespace deferred
 	{
 		
@@ -33,7 +36,7 @@ namespace andromeda
 			/*
 
 			*/
-			void addDirectionalLight();
+			void addDirectionalLight(const std::shared_ptr<LightDirectional> & directional);
 
 
 		private:

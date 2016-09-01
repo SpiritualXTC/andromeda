@@ -18,6 +18,7 @@
 
 #include "Deferred/deferred_geometry_environment.h"
 #include "Deferred/deferred_geometry_stage.h"
+#include "Deferred/deferred_shadow_stage.h"
 #include "Deferred/deferred_lighting_environment.h"
 #include "Deferred/deferred_lighting_stage.h"
 
@@ -73,7 +74,15 @@ DeferredRenderer::DeferredRenderer(const std::shared_ptr<SceneGraph> & sg, const
 	_lightingStage = std::make_shared<deferred::DeferredLightingStage>(_lightingEnvironment, effect, directionalTechnique);
 
 
+	// This is temporary. Real situations could involve many shadow states, depending on the number of castable lights.
+	_shadowStage = std::make_shared<deferred::DeferredShadowStage>();
+
+
+	
+
+
 	addMethod("geometry", _geometryStage);
+	addMethod("shadow", _shadowStage);	// Temp
 	addMethod("lighting", _lightingStage);
 }
 
@@ -111,20 +120,31 @@ void DeferredRenderer::onEnd()
 /*
 
 */
-void DeferredRenderer::addDirectionalLight()
+void DeferredRenderer::addDirectionalLight(const std::shared_ptr<LightDirectional> & directional)
 {
-	// TODO: Pass through parameters. Not sure how this will be achieved.
-	// It may need to be an object, that is dependancy-injected into the Renderable...
+	/*
+		NOTES:
+
+		The application may need to directly or indirectly adjust the light data
+
+		This will include turning the light on/off
+		Enable/Disable shadowing
+
+		Removing the Light when it is destroyed (ObserverableV2)
+	*/
 
 	// Add the Light.
-	_lightingStage->addDirectionalLight();
+	if (_lightingStage)
+		_lightingStage->addDirectionalLight(directional);
+	if (_shadowStage)
+		_shadowStage->setLight(directional);
 }
 
 
 /*
 
 */
-void DeferredRenderer::setEnvironmentReflectionmap(const std::shared_ptr<CubeTexture> & cubeTex)
+void DeferredRenderer::setEnvironmentReflectionMap(const std::shared_ptr<CubeTexture> & cubeTex)
 {
 	if (_geomEnvironment)
 	{
@@ -132,6 +152,16 @@ void DeferredRenderer::setEnvironmentReflectionmap(const std::shared_ptr<CubeTex
 	}
 }
 
+
+
+/*
+	TODO:
+	TEMP
+*/
+std::shared_ptr<ITexture> DeferredRenderer::getShadowMap()
+{
+	return _shadowStage->getShadowMap();
+}
 
 
 

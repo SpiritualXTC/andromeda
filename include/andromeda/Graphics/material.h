@@ -149,9 +149,9 @@ namespace andromeda
 		// Color
 		Float _opacity = 1.0f;		// Opacity of the material
 
-		MatColor _ambient;			// Ambient Color
-		MatColor _diffuse;			// Diffuse Color
-		MatColor _specular;			// Specular Color
+		MatColor _ambient{ 0.0f, 0.0f, 0.0f };			// Ambient Color
+		MatColor _diffuse{ 1.0f, 1.0f, 1.0f };			// Diffuse Color
+		MatColor _specular{ 0.0f, 0.0f, 0.0f };			// Specular Color
 
 		// Texturing
 		std::shared_ptr<ITexture> _diffuseTexture;	// Diffuse Texture

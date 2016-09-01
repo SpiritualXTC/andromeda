@@ -82,18 +82,34 @@ std::shared_ptr<ScreenMatrix> Camera::setOrthogonalScreen(Float zN, Float zF)
 
 
 /*
-	Set a basic View Matrix
+	Sets the standard View Matrix
 */
 std::shared_ptr<ViewMatrix> Camera::setView(Float distance)
 {
 	std::shared_ptr<ViewMatrix> view = std::make_shared<ViewMatrix>();
 
 	view->distance(distance);
+	setView(view);
+
+	return view;
+}
+
+
+/*
+	Sets a Look At View Matrix
+*/
+std::shared_ptr<LookAtViewMatrix> Camera::setView(const glm::vec3 & eye, const glm::vec3 & target, const glm::vec3 & up)
+{
+	std::shared_ptr<LookAtViewMatrix> view = std::make_shared<LookAtViewMatrix>();
+
+	view->eye(eye).target(target).up(up);
 
 	setView(view);
 
 	return view;
 }
+
+
 
 
 
@@ -145,6 +161,7 @@ void Camera::setView(std::shared_ptr<IViewMatrix> v)
 	// Calculate View Matrix
 	_view->update();
 }
+
 
 
 /*

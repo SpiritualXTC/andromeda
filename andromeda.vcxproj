@@ -81,6 +81,7 @@
     <ClInclude Include="include\andromeda\andromeda.h" />
     <ClInclude Include="include\andromeda\andromeda_init.h" />
     <ClInclude Include="include\andromeda\Engine\invoker.h" />
+    <ClInclude Include="include\andromeda\Game\light_component.h" />
     <ClInclude Include="include\andromeda\graphics_conversion.h" />
     <ClInclude Include="include\andromeda\IO\file_queue.h" />
     <ClInclude Include="include\andromeda\Renderer\render_state.h" />
@@ -146,12 +147,14 @@
     <ClInclude Include="include\andromeda\Renderer\scene_graph_basic.h" />
     <ClInclude Include="include\andromeda\Renderer\scene_graph_cache.h" />
     <ClInclude Include="include\andromeda\Renderer\view_builder.h" />
+    <ClInclude Include="include\andromeda\Utilities\observer_v2.h" />
     <ClInclude Include="include\andromeda\Utilities\Util\ptree_helper.h" />
     <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_directional_light.h" />
     <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_geometry_environment.h" />
     <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_lighting_environment.h" />
     <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_geometry_stage.h" />
     <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_lighting_stage.h" />
+    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_shadow_stage.h" />
     <ClInclude Include="src\andromeda\Renderer\renderable_group.h" />
     <ClInclude Include="src\andromeda\Resources2\resource_cube_texture.h" />
     <ClInclude Include="src\andromeda\Resources2\resource_texture.h" />
@@ -263,12 +266,15 @@
   <ItemGroup>
     <ClCompile Include="src\andromeda\andromeda.cpp" />
     <ClCompile Include="src\andromeda\Engine\invoker.cpp" />
+    <ClCompile Include="src\andromeda\Game\light_component.cpp" />
+    <ClCompile Include="src\andromeda\Geometry\geometry_cylinder.cpp" />
     <ClCompile Include="src\andromeda\graphics_conversion.cpp" />
     <ClCompile Include="src\andromeda\IO\file_queue.cpp" />
     <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_geometry_environment.cpp" />
     <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_lighting_environment.cpp" />
     <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_geometry_stage.cpp" />
     <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_lighting_stage.cpp" />
+    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_shadow_stage.cpp" />
     <ClCompile Include="src\andromeda\Renderer\render_stage.cpp" />
     <ClCompile Include="src\andromeda\resources.cpp" />
     <ClCompile Include="src\andromeda\Engine\application.cpp" />
