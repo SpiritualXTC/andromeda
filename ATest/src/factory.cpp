@@ -263,6 +263,8 @@ std::shared_ptr<andromeda::GameObject> Factory::createSphere(aFloat angle)
 
 	// Setup Pathing
 	std::shared_ptr<CircularPathComponent> circle = std::make_shared<CircularPathComponent>(obj->getComponentPtr<andromeda::TransformComponent>(), angle);
+	circle->setRadius(8.0f);
+	circle->setSpeed(0.25f);
 	obj->addComponent<CircularPathComponent>(circle);
 
 
@@ -313,22 +315,39 @@ std::shared_ptr<GameObject> Factory::createLight()
 
 	std::shared_ptr<andromeda::LightDirectionalComponent> ld = std::make_shared<andromeda::LightDirectionalComponent>(transform);
 
-	// TODO: Add some stuff to the circle path component class ... so it's not sah dumb
-	transform->position(0.7f, 8.0f, 0.7f);	// Overrides the Direction, using 8 so the magnitude doesn't flatten the y-axis completely
-
 	ld->setDirection(-0.7f, -0.5f, -0.7f);
 	ld->setAmbient(glm::vec3(0.1f, 0.1f, 0.1f));
 	ld->setDiffuse(glm::vec3(1.0f, 1.0f, 1.0f));
 
 
 	std::shared_ptr<CircularPathComponent> circle = std::make_shared<CircularPathComponent>(transform, 0.0f);
-	
+	circle->setRadius(10.0f);
+	circle->setSpeed(0.125f);
+	circle->setCenter(glm::vec3(0.0f, 10.0f, 0.0f));
 
 
 	// Add Components
 	go->addComponent<andromeda::TransformComponent>(transform);
 	go->addComponent<andromeda::LightDirectionalComponent>(ld);
 	go->addComponent<CircularPathComponent>(circle);
+
+
+
+	// Create Geometry
+	andromeda::geometry::Ellipse geom(0.5f);
+	geom.setSlices(32).setStacks(16);
+
+
+	std::shared_ptr<andromeda::Geometry> geometry = geom.build(andromeda::geometry::GeometryGenerate::Texture | andromeda::geometry::GeometryGenerate::Normals);
+
+	// Add RenderComponent
+	if (geometry)
+	{
+		std::shared_ptr<andromeda::GeometryRenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, transform);
+		go->addComponent<andromeda::GeometryRenderComponent>(render);
+
+		render->getMaterial().setDiffuseTexture(andromeda::LoadTexture("white.png"));
+	}
 
 
 	return go;
