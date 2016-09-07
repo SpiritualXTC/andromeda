@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <functional>
 #include <memory>
 
 #include <boost/optional.hpp>
@@ -25,7 +26,7 @@ namespace andromeda
 			Rename to Resource	
 	*/
 	template <typename RESOURCE, typename ARGS>
-	class ResourceEx : virtual public RESOURCE
+	class ResourceEx //: virtual public RESOURCE
 	{
 	public:
 		ResourceEx(const std::string & name, const IFileLocation * location)
@@ -43,9 +44,9 @@ namespace andromeda
 
 
 		/*
-			Acquire tehhe Resource
+			Acquire the Resource
 		*/
-		RESOURCE * acquire(ResourceBuilderEx<RESOURCE, ARGS> * builder)
+		std::shared_ptr<RESOURCE> acquire(ResourceBuilderEx<RESOURCE, ARGS> * builder)
 		{
 			assert(builder);
 
@@ -66,23 +67,24 @@ namespace andromeda
 			// Increase Reference Counter
 			++_refCounter;
 
-			return this;
+			return std::shared_ptr<RESOURCE>(_resource.get(), std::bind(&ResourceEx::release, this, std::placeholders::_1));
 		}
 
 
 		/*
 			Release the Resource (Available by interface)
 		*/
-		void release()// override
+		void release(RESOURCE * r)// override
 		{
 			// Decrease Reference Counter
 			--_refCounter;
 
 			// Resource is still referenced?
-			// TODO: Add ability to preload. This however may not be needed 
+			// TODO: Add ability to preload. 
+			// This however may not be needed , as preloading should be achievable without "acquiring"
+			// Hence the reference counter will remain @ 0
 			if (_refCounter == 0)
 			{
-				_resource->release();
 				_resource = nullptr;
 			}
 		}
@@ -94,7 +96,7 @@ namespace andromeda
 
 
 	protected:
-		// Get RAW Pointer to the resource
+		// Get RAW Pointer to the resource :: This shouldn't be needed now :)
 		inline RESOURCE * getResource() { return _resource.get(); }
 		const inline RESOURCE * getResource() const { return _resource.get(); }
 
@@ -115,15 +117,6 @@ namespace andromeda
 
 		// Actual Resource
 		std::shared_ptr<RESOURCE> _resource;
-
-
-
-
-
-
-
-		// Arguments to load the resource
-	//	ARGS _args;
 	};
 
 
