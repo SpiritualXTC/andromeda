@@ -128,10 +128,13 @@ void SceneManager::update(Float ft)
 */
 void SceneManager::render()
 {
-	glClearColor(1.0f, 0.5f, 0.5f, 1.0f);
+//	glClearColor(1.0f, 0.5f, 0.5f, 1.0f);
 
 	//GL_STENCIL_BUFFER_BIT
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	andromeda::graphics()->setClearColor(1.0f, 0.5f, 0.5f, 1.0f);
+	andromeda::graphics()->clear();
 
 	// Render All Scenes
 	for (const auto scene : _scenes)

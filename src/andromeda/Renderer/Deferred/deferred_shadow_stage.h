@@ -32,8 +32,8 @@ namespace andromeda
 			DeferredShadowStage();
 			virtual ~DeferredShadowStage();
 
-			void begin() override;
-			void end() override;
+			void begin(GraphicsState & gs) override;
+			void end(GraphicsState & gs) override;
 
 
 			inline std::shared_ptr<ITexture> getShadowMap() { return _shadowMap->getDepthTexture(); }

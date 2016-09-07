@@ -77,7 +77,8 @@ FontAtlas::FontAtlas(const std::shared_ptr<FontFace> & ft, UInt32 fontSize)
 void FontAtlas::createBuffers()
 {
 	// Create Vertex Buffer
-	_vb = std::make_shared<VertexBuffer>();
+	//_vb = std::make_shared<VertexBuffer>();
+	_vb = andromeda::graphics()->createVertexBuffer();
 
 	/*
 		TODO:
@@ -417,12 +418,12 @@ std::shared_ptr<Geometry> FontAtlas::generateText(const std::wstring & string)
 	log_debugp("Indices Generated = %1%", indices.size());
 
 
-	// Create Vertex Buffer
-	std::shared_ptr<VertexBuffer> vb = std::make_shared<VertexBuffer>();
-	std::shared_ptr<IndexBuffer> ib = std::make_shared<IndexBuffer>();
+	// Create Buffers
+	std::shared_ptr<VertexBuffer> vb = andromeda::graphics()->createVertexBuffer();
+	std::shared_ptr<IndexBuffer> ib = andromeda::graphics()->createIndexBuffer();
 
 	vb->data((void*)vertices.data(), vertices.size() * sizeof(Float));
-	ib->data((void*)indices.data(), indices.size() * sizeof(UInt32));
+	ib->data(indices.data(), indices.size() * sizeof(UInt32));
 
 	// Create Declaration :: Doing here, as the 2nd set of texture coords could be built-in
 	std::shared_ptr<GeometryDescription> desc = std::make_shared<GeometryDescription>(GL_TRIANGLES, vertices.size(), indices.size(), GL_UNSIGNED_INT);

@@ -67,7 +67,6 @@ namespace andromeda
 		const inline GLenum mode() const { return _primitiveType; }
 
 
-		//Boolean addDeclaration(const Int32 elements, const Int32 offset, const GLenum datatype, const Int32 stride, const Int32 location = -1);
 		Boolean addDeclaration(const Int32 elements, const GLenum dataType, const Int32 stride, const GeometryLocation location = GeometryLocation::Auto);
 		Boolean addDeclaration(const Int32 elements, const Int32 offset, const GLenum datatype, const Int32 stride, const GeometryLocation location = GeometryLocation::Auto);
 

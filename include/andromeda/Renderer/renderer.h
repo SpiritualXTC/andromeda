@@ -9,6 +9,7 @@
 
 #include <andromeda/stddef.h>
 
+
 namespace andromeda
 {
 
@@ -26,6 +27,7 @@ namespace andromeda
 	class RenderCache;
 	class RenderStage;
 
+	class GraphicsState;
 
 	/*
 		This will end up replacing BOTH, Layers & LayerGroups.
@@ -48,7 +50,7 @@ namespace andromeda
 
 		virtual void clear() = 0;
 		virtual void update() = 0;
-		virtual void render() = 0;
+		virtual void render(GraphicsState & gs) = 0;
 
 
 
@@ -56,18 +58,6 @@ namespace andromeda
 		// TEMP
 		virtual std::shared_ptr<Camera> & getCamera() = 0;
 	};
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -105,7 +95,7 @@ namespace andromeda
 		void update() override;
 
 		// Renders all the methods!
-		void render() override;
+		void render(GraphicsState & gs) override;
 
 		// Resize : Doesn't require any action for the basic renderer
 		void resize(Float width, Float height) override;

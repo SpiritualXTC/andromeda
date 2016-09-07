@@ -13,6 +13,10 @@
 
 namespace andromeda
 {
+
+
+
+
 	/*
 		This is a temp class
 
@@ -20,7 +24,9 @@ namespace andromeda
 
 		Annotations may just go through this class
 
-		Central point to change things :)
+		Central point to change things... related to the shader
+
+		This is at the "pass" level
 	*/
 	class RenderState //: public IShader
 	{
@@ -36,7 +42,7 @@ namespace andromeda
 		// Material
 		const std::string MATERIAL_AMBIENT = "u_ambientMaterial";		// This is ignored when using the GBuffer
 		const std::string MATERIAL_DIFFUSE = "u_diffuseMaterial";
-		const std::string MATERIAL_SPECULAR = "u_specularMaterial";		// This needs to be added to the GBuffer once the "white" specular is working
+		const std::string MATERIAL_SPECULAR = "u_specularMaterial";		// This needs to be added to the GBuffer once the "white" specular is working correctly
 		const std::string MATERIAL_SHININESS = "u_shininessMaterial";	
 
 		// Material Textures

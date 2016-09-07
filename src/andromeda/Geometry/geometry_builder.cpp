@@ -6,6 +6,9 @@
 
 #include <andromeda/Utilities/log.h>
 
+#include <andromeda/andromeda.h>
+#include <andromeda/graphics.h>
+
 using namespace andromeda;
 
 
@@ -96,7 +99,7 @@ Boolean GeometryBuilder::build(std::shared_ptr<VertexBuffer> vb, std::shared_ptr
 
 	// Copy Index Data :: If their is any to copy
 	if (ib && _indices.size() > 0)
-		ib->data((void*)&_indices[0], _indices.size() * sizeof(UInt32));
+		ib->data(&_indices[0], _indices.size() * sizeof(UInt32));
 
 	return b;
 }
@@ -108,8 +111,16 @@ Boolean GeometryBuilder::build(std::shared_ptr<VertexBuffer> vb, std::shared_ptr
 std::shared_ptr<Geometry> GeometryBuilder::build()
 {
 	// Create Buffers
-	std::shared_ptr<VertexBuffer> vb = std::make_shared<VertexBuffer>();
-	std::shared_ptr<IndexBuffer> ib = _indices.size() == 0 ? nullptr : std::make_shared<IndexBuffer>();
+//	std::shared_ptr<VertexBuffer> vb = std::make_shared<VertexBuffer>();
+//	std::shared_ptr<IndexBuffer> ib = _indices.size() == 0 ? nullptr : std::make_shared<IndexBuffer>();
+
+	std::shared_ptr<VertexBuffer> vb = andromeda::graphics()->createVertexBuffer();
+	std::shared_ptr<IndexBuffer> ib;
+	
+	if (_indices.size() > 0)
+		ib = andromeda::graphics()->createIndexBuffer();
+
+
 	std::shared_ptr<GeometryDescription> desc = std::make_shared<GeometryDescription>(GL_TRIANGLES, _length, _indices.size(), GL_UNSIGNED_INT);
 
 	// Build

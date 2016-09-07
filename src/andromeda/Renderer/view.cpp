@@ -2,6 +2,7 @@
 
 #include <andromeda/graphics.h>
 
+#include <andromeda/Renderer/graphics_state.h>
 #include <andromeda/Renderer/renderer.h>
 
 #include <andromeda/Utilities/log.h>
@@ -97,20 +98,6 @@ std::shared_ptr<IRenderer> View::getRenderer(const std::string & rendererName)
 }
 
 
-#if 0
-/*
-
-*/
-Boolean View::addRendererLayer(const std::string & rendererName, const std::string & renderGroup, const std::string & renderMethod, const std::shared_ptr<Effect> effect, const std::string & technique)
-{
-	std::shared_ptr<IRenderer> renderer = getRenderer(rendererName);
-
-	if (!renderer)
-		return false;
-
-	return renderer->addLayer(renderMethod, renderGroup, effect, technique);
-}
-#endif
 
 
 
@@ -161,6 +148,8 @@ void View::resize(const Int32 width, const Int32 height)
 */
 void View::render()
 {
+	GraphicsState gfxs;
+
 	/*
 		This should be an automatic component of the Graphics API when setting a weighted viewport
 	*/
@@ -187,33 +176,32 @@ void View::render()
 	//IViewTarget->begin();
 
 	// Set Viewport
-	glViewport(left, bottom, width, height);
-	// graphics()->setViewport(left, bottom, width, height);
+	//glViewport(left, bottom, width, height);
+	
 
-
+	gfxs.setViewport(left, bottom, width, height);
 
 
 
 
 	// Update the Renderer Caches, Cameras, etc
+	// This may make more sense to do elsewhere... investigate
 	for (const auto & renderer : _renderer)
 		renderer.second->update();
 
 	// Render Renderer
 	for (const auto & renderer : _renderer)
-		renderer.second->render();
-
+	{
+		gfxs.push();
+		renderer.second->render(gfxs);
+		gfxs.pop();
+	}
 
 
 
 	// THE RENDER TARGET NEEDS TO CLEAN SHIT UP HERE
 	// IViewTarget Interface
 	//IViewTarget->end();
-
-
-	//TODO:
-	// Investigate how this will work for a cube texture being used for a reflection map
-	// Each SIDE would technically have its own camera -- but those cameras would all share the same source camera, but may be perpendicular to the source camera
 }
 
 

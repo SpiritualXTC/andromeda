@@ -8,11 +8,13 @@
 #include <andromeda/Renderer/layer.h>
 #include <andromeda/Renderer/render_stage.h>
 
-
+#include <andromeda/Renderer/graphics_state.h>
 #include <andromeda/Renderer/scene_graph.h>
 #include <andromeda/Renderer/scene_graph_cache.h>	// TODO rename to RenderCache
 
+
 #include "renderable_group.h"
+
 
 using namespace andromeda;
 
@@ -33,9 +35,6 @@ Renderer::Renderer(const std::shared_ptr<SceneGraph> & sg)
 	_camera = std::make_shared<Camera>();
 	_camera->setView(1.0f);
 	_camera->setOrthogonal(1.0f, 0.01f, 1000.0f);
-
-	// Create Cache
-//	_cache = std::make_shared<RenderCache>(_camera.get());
 }
 
 
@@ -69,6 +68,9 @@ Boolean Renderer::hasRenderMethod(const std::string & methodName)
 	return it != _methods.end();
 }
 
+/*
+	Gets the Render Method
+*/
 std::shared_ptr<RenderStage> Renderer::getRenderMethod(const std::string & methodName)
 {
 	const auto & it = _methods.find(methodName);
@@ -78,12 +80,12 @@ std::shared_ptr<RenderStage> Renderer::getRenderMethod(const std::string & metho
 
 
 /*
-
+	Adds a layer to the specified RenderStage
 */
 Boolean Renderer::addLayer(const std::string & method, const std::string & renderGroup, const std::shared_ptr<Effect> & effect, const std::string & technique)
 {
-	// Add a layer to the correct RenderMethod
-	// If no RenderMethod is found... create a simple one
+	// Add a layer to the correct RenderStage
+	// If no RenderMethod is found... create the basic one
 
 	// Find RendererMethod
 	const auto & it = _methods.find(method);
@@ -104,12 +106,7 @@ Boolean Renderer::addLayer(const std::string & method, const std::string & rende
 
 	assert(m);
 
-	// Gets the Render Group
-//	std::shared_ptr<RenderableGroup> rg = _cache->getRenderGroup(renderGroup);
-
 	// Add a Layer to the rendering method
-//	m->addLayer(_camera, rg, effect, technique);
-	
 	m->addLayer(renderGroup, effect, technique);
 
 	return true;
@@ -150,15 +147,6 @@ void Renderer::update()
 {
 	assert(_camera);
 	assert(_sceneGraph);
-	//	assert(_cache);
-
-	// Update the Camera :: This is done during the notification when the camera is moved
-//	_camera->update();
-
-
-
-	// Process the Scene Graph
-	//_sceneGraph->process(_cache);
 
 	// Update All Render Stages
 	for (const auto & method : _methods)
@@ -171,27 +159,25 @@ void Renderer::update()
 /*
 
 */
-void Renderer::render()
+void Renderer::render(GraphicsState & gs)
 {
 	// Renders all the Stages
 	for (const auto & method : _methods)
 	{
+		gs.push();
+
 		RenderStage * m = method.second.get();
 
-		// Configure the Stage
-		m->begin();
+		// Render the Scene :: Configuration happens inside the function now.
+		m->render(gs);
 
-		// Render the Scene
-		m->render();
-
-		// Configure the Stage :: Example (Revert back to the Normal FrameBuffer)
-		m->end();
+		gs.pop();
 	}
 
 
 	/*
 		For Example:
-		Deferred Rendering would require at least, 2 render stage. 
+		Deferred Rendering would require at least, 2 render stages
 			The first required stage requires setting the GBuffer up for rendering too
 			The second required stage would setup the Lighting for rendering, while using the GBuffers' textures as the source for world geometry
 	*/

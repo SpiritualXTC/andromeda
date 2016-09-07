@@ -26,13 +26,6 @@ namespace andromeda
 				const std::shared_ptr<Effect> & effect, const std::string & directionalTechnique);
 
 
-			void begin() override {}
-
-			void end() override {}
-
-
-
-
 			/*
 
 			*/

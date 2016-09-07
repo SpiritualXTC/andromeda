@@ -78,7 +78,7 @@ void RenderStage::update(SceneGraph * sg)
 /*
 
 */
-void RenderStage::begin()
+void RenderStage::begin(GraphicsState & gs)
 {
 	// Nothing
 }
@@ -92,17 +92,17 @@ void RenderStage::begin()
 /*
 
 */
-void RenderStage::render()
+void RenderStage::render(GraphicsState & gs)
 {
 	// Begin the Stage
-	//begin();
+	begin(gs);
 
 	// Render all the layers
 	for (const auto & layer : _layers)
 		layer->render(_environment.get());
 
 	// End the Stage
-//	end();
+	end(gs);
 }
 
 
@@ -111,7 +111,7 @@ void RenderStage::render()
 /*
 
 */
-void RenderStage::end()
+void RenderStage::end(GraphicsState & gs)
 {
 	// Nothing
 }

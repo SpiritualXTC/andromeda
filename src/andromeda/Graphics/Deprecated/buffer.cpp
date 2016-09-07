@@ -4,7 +4,7 @@
 
 using namespace andromeda;
 
-
+#if 0
 /*
 
 */
@@ -64,7 +64,7 @@ void Buffer::data(const GLvoid * ptr, const GLsizeiptr length)
 void Buffer::subdata(const GLvoid * ptr, GLintptr offset, GLsizeiptr length)
 {
 	assert(ptr);
-	assert(offset + length <= length);
+	assert(offset + length <= _length);
 
 	bind();
 
@@ -73,6 +73,6 @@ void Buffer::subdata(const GLvoid * ptr, GLintptr offset, GLsizeiptr length)
 	unbind();
 }
 
-
+#endif
 
 

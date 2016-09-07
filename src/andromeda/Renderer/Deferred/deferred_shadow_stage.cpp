@@ -7,6 +7,7 @@
 #include <andromeda/Graphics/light.h>
 
 #include <andromeda/Renderer/camera.h>
+#include <andromeda/Renderer/graphics_state.h>
 
 using namespace andromeda;
 using namespace andromeda::deferred;
@@ -51,8 +52,10 @@ DeferredShadowStage::~DeferredShadowStage()
 /*
 
 */
-void DeferredShadowStage::begin()
+void DeferredShadowStage::begin(GraphicsState & gs)
 {
+	gs.setViewport(0, 0, _shadowMap->width(), _shadowMap->height());
+
 	// Bind the Buffer
 	_shadowMap->bind();
 
@@ -76,7 +79,7 @@ void DeferredShadowStage::begin()
 /*
 
 */
-void DeferredShadowStage::end()
+void DeferredShadowStage::end(GraphicsState & gs)
 {
 	// Bind the Buffer
 	_shadowMap->unbind();
