@@ -7,19 +7,28 @@
 
 #include <andromeda/graphics/effect.h>
 #include <andromeda/Graphics/material.h>
+#include <andromeda/Graphics/light.h>
 
 #include <andromeda/Renderer/camera.h>
 
 namespace andromeda
 {
+
+
+
+
 	/*
 		This is a temp class
 
 		It is to be used until shader annotations are setup
 
 		Annotations may just go through this class
+
+		Central point to change things... related to the shader
+
+		This is at the "pass" level
 	*/
-	class RenderState //: public IShader
+	class RenderState : public IShader
 	{
 	private:
 		// Matrices
@@ -33,7 +42,7 @@ namespace andromeda
 		// Material
 		const std::string MATERIAL_AMBIENT = "u_ambientMaterial";		// This is ignored when using the GBuffer
 		const std::string MATERIAL_DIFFUSE = "u_diffuseMaterial";
-		const std::string MATERIAL_SPECULAR = "u_specularMaterial";		// This needs to be added to the GBuffer once the "white" specular is working
+		const std::string MATERIAL_SPECULAR = "u_specularMaterial";		// This needs to be added to the GBuffer once the "white" specular is working correctly
 		const std::string MATERIAL_SHININESS = "u_shininessMaterial";	
 
 		// Material Textures
@@ -41,8 +50,11 @@ namespace andromeda
 
 
 		// Lighting
-		const std::string LIGHT_DIFFUSE = "u_diffuseLighting";
-		const std::string LIGHT_SPECULAR = "u_specularLighting";
+		const std::string LIGHT_AMBIENT = "u_lightAmbient";
+		const std::string LIGHT_DIFFUSE = "u_lightDiffuse";
+		const std::string LIGHT_SPECULAR = "u_lightSpecular";
+
+		const std::string LIGHT_POSITION = "u_lightPosition";
 
 
 		// Environment
@@ -138,7 +150,43 @@ namespace andromeda
 		}
 
 
-#if 0
+
+
+
+
+
+		// Set Light
+		inline void setLight(const LightDirectional & light)
+		{
+			setLightAmbient(light.getAmbient());
+			setLightDiffuse(light.getDiffuse());
+			setLightSpecular(light.getSpecular());
+
+			setLightPosition(-light.getDirection());
+		}
+
+		// Set Light Ambient Color
+		inline void setLightAmbient(const glm::vec3 & v)
+		{
+			_shader->setUniform(LIGHT_AMBIENT, v);
+		}
+		// Set Light Diffuse Color
+		inline void setLightDiffuse(const glm::vec3 & v)
+		{
+			_shader->setUniform(LIGHT_DIFFUSE, v);
+		}
+		// Set Light Specular Color
+		inline void setLightSpecular(const glm::vec3 & v)
+		{
+			_shader->setUniform(LIGHT_SPECULAR, v);
+		}
+		// Set Light Position
+		inline void setLightPosition(const glm::vec3 & v)
+		{
+			_shader->setUniform(LIGHT_POSITION, v);
+		}
+
+
 
 		// Pass through
 		const inline void setUniform(const std::string &name, const glm::mat3 &m) const override
@@ -176,7 +224,7 @@ namespace andromeda
 			_shader->setUniform(name, v);
 		}
 
-		// This one is special :P
+		// This one is special ... until it gets pulled. lolol
 		const inline void setUniformTexture(const std::string &name, UInt32 bindIndex) const  override
 		{
 			_shader->setUniformTexture(name, bindIndex);
@@ -195,7 +243,7 @@ namespace andromeda
 		{
 			_shader->setUniform(name, b);
 		}
-#endif
+
 
 	private:
 		const IShader * _shader = nullptr;

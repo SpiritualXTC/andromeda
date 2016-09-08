@@ -81,8 +81,10 @@
     <ClInclude Include="include\andromeda\andromeda.h" />
     <ClInclude Include="include\andromeda\andromeda_init.h" />
     <ClInclude Include="include\andromeda\Engine\invoker.h" />
+    <ClInclude Include="include\andromeda\Game\light_component.h" />
     <ClInclude Include="include\andromeda\graphics_conversion.h" />
     <ClInclude Include="include\andromeda\IO\file_queue.h" />
+    <ClInclude Include="include\andromeda\Renderer\graphics_state.h" />
     <ClInclude Include="include\andromeda\Renderer\render_state.h" />
     <ClInclude Include="include\andromeda\Renderer\render_stage.h" />
     <ClInclude Include="include\andromeda\resources.h" />
@@ -144,20 +146,24 @@
     <ClInclude Include="include\andromeda\Math\projection_matrix.h" />
     <ClInclude Include="include\andromeda\Renderer\scene.h" />
     <ClInclude Include="include\andromeda\Renderer\scene_graph_basic.h" />
-    <ClInclude Include="include\andromeda\Renderer\scene_graph_cache.h" />
+    <ClInclude Include="include\andromeda\Renderer\render_cache.h" />
     <ClInclude Include="include\andromeda\Renderer\view_builder.h" />
+    <ClInclude Include="include\andromeda\Utilities\observer_v2.h" />
     <ClInclude Include="include\andromeda\Utilities\Util\ptree_helper.h" />
-    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_directional_light.h" />
-    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_geometry_environment.h" />
-    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_lighting_environment.h" />
-    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_geometry_stage.h" />
-    <ClInclude Include="src\andromeda\Renderer\Deferred\deferred_lighting_stage.h" />
+    <ClInclude Include="src\andromeda\Renderer\Deferred\ambient_light.h" />
+    <ClInclude Include="src\andromeda\Renderer\Deferred\directional_light.h" />
+    <ClInclude Include="src\andromeda\Renderer\Deferred\geometry_environment.h" />
+    <ClInclude Include="src\andromeda\Renderer\Deferred\lighting_environment.h" />
+    <ClInclude Include="src\andromeda\Renderer\Deferred\geometry_stage.h" />
+    <ClInclude Include="src\andromeda\Renderer\Deferred\lighting_stage.h" />
+    <ClInclude Include="src\andromeda\Renderer\Deferred\shadow_stage.h" />
     <ClInclude Include="src\andromeda\Renderer\renderable_group.h" />
     <ClInclude Include="src\andromeda\Resources2\resource_cube_texture.h" />
     <ClInclude Include="src\andromeda\Resources2\resource_texture.h" />
     <ClInclude Include="src\andromeda\Resources2\resource_volumetexture.h" />
     <ClInclude Include="src\opengl\Graphics\cube_texture_gl.h" />
     <ClInclude Include="src\opengl\Graphics\frame_buffer_gl.h" />
+    <ClInclude Include="src\opengl\Graphics\index_buffer_gl.h" />
     <ClInclude Include="src\opengl\Graphics\render_buffer_gl.h" />
     <ClInclude Include="src\opengl\Graphics\shader_gl.h" />
     <ClInclude Include="src\andromeda\Resources\effect_resource.h" />
@@ -226,6 +232,7 @@
     <ClInclude Include="include\andromeda\Resources\resource_location_filesystem.h" />
     <ClInclude Include="src\opengl\Graphics\texture_gl.h" />
     <ClInclude Include="include\opengl\graphics_gl_conversions.h" />
+    <ClInclude Include="src\opengl\Graphics\vertex_buffer_gl.h" />
     <ClInclude Include="src\windows\andromeda_windows.h" />
     <ClInclude Include="src\windows\Engine\display_windows.h" />
     <ClInclude Include="src\windows\Renderer\context_windows.h" />
@@ -256,6 +263,7 @@
     <Text Include="notes.txt" />
     <Text Include="readme.txt" />
     <Text Include="res\shader\deferredRenderer.vs" />
+    <Text Include="res\shader\deferredShadow.vs" />
     <Text Include="res\shader\display_wireframe.gs" />
     <Text Include="res\shader\passthru.vs" />
     <Text Include="todo.txt" />
@@ -263,12 +271,17 @@
   <ItemGroup>
     <ClCompile Include="src\andromeda\andromeda.cpp" />
     <ClCompile Include="src\andromeda\Engine\invoker.cpp" />
+    <ClCompile Include="src\andromeda\Game\light_component.cpp" />
+    <ClCompile Include="src\andromeda\Geometry\geometry_cylinder.cpp" />
     <ClCompile Include="src\andromeda\graphics_conversion.cpp" />
     <ClCompile Include="src\andromeda\IO\file_queue.cpp" />
-    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_geometry_environment.cpp" />
-    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_lighting_environment.cpp" />
-    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_geometry_stage.cpp" />
-    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_lighting_stage.cpp" />
+    <ClCompile Include="src\andromeda\Renderer\Deferred\geometry_environment.cpp" />
+    <ClCompile Include="src\andromeda\Renderer\Deferred\lighting_environment.cpp" />
+    <ClCompile Include="src\andromeda\Renderer\Deferred\geometry_stage.cpp" />
+    <ClCompile Include="src\andromeda\Renderer\Deferred\lighting_stage.cpp" />
+    <ClCompile Include="src\andromeda\Renderer\Deferred\shadow_stage.cpp" />
+    <ClCompile Include="src\andromeda\Renderer\Deferred\ambient_light.cpp" />
+    <ClCompile Include="src\andromeda\Renderer\graphics_state.cpp" />
     <ClCompile Include="src\andromeda\Renderer\render_stage.cpp" />
     <ClCompile Include="src\andromeda\resources.cpp" />
     <ClCompile Include="src\andromeda\Engine\application.cpp" />
@@ -286,7 +299,7 @@
     <ClCompile Include="src\andromeda\Geometry\tesselation.cpp" />
     <ClCompile Include="src\andromeda\graphics.cpp" />
     <ClCompile Include="src\andromeda\Graphics\font_atlas.cpp" />
-    <ClCompile Include="src\andromeda\Renderer\Deferred\deferred_directional_light.cpp" />
+    <ClCompile Include="src\andromeda\Renderer\Deferred\directional_light.cpp" />
     <ClCompile Include="src\andromeda\Graphics\text.cpp" />
     <ClCompile Include="src\andromeda\Resources2\builder_cube_texture.cpp" />
     <ClCompile Include="src\andromeda\IO\location_filesystem.cpp" />
@@ -297,6 +310,7 @@
     <ClCompile Include="src\andromeda\Utilities\image.cpp" />
     <ClCompile Include="src\opengl\Graphics\cube_texture_gl.cpp" />
     <ClCompile Include="src\opengl\Graphics\frame_buffer_gl.cpp" />
+    <ClCompile Include="src\opengl\Graphics\index_buffer_gl.cpp" />
     <ClCompile Include="src\opengl\Graphics\render_buffer_gl.cpp" />
     <ClCompile Include="src\andromeda\Renderer\renderer.cpp" />
     <ClCompile Include="src\andromeda\Renderer\renderer_deferred.cpp" />
@@ -305,7 +319,6 @@
     <ClCompile Include="src\andromeda\Renderer\layer_builder.cpp" />
     <ClCompile Include="src\andromeda\Renderer\renderable_group.cpp" />
     <ClCompile Include="src\andromeda\Graphics\font.cpp" />
-    <ClCompile Include="src\andromeda\Graphics\material.cpp" />
     <ClCompile Include="src\andromeda\Graphics\mesh.cpp" />
     <ClCompile Include="src\andromeda\IO\file_binary.cpp" />
     <ClCompile Include="src\andromeda\IO\file_text.cpp" />
@@ -316,7 +329,7 @@
     <ClCompile Include="src\andromeda\Renderer\layer.cpp" />
     <ClCompile Include="src\andromeda\Renderer\scene.cpp" />
     <ClCompile Include="src\andromeda\Renderer\scene_graph_basic.cpp" />
-    <ClCompile Include="src\andromeda\Renderer\scene_graph_cache.cpp" />
+    <ClCompile Include="src\andromeda\Renderer\render_cache.cpp" />
     <ClCompile Include="src\andromeda\Renderer\view_builder.cpp" />
     <ClCompile Include="src\andromeda\Renderer\view_screen.cpp" />
     <ClCompile Include="src\andromeda\Resources\effect_resource.cpp" />
@@ -326,7 +339,6 @@
     <ClCompile Include="src\andromeda\Engine\system.cpp" />
     <ClCompile Include="src\andromeda\Events\resize.cpp" />
     <ClCompile Include="src\andromeda\Game\transform_component.cpp" />
-    <ClCompile Include="src\andromeda\Graphics\buffer.cpp" />
     <ClCompile Include="src\andromeda\Renderer\context.cpp" />
     <ClCompile Include="src\andromeda\Geometry\geometry.cpp" />
     <ClCompile Include="src\andromeda\Geometry\geometry_cube.cpp" />
@@ -336,7 +348,6 @@
     <ClCompile Include="src\andromeda\Graphics\particle_system.cpp" />
     <ClCompile Include="src\andromeda\Renderer\renderable.cpp" />
     <ClCompile Include="src\andromeda\Renderer\scene_manager.cpp" />
-    <ClCompile Include="src\andromeda\Graphics\render_target2.cpp" />
     <ClCompile Include="src\andromeda\Renderer\view.cpp" />
     <ClCompile Include="src\andromeda\Input\keyboard.cpp" />
     <ClCompile Include="src\andromeda\Input\keyboard_listener.cpp" />
@@ -349,6 +360,7 @@
     <ClCompile Include="src\andromeda\Resources\resource_location_filesystem.cpp" />
     <ClCompile Include="src\andromeda\Utilities\timing.cpp" />
     <ClCompile Include="src\opengl\Graphics\texture_gl.cpp" />
+    <ClCompile Include="src\opengl\Graphics\vertex_buffer_gl.cpp" />
     <ClCompile Include="src\opengl\graphics_gl.cpp" />
     <ClCompile Include="src\opengl\Graphics\shader_gl.cpp" />
     <ClCompile Include="src\windows\andromeda_windows.cpp" />
@@ -392,6 +404,7 @@
     <None Include="res\shader\deferredGeometry.fs" />
     <None Include="res\shader\deferredGeometry.vs" />
     <None Include="res\shader\deferredRenderer.fs" />
+    <None Include="res\shader\deferredShadow.fs" />
     <None Include="res\shader\display_normal.gs" />
     <None Include="res\shader\old\lighting_BlinnPhong.glsl" />
     <None Include="res\shader\old\lighting_Phong.glsl" />

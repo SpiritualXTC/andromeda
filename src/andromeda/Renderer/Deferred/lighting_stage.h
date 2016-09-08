@@ -9,6 +9,9 @@ namespace andromeda
 	class IRenderable;
 	class ILayerEnvironment;
 
+	
+	class LightDirectional;
+	
 	namespace deferred
 	{
 		
@@ -23,23 +26,18 @@ namespace andromeda
 				const std::shared_ptr<Effect> & effect, const std::string & directionalTechnique);
 
 
-			void begin() override {}
-
-			void end() override {}
-
-
-
-
 			/*
 
 			*/
-			void addDirectionalLight();
+		//	void addDirectionalLight(const std::shared_ptr<LightDirectional> & directional);
 
+
+			void setRenderable(const std::shared_ptr<IRenderable> & renderable);
 
 		private:
-			std::shared_ptr<RenderableGroup> _directionalLights;
+			//std::shared_ptr<RenderableGroup> _directionalLights;
 
-			std::shared_ptr<IRenderable> _renderable;
+		//	std::shared_ptr<IRenderable> _renderable;
 		};
 
 	}

@@ -1,4 +1,4 @@
-#include "deferred_geometry_environment.h"
+#include "geometry_environment.h"
 
 #include <andromeda/Graphics/texture.h>
 #include <andromeda/Graphics/effect.h>
@@ -11,7 +11,7 @@ using namespace andromeda::deferred;
 /*
 
 */
-DeferredEnvironment::DeferredEnvironment()
+DeferredGeometryEnvironment::DeferredGeometryEnvironment()
 {
 
 }
@@ -20,7 +20,7 @@ DeferredEnvironment::DeferredEnvironment()
 /*
 
 */
-DeferredEnvironment::~DeferredEnvironment()
+DeferredGeometryEnvironment::~DeferredGeometryEnvironment()
 {
 
 }
@@ -30,7 +30,7 @@ DeferredEnvironment::~DeferredEnvironment()
 /*
 
 */
-void DeferredEnvironment::begin(const IShader * shader)
+void DeferredGeometryEnvironment::begin(const IShader * shader)
 {
 
 	if (_enviromentReflection)
@@ -50,7 +50,7 @@ void DeferredEnvironment::begin(const IShader * shader)
 /*
 
 */
-void DeferredEnvironment::end(const IShader * shader)
+void DeferredGeometryEnvironment::end(const IShader * shader)
 {
 	if (_enviromentReflection)
 	{

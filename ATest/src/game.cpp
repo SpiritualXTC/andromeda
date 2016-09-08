@@ -10,6 +10,7 @@
 #include <andromeda/Game/mesh_component.h>
 #include <andromeda/Game/text_component.h>
 #include <andromeda/Game/transform_component.h>
+#include <andromeda/Game/light_component.h>
 
 #include <andromeda/geometry.h>
 
@@ -74,10 +75,18 @@ Game::Game()
 	// Create Objects
 	std::shared_ptr<andromeda::GameObject> skybox = Factory::createSkybox();
 	std::shared_ptr<andromeda::GameObject> ground = Factory::createGround();
+	std::shared_ptr<andromeda::GameObject> directionalLight = Factory::createLight();
 
 	// Add Game Object to Scene
 	_scene->getSceneGraph()->addGameObject(skybox);
 	_scene->getSceneGraph()->addGameObject(ground);
+	_scene->getSceneGraph()->addGameObject(directionalLight);
+
+
+	// Get Handle to Light
+	_light = directionalLight->getComponentPtr<andromeda::LightDirectionalComponent>();
+
+
 
 
 	// Create the Views
@@ -257,7 +266,7 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 	std::shared_ptr<andromeda::DeferredRenderer> deferred = std::make_shared<andromeda::DeferredRenderer>(sg, defEffect, "lightDirectional");
 	deferred->getCamera()->setPerspectiveFov(glm::pi<aFloat>() / 3.0f * 2.0f, 0.01f, 1000.0f);
 	deferred->getCamera()->setView(28.0f);
-	deferred->setEnvironmentReflectionmap(cubeTex);
+	deferred->setEnvironmentReflectionMap(cubeTex);
 
 
 
@@ -265,8 +274,25 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 	deferred->addLayer("geometry", "", defEffect, "objects");				//addDeferredLayer
 	deferred->addLayer("geometry", "text", defEffect, "objects");			//addDeferredLayer
 
-	deferred->addDirectionalLight();
 
+	// TODO: Use a different shader - and this layer shouldn't need to be manually added.
+	// GameObjects should be flagged as "cast shadow" and the renderable is automatically added to the shadow layer
+	deferred->addLayer("shadow", "", defEffect, "shadow");	
+	deferred->addLayer("shadow", "text", defEffect, "shadow");
+
+	// Add Directional Light
+	deferred->setAmbientLight(_light);
+
+
+
+	// Add Debug Stage :: Wireframes
+#if 0
+	deferred->addLayer("debug", "", effect, "wireframe");
+#endif
+
+
+
+	// Add the Renderer
 	view->addRenderer("deferred", deferred);
 
 
@@ -290,39 +316,31 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 
 
 
-
+	// Add Debug Render Buffer Streams
 	for (aInt32 i = 0; i < 3; ++i)
 	{
 		std::stringstream name("debug");
 		name << i;
 
 		// Create a Debug Game Object to Display
-		std::shared_ptr<andromeda::GameObject> obj = std::make_shared<andromeda::GameObject>(name.str());
-
-		// Add Transform Components
-		std::shared_ptr<andromeda::TransformComponent> transform = std::make_shared<andromeda::TransformComponent>();
-		obj->addComponent<andromeda::TransformComponent>(transform);
-		transform->position(1.0f, i * 0.5f - 0.5f, 0.0f);
-		transform->update(0.0f);
-
-		// Create Geometry
-		andromeda::geometry::Cube geom(0.5f);
-
-		std::shared_ptr<andromeda::Geometry> geometry = geom.build(andromeda::geometry::GeometryGenerate::Texture | andromeda::geometry::GeometryGenerate::Normals);
-
-
-		std::shared_ptr<andromeda::GeometryRenderComponent> render =
-			std::make_shared<andromeda::GeometryRenderComponent>(geometry, transform);
-
-		render->setRenderGroup("debug");
-
-		obj->addComponent<andromeda::GeometryRenderComponent>(render);
-
-		render->getMaterial().setDiffuseTexture(deferred->getGBuffer()->getTexture(i));
+		std::shared_ptr<andromeda::GameObject> obj = Factory::createRenderBufferDebug(name.str(), 1.0f, i * 0.5f - 0.5f, deferred->getGBuffer()->getTexture(i));
 
 		// Add to debug scene graph
 		dsg->addGameObject(obj);
 	}
+
+	// Add Debug Depth Buffer Stream
+	std::shared_ptr<andromeda::GameObject> dobj = Factory::createRenderBufferDebug("debugdepth", -1.0f, 0.5f, deferred->getGBuffer()->getDepthTexture());
+
+	dsg->addGameObject(dobj);
+
+
+	// Show the Test Shadow Depth Stream :: TEMP
+	std::shared_ptr<andromeda::GameObject> sobj = Factory::createRenderBufferDebug("debugshadow", -1.0f, 0.0f, deferred->getShadowMap());
+
+	dsg->addGameObject(sobj);
+
+
 
 	return view;
 }

@@ -37,12 +37,14 @@ Application::~Application()
 */
 void Application::update()
 {
-	//std::shared_ptr<Timing> timing = getDependancyPtr<Timing>();
+	// Get Timer
 	std::shared_ptr<Timing> & timing = Andromeda::instance()->getTiming();
 
 	assert(timing);
 
+	// Get Frametime
 	Double ft = timing->frametime();
 
+	// Update the Application
 	update(ft);
 }

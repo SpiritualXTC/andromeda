@@ -24,7 +24,7 @@ namespace andromeda
 		Add a component from existing pointer
 	*/
 	template <typename T>
-	Boolean Entity::addComponent(std::shared_ptr<T> component)
+	Boolean Entity::addComponent(const std::shared_ptr<T> & component)
 	{
 		assert(component);
 

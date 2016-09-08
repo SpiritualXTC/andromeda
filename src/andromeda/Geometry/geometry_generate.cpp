@@ -5,6 +5,10 @@
 #include <andromeda/Geometry/geometry_desc.h>
 #include <andromeda/Graphics/buffer.h>
 
+
+#include <andromeda/andromeda.h>
+#include <andromeda/graphics.h>
+
 using namespace andromeda;
 using namespace andromeda::geometry;
 
@@ -120,9 +124,11 @@ std::shared_ptr<Geometry> GeometryGenerate::build(UInt32 genFlags)
 		gb.addVertexData("tex", _texCoord0, vertices, GeometryLocation::Texture0);
 
 	// Create Buffers
-	std::shared_ptr<VertexBuffer> vb = std::make_shared<VertexBuffer>();
-	std::shared_ptr<IndexBuffer> ib = std::make_shared<IndexBuffer>();
+//	std::shared_ptr<VertexBuffer> vb = std::make_shared<VertexBuffer>();
+//	std::shared_ptr<IndexBuffer> ib = std::make_shared<IndexBuffer>();
 
+	std::shared_ptr<VertexBuffer> vb = andromeda::graphics()->createVertexBuffer();
+	std::shared_ptr<IndexBuffer> ib = andromeda::graphics()->createIndexBuffer();
 
 
 	// TODO: REWRITE THIS. The GeometryDescription needs to be altered to be API Agnostic

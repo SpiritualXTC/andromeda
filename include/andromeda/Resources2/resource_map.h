@@ -86,9 +86,7 @@ namespace andromeda
 			if (it == _resources.end())
 				return nullptr;
 
-			it->second->acquire(_builder.get());
-
-			return it->second;
+			return it->second->acquire(_builder.get());
 		}
 
 

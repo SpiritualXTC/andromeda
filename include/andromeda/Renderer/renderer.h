@@ -1,10 +1,14 @@
 #pragma once
 
 #include <memory>
+#include <set>
 #include <unordered_map>
 #include <vector>
 
+#include <boost/multi_index_container.hpp>
+
 #include <andromeda/stddef.h>
+
 
 namespace andromeda
 {
@@ -23,6 +27,7 @@ namespace andromeda
 	class RenderCache;
 	class RenderStage;
 
+	class GraphicsState;
 
 	/*
 		This will end up replacing BOTH, Layers & LayerGroups.
@@ -45,7 +50,7 @@ namespace andromeda
 
 		virtual void clear() = 0;
 		virtual void update() = 0;
-		virtual void render() = 0;
+		virtual void render(GraphicsState & gs) = 0;
 
 
 
@@ -53,18 +58,6 @@ namespace andromeda
 		// TEMP
 		virtual std::shared_ptr<Camera> & getCamera() = 0;
 	};
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -81,11 +74,11 @@ namespace andromeda
 
 
 		// Adds a Method
-		Boolean addMethod(const std::string & methodName, const std::shared_ptr<RenderStage> & method);
+		Boolean addStage(const std::string & stageName, const std::shared_ptr<RenderStage> & stage);
 
 
 		// Adds a Layer
-		Boolean addLayer(const std::string & method, const std::string & renderGroup,
+		Boolean addLayer(const std::string & stageName, const std::string & renderGroup,
 			const std::shared_ptr<Effect> & effect, const std::string & technique = "") override;
 	
 
@@ -102,7 +95,7 @@ namespace andromeda
 		void update() override;
 
 		// Renders all the methods!
-		void render() override;
+		void render(GraphicsState & gs) override;
 
 		// Resize : Doesn't require any action for the basic renderer
 		void resize(Float width, Float height) override;
@@ -115,11 +108,13 @@ namespace andromeda
 	//	virtual void onEnd() {}
 
 
+		virtual void sync() {}
 
+		// Check whether the stage exists
+		Boolean hasRenderStage(const std::string & stage);
 
-		Boolean hasRenderMethod(const std::string & methodName);
-
-		std::shared_ptr<RenderStage> getRenderMethod(const std::string & methodName);
+		// Get the Stage [Temp]
+		std::shared_ptr<RenderStage> getRenderStage(const std::string & stage);
 
 	private:
 		std::shared_ptr<SceneGraph> _sceneGraph;
@@ -128,13 +123,16 @@ namespace andromeda
 
 		std::shared_ptr<Camera> _camera;		// Shared Camera :: Could this be a group?
 
-		//std::shared_ptr<RenderCache> _cache;	// Unique_Ptr<> ??
+	
+	
 
-		
+	//	boost::multi_index_container<std::shared_ptr<RenderStage>> _stages;
 
-		// Make it an unordered map while working out how all this crap gets jammed together
-
-		std::unordered_map<std::string, std::shared_ptr<RenderStage>> _methods;
+		/*
+			RenderStates need to be sorted by a priority value
+			They also need to be accessed by key (string:name)
+		*/
+		std::unordered_map<std::string, std::shared_ptr<RenderStage>> _stages;
 	};
 
 

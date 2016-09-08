@@ -8,11 +8,11 @@ namespace andromeda
 
 	namespace deferred
 	{
-		class DeferredEnvironment : public ILayerEnvironment
+		class DeferredGeometryEnvironment : public ILayerEnvironment
 		{
 		public:
-			DeferredEnvironment();
-			virtual ~DeferredEnvironment();
+			DeferredGeometryEnvironment();
+			virtual ~DeferredGeometryEnvironment();
 
 			void begin(const IShader * shader) override;
 			void end(const IShader * shader) override;

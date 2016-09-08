@@ -37,6 +37,8 @@ namespace andromeda
 
 
 			void filter(TextureMagFilter magFilter, TextureMinFilter minFilter) override;
+			void wrap(TextureWrapMode wrapMode) override;
+
 
 		private:
 			UInt32 _handle = 0;
@@ -46,6 +48,8 @@ namespace andromeda
 
 			TextureMagFilter _magFilter = TextureMagFilter::Linear;
 			TextureMinFilter _minFilter = TextureMinFilter::Linear;
+
+			TextureWrapMode _wrap = TextureWrapMode::Repeat;
 
 			StorageFormat _format = StorageFormat::RGBA;
 		};

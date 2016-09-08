@@ -1,8 +1,9 @@
 #include <andromeda/Renderer/render_stage.h>
 
 #include <andromeda/Renderer/layer.h>
+#include <andromeda/Renderer/render_cache.h>
 #include <andromeda/Renderer/scene_graph.h>
-#include <andromeda/Renderer/scene_graph_cache.h>
+
 
 using namespace andromeda;
 
@@ -37,27 +38,6 @@ RenderStage::~RenderStage()
 }
 
 
-#if 0
-/*
-
-*/
-std::shared_ptr<ILayer> RenderStage::addLayer(const std::shared_ptr<Camera> & camera, const std::shared_ptr<RenderableGroup> & rg, const std::shared_ptr<Effect> & effect, const std::string & technique)
-{
-	// Create Layer
-	std::shared_ptr<Layer> layer = std::make_shared<Layer>(camera, effect, rg);
-
-	// Sets the Layers Technique
-	if (technique.length() != 0)
-		layer->setActiveTechnique(technique);
-
-	// Add Layer
-	_layers.push_back(layer);
-
-	return layer;
-}
-#endif
-
-
 /*
 
 */
@@ -66,9 +46,6 @@ std::shared_ptr<ILayer> RenderStage::addLayer(const std::string & renderGroup,
 {
 	// Gets the Render Group
 	std::shared_ptr<RenderableGroup> rg = _cache->getRenderGroup(renderGroup);
-
-	// Add a Layer to the rendering method
-	//	m->addLayer(_camera, rg, effect, technique);
 
 	// Create Layer
 	std::shared_ptr<Layer> layer = std::make_shared<Layer>(_camera, effect, rg);
@@ -102,7 +79,7 @@ void RenderStage::update(SceneGraph * sg)
 /*
 
 */
-void RenderStage::begin()
+void RenderStage::begin(GraphicsState & gs)
 {
 	// Nothing
 }
@@ -116,17 +93,17 @@ void RenderStage::begin()
 /*
 
 */
-void RenderStage::render()
+void RenderStage::render(GraphicsState & gs)
 {
 	// Begin the Stage
-	//begin();
+	begin(gs);
 
 	// Render all the layers
 	for (const auto & layer : _layers)
 		layer->render(_environment.get());
 
 	// End the Stage
-//	end();
+	end(gs);
 }
 
 
@@ -135,7 +112,7 @@ void RenderStage::render()
 /*
 
 */
-void RenderStage::end()
+void RenderStage::end(GraphicsState & gs)
 {
 	// Nothing
 }

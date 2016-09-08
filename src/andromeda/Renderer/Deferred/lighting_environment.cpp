@@ -1,4 +1,4 @@
-#include "deferred_lighting_environment.h"
+#include "lighting_environment.h"
 
 #include <andromeda/Graphics/effect.h>
 #include <andromeda/Graphics/frame_buffer.h>

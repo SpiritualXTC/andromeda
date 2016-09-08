@@ -5,6 +5,9 @@
 #include "Graphics/texture_gl.h"
 #include "Graphics/cube_texture_gl.h"
 
+#include "Graphics/index_buffer_gl.h"
+#include "Graphics/vertex_buffer_gl.h"
+
 // Include Log
 #include <andromeda/Utilities/log.h>
 
@@ -56,7 +59,7 @@ std::shared_ptr<Texture> GraphicsOpenGL::createTexture(UInt32 width, UInt32 heig
 
 
 /*
-	Create Cube Texture [No Implementation]
+	Create Cube Texture
 */
 std::shared_ptr<CubeTexture> GraphicsOpenGL::createCubeTexture(UInt32 width, UInt32 height)
 {
@@ -77,4 +80,22 @@ std::shared_ptr<VolumeTexture> GraphicsOpenGL::createVolumeTexture()
 std::shared_ptr<IShader> GraphicsOpenGL::createShader()
 {
 	return nullptr;
+}
+
+
+
+/*
+	Create a Vertex Buffer
+*/
+std::shared_ptr<VertexBuffer> GraphicsOpenGL::createVertexBuffer()
+{
+	return std::make_shared<opengl::VertexBufferGL>();
+}
+
+/*
+	Create an Index Buffer
+*/
+std::shared_ptr<IndexBuffer> GraphicsOpenGL::createIndexBuffer()
+{
+	return std::make_shared<opengl::IndexBufferGL>();
 }

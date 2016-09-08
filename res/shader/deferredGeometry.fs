@@ -12,7 +12,7 @@ uniform vec3 u_diffuseMaterial;
 uniform vec3 u_specularMaterial;
 uniform vec3 u_shininessMaterial;
 
-uniform float u_materialOpacity;
+uniform float u_opacityMaterial;
 
 
 

@@ -6,7 +6,7 @@
 #include <functional>
 
 #include <andromeda/Game/game_object.h>
-#include <andromeda/Renderer/scene_graph_cache.h>
+#include <andromeda/Renderer/render_cache.h>
 
 using namespace andromeda;
 

@@ -78,6 +78,12 @@ namespace andromeda
 		// Create Shader
 		std::shared_ptr<IShader> createShader() override;
 
+		// Create Buffers
+		std::shared_ptr<VertexBuffer> createVertexBuffer() override;
+
+		std::shared_ptr<IndexBuffer> createIndexBuffer() override;
+
+
 
 		/*
 			Important Functions

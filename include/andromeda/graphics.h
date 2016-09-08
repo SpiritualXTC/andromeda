@@ -14,7 +14,6 @@
 
 #include "Events/resize.h"
 
-#include "Graphics/buffer.h"
 #include "Graphics/font.h"
 #include "Graphics/effect.h"
 #include "Graphics/mesh.h"
@@ -47,6 +46,10 @@ namespace andromeda
 	class Texture;
 	class CubeTexture;
 	class VolumeTexture;
+
+	class VertexBuffer;
+	class IndexBuffer;
+
 
 	class IFrameBuffer;
 
@@ -119,7 +122,8 @@ namespace andromeda
 		virtual std::shared_ptr<Effect> createEffect() { return nullptr; }
 
 
-
+		virtual std::shared_ptr<VertexBuffer> createVertexBuffer() = 0;
+		virtual std::shared_ptr<IndexBuffer> createIndexBuffer() = 0;
 
 
 	//	virtual inline std::shared_ptr<Mesh> createMesh() = 0;
@@ -169,7 +173,8 @@ namespace andromeda
 
 		// Stencil Functions
 		virtual inline void setStencilEnable(Boolean enable) = 0;
-		virtual inline void setStencilFunction(Function function, Int32 ref, UInt32 mask, FaceMode face = FaceMode::FrontAndBack) = 0;
+		virtual inline void setStencilFunction(Function function, Int32 ref, UInt32 mask
+			, FaceMode face = FaceMode::FrontAndBack) = 0;
 
 		virtual inline void setStencilMask(UInt32 mask, FaceMode face = FaceMode::FrontAndBack) = 0;
 
@@ -192,7 +197,7 @@ namespace andromeda
 			clear(...) clears just the selected buffers.
 		*/
 		virtual inline void clear() = 0;
-		virtual inline void draw() {}
+		virtual inline void draw() {}	// This probably shouldn't be here ...
 
 	
 

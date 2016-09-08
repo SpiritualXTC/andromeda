@@ -30,6 +30,8 @@ namespace andromeda
 	class Font;
 
 	class SceneManager;
+
+	class LightDirectional;
 }
 
 
@@ -73,7 +75,7 @@ private:
 	std::shared_ptr<andromeda::GameObject> createMesh(const std::string & name);
 
 
-	// TEsT
+	// TEST
 	void createText();
 
 	std::shared_ptr<andromeda::Scene> _scene;					// Scene
@@ -87,6 +89,9 @@ private:
 	
 	// TEMP FONT
 	std::shared_ptr<andromeda::Font> _font;
+
+	// TEMP LIGHT
+	std::shared_ptr<andromeda::LightDirectional> _light;
 
 };
 

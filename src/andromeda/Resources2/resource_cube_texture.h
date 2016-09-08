@@ -101,7 +101,7 @@ namespace andromeda
 
 
 
-
+#if 0
 
 		// Binds to the active texture index 	
 		inline void bind(UInt32 activeIndex) const override
@@ -171,7 +171,7 @@ namespace andromeda
 				getResource()->filter(magFilter, minFilter);
 		}
 
-
+#endif
 
 
 

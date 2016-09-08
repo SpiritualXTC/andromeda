@@ -43,6 +43,8 @@ namespace andromeda
 		// Gets the Texture @ index
 		virtual std::shared_ptr<ITexture> getTexture(UInt32 index) = 0;
 
+		// Gets the Depth Texture
+		virtual std::shared_ptr<ITexture> getDepthTexture() = 0;
 
 		// Color Buffer Attachment
 		virtual Boolean attach(FrameBufferAttachment attachment, StorageFormat format, DataType dataType) = 0;

@@ -14,12 +14,14 @@
 
 #include "renderable_group.h"
 
-#include "Deferred/deferred_directional_light.h"
+#include "Deferred/directional_light.h"
 
-#include "Deferred/deferred_geometry_environment.h"
-#include "Deferred/deferred_geometry_stage.h"
-#include "Deferred/deferred_lighting_environment.h"
-#include "Deferred/deferred_lighting_stage.h"
+#include "Deferred/ambient_light.h"
+#include "Deferred/geometry_environment.h"
+#include "Deferred/geometry_stage.h"
+#include "Deferred/shadow_stage.h"
+#include "Deferred/lighting_environment.h"
+#include "Deferred/lighting_stage.h"
 
 using namespace andromeda;
 
@@ -50,6 +52,10 @@ DeferredRenderer::DeferredRenderer(const std::shared_ptr<SceneGraph> & sg, const
 	// Create GBuffer
 	_gBuffer = andromeda::graphics()->createFrameBuffer(512, 512);
 
+	// Create Ambient Light
+	_ambientLight = std::make_shared<deferred::DeferredAmbientLight>();
+
+
 
 	log_verbose("Attaching RenderBuffers to FrameBuffer");
 	_gBuffer->attach(FrameBufferAttachment::Color, StorageFormat::RGBA, DataType::UnsignedByte);
@@ -62,19 +68,35 @@ DeferredRenderer::DeferredRenderer(const std::shared_ptr<SceneGraph> & sg, const
 
 
 	// Create Environment Options for Deferred Renderer
-	_geomEnvironment = std::make_shared<deferred::DeferredEnvironment>();
+	_geomEnvironment = std::make_shared<deferred::DeferredGeometryEnvironment>();
 	_lightingEnvironment = std::make_shared<deferred::DeferredLightingEnvironment>(_gBuffer, getCamera());
 	
 
 	// Create Methods
-	addMethod("background", std::make_shared<RenderStage>(getCamera()));
+	addStage("background", std::make_shared<RenderStage>(getCamera()));
 
 	_geometryStage = std::make_shared<deferred::DeferredGeometryStage>(_gBuffer, getCamera(), _geomEnvironment);
+
+
+	// This is the Ambient Lighting Stage :: This class doesn't really do much -- may not be required.
 	_lightingStage = std::make_shared<deferred::DeferredLightingStage>(_lightingEnvironment, effect, directionalTechnique);
 
 
-	addMethod("geometry", _geometryStage);
-	addMethod("lighting", _lightingStage);
+	// This is temporary. Real situations could involve many shadow states, depending on the number of castable lights.
+	// This class should really be handled by DeferredAmbientLight
+	// But that can't be done until the RenderStage container is setup correctly.
+	_shadowStage = std::make_shared<deferred::DeferredShadowStage>(_ambientLight->getLightCamera());
+
+	
+	// Fix it all up! [TEMP]
+	_ambientLight->setShadowMap(_shadowStage->getShadowMap());
+	_lightingStage->setRenderable(_ambientLight->getRenderable());
+	
+
+
+	addStage("geometry", _geometryStage);
+	addStage("shadow", _shadowStage);	// Temp
+	addStage("lighting", _lightingStage);
 }
 
 
@@ -83,48 +105,63 @@ DeferredRenderer::DeferredRenderer(const std::shared_ptr<SceneGraph> & sg, const
 */
 void DeferredRenderer::onResize(Float width, Float height)
 {
+	assert(_gBuffer);
+
 	_gBuffer->resize((Int32)width, (Int32)height);
 }
 
 
 
-#if 0
+
+
+
 /*
+	sync():
 
+	Synchronizes lighting
 */
-void DeferredRenderer::onBegin()
+void DeferredRenderer::sync()
 {
-
+	_ambientLight->sync();
 }
 
-/*
-
-*/
-void DeferredRenderer::onEnd()
-{
-
-}
-#endif
-
 
 
 /*
 
 */
-void DeferredRenderer::addDirectionalLight()
+void DeferredRenderer::setAmbientLight(const std::shared_ptr<LightDirectional> & directional)
 {
-	// TODO: Pass through parameters. Not sure how this will be achieved.
-	// It may need to be an object, that is dependancy-injected into the Renderable...
+	/*
+		NOTES:
+
+		The application may need to directly or indirectly adjust the light data
+
+		This will include turning the light on/off
+		Enable/Disable shadowing
+
+		Removing the Light when it is destroyed (ObserverableV2)
+	*/
+
+	// The Lighting and shadowing has LOTS of combined data...
+
+	if (_ambientLight)
+		_ambientLight->setAmbientLight(directional);
 
 	// Add the Light.
-	_lightingStage->addDirectionalLight();
+//	if (_lightingStage)
+//		_lightingStage->addDirectionalLight(directional);
+
+	// There needs to be more shadows! (List or Vector)
+//	if (_shadowStage)
+//		_shadowStage->setLight(directional);
 }
 
 
 /*
 
 */
-void DeferredRenderer::setEnvironmentReflectionmap(const std::shared_ptr<CubeTexture> & cubeTex)
+void DeferredRenderer::setEnvironmentReflectionMap(const std::shared_ptr<CubeTexture> & cubeTex)
 {
 	if (_geomEnvironment)
 	{
@@ -132,6 +169,16 @@ void DeferredRenderer::setEnvironmentReflectionmap(const std::shared_ptr<CubeTex
 	}
 }
 
+
+
+/*
+	TODO:
+	TEMP
+*/
+std::shared_ptr<ITexture> DeferredRenderer::getShadowMap()
+{
+	return _shadowStage->getShadowMap();
+}
 
 
 

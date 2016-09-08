@@ -6,11 +6,14 @@
   <shader name="skyboxFrag" source="skybox.fs" />
   
   <shader name="defGeometryVert" source="deferredGeometry.vs" />
-  <shader name="defgeometryFrag" source="deferredGeometry.fs" />
+  <shader name="defGeometryFrag" source="deferredGeometry.fs" />
   
   <shader name="defRendererVert" source="deferredRenderer.vs" />
   <shader name="defRendererFrag" source="deferredRenderer.fs" />
 
+  <shader name="defShadowVert" source="deferredShadow.vs" />
+  <shader name="defShadowFrag" source="deferredShadow.fs" />
+  
 
   <state name="skybox">
     <cull>front</cull>
@@ -20,6 +23,12 @@
     <depth enable="true" />
     <polygon>fill</polygon>
     <cull>back</cull>
+  </state>
+  
+  <state name="shadow">
+	<depth enable="true" />
+	<polygon>fill</polygon>
+	<cull>front</cull>
   </state>
 
   <state name="lighting">
@@ -47,7 +56,7 @@
     -->
     <pass name="terrain">
       <vertexShader shader="defGeometryVert" />
-      <fragmentShader shader="defgeometryFrag" />
+      <fragmentShader shader="defGeometryFrag" />
     </pass>
   </technique>
 
@@ -59,8 +68,16 @@
   <technique name="objects">
     <pass name="objects" state="geometry">
       <vertexShader shader="defGeometryVert" />
-      <fragmentShader shader="defgeometryFrag" />
+      <fragmentShader shader="defGeometryFrag" />
     </pass>
+  </technique>
+  
+  
+  <technique name="shadow">
+	<pass state="shadow">
+	  <vertexShader shader="defShadowVert" />
+      <fragmentShader shader="defShadowFrag" />
+	</pass>
   </technique>
 
 

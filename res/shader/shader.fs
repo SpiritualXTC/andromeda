@@ -46,5 +46,5 @@ void main()
 	vec4 lightDiffuse = vec4(lightIntensity * g_lightDiffuse, 1.0);
 
 	// Set Output Color
-	o_color = diffuseRGB * lightDiffuse * texDif;
+	o_color = diffuseRGB * texDif;// * lightDiffuse;
 }

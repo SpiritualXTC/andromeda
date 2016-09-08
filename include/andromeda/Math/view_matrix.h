@@ -54,7 +54,7 @@ namespace andromeda
 
 
 		/*
-		Position
+			Position
 		*/
 		inline Float x() const { return _position.x; }
 		inline Float y() const { return _position.y; }
@@ -63,24 +63,24 @@ namespace andromeda
 		const inline glm::vec3 & position() const { return _position; }
 
 		/*
-		Rotation
+			Rotation
 		*/
 		inline Float pitch() const { return _rotation.x; }
 		inline Float yaw() const { return _rotation.y; }
 		inline Float roll() const { return _rotation.z; }
 
 		/*
-		Distance
+			Distance
 		*/
 		inline Float distance() const { return _distance; }
 
 		/*
-		Is any part of the camera locked ??
+			Is any part of the camera locked ??
 		*/
 		inline Boolean isLocked() const { return _lockFlags != Unlock; }
 
 		/*
-		Is any of the Specified Flags Locked ??
+			Is any of the Specified Flags Locked ??
 		*/
 		inline Boolean isLocked(UInt32 flags) const { return (_lockFlags & flags) != Unlock; }
 
@@ -88,7 +88,7 @@ namespace andromeda
 
 
 		/*
-		Set Position
+			Set Position
 		*/
 		inline ViewMatrix & x(Float f)
 		{
@@ -130,7 +130,7 @@ namespace andromeda
 
 
 		/*
-		Rotate the Camera
+			Rotate the Camera
 		*/
 		inline ViewMatrix & yaw(Float yaw)
 		{
@@ -155,7 +155,7 @@ namespace andromeda
 		}
 
 		/*
-		Distance
+			Distance
 		*/
 		inline ViewMatrix & distance(Float distance)
 		{
@@ -166,16 +166,16 @@ namespace andromeda
 		}
 
 		/*
-		Locks the Camera
+			Locks the Camera
 		*/
 		inline ViewMatrix & lock() { _lockFlags = Lock; }
 
 		/*
-		Unlocks the Camera
+			Unlocks the Camera
 		*/
 		inline ViewMatrix & unlock() { _lockFlags = Unlock; }
 
-
+	protected:
 		void calculate() override
 		{
 			glm::mat4 matrix(1.0f);
@@ -193,11 +193,11 @@ namespace andromeda
 		}
 
 
-
-	protected:
+	private:
+	//protected:
 		glm::mat4 _view;							// View Matrix
 
-	private:
+	
 		// Locks camera movement
 		//Boolean _locked = false;
 		UInt32 _lockFlags = 0;
@@ -206,6 +206,59 @@ namespace andromeda
 		Float _distance = 1.0f;
 		glm::vec3 _position{ 0.0f, 0.0f, 0.0f };
 		glm::vec3 _rotation{ 0.0f, 0.0f, 0.0f };
+	};
+
+
+
+
+	/*
+		TODO:
+		This class doesn't support any form of translations... and it will need to :)
+	*/
+	class LookAtViewMatrix : public IViewMatrix
+	{
+	public:
+
+		// Get the Matrix
+		const inline glm::mat4 & matrix() const override { return _view; }
+
+
+		LookAtViewMatrix & eye(const glm::vec3 & eye)
+		{
+			_eye = eye;
+
+			return *this;
+		}
+
+		LookAtViewMatrix & target(const glm::vec3 & target)
+		{
+			_target = target;
+
+			return *this;
+		}
+
+		LookAtViewMatrix & up(const glm::vec3 & up)
+		{
+			_up = up;
+
+			return *this;
+		}
+
+
+	protected:
+		void calculate() override
+		{
+			// Distance camera is from view point
+			_view = glm::lookAt(_eye, _target, _up);
+		}
+
+	private:
+		glm::mat4 _view;
+
+		glm::vec3 _eye = glm::vec3(0.0f, 0.0f, -1.0f);
+		glm::vec3 _target = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 _up = glm::vec3(0.0f, 1.0f, 0.0f);
+
 	};
 
 }

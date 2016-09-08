@@ -25,6 +25,8 @@ namespace andromeda
 			//const std::shared_ptr<ITexture> getTexture(UInt32 index) const { return _buffers[index]; }
 
 
+			std::shared_ptr<ITexture> getDepthTexture() override { return _depth; }
+
 			// Get Number of buffers in use
 			const UInt32 getBufferCount() const { return _buffers.size(); }
 
