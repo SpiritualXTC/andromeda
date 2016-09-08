@@ -270,7 +270,8 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 
 
 
-	deferred->addLayer("background", "background", defEffect, "skybox");	//addBackgroundLayer
+	deferred->addLayer("background", "background", defEffect, "skybox");	//addBackgroundLayer'
+	deferred->addLayer("geometry", "terrain", defEffect, "objects");
 	deferred->addLayer("geometry", "", defEffect, "objects");				//addDeferredLayer
 	deferred->addLayer("geometry", "text", defEffect, "objects");			//addDeferredLayer
 

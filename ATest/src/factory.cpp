@@ -137,11 +137,16 @@ std::shared_ptr<andromeda::GameObject> Factory::createGround()
 		aFloat fy = -8.0f;
 		aFloat fz = 100.0f * z;
 
-		fy += sinf(x * glm::pi<aFloat>() * 8.0f) * 2.0f;
-		fy += sinf(z * glm::pi<aFloat>() * 8.0f) * 2.0f;
+		fy += sinf(x * glm::pi<aFloat>() * 10.0f) * 1.0f;
+		fy += sinf(z * glm::pi<aFloat>() * 10.0f) * 2.0f;
 
-		return glm::vec3(fx, -4.0f, fz);
-//		return glm::vec3(fx, fy, fz);
+		fy += sinf(x * glm::pi<aFloat>() * 4.0f) * 2.0f;
+		fy += sinf(z * glm::pi<aFloat>() * 4.0f) * 1.0f;
+
+		fy += sinf((x + z) * glm::pi<aFloat>() * 20.0f) * 0.5f;
+
+//		return glm::vec3(fx, -4.0f, fz);
+		return glm::vec3(fx, fy, fz);
 	});
 
 
@@ -179,6 +184,7 @@ std::shared_ptr<andromeda::GameObject> Factory::createGround()
 
 
 	std::shared_ptr<andromeda::RenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, material, transform);
+	render->setRenderGroup("terrain");
 	obj->addComponent<andromeda::RenderComponent>(render);
 
 	return obj;
