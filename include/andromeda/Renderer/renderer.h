@@ -74,11 +74,11 @@ namespace andromeda
 
 
 		// Adds a Method
-		Boolean addMethod(const std::string & methodName, const std::shared_ptr<RenderStage> & method);
+		Boolean addStage(const std::string & stageName, const std::shared_ptr<RenderStage> & stage);
 
 
 		// Adds a Layer
-		Boolean addLayer(const std::string & method, const std::string & renderGroup,
+		Boolean addLayer(const std::string & stageName, const std::string & renderGroup,
 			const std::shared_ptr<Effect> & effect, const std::string & technique = "") override;
 	
 
@@ -108,11 +108,13 @@ namespace andromeda
 	//	virtual void onEnd() {}
 
 
+		virtual void sync() {}
 
+		// Check whether the stage exists
+		Boolean hasRenderStage(const std::string & stage);
 
-		Boolean hasRenderMethod(const std::string & methodName);
-
-		std::shared_ptr<RenderStage> getRenderMethod(const std::string & methodName);
+		// Get the Stage [Temp]
+		std::shared_ptr<RenderStage> getRenderStage(const std::string & stage);
 
 	private:
 		std::shared_ptr<SceneGraph> _sceneGraph;
@@ -130,7 +132,7 @@ namespace andromeda
 			RenderStates need to be sorted by a priority value
 			They also need to be accessed by key (string:name)
 		*/
-		std::unordered_map<std::string, std::shared_ptr<RenderStage>> _methods;
+		std::unordered_map<std::string, std::shared_ptr<RenderStage>> _stages;
 	};
 
 

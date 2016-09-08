@@ -285,6 +285,7 @@ namespace andromeda
 	enum class TextureWrapMode
 	{
 		Repeat,
+		MirroredRepeat,
 		ClampToEdge,
 	};
 

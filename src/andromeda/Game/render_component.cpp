@@ -1,6 +1,6 @@
 #include <andromeda/Game/render_component.h>
 
-#include <andromeda/Renderer/scene_graph_cache.h>
+#include <andromeda/Renderer/render_cache.h>
 
 using namespace andromeda;
 

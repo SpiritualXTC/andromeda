@@ -1,8 +1,9 @@
 #include <andromeda/Renderer/render_stage.h>
 
 #include <andromeda/Renderer/layer.h>
+#include <andromeda/Renderer/render_cache.h>
 #include <andromeda/Renderer/scene_graph.h>
-#include <andromeda/Renderer/scene_graph_cache.h>
+
 
 using namespace andromeda;
 

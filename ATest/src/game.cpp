@@ -275,10 +275,13 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 	deferred->addLayer("geometry", "text", defEffect, "objects");			//addDeferredLayer
 
 
-	deferred->addLayer("shadow", "", effect, "objects");	// TODO: Use a different shader - and this layer shouldn't need to be manually added
+	// TODO: Use a different shader - and this layer shouldn't need to be manually added.
+	// GameObjects should be flagged as "cast shadow" and the renderable is automatically added to the shadow layer
+	deferred->addLayer("shadow", "", defEffect, "shadow");	
+	deferred->addLayer("shadow", "text", defEffect, "shadow");
 
 	// Add Directional Light
-	deferred->addDirectionalLight(_light);
+	deferred->setAmbientLight(_light);
 
 
 

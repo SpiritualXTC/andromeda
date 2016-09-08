@@ -32,13 +32,14 @@ namespace andromeda
 		virtual void begin(GraphicsState & gs);		// Begin Stage Setup
 		virtual void end(GraphicsState & gs);		// End Stage Setup
 
-		void update(SceneGraph * sg);			// Update all the layers
-		void render(GraphicsState & gs);		// Render all the layers
+		// Update all the layers
+		void update(SceneGraph * sg);			
 
-//		std::shared_ptr<ILayer> addLayer(const std::shared_ptr<Camera> & camera, const std::shared_ptr<RenderableGroup> & rg,
-//			const std::shared_ptr<Effect> & effect, const std::string & technique = "");
+		// Render all the layers
+		void render(GraphicsState & gs);		
 
-		std::shared_ptr<ILayer> addLayer(/*const std::shared_ptr<Camera> & camera, */const std::string & renderGroup,
+		// Adds a Layer
+		std::shared_ptr<ILayer> addLayer(const std::string & renderGroup,
 			const std::shared_ptr<Effect> & effect, const std::string & technique = "");
 
 

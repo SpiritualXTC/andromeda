@@ -175,7 +175,7 @@ namespace andromeda
 		*/
 		inline ViewMatrix & unlock() { _lockFlags = Unlock; }
 
-
+	protected:
 		void calculate() override
 		{
 			glm::mat4 matrix(1.0f);
@@ -245,6 +245,7 @@ namespace andromeda
 		}
 
 
+	protected:
 		void calculate() override
 		{
 			// Distance camera is from view point

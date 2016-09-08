@@ -235,6 +235,18 @@ namespace andromeda
 			};
 
 			return dat[(Int32)filter];
-		}		
+		}	
+
+		inline GLenum convTextureWrapMode(TextureWrapMode wrapMode)
+		{
+			static GLenum dat[]
+			{
+				GL_REPEAT,
+				GL_MIRRORED_REPEAT,
+				GL_CLAMP_TO_EDGE,
+			};
+
+			return dat[(Int32)wrapMode];
+		}
 	}
 }

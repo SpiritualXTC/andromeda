@@ -12,6 +12,7 @@ namespace andromeda
 	
 	class IFrameBuffer;
 
+	class Camera;
 	class LightDirectional;
 
 
@@ -29,7 +30,7 @@ namespace andromeda
 		class DeferredShadowStage : public RenderStage
 		{
 		public:
-			DeferredShadowStage();
+			DeferredShadowStage(const std::shared_ptr<Camera> & camera);
 			virtual ~DeferredShadowStage();
 
 			void begin(GraphicsState & gs) override;
@@ -38,15 +39,16 @@ namespace andromeda
 
 			inline std::shared_ptr<ITexture> getShadowMap() { return _shadowMap->getDepthTexture(); }
 
-			inline void setLight(const std::shared_ptr<LightDirectional> & light)
-			{
-				_light = light;
-			}
+			// Sets the Light
+		//	inline void setLight(const std::shared_ptr<LightDirectional> & light)
+		//	{
+		//		_light = light;
+		//	}
 
 
 		private:
 
-			std::shared_ptr<LightDirectional> _light;
+		//	std::shared_ptr<LightDirectional> _light;
 
 			std::shared_ptr<IFrameBuffer> _shadowMap;
 		};

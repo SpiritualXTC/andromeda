@@ -115,6 +115,26 @@ void TextureGL::filter(TextureMagFilter magFilter, TextureMinFilter minFilter)
 	unbind(0);
 }
 
+
+void TextureGL::wrap(TextureWrapMode wrapMode)
+{
+	// Assign
+	_wrap = wrapMode;
+
+	// Convert
+	GLenum wrap = opengl::convTextureWrapMode(wrapMode);
+
+	// BInd
+	bind(0);
+
+	// Set Texture Parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrap);
+
+	unbind(0);
+}
+
+
 /*
 
 */

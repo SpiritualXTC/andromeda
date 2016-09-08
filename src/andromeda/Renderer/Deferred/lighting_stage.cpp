@@ -1,4 +1,4 @@
-#include "deferred_lighting_stage.h"
+#include "lighting_stage.h"
 
 #include <andromeda/andromeda.h>
 #include <andromeda/graphics.h>
@@ -6,16 +6,20 @@
 
 #include <andromeda/Graphics/frame_buffer.h>
 #include <andromeda/Renderer/camera.h>
-#include <andromeda/Renderer/scene_graph_cache.h>
+#include <andromeda/Renderer/render_cache.h>
 
 #include "../renderable_group.h"
 
-#include "deferred_directional_light.h"
-#include "deferred_lighting_environment.h"
+#include "directional_light.h"
+#include "lighting_environment.h"
 
 using namespace andromeda;
 using namespace andromeda::deferred;
 
+/*
+	TODO:
+	Add a RenderStage that DOESN'T use any SceneGraph / RenderCaching mechanism... that way the hack below wont feel so dirty :)
+*/
 
 /*
 
@@ -31,13 +35,24 @@ DeferredLightingStage::DeferredLightingStage(const std::shared_ptr<ILayerEnviron
 	// Add the layer for directional lights
 	std::shared_ptr<ILayer> layer = addLayer("directional", effect, directionalTechnique);
 
-	_directionalLights = getCache()->getRenderGroup("directional");
+//	_directionalLights = getCache()->getRenderGroup("directional");
 }
 
 
 
+/*
+
+*/
+void DeferredLightingStage::setRenderable(const std::shared_ptr<IRenderable> & renderable)
+{
+	// This is just a hack.
+	std::shared_ptr<RenderableGroup> dl = getCache()->getRenderGroup("directional");
+
+	dl->addRenderable(renderable.get());
+}
 
 
+#if 0
 /*
 
 */
@@ -53,3 +68,4 @@ void DeferredLightingStage::addDirectionalLight(const std::shared_ptr<LightDirec
 	// Add to the Renderable Group
 	_directionalLights->addRenderable(_renderable.get());
 }
+#endif

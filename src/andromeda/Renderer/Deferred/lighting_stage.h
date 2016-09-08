@@ -29,13 +29,15 @@ namespace andromeda
 			/*
 
 			*/
-			void addDirectionalLight(const std::shared_ptr<LightDirectional> & directional);
+		//	void addDirectionalLight(const std::shared_ptr<LightDirectional> & directional);
 
+
+			void setRenderable(const std::shared_ptr<IRenderable> & renderable);
 
 		private:
-			std::shared_ptr<RenderableGroup> _directionalLights;
+			//std::shared_ptr<RenderableGroup> _directionalLights;
 
-			std::shared_ptr<IRenderable> _renderable;
+		//	std::shared_ptr<IRenderable> _renderable;
 		};
 
 	}

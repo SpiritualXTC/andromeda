@@ -21,11 +21,14 @@ namespace andromeda
 	class LightDirectional;
 
 	
+	
 
 	// Forward Declaration
 	namespace deferred
 	{
-		class DeferredEnvironment;		// Rename to DeferredGeometryEnvironment
+		class DeferredAmbientLight;
+
+		class DeferredGeometryEnvironment;		// Rename to DeferredGeometryEnvironment
 		class DeferredGeometryStage;	
 		
 		class DeferredShadowStage;
@@ -50,8 +53,12 @@ namespace andromeda
 
 
 
-		// Add a Direction Light
-		void addDirectionalLight(const std::shared_ptr<LightDirectional> & directional);
+		// Add a Direction Light :: Ambient Light
+		//void addDirectionalLight(const std::shared_ptr<LightDirectional> & directional);
+
+		void setAmbientLight(const std::shared_ptr<LightDirectional> & ambient);
+
+
 
 		// Set Environment Mapping :: This will also need to support dynamic environment mapping.
 		void setEnvironmentReflectionMap(const std::shared_ptr<CubeTexture> & cubeTex);
@@ -65,14 +72,15 @@ namespace andromeda
 
 	protected:
 		void onResize(Float width, Float height) override;
-	//	void onBegin() override;
-	//	void onEnd() override;
+		void sync() override;
 
 	private:
 		std::shared_ptr<IFrameBuffer> _gBuffer;
 
+		std::shared_ptr<deferred::DeferredAmbientLight> _ambientLight;
 
-		std::shared_ptr<deferred::DeferredEnvironment> _geomEnvironment;
+
+		std::shared_ptr<deferred::DeferredGeometryEnvironment> _geomEnvironment;
 		std::shared_ptr<deferred::DeferredLightingEnvironment> _lightingEnvironment;
 
 		

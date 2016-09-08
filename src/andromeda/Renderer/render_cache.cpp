@@ -1,4 +1,4 @@
-#include <andromeda/Renderer/scene_graph_cache.h>
+#include <andromeda/Renderer/render_cache.h>
 
 #include "renderable_group.h"
 

@@ -9,8 +9,9 @@
 #include <andromeda/Renderer/render_stage.h>
 
 #include <andromeda/Renderer/graphics_state.h>
+//#include <andromeda/Renderer/render_cache.h>
 #include <andromeda/Renderer/scene_graph.h>
-#include <andromeda/Renderer/scene_graph_cache.h>	// TODO rename to RenderCache
+
 
 
 #include "renderable_group.h"
@@ -49,10 +50,10 @@ Renderer::~Renderer()
 /*
 	Basic implementation for adding an Method
 */
-Boolean Renderer::addMethod(const std::string & methodName, const std::shared_ptr<RenderStage> & method)
+Boolean Renderer::addStage(const std::string & stageName, const std::shared_ptr<RenderStage> & stage)
 {
 	// Insert it
-	_methods.insert({ methodName, method });
+	_stages.insert({ stageName, stage });
 
 	return true;
 }
@@ -61,53 +62,53 @@ Boolean Renderer::addMethod(const std::string & methodName, const std::shared_pt
 /*
 	Check whether the renderer has a method with that specific name
 */
-Boolean Renderer::hasRenderMethod(const std::string & methodName)
+Boolean Renderer::hasRenderStage(const std::string & stage)
 {
-	const auto & it = _methods.find(methodName);
+	const auto & it = _stages.find(stage);
 
-	return it != _methods.end();
+	return it != _stages.end();
 }
 
 /*
 	Gets the Render Method
 */
-std::shared_ptr<RenderStage> Renderer::getRenderMethod(const std::string & methodName)
+std::shared_ptr<RenderStage> Renderer::getRenderStage(const std::string & stage)
 {
-	const auto & it = _methods.find(methodName);
+	const auto & it = _stages.find(stage);
 
-	return it != _methods.end() ? it->second : nullptr;
+	return it != _stages.end() ? it->second : nullptr;
 }
 
 
 /*
 	Adds a layer to the specified RenderStage
 */
-Boolean Renderer::addLayer(const std::string & method, const std::string & renderGroup, const std::shared_ptr<Effect> & effect, const std::string & technique)
+Boolean Renderer::addLayer(const std::string & stageName, const std::string & renderGroup, const std::shared_ptr<Effect> & effect, const std::string & technique)
 {
 	// Add a layer to the correct RenderStage
 	// If no RenderMethod is found... create the basic one
 
 	// Find RendererMethod
-	const auto & it = _methods.find(method);
+	const auto & it = _stages.find(stageName);
 
-	std::shared_ptr<RenderStage> m;
+	std::shared_ptr<RenderStage> rs;
 
 	// Not Found?
-	if (it == _methods.end())
+	if (it == _stages.end())
 	{
 		// Create Basic RendererMethod
-		m = std::make_shared<RenderStage>(getCamera());
+		rs = std::make_shared<RenderStage>(getCamera());
 		
 		// Insert it
-		_methods.insert({method, m});
+		addStage(stageName, rs);
 	}
 	else
-		m = it->second;
+		rs = it->second;
 
-	assert(m);
+	assert(rs);
 
 	// Add a Layer to the rendering method
-	m->addLayer(renderGroup, effect, technique);
+	rs->addLayer(renderGroup, effect, technique);
 
 	return true;
 }
@@ -148,10 +149,16 @@ void Renderer::update()
 	assert(_camera);
 	assert(_sceneGraph);
 
+	// Do any synchronisation here :)
+	sync();
+
 	// Update All Render Stages
-	for (const auto & method : _methods)
+	for (const auto & it : _stages)
 	{
-		method.second->update(_sceneGraph.get());
+		RenderStage * rs = it.second.get();
+
+		if (rs)
+			rs->update(_sceneGraph.get());
 	}
 }
 
@@ -162,15 +169,18 @@ void Renderer::update()
 void Renderer::render(GraphicsState & gs)
 {
 	// Renders all the Stages
-	for (const auto & method : _methods)
+	for (const auto & it : _stages)
 	{
+		RenderStage * rs = it.second.get();
+		if (!rs) continue;
+
+		// Push a new Graphics State
 		gs.push();
 
-		RenderStage * m = method.second.get();
-
 		// Render the Scene :: Configuration happens inside the function now.
-		m->render(gs);
+		rs->render(gs);
 
+		// Pop the Graphics State
 		gs.pop();
 	}
 

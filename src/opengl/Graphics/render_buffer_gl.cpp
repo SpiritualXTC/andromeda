@@ -97,6 +97,26 @@ void RenderBufferGL::setSize(Int32 width, Int32 height)
 
 
 
+void RenderBufferGL::wrap(TextureWrapMode wrapMode)
+{
+	// Assign
+//	_wrap = wrapMode;
+
+	// Convert
+	GLenum wrap = opengl::convTextureWrapMode(wrapMode);
+
+	// BInd
+	bind(0);
+
+	// Set Texture Parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrap);
+
+	// Unbind
+	unbind(0);
+}
+
+
 /*
 	Binds the RenderBuffer
 */
@@ -112,7 +132,6 @@ void RenderBufferGL::unbindBuffer()
 {
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
-
 
 
 /*

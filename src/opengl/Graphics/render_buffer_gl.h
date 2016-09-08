@@ -11,7 +11,7 @@ namespace andromeda
 	{
 		/*
 			TODO: 
-			Change to extend TextureGL
+			Change to extend TextureGL/CubeTextureGL/VolumeTextureGL
 		*/
 		class RenderBufferGL : virtual public ITexture
 		{
@@ -41,6 +41,9 @@ namespace andromeda
 
 			void setSize(Int32 width, Int32 height);
 
+
+
+			void wrap(TextureWrapMode wrapMode);
 
 		private:
 			Int32 _width = 0;

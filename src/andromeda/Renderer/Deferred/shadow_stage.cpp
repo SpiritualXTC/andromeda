@@ -1,4 +1,4 @@
-#include "deferred_shadow_stage.h"
+#include "shadow_stage.h"
 
 #include <andromeda/andromeda.h>
 #include <andromeda/graphics.h>
@@ -16,7 +16,8 @@ using namespace andromeda::deferred;
 /*
 
 */
-DeferredShadowStage::DeferredShadowStage()
+DeferredShadowStage::DeferredShadowStage(const std::shared_ptr<Camera> & camera)
+	: RenderStage(camera)
 {
 	/*
 		TODO:
@@ -26,15 +27,14 @@ DeferredShadowStage::DeferredShadowStage()
 		when the config system is setup.
 	*/
 	// Setup Camera
-	getCamera()->setOrthogonal(10.0f, -10.0f, 20.0f);
-	getCamera()->setView(-1.0f);	// Why did this have to be negative?
+//	getCamera()->setOrthogonal(10.0f, -10.0f, 20.0f);
+//	getCamera()->setView(-1.0f);	// Why did this have to be negative?
 
 
 	// Create Shadow Map
-	_shadowMap = andromeda::graphics()->createFrameBuffer(512, 512);
+	_shadowMap = andromeda::graphics()->createFrameBuffer(1024, 1024);
 
-	_shadowMap->attach(FrameBufferAttachment::Depth, StorageFormat::Depth24, DataType::UnsignedInt);
-
+	_shadowMap->attach(FrameBufferAttachment::Depth, StorageFormat::Depth32, DataType::UnsignedInt);
 }
 
 
@@ -54,6 +54,7 @@ DeferredShadowStage::~DeferredShadowStage()
 */
 void DeferredShadowStage::begin(GraphicsState & gs)
 {
+	// Sets the Viewport for the Shadowmap
 	gs.setViewport(0, 0, _shadowMap->width(), _shadowMap->height());
 
 	// Bind the Buffer
@@ -62,7 +63,7 @@ void DeferredShadowStage::begin(GraphicsState & gs)
 	// The Viewport needs to be altered for the shadowmap
 	// This can't be done properly yet due to no way of restoring the viewport back to the previous....
 
-	// Clear all Buffers
+	// Clear the Buffers
 	graphics()->clear();
 
 
@@ -72,8 +73,8 @@ void DeferredShadowStage::begin(GraphicsState & gs)
 	// That is afterall WHY the Camera takes a IViewMatrix....
 	
 	// Cheap and Nasty minor hack :)
-	if (_light)
-		getCamera()->setView(-_light->getDirection(), glm::vec3(0.0f, 0.0f, 0.0f));
+	//if (_light)
+	//	getCamera()->setView(-_light->getDirection(), glm::vec3(0.0f, 0.0f, 0.0f));
 }
 
 /*

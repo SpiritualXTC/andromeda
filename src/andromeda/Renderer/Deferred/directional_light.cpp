@@ -1,9 +1,10 @@
-#include "deferred_directional_light.h"
+#include "directional_light.h"
 
 #include <andromeda/Geometry/geometry.h>
 #include <andromeda/Geometry/geometry_builder.h>
 
 #include <andromeda/Graphics/effect.h>
+#include <andromeda/Graphics/texture.h>
 
 #include <andromeda/Math/matrix_stack.h>
 
@@ -83,6 +84,63 @@ void DeferredDirectionalLight::render(RenderState & rs)
 	if (_light)
 		rs.setLight(*_light.get());
 
+	// Bind Shadow Map
+	if (_shadowMap)
+		_shadowMap->bind(20);
+
+	// Set Other Attributes
+	glm::mat4 biasMatrix(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, 0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 0.5f, 0.0f,
+		0.5f, 0.5f, 0.5f, 1.0);
+
+	glm::mat4 biasMVP = biasMatrix * _lightMatrix;
+
+	
+
+	// Light Matrices
+	//rs.setUniform("u_lightShadow", !!_shadowMap);	// Casts Shadow :: IE Do Shadow Mapping
+	rs.setUniform("u_lightShadowMatrix", biasMVP);
+	
+	// Shadow Map
+	rs.setUniform("u_lightShadowMap", 20);	//20 = Texture Annotation .... <,<
+
+
 	// Render Full Screen Quad
 	_geometry->render();
+
+
+	// Unbind Shadow Map
+	if (_shadowMap)
+		_shadowMap->unbind(20);
+
+	/*
+		To Process Lighting in the Fragment Shader, the following is needed:
+
+		Global: (Handled by layer environment)
+		- GBuffer			: Numerous textures defining the geometry @ the pixel level.
+
+		Light: (Handled by the renderable)
+		- ShadowMap			: DepthTexture
+		- Light Matrices	: Camera matrices used to generate the shadow map
+		- Light Data		: Color, Intensity, Shadowed, etc
+		- Geometry			: This is used to define the "area" of the screen that needs lighting calculations done.
+	*/
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

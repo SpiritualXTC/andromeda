@@ -28,7 +28,7 @@ out vec3 v_eyeNormal;
 void main( void )
 {
 	// Setup Varyings
-	v_position				= vec3(u_modelview * a_position);
+	v_position				= vec3(u_model * a_position);
 	v_normal				= u_normalMatrix * a_normal;
 	
 	

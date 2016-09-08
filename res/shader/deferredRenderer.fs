@@ -20,6 +20,14 @@ uniform vec3 u_lightSpecular = vec3(1.0, 1.0, 1.0);
 
 uniform vec3 u_lightPosition = vec3(0.0, 1.0, 0.0);	// Directly Overhead
 
+// Shadow
+uniform bool u_lightShadow = true;
+uniform mat4 u_lightShadowMatrix;			// Light Projection View Model Matrix
+uniform sampler2D u_lightShadowMap;			// Shadow Map Texture
+
+
+
+
 
 // Varying
 in vec2		v_textureCoordinate;
@@ -96,6 +104,22 @@ void main(void)
 //	float lightIntensity = max(dot(normal.xyz, -g_lightDirection), 0.0);
 //	vec3 lightDiffuse = lightIntensity * g_lightDiffuse;
 
+	vec3 i_shadow = vec3(1.0, 1.0, 1.0);
+
+	if (u_lightShadow)
+	{
+		float bias = 0.01;
+		vec4 posLight = u_lightShadowMatrix * position;
+		
+		vec4 shadow = texture(u_lightShadowMap, posLight.xy);
+		
+		//i_shadow = shadow.xyz;
+		
+		if (shadow.z < posLight.z - bias)
+			i_shadow = vec3(0.1, 0.1, 0.1);
+	}
+
+
 
 	// Calculate Ambient
 	vec3 i_ambient = ambientComponent(diffuseRGB.rgb);	// diffuse.rgb * lightAmbient
@@ -103,6 +127,9 @@ void main(void)
 	// Calculate Diffuse
 	vec3 i_diffuse = diffuseComponent(normal.rgb, diffuseRGB.rgb);//diffuse.rgb * lightDiffuse * lightIntensity;
 
+	
+	
+	
 	// Calculate Specular
 	//vec3 i_specular = specularComponent(normal.rgb, toLight, toCamera, vec3(1.0, 1.0 , 1.0), 64.0);
 	vec3 i_specular = vec3(0.0, 0.0, 0.0);
@@ -122,8 +149,10 @@ void main(void)
 	
 
 	// Set Output Color
-	o_color.rgb = i_ambient + i_diffuse + i_specular;
+	o_color.rgb = (i_ambient + i_diffuse + i_specular) * i_shadow;
+	//o_color.rgb = i_ambient + i_diffuse + i_specular;
 	//o_color.rgb = i_specular;
+	
 	o_color.a = 1.0;
 }
 

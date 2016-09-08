@@ -140,7 +140,8 @@ std::shared_ptr<andromeda::GameObject> Factory::createGround()
 		fy += sinf(x * glm::pi<aFloat>() * 8.0f) * 2.0f;
 		fy += sinf(z * glm::pi<aFloat>() * 8.0f) * 2.0f;
 
-		return glm::vec3(fx, fy, fz);
+		return glm::vec3(fx, -4.0f, fz);
+//		return glm::vec3(fx, fy, fz);
 	});
 
 

@@ -1,4 +1,4 @@
-#include "deferred_geometry_stage.h"
+#include "geometry_stage.h"
 
 #include <andromeda/andromeda.h>
 #include <andromeda/graphics.h>

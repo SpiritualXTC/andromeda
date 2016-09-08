@@ -28,7 +28,7 @@ namespace andromeda
 
 		This is at the "pass" level
 	*/
-	class RenderState //: public IShader
+	class RenderState : public IShader
 	{
 	private:
 		// Matrices
@@ -188,8 +188,6 @@ namespace andromeda
 
 
 
-#if 0
-
 		// Pass through
 		const inline void setUniform(const std::string &name, const glm::mat3 &m) const override
 		{
@@ -226,7 +224,7 @@ namespace andromeda
 			_shader->setUniform(name, v);
 		}
 
-		// This one is special :P
+		// This one is special ... until it gets pulled. lolol
 		const inline void setUniformTexture(const std::string &name, UInt32 bindIndex) const  override
 		{
 			_shader->setUniformTexture(name, bindIndex);
@@ -245,7 +243,7 @@ namespace andromeda
 		{
 			_shader->setUniform(name, b);
 		}
-#endif
+
 
 	private:
 		const IShader * _shader = nullptr;

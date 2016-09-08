@@ -111,6 +111,8 @@ void FrameBufferGL::attachDepth(UInt32 attachment, StorageFormat format, DataTyp
 
 	_depth = std::make_shared<RenderBufferGL>(_width, _height, attachment, format, dataType);
 
+	//_depth->
+
 	// Unbind
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

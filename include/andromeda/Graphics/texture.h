@@ -185,6 +185,9 @@ namespace andromeda
 
 		// Set Filtering Options
 		virtual void filter(TextureMagFilter magFilter, TextureMinFilter minFilter) = 0;
+
+		// Set Wrapping / Clamping Options
+		virtual void wrap(TextureWrapMode wrapMode) = 0;
 	};
 
 
