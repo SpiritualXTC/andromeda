@@ -57,25 +57,30 @@ vec3 diffuseComponent(in vec3 normal, in vec3 diffuseColor)
 // toCamera			: CameraPosition - Position
 // specularColor	: Specular Color
 // shininess		: Specular Shininess
-vec3 specularComponent(in vec3 normal, in vec3 toLight, in vec3 toCamera, in vec3 specularColor, in float shininess)
+vec3 specularComponent(in vec3 normal, in vec3 toLight, in vec3 toCamera, in vec3 color, in float shininess)
 {
 	// Light Specular Color :: Should be a Uniform
-	vec3 lightSpecColor = vec3(1.0, 1.0, 1.0);
-
-
-	float specular = 0.0;
-
-	if (dot(normal, toLight) > 0)
-	{
-		vec3 vHalf = normalize(toLight + toCamera);
-		specular = pow(dot(normal, vHalf), shininess);
-
-	//	return clamp(vHalf, 0.0, 1.0);
-	}
-
-
+	float spec = 0.0;
 	
-	return clamp(specularColor * u_lightSpecular * specular, 0, 1);
+	return clamp(color * u_lightSpecular * spec, 0, 1);
+}
+
+
+// inShadow()
+// Calculates whether the position is in shadow
+bool inShadow(in vec4 worldPosition)
+{
+	float bias = 0.01;
+	
+	// Project World Position into Light Space
+	vec4 posLight = u_lightShadowMatrix * worldPosition;
+		
+	// Sample Shadow Map
+	vec4 shadow = texture(u_lightShadowMap, posLight.xy);
+		
+	// Projected World Space Depth Component closer than the 
+	// value stored in the texture, with some bias to prevent artifacting.
+	return shadow.z < min(1.0, posLight.z) - bias;
 }
 
 
@@ -98,42 +103,20 @@ void main(void)
 	// That will however, require copying the stencil buffer from the GBuffer, so it's the active stencil buffer when rendering the lights
 	if (position.w == 0.0) discard;
 
-
-
-	// Calculate Lighting
-//	float lightIntensity = max(dot(normal.xyz, -g_lightDirection), 0.0);
-//	vec3 lightDiffuse = lightIntensity * g_lightDiffuse;
-
-	vec3 i_shadow = vec3(1.0, 1.0, 1.0);
-
-	if (u_lightShadow)
-	{
-		float bias = 0.01;
-		vec4 posLight = u_lightShadowMatrix * position;
-		
-		vec4 shadow = texture(u_lightShadowMap, posLight.xy);
-		
-		//i_shadow = shadow.xyz;
-		
-		if (shadow.z < posLight.z - bias)
-			i_shadow = vec3(0.1, 0.1, 0.1);
-	}
-
-
-
 	// Calculate Ambient
 	vec3 i_ambient = ambientComponent(diffuseRGB.rgb);	// diffuse.rgb * lightAmbient
 
 	// Calculate Diffuse
-	vec3 i_diffuse = diffuseComponent(normal.rgb, diffuseRGB.rgb);//diffuse.rgb * lightDiffuse * lightIntensity;
+	vec3 i_diffuse = vec3(0.0, 0.0, 0.0);
+	if (! inShadow(position))
+		i_diffuse = diffuseComponent(normal.rgb, diffuseRGB.rgb);//diffuse.rgb * lightDiffuse * lightIntensity;
 
-	
-	
-	
 	// Calculate Specular
-	//vec3 i_specular = specularComponent(normal.rgb, toLight, toCamera, vec3(1.0, 1.0 , 1.0), 64.0);
+	//vec3 i_specular = specularComponent(normal.rgb, toLight, toCamera);
+
 	vec3 i_specular = vec3(0.0, 0.0, 0.0);
 	
+#if 1
 	vec3 n = normalize(normal.rgb);
 	vec3 e = normalize(u_cameraPosition - position.rgb);
 	
@@ -146,12 +129,25 @@ void main(void)
 		
 		i_specular = vec3(1.0, 1.0, 1.0) * pow(intSpec, 64.0);
 	}
-	
+#else
+	vec3 incidence = -u_lightPosition;
+	vec3 reflection = reflect(incidence, normal.xyz);
 
+	vec3 surface = normalize(u_cameraPosition - position.xyz) ;
+	float angle = max(0.0, dot(surface, reflection));
+	float specCoef = pow(angle, 64.0);
+	
+	i_specular = specCoef * vec3(1.0, 1.0, 1.0);// * u_lightSpecular; 
+#endif
+	
+	
 	// Set Output Color
-	o_color.rgb = (i_ambient + i_diffuse + i_specular) * i_shadow;
-	//o_color.rgb = i_ambient + i_diffuse + i_specular;
+	//o_color.rgb = (i_ambient + i_diffuse + i_specular) * i_shadow;
+	o_color.rgb = i_ambient + i_diffuse + i_specular;
 	//o_color.rgb = i_specular;
+	//o_color.g = specCoef;
+	
+	//.rgb = surface;
 	
 	o_color.a = 1.0;
 }

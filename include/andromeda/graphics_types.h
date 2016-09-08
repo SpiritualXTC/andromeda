@@ -335,6 +335,95 @@ namespace andromeda
 		Unknown,
 	};
 
+
+
+	/*
+		Texture Binding/Annotations!
+
+		These realllllly do not matter much at all.
+		Being added purely for consistancy and because they map directly alongside the ShaderUniformAnnotations
+	*/
+	enum class TextureBinding
+	{
+		// Material
+		Mask,						// Binary Texture for discarding fragments.
+
+		Diffuse0,					// RGB :: Diffuse texturing
+		Diffuse1,					// RGB :: Diffuse texturing
+		
+		Specular,					// RGB / Shininess :: Specular Texturing
+
+		Normal,						// RGB :: Normal Mapping
+
+
+
+		// Environment
+		LightPatternMap,			// This would represent the light pattern that a globe has
+		LightShadowMap,				// This is the scene drawn from the perspective of the light - representing the shadow map
+
+		EnvironmentReflectionMap,	// Environment Map
+		//EnvironmentMapClose,		// Environment Map	:: Only really useful if there happens to be multiple environment maps, 
+
+
+
+		// This isn't really relevant, but whatever :)
+		// It will however allow all texture write process's to happen irrespective
+		// of whether a texture is bound or not -- highly unlikely that will happen 
+		// during rendering
+		Write = 31,	
+	};
+
+	enum class ShaderUniformAnnotation
+	{
+		// Matrices
+		ModelMatrix,		// mat4
+		ViewMatrix,			// mat4
+		ProjectionMatrix,	// mat4
+
+		ViewModelMatrix,	// mat4 :: view * model
+
+		NormalMatrix,		// mat3 :: inverse(transpose(viewmodel))
+
+
+		// Material
+//		MaterialAmbient,
+		MaterialDiffuse,	// vec3 :: Diffuse Color
+		MaterialSpecular,	// vec3 :: Specular Color
+		MaterialShininess,	// float :: Specular Shininess
+		MaterialOpacity,	// float :: How Opaque the material is (Transparency)
+
+		// Light
+		LightAmbient,		// vec3 :: Ambient Lighting
+		LightDiffuse,		// vec3 :: Diffuse Lighting
+		LightSpecular,		// vec3 :: Specular Lighting
+
+		LightPosition,		// vec3	:: Point Lights
+		LightDirection,		// vec3 :: Spotlights / Ambient Lighting
+
+		// Shadow
+		Shadow,				// bool :: Shadow Casting Enabled?
+		ShadowMatrix,		// mat4 :: Shadow Matrix [MVP from hte Lights Pov]
+		ShadowMap,			// sampler :: Depth Texture representing the lights Pov of the scene
+		
+
+
+		// Environment :: Only the texture which may not need an annotation here ...
+		
+	};
+
+	enum class ShaderAttributeAnnotation
+	{
+		Position,
+		Normal,
+		Texture0,	// In theory i would assume texture coordinates map across multiple textures... (for textures being applied for higher geometry detail - diffuse/masks/normals/bumpmapping/etc)
+		Texture1,	
+
+		Color,
+	};
+
+
+
+
 	/*
 	GL_RED, 
 	GL_RG, 
