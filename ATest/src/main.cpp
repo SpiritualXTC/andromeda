@@ -233,9 +233,9 @@ void testPython()
 	log_warn("Python Scripting Test");
 	log_verbose("---------------------------------------------");
 
-
-	//doTestPython();
-	
+#if 0
+	doTestPython();
+#endif
 
 
 	
