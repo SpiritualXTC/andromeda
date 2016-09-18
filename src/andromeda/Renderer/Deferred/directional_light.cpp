@@ -54,7 +54,7 @@ DeferredDirectionalLight::DeferredDirectionalLight(const std::shared_ptr<LightDi
 }
 
 
-
+#if 0
 /*
 
 */
@@ -69,7 +69,7 @@ void DeferredDirectionalLight::render(const std::shared_ptr<IShader> shader, Mat
 	// Render Full Screen Quad
 	_geometry->render();
 }
-
+#endif
 
 /*
 	render():

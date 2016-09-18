@@ -19,6 +19,9 @@ namespace andromeda
 	class IFileLocation
 	{
 	public:
+
+		virtual const std::string & getLocation() const = 0;
+
 		virtual std::shared_ptr<File> loadFile(const std::string & filename, Bool binary) const = 0;
 	};
 
@@ -34,6 +37,10 @@ namespace andromeda
 		{
 
 		}
+
+		// Get Location Name
+		const std::string & getLocation() const override { return _directory; }
+
 
 		// Loads the File
 		std::shared_ptr<File> loadFile(const std::string & filename, Bool binary) const override;

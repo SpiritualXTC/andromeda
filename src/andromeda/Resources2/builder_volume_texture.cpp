@@ -1,4 +1,4 @@
-#include "resource_volumetexture.h"
+#include "volume_texture_resource.h"
 
 #include <andromeda/Utilities/log.h>
 #include <andromeda/Utilities/Util/ptree_helper.h>

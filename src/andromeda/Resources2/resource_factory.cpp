@@ -9,9 +9,14 @@
 
 #include <andromeda/Utilities/log.h>
 
-#include "resource_texture.h"
-#include "resource_cube_texture.h"
-#include "resource_volumetexture.h"
+#include "cube_texture_resource.h"
+#include "effect_resource.h"
+#include "font_resource.h"
+#include "texture_resource.h"
+
+
+#include "volume_texture_resource.h"
+
 
 using namespace andromeda;
 
@@ -25,6 +30,9 @@ ResourceFactory::ResourceFactory()
 	registerBuilder<Texture, TextureResourceArgs>("texture", std::move(std::make_unique<TextureResourceBuilder>()));
 	registerBuilder<CubeTexture, CubeTextureResourceArgs>("cubetexture", std::move(std::make_unique<CubeTextureResourceBuilder>()));
 //	registerBuilder<VolumeTexture>("volumetexture", std::move(std::make_unique<VolumeTextureResourceBuilder>()));
+
+	registerBuilder<Effect, EffectResourceArgs>("effect", std::move(std::make_unique<EffectResourceBuilder>()));
+	registerBuilder<Font, FontResourceArgs>("font", std::move(std::make_unique<FontResourceBuilder>()));
 }
 
 

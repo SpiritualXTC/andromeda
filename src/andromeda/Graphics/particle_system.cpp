@@ -2,6 +2,7 @@
 
 using namespace andromeda;
 
+#if 0
 /*
 
 */
@@ -113,7 +114,7 @@ void ParticleSystem::render(const std::shared_ptr<IShader> shader, MatrixStack &
 	glDisableVertexAttribArray(0);
 }
 
-
+#endif
 
 
 

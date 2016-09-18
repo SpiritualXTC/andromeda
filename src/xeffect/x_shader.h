@@ -3,8 +3,10 @@
 #include <string>
 
 #include <andromeda/stddef.h>
-#include <andromeda/graphics.h>
+#include <andromeda/Graphics/effect.h>
 
+
+#include <andromeda/opengl.h>	// TODO: TEMP
 
 /*
 	TODO:
@@ -12,7 +14,7 @@
 
 	XShader, XShaderProgram
 
-	should be part of the core graphics API, rather than the XEffect system. YES THIS. MOFO
+	should be part of the OpenGL graphics API, rather than the XEffect system. YES THIS. MOFO
 */
 
 
@@ -126,57 +128,58 @@ namespace andromeda
 
 
 
-			const inline void setUniform(const std::string & name, const glm::mat4 &m) const override
+			inline void setUniform(const std::string & name, const glm::mat4 &m) const override
 			{
 				glUniformMatrix4fv(getUniformHandle(name), 1, false, glm::value_ptr(m));
 			}
 			
-			const inline void setUniform(const std::string & name, const glm::mat3 &m) const override
+			inline void setUniform(const std::string & name, const glm::mat3 &m) const override
 			{
 				glUniformMatrix3fv(getUniformHandle(name), 1, false, glm::value_ptr(m));
 			}
 
 
-			const inline void setUniform(const std::string &name, const glm::fvec2 &v) const override
+			inline void setUniform(const std::string &name, const glm::fvec2 &v) const override
 			{
 				glUniform2fv(getUniformHandle(name), 1, glm::value_ptr(v));
 			}
-			const inline void setUniform(const std::string &name, const glm::fvec3 &v) const override
+			inline void setUniform(const std::string &name, const glm::fvec3 &v) const override
 			{
 				glUniform3fv(getUniformHandle(name), 1, glm::value_ptr(v));
 			}
-			const inline void setUniform(const std::string &name, const glm::fvec4 &v) const override
+			inline void setUniform(const std::string &name, const glm::fvec4 &v) const override
 			{
 				glUniform4fv(getUniformHandle(name), 1, glm::value_ptr(v));
 			}
 
-			const inline void setUniform(const std::string &name, const glm::ivec2 &v) const override
+			inline void setUniform(const std::string &name, const glm::ivec2 &v) const override
 			{
 				glUniform2iv(getUniformHandle(name), 1, glm::value_ptr(v));
 			}
-			const inline void setUniform(const std::string &name, const glm::ivec3 &v) const override
+			inline void setUniform(const std::string &name, const glm::ivec3 &v) const override
 			{
 				glUniform3iv(getUniformHandle(name), 1, glm::value_ptr(v));
 			}
-			const inline void setUniform(const std::string &name, const glm::ivec4 &v) const override
+			inline void setUniform(const std::string &name, const glm::ivec4 &v) const override
 			{
 				glUniform4iv(getUniformHandle(name), 1, glm::value_ptr(v));
 			}
 
-			const inline void setUniformTexture(const std::string &name, UInt32 bindIndex) const override
+#if 0
+			inline void setUniformTexture(const std::string &name, UInt32 bindIndex) const override
 			{
 				glUniform1i(getUniformHandle(name), bindIndex);
 			}
-
-			const inline void setUniform(const std::string &name, const Float f) const override
+#endif
+			inline void setUniform(const std::string &name, const Float f) const override
 			{
 				glUniform1f(getUniformHandle(name), f);
 			}
-			const inline void setUniform(const std::string &name, const Int32 i) const override
+			inline void setUniform(const std::string &name, const Int32 i) const override
 			{
 				glUniform1i(getUniformHandle(name), i);
 			}
-			const inline void setUniform(const std::string &name, const Boolean b) const override
+			inline void setUniform(const std::string &name, const Boolean b) const override
 			{
 				glUniform1i(getUniformHandle(name), b);
 			}

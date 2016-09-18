@@ -34,54 +34,8 @@ std::shared_ptr<andromeda::GameObject> Factory::createSkybox()
 	std::shared_ptr<andromeda::GameObject> obj = std::make_shared<andromeda::GameObject>("skybox");
 
 
-	// Load a Cube Texture
-	CubeTextureLoadArgs args;
-#if 1
-	args.filename_posX = "../res/textures/skybox_xpos.png";
-	args.filename_negX = "../res/textures/skybox_xneg.png";
-
-	args.filename_posY = "../res/textures/skybox_ypos.png";
-	args.filename_negY = "../res/textures/skybox_yneg.png";
-
-	args.filename_posZ = "../res/textures/skybox_zpos.png";
-	args.filename_negZ = "../res/textures/skybox_zneg.png";
-#else
-	args.filename_posX = "../res/textures/icyhell/icyhell_rt.png";
-	args.filename_negX = "../res/textures/icyhell/icyhell_ft.png";
-
-	args.filename_posY = "../res/textures/icyhell/icyhell_up.png";
-	args.filename_negY = "../res/textures/icyhell/icyhell_dn.png";
-
-	args.filename_posZ = "../res/textures/icyhell/icyhell_ft.png";
-	args.filename_negZ = "../res/textures/icyhell/icyhell_bk.png";
-#endif
-
-
-	// Manually Build the Skybox :: Only way for now until the resource manager is rewritten
-	//std::shared_ptr<andromeda::CubeTexture> cubeTex = andromeda::LoadCubeTexture("skybox", &args);
-
-	// Create a Cube Texture
-	std::shared_ptr<andromeda::CubeTexture> cubeTex = graphics()->createCubeTexture(1024, 1024);
-
-	// Load the 6 Images Manually
-	std::shared_ptr<Image> posX = Image::LoadImageFromFile(args.filename_posX);
-	std::shared_ptr<Image> posY = Image::LoadImageFromFile(args.filename_posY);
-	std::shared_ptr<Image> posZ = Image::LoadImageFromFile(args.filename_posZ);
-	std::shared_ptr<Image> negX = Image::LoadImageFromFile(args.filename_negX);
-	std::shared_ptr<Image> negY = Image::LoadImageFromFile(args.filename_negY);
-	std::shared_ptr<Image> negZ = Image::LoadImageFromFile(args.filename_negZ);
-
-	cubeTex->data(CubeTextureFace::X_Positive, (UInt8*)posX->data());
-	cubeTex->data(CubeTextureFace::Y_Positive, (UInt8*)posY->data());
-	cubeTex->data(CubeTextureFace::Z_Positive, (UInt8*)posZ->data());
-	cubeTex->data(CubeTextureFace::X_Negative, (UInt8*)negX->data());
-	cubeTex->data(CubeTextureFace::Y_Negative, (UInt8*)negY->data());
-	cubeTex->data(CubeTextureFace::Z_Negative, (UInt8*)negZ->data());
-
-
-
-
-
+	// Load Cube Texture
+	std::shared_ptr<andromeda::CubeTexture> cubeTex = andromeda::LoadCubeTexture("skybox");
 
 
 
@@ -95,8 +49,6 @@ std::shared_ptr<andromeda::GameObject> Factory::createSkybox()
 	// Create Material
 	//std::shared_ptr<andromeda::Texture> tex = andromeda::LoadTexture("pattern0.png");
 
-	std::shared_ptr<andromeda::Texture> tex = graphics()->createTexture(1024, 1024);
-	tex->data((UInt8*)posX->data());
 
 
 	andromeda::Material material;
@@ -215,19 +167,19 @@ std::shared_ptr<andromeda::GameObject> Factory::createCube()
 
 
 	// Create Material
-	std::shared_ptr<andromeda::Texture> tex = andromeda::LoadTexture("white.png");
+	std::shared_ptr<andromeda::Texture> tex = andromeda::LoadTexture("white");
 	andromeda::Material material;
 
 	material.setDiffuse(1, 1, 1)
 		.setDiffuseTexture(tex);
-
+	material.setReflectivity(0.9f);
 
 	// Temp Visualisation for GBuffer
 #if 1
 	andromeda::geometry::Cube geom(5.0f);
 #else
-	andromeda::geometry::Cylinder geom(5.0f);
-	geom.setSlices(8).setHeight(5.0f);
+	andromeda::geometry::Ellipse geom(5.0f);
+	geom.setSlices(128).setStacks(64);
 #endif
 	std::shared_ptr<andromeda::Geometry> geometry = geom.build(andromeda::geometry::GeometryGenerate::Texture | andromeda::geometry::GeometryGenerate::Normals);
 
@@ -288,7 +240,7 @@ std::shared_ptr<andromeda::GameObject> Factory::createSphere(aFloat angle)
 		std::shared_ptr<andromeda::GeometryRenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, transform);
 		obj->addComponent<andromeda::GeometryRenderComponent>(render);
 
-		render->getMaterial().setDiffuseTexture(andromeda::LoadTexture("white.png"));
+		render->getMaterial().setDiffuseTexture(andromeda::LoadTexture("white"));
 
 		// Add Plane Test Component
 		std::shared_ptr<PlaneTestComponent> planeTest = std::make_shared<PlaneTestComponent>(render, transform);
@@ -353,12 +305,31 @@ std::shared_ptr<GameObject> Factory::createLight()
 		std::shared_ptr<andromeda::GeometryRenderComponent> render = std::make_shared<andromeda::GeometryRenderComponent>(geometry, transform);
 		go->addComponent<andromeda::GeometryRenderComponent>(render);
 
-		render->getMaterial().setDiffuseTexture(andromeda::LoadTexture("white.png"));
+		render->getMaterial().setDiffuseTexture(andromeda::LoadTexture("white"));
 	}
 
 
 	return go;
 }
+
+
+
+
+
+
+/*
+
+*/
+std::shared_ptr<GameObject> Factory::createText()
+{
+	return nullptr;
+}
+
+
+
+
+
+
 
 
 

@@ -338,6 +338,21 @@ namespace andromeda
 
 
 	/*
+		Faces for Cube Texturing
+	*/
+	enum class CubeTextureFace
+	{
+		X_Positive,
+		X_Negative,
+		Y_Positive,
+		Y_Negative,
+		Z_Positive,
+		Z_Negative,
+	};
+
+
+
+	/*
 		Texture Binding/Annotations!
 
 		These realllllly do not matter much at all.
@@ -355,6 +370,9 @@ namespace andromeda
 
 		Normal,						// RGB :: Normal Mapping
 
+
+		// Additional
+		DiffuseAuxiliary,			// Aux Diffuse Texture :: This is an additional texture that is NOT related to the material
 
 
 		// Environment

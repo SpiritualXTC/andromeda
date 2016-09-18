@@ -3,7 +3,7 @@
 #include <cassert>
 
 #include <andromeda/Geometry/geometry.h>
-#include <andromeda/Graphics/font.h>
+#include <andromeda/Graphics/font_graphics.h>
 #include <andromeda/Graphics/texture.h>
 
 #include <andromeda/Geometry/geometry_cube.h>
@@ -15,7 +15,7 @@ using namespace andromeda;
 /*
 
 */
-Text::Text(const std::shared_ptr<IFont> & font, const std::wstring & text)
+Text::Text(const std::shared_ptr<FontGraphics> & font, const std::wstring & text)
 	: _font(font)
 {
 	assert(font);
@@ -47,13 +47,15 @@ Boolean Text::setText(const std::wstring & text)
 	// Assign Text
 	_text = text;
 
-	std::shared_ptr<IFont> font = _font.lock();
+	std::shared_ptr<FontGraphics> font = _font.lock();
 
 	// Generate Text
 	_geometry = font->generateText(text);
 
 	// Get Texture
 	_texture = font->getTexture();
+
+	// Flush Variable List
 
 	return true;
 }
@@ -74,4 +76,28 @@ void Text::render()
 
 	//
 	_texture->unbind(0);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*-------------------------------------------*/
+TextEx::TextEx(const std::shared_ptr<FontGraphics> & font)
+{
+
 }

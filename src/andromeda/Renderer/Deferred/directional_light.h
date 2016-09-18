@@ -1,6 +1,8 @@
 #pragma once
 
+#include <andromeda/glm.h>
 #include <andromeda/Renderer/renderable.h>
+
 
 namespace andromeda
 {
@@ -23,8 +25,7 @@ namespace andromeda
 
 
 
-			void render(const std::shared_ptr<IShader> shader, MatrixStack & ms) override; //OLD
-			void render(RenderState & rs) override;	// NEW
+			void render(RenderState & rs) override;
 
 
 

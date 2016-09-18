@@ -8,20 +8,14 @@
 
 /*
 	TODO:
-	Once the Graphics API is abstracted away : this can be moved :D
+	Once the Graphics API is fully abstracted away : this can be removed :D
 */
 #include "opengl.h"
 
-#include "Events/resize.h"
-
-#include "Graphics/font.h"
-#include "Graphics/effect.h"
-#include "Graphics/mesh.h"
-
-
-
 
 #include "graphics_types.h"
+#include "Events/resize.h"
+
 
 /*
 
@@ -50,8 +44,12 @@ namespace andromeda
 	class VertexBuffer;
 	class IndexBuffer;
 
+	class IShader;
+	class Effect;
 
 	class IFrameBuffer;
+
+	
 
 
 

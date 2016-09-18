@@ -27,7 +27,6 @@ namespace andromeda
 	class Geometry;
 
 	class Effect;
-	class Font;
 
 	class SceneManager;
 
@@ -86,13 +85,12 @@ private:
 
 	std::list<std::shared_ptr<Player>> _players;
 
-	
-	// TEMP FONT
-	std::shared_ptr<andromeda::Font> _font;
+
+
+
 
 	// TEMP LIGHT
 	std::shared_ptr<andromeda::LightDirectional> _light;
-
 };
 
 #endif

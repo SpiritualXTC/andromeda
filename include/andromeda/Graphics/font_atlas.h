@@ -1,10 +1,14 @@
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include <andromeda/glm.h>
 
 #include <andromeda/Utilities/image.h>
+#include <andromeda/Utilities/font.h>
 
-#include "font.h"
+#include "font_graphics.h"
 
 
 
@@ -19,26 +23,21 @@ namespace andromeda
 
 
 	/*
-		Precached FontAtlas
+		Texture based Font Rendering
+
+		TODO: Add a single pixel outline around ALL fonts
 	*/
-	class FontAtlasHandle
-	{
-	public:
-
-
-	};
-
-	/*
-	Texture based Font Rendering
-	*/
-	class FontAtlas : public virtual IFont
+	class FontAtlas : public virtual FontGraphics
 	{
 	private:
 		const static Int32 IMAGE_WIDTH = 2048;
 		const static Int32 IMAGE_HEIGHT = 2048;
 
 		
-		
+		/*
+			TODO: Improve Meh
+		*/
+#if 0
 		struct _Metrics
 		{
 			Float advance;
@@ -49,36 +48,31 @@ namespace andromeda
 			Float width;
 			Float height;
 		};
+#endif
 
-
-		// Definately needs to be called something else :)
-		struct _Geometry
-		{
-			glm::ivec2 textureOffset;
-			
-
-		};
 
 		struct _Character
 		{
-			_Metrics metrics;
+		//	_Metrics metrics;
+			GlyphMetric metrics;
 
 			//_Geometry geometry;
 			glm::ivec2 dimensions;
 			glm::ivec2 offset;
 
+			Float advance;
+
 			UInt32 vertexOffset;
 		};
 
 	public:
-		FontAtlas(const std::shared_ptr<FontFace> & ft, UInt32 fontSize);
+		FontAtlas(const std::shared_ptr<Font> & ft, UInt32 fontSize);
 
 
 		const std::shared_ptr<Texture> getTexture() const override { return _texture; }
 		
 		// Generate Geometry
 		std::shared_ptr<Geometry> generateText(const std::wstring & string) override;
-
 
 
 	protected:
@@ -91,7 +85,7 @@ namespace andromeda
 
 		
 		// Draw the Character
-		Float drawCharacter(const std::shared_ptr<andromeda::IShader> shader, UInt32 charCode) override;
+	//	Float drawCharacter(const std::shared_ptr<andromeda::IShader> shader, UInt32 charCode) override;
 
 		// Create Vertex Buffers & Textures
 		void createBuffers();
@@ -105,11 +99,17 @@ namespace andromeda
 		void addGeometry(const _Character & ch, std::vector<Float> & verts, Float offX, Float offY);
 
 
+
+		// Determine the next set of texture coordinates to place a character in the atlas
 		Boolean getNextTextureCoordinate(const glm::ivec2 & dimensions, glm::ivec2 & texCoord);
 
-
+		// Splits a block of text into lines
+		Boolean splitText(const std::wstring & text, std::vector<std::wstring> & lines);
 
 	private:
+
+
+
 		Image _image;
 
 		std::shared_ptr<Texture> _texture;

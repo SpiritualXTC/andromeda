@@ -36,5 +36,8 @@ public:
 
 
 
+	static std::shared_ptr<andromeda::GameObject> createText();
+
+
 	static std::shared_ptr<andromeda::GameObject> createRenderBufferDebug(const std::string & name, aFloat x, aFloat y, const std::shared_ptr<andromeda::ITexture> & debugTex);
 };

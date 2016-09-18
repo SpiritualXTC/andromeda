@@ -20,8 +20,6 @@ namespace andromeda
 		virtual ~GeometryRenderComponent();
 
 
-
-		void render(const std::shared_ptr<andromeda::IShader> shader, andromeda::MatrixStack & ms) override;
 		void render(RenderState & rs) override;
 
 

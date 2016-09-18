@@ -1,4 +1,4 @@
-#include "resource_cube_texture.h"
+#include "cube_texture_resource.h"
 
 #include <array>
 
@@ -6,6 +6,7 @@
 
 #include <andromeda/graphics.h>
 #include <andromeda/graphics_conversion.h>
+#include <andromeda/Graphics/texture.h>
 
 #include <andromeda/IO/file_location.h>
 
@@ -25,6 +26,7 @@ using namespace andromeda;
 */
 std::shared_ptr<ResourceEx<CubeTexture, CubeTextureResourceArgs>> CubeTextureResourceBuilder::build(const boost::property_tree::ptree & propTree, const IFileLocation * location)
 {
+	// Get Args from Tree
 	boost::optional<std::string> name = util::getChildValueOptional(propTree, "name");
 
 	boost::optional<std::string> filenameXPos = util::getChildValueOptional(propTree, "xpos");
@@ -57,7 +59,7 @@ std::shared_ptr<ResourceEx<CubeTexture, CubeTextureResourceArgs>> CubeTextureRes
 		return nullptr;
 
 	
-	log_debugp("CubeTextureResourceBuilder :: build() :: Loading Cube Texture");
+	log_debugp("CubeTextureResourceBuilder :: build() :: Creating Cube Texture Resource");
 	log_tree();
 
 	// Filter Tweaks
