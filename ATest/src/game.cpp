@@ -491,18 +491,6 @@ aBoolean Game::mouseMove(andromeda::MouseMoveEventArgs & e)
 
 	if (e.state & andromeda::Mouse::LeftBit)
 	{
-		// Rotate selected view
-		for (const auto & view : _views)
-		{
-			if (view->getDisplayRegion().contains(glm::vec2(e.x, e.y)))
-			{
-		//		const std::shared_ptr<andromeda::ICamera> & camera = view->camera();
-
-		//		camera->yaw(camera->yaw() - e.deltaX * rotate_sensitivity);
-		//		camera->pitch(camera->pitch() - e.deltaY * rotate_sensitivity);
-			}
-		}
-
 		// Rotate Selected View
 		for (const auto & player : _players)
 		{
@@ -523,22 +511,6 @@ aBoolean Game::mouseMove(andromeda::MouseMoveEventArgs & e)
 	if (e.state & andromeda::Mouse::RightBit)
 	{
 		// Zoom Selected View
-		for (const auto & view : _views)
-		{
-			if (view->getDisplayRegion().contains(glm::vec2(e.x, e.y)))
-			{
-//				const std::shared_ptr<andromeda::ICamera> & camera = view->camera();
-
-			//	andromeda::Float distance = camera->distance();
-
-		//		distance += e.deltaY * zoom_sensitivity;
-
-		//		camera->distance(distance);
-			}
-		}
-
-
-		// Zoom Selected View
 		for (const auto & player : _players)
 		{
 			std::shared_ptr<andromeda::View> view = player->getView();
@@ -546,20 +518,6 @@ aBoolean Game::mouseMove(andromeda::MouseMoveEventArgs & e)
 			if (view->getDisplayRegion().contains(glm::vec2(e.x, e.y)))
 			{
 				player->alterCameraDistance(e.deltaY * zoom_sensitivity);
-
-				/*
-					TODO:
-					This recreates memory :: A listener or observer will be able to solve this issue :)
-
-					Both the View/Projection matrix needs to be "observed" by the Camera.
-					Any changes sets a flag -- 
-					The flag is polled in the update() function to check for changes
-					Any changes resets the flag and updates the matrices
-				*/
-		
-
-				//vm->setDistance(distance);
-				//vm->calculate();
 			}
 		}
 	}
