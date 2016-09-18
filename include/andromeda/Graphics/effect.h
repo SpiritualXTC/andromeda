@@ -45,18 +45,10 @@ namespace andromeda
 		virtual inline void setUniform(const std::string &name, const Int32 i) const = 0;
 		virtual inline void setUniform(const std::string &name, const Boolean b) const = 0;
 
-		// TODO:: This one is special :: TODO: Remove it :)
+		// TODO:: This one is special :: Remove it :)
 		//virtual const inline void setUniformTexture(const std::string &name, UInt32 bindIndex) const = 0;
 		// TODO:: Add, one for TextureAnnotations
 	};
-
-
-
-
-
-
-
-
 
 
 	/*
@@ -77,7 +69,6 @@ namespace andromeda
 	};
 
 
-
 	/*
 
 	*/
@@ -93,9 +84,6 @@ namespace andromeda
 		virtual std::shared_ptr<IPass> getPass(const Int32 index) const = 0;
 		virtual const inline Int32 getNumPasses() const = 0;
 	};
-
-
-
 
 
 	/*

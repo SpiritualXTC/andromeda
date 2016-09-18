@@ -36,10 +36,8 @@ using namespace andromeda;
 /*
 
 */
-
-
-
 std::shared_ptr<Andromeda> Andromeda::_instance = nullptr;
+
 
 /*
 
@@ -182,7 +180,6 @@ Andromeda::Andromeda(IAndromedaConfig * config)
 }
 
 
-
 /*
 
 */
@@ -212,6 +209,7 @@ void Andromeda::run(std::shared_ptr<Application> app)
 	_engine->run();
 }
 
+
 /*
 	quit():
 
@@ -229,6 +227,7 @@ void Andromeda::quit()
 	// Destroy the System
 	_system->destroy();
 }
+
 
 /*
 	pause():
@@ -249,6 +248,7 @@ void Andromeda::pause()
 	AppEventArgs e;
 	dispatch<AppEventArgs>(System::Pause, e);
 }
+
 
 /*
 
