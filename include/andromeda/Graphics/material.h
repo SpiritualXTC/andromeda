@@ -72,6 +72,9 @@ namespace andromeda
 		const inline MatColor & getAmbient() const { return _ambient; }
 		const inline MatColor & getDiffuse() const { return _diffuse; }
 		const inline MatColor & getSpecular() const { return _specular; }
+		const inline MatColor & getEmissive() const { return _emissive; }
+		const inline Float getShininess() const { return _shininess; }
+		const inline Float getReflectivity() const { return _reflectivity; }
 
 		// Set Ambient Color
 		inline Material & setAmbient(const MatColor & ambient)
@@ -87,7 +90,6 @@ namespace andromeda
 			return *this;
 		}
 
-
 		// Set Diffuse Color
 		inline Material & setDiffuse(const MatColor & diffuse)
 		{
@@ -102,7 +104,6 @@ namespace andromeda
 			return *this;
 		}
 
-
 		// Set Specular Color
 		inline Material & setSpecular(const MatColor & specular)
 		{
@@ -116,10 +117,48 @@ namespace andromeda
 			_specular = glm::vec3(r, g, b);
 			return *this;
 		}
-		
+
+		// Set Emissive Color
+		inline Material & setEmissive(const MatColor & emissive)
+		{
+			_emissive = emissive;
+			return *this;
+		}
+
+		// Set Emissive Color
+		inline Material & setEmissive(Float r, Float g, Float b)
+		{
+			_emissive = glm::vec3(r, g, b);
+			return *this;
+		}
+
+		// Set Specular Shininess
+		inline Material & setShininess(Float shininess)
+		{
+			_shininess = shininess;
+			return *this;
+		}
+
+		// Set Reflectivity
+		inline Material & setReflectivity(Float reflectivity)
+		{
+			_reflectivity = reflectivity;
+			return *this;
+		}
+
+
+
+		const inline std::shared_ptr<ITexture> getMaskTexture() const { return _maskTexture; }
 		const inline std::shared_ptr<ITexture> getDiffuseTexture() const { return _diffuseTexture; }
 		const inline std::shared_ptr<ITexture> getNormalTexture() const { return _normalTexture; }
 
+
+		// Set Mask Texture
+		inline Material & setMaskTexture(const std::shared_ptr<ITexture> & tex)
+		{
+			_maskTexture = tex;
+			return *this;
+		}
 
 		// Set Diffuse Texture
 		inline Material & setDiffuseTexture(const std::shared_ptr<ITexture> & tex)
@@ -147,12 +186,15 @@ namespace andromeda
 		MatColor _ambient{ 0.0f, 0.0f, 0.0f };			// Ambient Color
 		MatColor _diffuse{ 1.0f, 1.0f, 1.0f };			// Diffuse Color
 		MatColor _specular{ 0.0f, 0.0f, 0.0f };			// Specular Color
+		MatColor _emissive{ 0.0f, 0.0f, 0.0f };			// Emissive Color [Self illiminating]
+
+		Float _shininess = 0.0f;						// Specular Exponent
+		Float _reflectivity = 0.0f;						// Environment Reflectivity
 
 		// Texturing
-		std::shared_ptr<ITexture> _diffuseTexture;	// Diffuse Texture
-		std::shared_ptr<ITexture> _normalTexture;	// Normal Texture
-	
-	//	std::shared_ptr<ITexture> _mask;			// Binary Texture
+		std::shared_ptr<ITexture> _maskTexture;			// Mask Texture
+		std::shared_ptr<ITexture> _diffuseTexture;		// Diffuse Texture
+		std::shared_ptr<ITexture> _normalTexture;		// Normal Texture
 	};
 }
 

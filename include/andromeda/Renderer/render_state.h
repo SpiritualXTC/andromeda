@@ -40,10 +40,11 @@ namespace andromeda
 		const std::string VIEWMODEL_MATRIX = "u_modelview";
 
 		// Material
-		const std::string MATERIAL_AMBIENT = "u_ambientMaterial";		// This is ignored when using the GBuffer
+		const std::string MATERIAL_AMBIENT = "u_ambientMaterial";				// This is ignored when using the GBuffer
 		const std::string MATERIAL_DIFFUSE = "u_diffuseMaterial";
-		const std::string MATERIAL_SPECULAR = "u_specularMaterial";		// This needs to be added to the GBuffer once the "white" specular is working correctly
+		const std::string MATERIAL_SPECULAR = "u_specularMaterial";				// This needs to be added to the GBuffer once the "white" specular is working correctly :: Seems to be working correctly -- or im going insane :)
 		const std::string MATERIAL_SHININESS = "u_shininessMaterial";	
+		const std::string MATERIAL_REFLECTIVITY = "u_reflectivityMaterial";
 
 		// Material Textures
 		const std::string TEXTURE_DIFFUSE = "u_diffuseTexture";
@@ -116,6 +117,8 @@ namespace andromeda
 			setMaterialAmbient(material.getAmbient());
 			setMaterialDiffuse(material.getDiffuse());
 			setMaterialSpecular(material.getSpecular());
+			setMaterialShininess(material.getShininess());
+			setMaterialReflectivity(material.getReflectivity());
 
 			if (material.getDiffuseTexture())
 				setTextureDiffuse(0);
@@ -138,10 +141,17 @@ namespace andromeda
 		}
 
 		// Set Shininess
-		inline void setMaterialShininess(const float f) 
+		inline void setMaterialShininess(Float f) 
 		{
 			_shader->setUniform(MATERIAL_SHININESS, f);
 		}
+
+		// Set Reflectivity
+		inline void setMaterialReflectivity(Float f)
+		{
+			_shader->setUniform(MATERIAL_REFLECTIVITY, f);
+		}
+
 
 		// Set Diffuse Texture
 		inline void setTextureDiffuse(Int32 bindIndex)
@@ -189,57 +199,59 @@ namespace andromeda
 
 
 		// Pass through
-		const inline void setUniform(const std::string &name, const glm::mat3 &m) const override
+		inline void setUniform(const std::string &name, const glm::mat3 &m) const override
 		{
 			_shader->setUniform(name, m);
 		}
-		const inline void setUniform(const std::string &name, const glm::mat4 &m) const override
+		inline void setUniform(const std::string &name, const glm::mat4 &m) const override
 		{
 			_shader->setUniform(name, m);
 		}
 
-		const inline void setUniform(const std::string &name, const glm::fvec2 &v) const override
+		inline void setUniform(const std::string &name, const glm::fvec2 &v) const override
 		{
 			_shader->setUniform(name, v);
 		}
-		const inline void setUniform(const std::string &name, const glm::fvec3 &v) const  override
+		inline void setUniform(const std::string &name, const glm::fvec3 &v) const  override
 		{
 			_shader->setUniform(name, v);
 		}
-		const inline void setUniform(const std::string &name, const glm::fvec4 &v) const  override
-		{
-			_shader->setUniform(name, v);
-		}
-
-		const inline void setUniform(const std::string &name, const glm::ivec2 &v) const  override
-		{
-			_shader->setUniform(name, v);
-		}
-		const inline void setUniform(const std::string &name, const glm::ivec3 &v) const  override
-		{
-			_shader->setUniform(name, v);
-		}
-		const inline void setUniform(const std::string &name, const glm::ivec4 &v) const override
+		inline void setUniform(const std::string &name, const glm::fvec4 &v) const  override
 		{
 			_shader->setUniform(name, v);
 		}
 
+		inline void setUniform(const std::string &name, const glm::ivec2 &v) const  override
+		{
+			_shader->setUniform(name, v);
+		}
+		inline void setUniform(const std::string &name, const glm::ivec3 &v) const  override
+		{
+			_shader->setUniform(name, v);
+		}
+		inline void setUniform(const std::string &name, const glm::ivec4 &v) const override
+		{
+			_shader->setUniform(name, v);
+		}
+
+#if 0
 		// This one is special ... until it gets pulled. lolol
 		const inline void setUniformTexture(const std::string &name, UInt32 bindIndex) const  override
 		{
 			_shader->setUniformTexture(name, bindIndex);
 		}
+#endif
 
 
-		const inline void setUniform(const std::string &name, const Float f) const override
+		inline void setUniform(const std::string &name, const Float f) const override
 		{
 			_shader->setUniform(name, f);
 		}
-		const inline void setUniform(const std::string &name, const Int32 i) const override
+		inline void setUniform(const std::string &name, const Int32 i) const override
 		{
 			_shader->setUniform(name, i);
 		}
-		const inline void setUniform(const std::string &name, const Boolean b) const override
+		inline void setUniform(const std::string &name, const Boolean b) const override
 		{
 			_shader->setUniform(name, b);
 		}

@@ -14,6 +14,7 @@ namespace andromeda
 	class VolumeTexture;
 
 	class Effect;
+	class Font;
 
 
 	struct CubeTextureLoadArgs;
@@ -24,14 +25,17 @@ namespace andromeda
 	*/
 
 	// Loads a Texture
-	std::shared_ptr<Texture> LoadTexture(const std::string & filename, const std::string & locationName = "");
+	std::shared_ptr<Texture> LoadTexture(const std::string & name);
 
 	// Loads a Cube Texture
 	std::shared_ptr<CubeTexture> LoadCubeTexture(const std::string & name);
 
 	// Loads a Volme Texture
-	std::shared_ptr<VolumeTexture> LoadVolumeTexture(const std::string & alias, const VolumeTextureLoadArgs * args, const std::string & locationName = "");
+	std::shared_ptr<VolumeTexture> LoadVolumeTexture(const std::string & name);
 
 	// Loads an Effect
-	std::shared_ptr<Effect> LoadEffect(const std::string & filename, const std::string & locationName = "");
+	std::shared_ptr<Effect> LoadEffect(const std::string & name);
+
+	// Loads a Font
+	std::shared_ptr<Font> LoadFont(const std::string & name);
 }

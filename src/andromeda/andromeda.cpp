@@ -13,9 +13,7 @@
 #include <andromeda/Renderer/context.h>
 #include <andromeda/Renderer/scene_manager.h>
 
-#include <andromeda/Resources/resource_manager.h>				// REMOVE
-#include <andromeda/Resources/resource_location_filesystem.h>	// REMOVE
-#include <andromeda/Resources2/resource_factory.h>				// NEW
+#include <andromeda/Resources2/resource_factory.h>
 
 
 #include <andromeda/Utilities/log.h>
@@ -80,21 +78,6 @@ Boolean Andromeda::destroy()
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 
 */
@@ -104,11 +87,8 @@ Andromeda::Andromeda(IAndromedaConfig * config)
 
 	assert(config);
 
-	// Initialise the Resource Manager
-	_resources = std::make_shared<ResourceManager>();	// REMOVE
-
 	// Initialise the New Resource Manager
-	_resFactory = std::make_shared<ResourceFactory>();
+	_resources = std::make_shared<ResourceFactory>();
 
 
 
@@ -124,13 +104,6 @@ Andromeda::Andromeda(IAndromedaConfig * config)
 	_config = std::make_shared<Config>();
 
 	// Load Configuration File(s) :: Configuration Files should be stored on the FileSystem (Exception = Android)
-
-
-	// Add Location to Load Resources From
-	// TODO: REMOVE
-	_resources->addLocation("fs", std::make_shared<ResourceLocationFileSystem>("../res"));
-
-	
 
 	// Initialise the System
 	log_verbosep("Andromeda :: <init>() :: Create System");
@@ -164,7 +137,7 @@ Andromeda::Andromeda(IAndromedaConfig * config)
 
 
 
-
+	// TODO:: The SceneManager should NOT be in the engine :)
 	// Create SceneManager
 	log_verbosep("Andromeda :: <init>() :: Add Scene Manager");
 	_scenes = std::make_shared<SceneManager>();
@@ -181,7 +154,8 @@ Andromeda::Andromeda(IAndromedaConfig * config)
 	// Add Input Modules
 	log_verbosep("Andromeda :: <init>() :: Add Input Modules");
 
-	// TODO: The Platform needs to expose a method for getting a list of Input Devices. For now, this is just a lot of passthroughs
+	// TODO: The Platform needs to expose a method for getting a list of Input Devices.
+	// For now, this is just a lot of passthroughs
 	// The Engine currently will NOT support this action as Template ID's may NOT be correctly inherited (at least from any standpoint that has been tested :S)
 
 	std::shared_ptr<Mouse> mouse = _system->getPlatform()->getMouse();

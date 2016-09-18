@@ -1,17 +1,24 @@
 #include <andromeda/Graphics/font_atlas.h>
 
+#include <cassert>
+
+// Boost
+#include <boost/algorithm/string.hpp>
+
+// Andromeda
 #include <andromeda/andromeda.h>
 #include <andromeda/graphics.h>
 
 #include <andromeda/Graphics/buffer.h>
 #include <andromeda/Graphics/texture.h>
+#include <andromeda/Graphics/text.h>
 
 #include <andromeda/Geometry/geometry.h>
 #include <andromeda/Geometry/geometry_builder.h>
 #include <andromeda/Geometry/geometry_desc.h>
 
 
-#include <andromeda/Resources/font_resource.h>
+#include <andromeda/Utilities/font.h>
 
 
 #include <andromeda/Utilities/image.h>
@@ -39,31 +46,20 @@ using namespace andromeda;
 /*
 
 */
-FontAtlas::FontAtlas(const std::shared_ptr<FontFace> & ft, UInt32 fontSize)
-	: IFont(ft, fontSize)
+FontAtlas::FontAtlas(const std::shared_ptr<Font> & ft, UInt32 fontSize)
+	: FontGraphics(ft, fontSize)
 {
-	
 	// Resize the Image
 	_image.resize(IMAGE_WIDTH, IMAGE_HEIGHT);
 
+	// TODO: Setup an "Error" Character (Should be the First Character) :)
+	// Inverting the '?' mark character might be OK.
 
-	//
-	//_texture = andromeda::LoadResource<andromeda::Texture>("pattern0.png");
-
-
-
-	// Setup an "Error" Character (Should be the First Character) :)
-
-	// Loads the "basic" ASCII character set
+	// Loads the "basic" ASCII character set :: It Doesn't cos 32-48 is extremely basic! lololol
 	loadCharacter(32, 48);
-
-
 
 	// Create the Geometry
 	createBuffers();
-
-	// setup temporary geometry
-//	addGeometry();
 
 	// Updates the Texture
 	updateBuffers();
@@ -74,14 +70,27 @@ FontAtlas::FontAtlas(const std::shared_ptr<FontFace> & ft, UInt32 fontSize)
 /*
 
 */
+Boolean FontAtlas::splitText(const std::wstring & text, std::vector<std::wstring> & lines)
+{
+	// Remove Array Characters and split
+	boost::split(lines, text, boost::is_any_of("\n"));
+
+	return true;
+}
+
+
+
+/*
+
+*/
 void FontAtlas::createBuffers()
 {
 	// Create Vertex Buffer
-	//_vb = std::make_shared<VertexBuffer>();
 	_vb = andromeda::graphics()->createVertexBuffer();
 
 	/*
 		TODO:
+		Move Geometry Declarations to the OpenGL Sub Library
 		Remove the GL-centric enums.
 	*/
 	_desc = std::make_shared<GeometryDescription>(GL_TRIANGLE_STRIP, 4, 6, GL_UNSIGNED_INT);
@@ -90,29 +99,26 @@ void FontAtlas::createBuffers()
 	_desc->addDeclaration(2, GL_FLOAT, sizeof(Float) * 2, GeometryLocation::Texture0);
 
 	// Create the Texture
-	//_texture = std::make_shared<Texture>(IMAGE_WIDTH, IMAGE_HEIGHT);
 	_texture = graphics()->createTexture(IMAGE_WIDTH, IMAGE_HEIGHT);
 }
 
 
 /*
-	TODO:
-	This will needs to know:
-	a) The Glyph Metrics (So Vertex and Texture Data can be calculated properly)
-	b) The Location in the Texture (So Texture Data can be offset to the correct spot)
-	c)
+	addGeometry():
+
+	Adds geometry to the standard vertex buffer used by the FontAtlas
 */
 void FontAtlas::addGeometry(const _Character & ch)
 {
-	/*
-		Requires:
-		Texture offset.
-		Texture dimensions
-	*/
-
 	addGeometry(ch, _vertices, 0.0f, 0.0f);
 }
 
+
+/*
+	addGeometry():
+
+	Adds geometry to any vertex buffer
+*/
 void FontAtlas::addGeometry(const _Character & ch, std::vector<Float> & verts, Float offX, Float offY)
 {
 	Float tu0 = ch.offset.x / (Float)IMAGE_WIDTH;
@@ -124,8 +130,8 @@ void FontAtlas::addGeometry(const _Character & ch, std::vector<Float> & verts, F
 
 	Float w = ch.metrics.width / FONT_SCALE;
 	Float h = ch.metrics.height / FONT_SCALE;
-	Float x0 = ch.metrics.bearingX / FONT_SCALE;
-	Float y0 = ch.metrics.bearingY / FONT_SCALE;
+	Float x0 = ch.metrics.hori.bearingX / FONT_SCALE;
+	Float y0 = ch.metrics.hori.bearingY / FONT_SCALE;
 	Float x1 = x0 + w;
 	Float y1 = y0 - h;
 
@@ -155,14 +161,14 @@ void FontAtlas::addGeometry(const _Character & ch, std::vector<Float> & verts, F
 }
 
 
-
-
 /*
+	loadChar():
 
+	Loads the character into teh FontAtlas
 */
 UInt32 FontAtlas::loadChar(const GlyphMetric & metric)
 {
-	const std::shared_ptr<FontFace> & ff = getFontFace();
+	const std::shared_ptr<Font> & ff = getFont();
 
 	// Get Image 
 	ImageData<UInt8> charImage;
@@ -173,6 +179,7 @@ UInt32 FontAtlas::loadChar(const GlyphMetric & metric)
 	// Setup Character
 	_Character c;
 
+#if 0
 	// Assign Metrics
 	//metric.hori.advance * XYZ;
 	c.metrics.advance = (Float)metric.hori.advance;
@@ -180,13 +187,15 @@ UInt32 FontAtlas::loadChar(const GlyphMetric & metric)
 	c.metrics.bearingY = (Float)metric.hori.bearingY;
 	c.metrics.width = (Float)metric.width;
 	c.metrics.height = (Float)metric.height;
-	
+#else
+	c.metrics = metric;
+#endif
+
 	// Set Character Dimensions [Pixels]
 	c.dimensions = glm::ivec2(charImage.width, charImage.height);
 
 	// Set the Vertex Offset for the Character
 	c.vertexOffset = 4 * _characters.size();
-
 
 	// Get Next Texture Coordinate
 	getNextTextureCoordinate(c.dimensions, c.offset);
@@ -202,8 +211,6 @@ UInt32 FontAtlas::loadChar(const GlyphMetric & metric)
 	log_infop("Texture Offset = %1%x%2%", c.offset.x, c.offset.y);
 #endif
 
-
-
 	// Update the Image
 	_image.blit(c.offset.x, c.offset.y, charImage);
 
@@ -216,8 +223,6 @@ UInt32 FontAtlas::loadChar(const GlyphMetric & metric)
 	// Update Texture
 	updateBuffers();
 
-
-
 	return index;
 }
 
@@ -227,8 +232,9 @@ UInt32 FontAtlas::loadChar(const GlyphMetric & metric)
 */
 Boolean FontAtlas::getNextTextureCoordinate(const glm::ivec2 & dimensions, glm::ivec2 & texCoord)
 {
-	// Calculate Texture Offset [This needs to use a "fitting" method]
+	// Calculate Texture Offset [This uses a basic "fitting" method]
 	// Which is more or less, look at the last added character... can i still fit after it? yes or no?
+	// Keep it Simple Stupid :)
 	if (_characters.size() != 0)
 	{
 		const _Character & last = _characters.back();
@@ -243,6 +249,7 @@ Boolean FontAtlas::getNextTextureCoordinate(const glm::ivec2 & dimensions, glm::
 		{
 			// TODO: Determine how far to drop the character.
 			// For now just use the line spacing
+			// Might be _font->getHeight() * FONT_SCALE	:: Test later
 			Int32 drop = getLineSpacing();
 			texCoord = glm::ivec2(0, drop);
 		}
@@ -321,36 +328,7 @@ Boolean FontAtlas::end()
 
 
 
-/*
 
-*/
-Float FontAtlas::drawCharacter(const std::shared_ptr<andromeda::IShader> shader, UInt32 charCode)
-{
-	UInt32 index = mapIndex(charCode);
-
-	if (index >= _characters.size())
-		return 0.0f;
-
-	_Character & c = _characters[index];
-
-	// Set Sprite/Texture Coordinate Information for the Character
-	// This wont need to be done :)
-
-
-	/*
-		TODO:
-		This needs to be updated :)
-
-		The Index part should essentially be:
-		Number drawn = 4;
-		Offset = 4 * index
-	*/
-	glDrawArrays(_desc->mode(), c.vertexOffset, _desc->vertices());
-
-	
-
-	return c.metrics.advance / FONT_SCALE;
-}
 
 
 
@@ -362,6 +340,22 @@ Float FontAtlas::drawCharacter(const std::shared_ptr<andromeda::IShader> shader,
 */
 std::shared_ptr<Geometry> FontAtlas::generateText(const std::wstring & string)
 {
+	/*
+		TODO: Version 2.
+
+		Split text by dividing static and dynamic parts apart (Boost format %argIndex%)
+
+		Each Static Section needs to be parsed here, each one starting from (0, 0)
+			When drawing the section will be offset based on previous sections
+		Each Dynamic Section needs to have a converter from T to string, and each character drawn individually *
+
+
+		* This is the simplest route for dynamic text -- however change tracking could be implemented on the variables value
+		  If it changes, then update a geometry object as though it was static, this way dynamic text can be treated the same as static, including some level of optimsation
+		  However some dynamic text is bound to change EVERY frame in which case it may be better to just draw it direct.
+	*/
+
+
 	std::vector<std::wstring> lines;
 
 	std::vector<Float> vertices;
@@ -371,6 +365,9 @@ std::shared_ptr<Geometry> FontAtlas::generateText(const std::wstring & string)
 
 	log_warnp("Generate Static Text");
 	log_tree();
+
+	
+
 
 	// Split text
 	if (!splitText(string, lines))
@@ -405,7 +402,7 @@ std::shared_ptr<Geometry> FontAtlas::generateText(const std::wstring & string)
 			}
 			
 			// Advance
-			offsetX += c.metrics.advance / FONT_SCALE;
+			offsetX += c.metrics.hori.advance / FONT_SCALE;
 			offsetIndex += 4;
 		}
 
@@ -433,3 +430,30 @@ std::shared_ptr<Geometry> FontAtlas::generateText(const std::wstring & string)
 
 	return std::make_shared<Geometry>(vb, desc, ib);;
 }
+
+
+
+
+
+#if 0
+/*
+
+*/
+Float FontAtlas::drawCharacter(const std::shared_ptr<andromeda::IShader> shader, UInt32 charCode)
+{
+	UInt32 index = mapIndex(charCode);
+
+	if (index >= _characters.size())
+		return 0.0f;
+
+	_Character & c = _characters[index];
+
+
+
+	glDrawArrays(_desc->mode(), c.vertexOffset, _desc->vertices());
+
+
+
+	return c.metrics.advance / FONT_SCALE;
+}
+#endif

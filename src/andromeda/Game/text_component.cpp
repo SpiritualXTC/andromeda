@@ -1,6 +1,6 @@
 ﻿#include <andromeda/Game/text_component.h>
 
-#include <andromeda/Graphics/font.h>
+#include <andromeda/Graphics/font_graphics.h>
 #include <andromeda/Graphics/text.h>
 #include <andromeda/Graphics/effect.h>
 #include <andromeda/Graphics/texture.h>
@@ -19,6 +19,8 @@
 
 using namespace andromeda;
 
+
+#if 0
 /*
 
 */
@@ -61,7 +63,7 @@ void TextRenderComponent::render(RenderState & rs)
 	//_font->drawText(shader, _string, ms);
 }
 
-
+#endif
 
 
 
@@ -73,7 +75,7 @@ void TextRenderComponent::render(RenderState & rs)
 /*
 
 */
-FontRenderComponent::FontRenderComponent(std::shared_ptr<IFont> font, std::shared_ptr<ITransform> transform)
+TextRenderComponent::TextRenderComponent(std::shared_ptr<FontGraphics> font, std::shared_ptr<ITransform> transform)
 	: RenderComponent("text")
 	, _font(font)
 	, _transform(transform)
@@ -90,58 +92,11 @@ FontRenderComponent::FontRenderComponent(std::shared_ptr<IFont> font, std::share
 }
 
 
-/*
-
-*/
-void FontRenderComponent::render(const std::shared_ptr<andromeda::IShader> shader, andromeda::MatrixStack & ms)
-{
-	assert(_font);
-
-	// Push Matrix
-	ms.push();
-	ms.multiply(_transform->matrix());
-
-	// Update the Model View Matrix
-	shader->setUniform("u_model", ms.top());
-
-
-	// Get Material
-	shader->setUniform("g_ambient", _material.getAmbient());
-	shader->setUniform("g_diffuse", _material.getDiffuse());
-	shader->setUniform("g_specular", _material.getSpecular());
-
-	// Get Texture
-	const std::shared_ptr<ITexture> & diffuseTex = _material.getDiffuseTexture();
-
-	if (diffuseTex)
-	{
-		// TODO: See Mesh Class
-		diffuseTex->bind();
-		shader->setUniformTexture("g_diffuseTexture", 0);
-	}
-
-	// Render Text
-	_text->render();
-
-
-	if (diffuseTex)
-	{
-		diffuseTex->unbind();
-	}
-
-	// Dynamic Method
-//	_font->drawText(shader, _string, ms);
-
-	// Pop the matrix
-	ms.pop();
-}
-
-
 
 /*
 
 */
-void FontRenderComponent::render(RenderState & rs)
+void TextRenderComponent::render(RenderState & rs)
 {
 	assert(_font);
 

@@ -17,7 +17,6 @@ namespace andromeda
 	class Graphics;
 	class Invoker;
 	class ResourceFactory;
-	class ResourceManager;
 	class SceneManager;
 	class System;
 	class Timing;
@@ -25,9 +24,6 @@ namespace andromeda
 	
 	// TEMP
 	class IAndromedaConfig;
-
-
-
 
 
 
@@ -41,8 +37,7 @@ namespace andromeda
 	{
 	public:
 
-		virtual inline std::shared_ptr<ResourceManager> & getResourceManager() = 0;	// REMOVE
-		virtual inline std::shared_ptr<ResourceFactory> & getResourceFactory() = 0;	// NEW
+		virtual inline std::shared_ptr<ResourceFactory> & getResourceFactory() = 0;
 
 		virtual inline std::shared_ptr<Config> & getConfig() = 0;
 		virtual inline std::shared_ptr<System> & getSystem() = 0;
@@ -62,17 +57,6 @@ namespace andromeda
 		virtual void pause() = 0;
 		virtual void resume() = 0;
 	};
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -114,26 +98,12 @@ namespace andromeda
 
 
 
-
-
-
-
-
-
-
-
-
-
 		// Instance
 	public:
 		Andromeda(IAndromedaConfig * config);
 		virtual ~Andromeda();
 
-		
-
-
-		inline std::shared_ptr<ResourceManager> & getResourceManager() override { return _resources; }	// REMOVE
-		inline std::shared_ptr<ResourceFactory> & getResourceFactory() override { return _resFactory; }	// NEW
+		inline std::shared_ptr<ResourceFactory> & getResourceFactory() override { return _resources; }
 		
 		inline std::shared_ptr<Config> & getConfig() override{ return _config; };
 		inline std::shared_ptr<System> & getSystem() override { return _system; };
@@ -148,14 +118,11 @@ namespace andromeda
 		inline Invoker * getInvoker() override { return _invoker.get(); }
 
 
-
 		void run(std::shared_ptr<Application> app);
 		void quit();
 
 		void pause();
 		void resume();
-
-
 
 	private:
 		std::shared_ptr<Config> _config;
@@ -169,21 +136,8 @@ namespace andromeda
 		std::shared_ptr<Timing> _timing;
 		std::shared_ptr<SceneManager> _scenes;
 
-		std::shared_ptr<ResourceFactory> _resFactory;	// New Resource Manager
-
-
-
-
-
-		std::shared_ptr<ResourceManager> _resources;	// REMOVE
+		std::shared_ptr<ResourceFactory> _resources;
 	};
-
-
-
-
-
-
-
 
 
 	/* Run */
@@ -196,19 +150,6 @@ namespace andromeda
 	inline void destroy()
 	{
 		Andromeda::destroy();
-	}
-
-
-
-
-
-
-
-
-	/* Resource Manager */
-	inline std::shared_ptr<ResourceManager> resources()
-	{
-		return Andromeda::instance()->getResourceManager();
 	}
 
 	/* Resource Factory */

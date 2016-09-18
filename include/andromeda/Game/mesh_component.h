@@ -16,7 +16,6 @@ namespace andromeda
 		MeshRenderComponent(std::shared_ptr<Mesh> mesh, std::shared_ptr<ITransform> transform);
 		virtual ~MeshRenderComponent();
 
-		void render(const std::shared_ptr<andromeda::IShader> shader, andromeda::MatrixStack & ms) override;
 		void render(RenderState & rs) override;
 
 	private:

@@ -13,6 +13,7 @@
 #include <andromeda/Game/light_component.h>
 
 #include <andromeda/geometry.h>
+#include <andromeda/resources.h>
 
 #include <andromeda/graphics.h>
 #include <andromeda/Graphics/frame_buffer.h>
@@ -27,11 +28,7 @@
 #include <andromeda/Renderer/view.h>
 #include <andromeda/Renderer/view_builder.h>
 
-
-#include <andromeda/Resources/font_resource.h>
-#include <andromeda/Resources2/resource_factory.h>
-
-
+#include <andromeda/Utilities/font.h>
 #include <andromeda/Utilities/log.h>
 
 
@@ -51,7 +48,7 @@
 Game::Game()
 {
 	// Load a Font
-	_font = std::make_shared<andromeda::Font>("../res/fonts/arial.ttf", 192);
+	//_font = std::make_shared<andromeda::Font>("../res/fonts/arial.ttf", 192);
 
 
 	// Initialise States
@@ -69,7 +66,7 @@ Game::Game()
 
 
 	// Effect Test
-	std::shared_ptr<andromeda::Effect> effect = andromeda::LoadEffect("shader.xml");
+	std::shared_ptr<andromeda::Effect> effect = andromeda::LoadEffect("shader");
 
 
 	// Create Objects
@@ -90,9 +87,6 @@ Game::Game()
 
 
 	// Create the Views
-	// TODO: There is a bug since moving to the deferred renderer when it comes to split/multi screen, 
-	// as the viewport is altered when rendering to the offscreen targets but not restored when 
-	// doing the lighting pass
 	aInt32 players = 1;
 
 	if (players == 1)
@@ -177,10 +171,7 @@ void Game::createText()
 {
 
 	// Load a Font via the ResourceManager
-	// TODO: Needs to be Font
-	std::shared_ptr<andromeda::FontFace> f = std::make_shared<andromeda::FontFace>("../res/fonts/arial.ttf");
-	//std::shared_ptr<andromeda::FontFace> f = std::make_shared<andromeda::FontFace>("../res/fonts/CODE2000.ttf");
-
+	std::shared_ptr<andromeda::Font> f = andromeda::LoadFont("arial");
 
 	// Create Font Atlas
 	std::shared_ptr<andromeda::FontAtlas> fa = std::make_shared<andromeda::FontAtlas>(f, 128);
@@ -208,10 +199,10 @@ void Game::createText()
 	// Add RenderComponent
 	if (f)
 	{
-		std::shared_ptr<andromeda::FontRenderComponent> render = std::make_shared<andromeda::FontRenderComponent>(fa, transform);
+		std::shared_ptr<andromeda::TextRenderComponent> render = std::make_shared<andromeda::TextRenderComponent>(fa, transform);
 
 		render->getMaterial().setDiffuse(1.0f, 0.0f, 1.0f);
-		render->getMaterial().setDiffuseTexture(andromeda::LoadTexture("pattern0.png"));
+		render->getMaterial().setDiffuseTexture(andromeda::LoadTexture("pattern"));
 
 		obj->addComponent(render);
 	}
@@ -236,8 +227,8 @@ void Game::createText()
 std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, aFloat h)
 {
 	// Load/Get Effects
-	std::shared_ptr<andromeda::Effect> effect = andromeda::LoadEffect("shader.xml");
-	std::shared_ptr<andromeda::Effect> defEffect = andromeda::LoadEffect("deferred.xml");
+	std::shared_ptr<andromeda::Effect> effect = andromeda::LoadEffect("shader");
+	std::shared_ptr<andromeda::Effect> defEffect = andromeda::LoadEffect("deferred");
 
 
 
@@ -260,7 +251,8 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 	std::shared_ptr<andromeda::SceneGraph> sg = _scene->getSceneGraph();
 
 	// Load the Cube Texture
-	std::shared_ptr<andromeda::CubeTexture> cubeTex = andromeda::resourceFactory()->getResource<andromeda::CubeTexture>("skybox");
+	//std::shared_ptr<andromeda::CubeTexture> cubeTex = andromeda::resourceFactory()->getResource<andromeda::CubeTexture>("skybox");
+	std::shared_ptr<andromeda::CubeTexture> cubeTex = andromeda::LoadCubeTexture("skybox");
 
 	// Create Deferred Renderer
 	std::shared_ptr<andromeda::DeferredRenderer> deferred = std::make_shared<andromeda::DeferredRenderer>(sg, defEffect, "lightDirectional");

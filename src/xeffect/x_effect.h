@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 #include <andromeda/stddef.h>
-#include <andromeda/graphics.h>
+#include <andromeda/Graphics/effect.h>
 
 #include "x_extension.h"
 

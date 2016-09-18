@@ -11,7 +11,6 @@
 #include <andromeda/Input/keyboard.h>
 #include <andromeda/Input/mouse.h>
 
-#include <andromeda/Resources/resource_manager.h>
 #include <andromeda/Utilities/log.h>
 
 

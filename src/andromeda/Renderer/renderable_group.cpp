@@ -61,7 +61,7 @@ Boolean RenderableGroup::removeRenderable(IRenderable * renderable)
 
 
 
-
+#if 0
 /*
 
 */
@@ -85,6 +85,7 @@ void RenderableGroup::render(std::shared_ptr<Camera> & camera, std::shared_ptr<I
 		r->render(shader, ms);
 	}
 }
+#endif
 
 
 void RenderableGroup::render(RenderState & rs)

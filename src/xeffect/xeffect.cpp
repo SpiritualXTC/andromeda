@@ -12,9 +12,12 @@ using namespace andromeda::xeffect;
 /*
 	Loads an Effect from File
 */
-std::shared_ptr<XEffect> xeffect::LoadEffect(const std::string & filename)
+std::shared_ptr<XEffect> xeffect::LoadEffect(const std::string & filename, IXEffectLoadFileCallback * callback)
 {
 	XEffectLoader loader;
+
+	if (callback)
+		loader.setLoadFileCallback(std::bind(&IXEffectLoadFileCallback::loadFile, callback, std::placeholders::_1));
 
 	return loader.loadFromFile(filename);
 }
@@ -23,9 +26,12 @@ std::shared_ptr<XEffect> xeffect::LoadEffect(const std::string & filename)
 /*
 	Loads an Effect from Source
 */
-std::shared_ptr<XEffect> xeffect::LoadEffectFromSource(const std::string & source)
+std::shared_ptr<XEffect> xeffect::LoadEffectFromSource(const std::string & source, IXEffectLoadFileCallback * callback)
 {
 	XEffectLoader loader;
+
+	if (callback)
+		loader.setLoadFileCallback(std::bind(&IXEffectLoadFileCallback::loadFile, callback, std::placeholders::_1));
 
 	return loader.loadFromSource(source);
 }

@@ -1,23 +1,16 @@
-#ifndef _ANDROMEDA_GRAPHICS_RENDERABLE_H_
-#define _ANDROMEDA_GRAPHICS_RENDERABLE_H_
-
+#pragma once
 #include <memory>
 
 #include <andromeda/stddef.h>
 
-#include <andromeda/glm.h>
-
 namespace andromeda
 {
 	// Forward Declarations
-	class IShader;
-	class MatrixStack;
-
 	class RenderState;
 
 
 	/*
-		First Gen of the new Renderable Class
+		Specifies the object can be rendered
 	*/
 	class IRenderable
 	{
@@ -31,24 +24,10 @@ namespace andromeda
 		}
 		virtual ~IRenderable() {}
 
-
-		//virtual const glm::mat4 & matrix() const = 0;
-
-
-		/*
-			Render :: OLD
-		*/
-		virtual void render(const std::shared_ptr<IShader> shader, MatrixStack & ms) = 0;
-
-		/*
-			Render :: NEW
-		*/
+		// Render the Object
 		virtual void render(RenderState & rs) = 0;
 
-
-		/*
-			Get Unique ID of the Renderable
-		*/
+		//Get Unique ID of the Renderable
 		inline const Int32 id() const { return _id; }
 
 	private:
@@ -56,4 +35,3 @@ namespace andromeda
 	};
 }
 
-#endif

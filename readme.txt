@@ -5,16 +5,6 @@
 \____|__  /___|  /\____ | |__|   \____/|__|_|  /\___  >____ |(____  /
         \/     \/      \/                    \/     \/     \/     \/ 
 
-TODO: (Priority)
-- Resource Managerment and strip the old manager out
-- Fix Specular Highlighting
-- Texture & Shader Annotations
-- Deferred Shadows
-- Add observer to the logger, remove logging events 
-- Fix Environment Reflections
-- Make the lighting system updatable outside of the renderer
-	- Lighting is only a basic setup for testing the shaders currently
-
 
 TODO: (Overview)
 - Resource Management overhaul

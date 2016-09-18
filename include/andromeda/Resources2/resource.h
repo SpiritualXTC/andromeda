@@ -50,11 +50,6 @@ namespace andromeda
 		{
 			assert(builder);
 
-			// This is where the builder can be used to load the actual resource (Pass the builder into the acquisition function)
-			// Alternatively ...
-			// The Map could attempt to acquire (it would return null) then have the builder load it and inject the resource. Then attempt reacquisition
-
-
 			// Is the resource loaded
 			// This can allow for preloading
 			if (! _resource)
@@ -72,7 +67,7 @@ namespace andromeda
 
 
 		/*
-			Release the Resource (Available by interface)
+			Release the Resource
 		*/
 		void release(RESOURCE * r)// override
 		{
@@ -102,7 +97,7 @@ namespace andromeda
 
 
 		// Get Args
-		virtual const inline ARGS & getArgs() const = 0;// { return _args; }
+		virtual const inline ARGS & getArgs() const = 0;
 
 	private:
 		// Name of the resource
@@ -110,7 +105,6 @@ namespace andromeda
 
 		// Number of times the resource has been acquired
 		Int32 _refCounter = 0;
-
 
 		// Location where the resource is stored
 		const IFileLocation * _location;

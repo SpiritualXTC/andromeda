@@ -9,6 +9,7 @@
 
 namespace andromeda
 {
+#if 0
 	/*
 	
 	*/
@@ -40,6 +41,7 @@ namespace andromeda
 		Int32 _activeTransform = 1;
 
 	};
+#endif
 }
 
 #endif

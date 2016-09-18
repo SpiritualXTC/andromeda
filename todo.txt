@@ -5,6 +5,21 @@
 \____|__  /___|  /\____ | |__|   \____/|__|_|  /\___  >____ |(____  /
         \/     \/      \/                    \/     \/     \/     \/ 
 
+TODO: (Priority)
+----------------
+- Resource Management. Finish New, Remove Old.
+	- Requires fixing fonts.
+	- Requires support files.
+- File Management. Find a faster/nicer solution
+- Background resource loading
+- Preload resources + preload screen
+- More Flexibility with ECS
+- Scene Loader (XML)
+- Optimise Header linking to improve compile time
+- Fix Observer class - Logger needs to be an observer
+- Fix Environment Reflections
+- Majority of areas should be using std::wstring, rather than std::string
+
 TODO: (Detail)
 --------------
 
@@ -36,7 +51,7 @@ XML is loaded via Boost into a Boost::property_tree)
 - Wrapping the Ptree class with numerous helpers could 
   be really beneficial
 
-Header include gates: (In Progress)
+Header include gates:											(In Progress)
 - Change include gates to '#pragma once' rather than the old style gates
 (Thanks VS2013... >.<)
 
@@ -54,8 +69,8 @@ Abstract Graphics API:											(In Progress)
 	- Geometry													(Not Started)
 	- GeometryDeclaration (VertexArray Object)					(Not Started)
 	- Font														(In Progress)
-	- Buffer (VertexBuffer / IndexBuffer)						(Not Started)
-	- FrameBuffer / RenderBuffer								(Done)
+	- Buffer (VertexBuffer / IndexBuffer)						(Done-ish)
+	- FrameBuffer / RenderBuffer								(Done-ish)
 	- Views														(In Progress)
 	- Renderer													(In Progress)
 	- Enums and conversions										(In Progress)
@@ -63,12 +78,11 @@ Abstract Graphics API:											(In Progress)
 Graphics: 
 - Resource Creation												(In Progress)
 - Abstraction													(In Progress)
-- State Change "friendliness"									(Not Started)
+- State Change "friendliness"									(In Progress)
 	- push/pop states
 
-- Viewport control												(Not Started)
+- Viewport control												(In Progress)
 - More Shape Builders
-	- Cylinder													(Not Started)
 	- Lots of 2D Shapes.										(Not Started)
 	  (Lets face it, 3D shapes drawn with an orthogonal 
 	  projection matrix are not 2D.)
@@ -95,9 +109,9 @@ CMake / Sub-Library
 
 Rendering														(In Progress)
 - Reflections													(In Progress)
-	- Fix the reflection texture banding bug!
+	- Fix the reflection texture inversion bug!
 	- Fix the reflection coloring
-- Shadowing														(Not Started)
+- Shadowing														(Done-ish)
 	- This may require a minor refactor with relation to views
 Shadows Maps are rendered to a depth texture, using the lights' 
 position/orientation to construct a view/perspective matrix,

@@ -95,7 +95,7 @@ void DeferredLightingEnvironment::begin(const IShader * shader)
 		std::shared_ptr<ITexture> t = _gBuffer->getTexture(i);
 
 		t->bind(i);
-		shader->setUniformTexture(uniforms[i], i);
+		shader->setUniform(uniforms[i], (Int32)i);
 	}
 
 	glm::vec4 cp = glm::vec4(0, 0, 0, 1);

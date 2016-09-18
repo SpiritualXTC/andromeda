@@ -40,7 +40,7 @@ void DeferredGeometryEnvironment::begin(const IShader * shader)
 		/*
 			TODO: Setup Texture Annotations
 		*/
-		shader->setUniformTexture("u_envReflection", 10);
+		shader->setUniform("u_envReflection", 10);
 	}
 
 	

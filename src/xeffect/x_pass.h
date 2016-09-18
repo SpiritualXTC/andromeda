@@ -2,9 +2,10 @@
 
 #include <cassert>
 #include <string>
+#include <vector>
 
 #include <andromeda/stddef.h>
-#include <andromeda/graphics.h>
+#include <andromeda/Graphics/effect.h>
 
 
 #include "x_shader.h"
@@ -45,7 +46,7 @@ namespace andromeda
 			/*
 
 			*/
-			const inline void setUniform(const std::string & name, const glm::mat3 &m) const override
+			inline void setUniform(const std::string & name, const glm::mat3 &m) const override
 			{
 				assert(_shader);
 				_shader->setUniform(name, m);
@@ -53,7 +54,7 @@ namespace andromeda
 			/*
 			
 			*/
-			const inline void setUniform(const std::string & name, const glm::mat4 &m) const override
+			inline void setUniform(const std::string & name, const glm::mat4 &m) const override
 			{
 				assert(_shader);
 				_shader->setUniform(name, m);
@@ -63,17 +64,17 @@ namespace andromeda
 			/*
 			
 			*/
-			const inline void setUniform(const std::string &name, const glm::fvec2 &v) const override
+			inline void setUniform(const std::string &name, const glm::fvec2 &v) const override
 			{
 				assert(_shader);
 				_shader->setUniform(name, v);
 			}
-			const inline void setUniform(const std::string &name, const glm::fvec3 &v) const override
+			inline void setUniform(const std::string &name, const glm::fvec3 &v) const override
 			{
 				assert(_shader);
 				_shader->setUniform(name, v);
 			}
-			const inline void setUniform(const std::string &name, const glm::fvec4 &v) const override
+			inline void setUniform(const std::string &name, const glm::fvec4 &v) const override
 			{
 				assert(_shader);
 				_shader->setUniform(name, v);
@@ -83,39 +84,40 @@ namespace andromeda
 			/*
 			
 			*/
-			const inline void setUniform(const std::string &name, const glm::ivec2 &v) const override
+			inline void setUniform(const std::string &name, const glm::ivec2 &v) const override
 			{
 				assert(_shader);
 				_shader->setUniform(name, v);
 			}
-			const inline void setUniform(const std::string &name, const glm::ivec3 &v) const override
+			inline void setUniform(const std::string &name, const glm::ivec3 &v) const override
 			{
 				assert(_shader);
 				_shader->setUniform(name, v);
 			}
-			const inline void setUniform(const std::string &name, const glm::ivec4 &v) const override
+			inline void setUniform(const std::string &name, const glm::ivec4 &v) const override
 			{
 				assert(_shader);
 				_shader->setUniform(name, v);
 			}
 
-			const inline void setUniformTexture(const std::string &name, UInt32 bindIndex) const override
+#if 0
+			inline void setUniformTexture(const std::string &name, UInt32 bindIndex) const override
 			{
 				assert(_shader);
 				_shader->setUniformTexture(name, bindIndex);
 			}
-
-			const inline void setUniform(const std::string &name, const Float f) const override
+#endif
+			inline void setUniform(const std::string &name, const Float f) const override
 			{
 				assert(_shader);
 				_shader->setUniform(name, f);
 			}
-			const inline void setUniform(const std::string &name, const Int32 i) const override
+			inline void setUniform(const std::string &name, const Int32 i) const override
 			{
 				assert(_shader);
 				_shader->setUniform(name, i);
 			}
-			const inline void setUniform(const std::string &name, const Boolean b) const override
+			inline void setUniform(const std::string &name, const Boolean b) const override
 			{
 				assert(_shader);
 				_shader->setUniform(name, b);

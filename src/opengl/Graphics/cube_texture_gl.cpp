@@ -72,8 +72,6 @@ void TextureCubeGL::resize(UInt32 width, UInt32 height, StorageFormat storageFor
 	// Send Image Data to GPU
 	for (const auto & face : faces)
 	{
-		log_debugp("Generate Cube Face : %1%", face);
-
 		// Create the Face
 		glTexImage2D(face, 0, internalFormat, width, height, 0, glFormat, GL_UNSIGNED_BYTE, nullptr);
 	}

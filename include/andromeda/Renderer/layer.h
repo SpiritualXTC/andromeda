@@ -22,6 +22,7 @@ namespace andromeda
 	class Effect;
 	class ITechnique;
 	class IPass;
+	class IShader;
 
 
 	class IRenderable;

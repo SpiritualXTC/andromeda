@@ -27,7 +27,7 @@ namespace andromeda
 	*/
 
 
-
+#if 0
 	/*
 		Options for Loading a 2D Texture
 	*/
@@ -65,25 +65,7 @@ namespace andromeda
 
 		std::vector<std::string> filenames;
 	};
-
-
-
-
-
-	/*
-		Face Direction for CubeTextures
-
-		TODO: This may be better in graphics_types.h
-	*/
-	enum class CubeTextureFace
-	{
-		X_Positive,
-		X_Negative,
-		Y_Positive,
-		Y_Negative,
-		Z_Positive,
-		Z_Negative,
-	};
+#endif
 
 
 

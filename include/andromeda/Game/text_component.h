@@ -13,13 +13,13 @@ namespace andromeda
 {
 	class ITransform;
 
-	class IFont;
-	class Font;
+	class FontGraphics;
 	class Text;
 	class Geometry;
 
 	class RenderState;
 
+#if 0
 	class TextRenderComponent : public RenderComponent
 	{
 	public:
@@ -35,7 +35,7 @@ namespace andromeda
 
 		std::string _string;
 	};
-
+#endif
 
 
 
@@ -43,12 +43,11 @@ namespace andromeda
 	/*
 		Testing the new abstract fonts....
 	*/
-	class FontRenderComponent : public RenderComponent
+	class TextRenderComponent : public RenderComponent
 	{
 	public:
-		FontRenderComponent(std::shared_ptr<IFont> font, std::shared_ptr<ITransform> transform);
+		TextRenderComponent(std::shared_ptr<FontGraphics> font, std::shared_ptr<ITransform> transform);
 
-		void render(const std::shared_ptr<andromeda::IShader> shader, andromeda::MatrixStack & ms) override;
 		void render(RenderState & rs) override;
 
 
@@ -62,7 +61,7 @@ namespace andromeda
 		Material _material;
 
 
-		std::shared_ptr<IFont> _font;
+		std::shared_ptr<FontGraphics> _font;
 		std::shared_ptr<ITransform> _transform;
 
 		std::wstring _string;

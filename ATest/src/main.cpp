@@ -12,7 +12,6 @@
 
 #include <andromeda/graphics.h>
 #include <andromeda/IO/file_queue.h>
-#include <andromeda/Resources/resource_manager.h>
 #include <andromeda/Utilities/io.h>
 #include <andromeda/Utilities/log.h>
 
@@ -22,8 +21,8 @@
 
 // Libraries
 #pragma comment(lib,"opengl32.lib")
-#pragma comment(lib,"glu32.lib")	// glErrorString(...) uses this function
-#pragma comment(lib, "glew32.lib")	//glew32s.lib for the static library - which for unknown reasons has decided to stop linking correctly! Go Figure!
+#pragma comment(lib,"glu32.lib")	// glErrorString(...) uses this library :: tesselation probably does as well.
+#pragma comment(lib, "glew32.lib")	// glew32s.lib for the static library - which for unknown reasons has decided to stop linking correctly! Go Figure!
 #pragma comment(lib, "soil.lib")
 
 #pragma comment(lib, "assimp-vc130-mtd.lib")
@@ -97,35 +96,10 @@ void test(const glm::vec2 & v0, const glm::vec2 & v1, const glm::vec2 & c)
 
 
 
-/*
-	TODO:
-	Remove Meh
-*/
-void configResources(andromeda::ResourceManager * fs)
-{
-	// Resources
-	/*
-	TODO
-	- Remove Me
-	*/
-	fs->addResourceType<andromeda::Mesh>("models", andromeda::ResourceManager::Binary);
-	fs->addResourceType<andromeda::Effect>("shader");
-	fs->addResourceType<andromeda::Texture>("textures", andromeda::ResourceManager::Binary);
-	fs->addResourceType<andromeda::CubeTexture>("textures", andromeda::ResourceManager::Binary);
-	fs->addResourceType<andromeda::VolumeTexture>("textures", andromeda::ResourceManager::Binary);
 
 
-	log_warn("main() :: TODO: Rename to Font when Font library is setup fully.");	// This is being logged for a reason :p
-	fs->addResourceType<andromeda::FontFace>("fonts", andromeda::ResourceManager::Binary);
-}
-
-
-
-
-
-#include <andromeda/Graphics/texture.h>
 #include <andromeda/Resources2/resource_factory.h>
-#include <andromeda/Resources2/resource_builder.h>
+
 
 /*
 	The new resource engine :: Testing Phase
@@ -139,11 +113,25 @@ void configResourcesV2(andromeda::ResourceFactory * rf)
 	
 
 
+	/*
+		TODO:
+		Resource Setup will need to happen by the application.
+
+		The ResourceFactory is going to have a system for preloading a set of resources, 
+		with a callback when they are all done.
+
+		andromeda::Application 
+		can extend this interface -- this will allow global resources to be loaded in straight away with a loading screen -- automatically
+
+		"Scenes" could also extend the interface
+	*/
+
+
 
 	// Load Resource XML :: This call needs to be done by the application
 	rf->loadResources("../res", "resources.xml");
 
-	// Load Packaged Files! (Loop through all .pak(?) files in ../res/)
+	// Load Packaged Files! (Loop through all .pak/.zip/.whatever files in ../res/)
 }
 
 
@@ -181,16 +169,13 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	andromeda::initialise(hInstance);
 
 
-	// Resource management
-	configResources(andromeda::Andromeda::Andromeda::instance()->getResourceManager().get());
-
-	// New Resource Management
+	// Resource Management
 	configResourcesV2(andromeda::resourceFactory().get());
 
 
 
 	// Test the File Queue
-	andromeda::FileQueue fq;
+	//andromeda::FileQueue fq;
 	//fq.start();
 
 
@@ -211,7 +196,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 
 	log_debug("main() :: Fin");
 
-
+#if 0
 	fq.loadFile("test1.png", true, nullptr, nullptr);
 	fq.loadFile("test2.png", true, nullptr, nullptr);
 	fq.loadFile("test3.png", true, nullptr, nullptr);
@@ -224,7 +209,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	std::this_thread::sleep_for(std::chrono::seconds(1));
 
 	fq.stop();
-
+#endif
 
 	return 0;
 }

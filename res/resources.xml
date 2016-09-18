@@ -3,16 +3,6 @@
 
   <!-- This file should be autogen'd for the most part, or should be setup to list directories -->
 
-  <!-- Common Format -->
-  <resource>
-    <name>[name]</name>
-    <source>[fileName</source>
-  </resource>
-  
-
-  <text>andromeda.txt</text>
-  
-  
   <!--
   <directory>
     <resource>textures</resource>
@@ -20,7 +10,64 @@
   </directory>
   -->
   
+  
+  
+  
+  
+  
+  <!-- Common Format -->
+  <resource>
+    <name>[name]</name>
+    <source>[fileName</source>
+  </resource>
 
+
+  <!-- Not in Use Yet -->
+  <text>andromeda.txt</text>
+
+
+
+  <!-- Fonts -->
+  <font>
+    <name>arial</name>
+    <filename>fonts/arial.ttf</filename>
+  </font>
+  
+  <!-- Effects -->
+  <effect>
+	<name>deferred</name>
+	<filename>shaders/deferred.xml</filename>
+  </effect>
+  
+  <effect>
+	<name>shader</name>
+	<filename>shaders/shader.xml</filename>
+  </effect>
+  
+  
+  <effect>
+	<name>forward</name>
+	<filename></filename>
+  </effect>
+  
+  <effect>
+	<name>debug</name>
+	<filename></filename>
+  </effect>
+  
+
+
+  <!-- Utility Textures -->
+  <texture>
+    <name>white</name>
+    <filename>textures/white.png</filename>
+  </texture>
+  <texture>
+    <name>bezier</name>
+    <filename>textures/bezier.png</filename>
+  </texture>
+
+  <!-- Normal Textures -->
   <texture>
     <name>pattern</name>
     <filename>textures/pattern0.png</filename>
@@ -28,26 +75,17 @@
   </texture>
 
 
-  
-  <texture>
-    <name></name>
-    <filename></filename>
-    <maxfilter></maxfilter>
-    <minfilter></minfilter>
-  </texture>
 
-
-
-
+  <!-- Skyboxes -->
   <cubetexture>
     <name>skybox</name>
-    <xpos>textures/icyhell/icyhell_rt.png</xpos>
+    <zpos>textures/icyhell/icyhell_rt.png</zpos>
     <ypos>textures/icyhell/icyhell_up.png</ypos>
-    <zpos>textures/icyhell/icyhell_ft.png</zpos>
+    <xpos>textures/icyhell/icyhell_ft.png</xpos>
 
-    <xneg>textures/icyhell/icyhell_lf.png</xneg>
+    <zneg>textures/icyhell/icyhell_lf.png</zneg>
     <yneg>textures/icyhell/icyhell_dn.png</yneg>
-    <zneg>textures/icyhell/icyhell_bk.png</zneg>
+    <xneg>textures/icyhell/icyhell_bk.png</xneg>
   </cubetexture>
 
   <cubetexture>

@@ -1,8 +1,9 @@
-#include "resource_texture.h"
+#include "texture_resource.h"
 
 #include <andromeda/andromeda.h>
 #include <andromeda/graphics.h>
 #include <andromeda/graphics_conversion.h>
+#include <andromeda/Graphics/texture.h>
 
 #include <andromeda/IO/file_location.h>
 
@@ -27,6 +28,7 @@ using namespace andromeda;
 */
 std::shared_ptr<ResourceEx<Texture, TextureResourceArgs>> TextureResourceBuilder::build(const boost::property_tree::ptree & propTree, const IFileLocation * location)
 {
+	// Get Args from Tree
 	boost::optional<std::string> name = util::getChildValueOptional(propTree, "name");
 	boost::optional<std::string> filename = util::getChildValueOptional(propTree, "filename");
 
@@ -40,7 +42,7 @@ std::shared_ptr<ResourceEx<Texture, TextureResourceArgs>> TextureResourceBuilder
 	if (!filename.is_initialized())
 		return nullptr;
 
-	log_debugp("TextureResourceBuilder :: build() :: Loading Texture");
+	log_debugp("TextureResourceBuilder :: build() :: Creating Texture Resource");
 	log_tree();
 
 
@@ -105,7 +107,7 @@ std::shared_ptr<Texture> TextureResourceBuilder::load(const TextureResourceArgs 
 	log_debugp("Loading a Texture : %1%", args.filename);
 
 
-	// Use the Loader to load the File
+	// Use the Loader to load the File :: This needs to be done on a seperate thread
 	std::shared_ptr<File> file = location->loadFile(args.filename, true);
 
 
@@ -113,15 +115,11 @@ std::shared_ptr<Texture> TextureResourceBuilder::load(const TextureResourceArgs 
 	//std::shared_ptr<Image> image = Image::LoadImageFromFile(args.filename);
 	std::shared_ptr<Image> image = Image::LoadImageFromMemory(file.get());
 
-
-	// Sends the Image Data to the Texture
-	
-
 	// Create Texture
 	std::shared_ptr<Texture> tex = graphics()->createTexture(image->width(), image->height(), args.format);
 
 	// Set Data
 	tex->data((UInt8*)image->data());
 
-	return tex;// std::move(tex);
+	return tex;
 }
