@@ -43,7 +43,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)include;$(SolutionDir)extern;$(IncludePath)</IncludePath>
+    <IncludePath>$(PYTHON_LIB)include;$(SolutionDir)include;$(SolutionDir)extern;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -85,6 +85,7 @@
     <ClInclude Include="include\andromeda\graphics_conversion.h" />
     <ClInclude Include="include\andromeda\IO\file_queue.h" />
     <ClInclude Include="include\andromeda\Renderer\graphics_state.h" />
+    <ClInclude Include="include\andromeda\Renderer\render_buffer.h" />
     <ClInclude Include="include\andromeda\Renderer\render_state.h" />
     <ClInclude Include="include\andromeda\Renderer\render_stage.h" />
     <ClInclude Include="include\andromeda\resources.h" />
@@ -125,6 +126,7 @@
     <ClInclude Include="include\andromeda\IO\file_location.h" />
     <ClInclude Include="include\andromeda\Resources2\resource_map.h" />
     <ClInclude Include="include\andromeda\Resources2\resource_factory.h" />
+    <ClInclude Include="include\andromeda\Scripts\python_script.h" />
     <ClInclude Include="include\andromeda\Utilities\image.h" />
     <ClInclude Include="include\andromeda\Graphics\font.h" />
     <ClInclude Include="include\andromeda\Resources\font_resource.h" />
@@ -141,6 +143,7 @@
     <ClInclude Include="include\andromeda\Resources\resource_manager.hpp" />
     <ClInclude Include="include\andromeda\Utilities\convert.h" />
     <ClInclude Include="include\andromeda\Utilities\Image\image_convert.h" />
+    <ClInclude Include="include\andromeda\Utilities\library.h" />
     <ClInclude Include="include\andromeda\Utilities\observable.h" />
     <ClInclude Include="include\andromeda\Renderer\layer.h" />
     <ClInclude Include="include\andromeda\Math\projection_matrix.h" />
@@ -161,6 +164,7 @@
     <ClInclude Include="src\andromeda\Resources2\resource_cube_texture.h" />
     <ClInclude Include="src\andromeda\Resources2\resource_texture.h" />
     <ClInclude Include="src\andromeda\Resources2\resource_volumetexture.h" />
+    <ClInclude Include="src\andromeda\Scripts\python_lib.h" />
     <ClInclude Include="src\opengl\Graphics\cube_texture_gl.h" />
     <ClInclude Include="src\opengl\Graphics\frame_buffer_gl.h" />
     <ClInclude Include="src\opengl\Graphics\index_buffer_gl.h" />
@@ -256,6 +260,7 @@
     <ClInclude Include="src\xeffect\x_variable_map.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="include\andromeda\Scripts\readme.txt" />
     <Text Include="libdesign.txt" />
     <Text Include="Docs\code.txt" />
     <Text Include="Docs\notes.txt" />
@@ -282,7 +287,10 @@
     <ClCompile Include="src\andromeda\Renderer\Deferred\shadow_stage.cpp" />
     <ClCompile Include="src\andromeda\Renderer\Deferred\ambient_light.cpp" />
     <ClCompile Include="src\andromeda\Renderer\graphics_state.cpp" />
+    <ClCompile Include="src\andromeda\Renderer\render_buffer.cpp" />
     <ClCompile Include="src\andromeda\Renderer\render_stage.cpp" />
+    <ClCompile Include="src\andromeda\Renderer\scene_graph_heirarchy.cpp" />
+    <ClCompile Include="src\andromeda\Renderer\scene_graph_node.cpp" />
     <ClCompile Include="src\andromeda\resources.cpp" />
     <ClCompile Include="src\andromeda\Engine\application.cpp" />
     <ClCompile Include="src\andromeda\Engine\config.cpp" />
@@ -306,6 +314,8 @@
     <ClCompile Include="src\andromeda\Resources2\resource_factory.cpp" />
     <ClCompile Include="src\andromeda\Resources2\builder_texture.cpp" />
     <ClCompile Include="src\andromeda\Resources2\builder_volume_texture.cpp" />
+    <ClCompile Include="src\andromeda\Scripts\python_lib.cpp" />
+    <ClCompile Include="src\andromeda\Scripts\python_script.cpp" />
     <ClCompile Include="src\andromeda\Utilities\Helpers\ptree_helper.cpp" />
     <ClCompile Include="src\andromeda\Utilities\image.cpp" />
     <ClCompile Include="src\opengl\Graphics\cube_texture_gl.cpp" />

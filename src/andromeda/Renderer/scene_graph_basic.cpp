@@ -66,7 +66,7 @@ Boolean BasicSceneGraph::hasObject(std::shared_ptr<GameObject> object)
 /*
 	Adds a game object
 */
-Boolean BasicSceneGraph::addGameObject(std::shared_ptr<GameObject> object)
+Boolean BasicSceneGraph::addGameObject(const std::shared_ptr<GameObject> & object)
 {
 	// Validate Object
 	assert(object);
@@ -103,7 +103,7 @@ Boolean BasicSceneGraph::removeGameObject(const std::string & name)
 /*
 	Removes a game object
 */
-Boolean BasicSceneGraph::removeGameObject(std::shared_ptr<GameObject> object)
+Boolean BasicSceneGraph::removeGameObject(const std::shared_ptr<GameObject> & object)
 {
 	assert(object);
 

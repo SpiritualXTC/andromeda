@@ -23,6 +23,7 @@
 #include <andromeda/Renderer/renderer_deferred.h>
 #include <andromeda/Renderer/scene.h>
 #include <andromeda/Renderer/scene_graph_basic.h>
+#include <andromeda/Renderer/scene_graph_hierarchy.h>
 #include <andromeda/Renderer/scene_manager.h>
 #include <andromeda/Renderer/view.h>
 #include <andromeda/Renderer/view_builder.h>

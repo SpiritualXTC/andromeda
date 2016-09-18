@@ -40,7 +40,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)include;$(SolutionDir)extern;$(IncludePath)</IncludePath>
+    <IncludePath>$(PYTHON_LIB)include;$(SolutionDir)include;$(SolutionDir)extern;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\x86;$(SolutionDir)Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

@@ -34,11 +34,11 @@ namespace andromeda
 		Boolean hasObject(const std::string & name) override;
 		Boolean hasObject(std::shared_ptr<GameObject> object) override;
 
-		Boolean addGameObject(std::shared_ptr<GameObject> object) override;
+		Boolean addGameObject(const std::shared_ptr<GameObject> & object) override;
 		Boolean removeGameObject(const std::string & name) override;
-		Boolean removeGameObject(std::shared_ptr<GameObject> object) override;
+		Boolean removeGameObject(const std::shared_ptr<GameObject> & object) override;
 
-		const Int32 getObjectCount() const override
+		const UInt32 getObjectCount() const override
 		{
 			return _objects.size();
 		}

@@ -71,9 +71,20 @@ std::shared_ptr<ILayer> RenderStage::addLayer(const std::string & renderGroup,
 */
 void RenderStage::update(SceneGraph * sg)
 {
+	// OLD
 	sg->process(_cache);
-}
 
+	// Change Meh
+
+#if 0
+	// NEW
+	// Iterate through the scene graph
+	for (const auto & it : sg)
+	{
+
+	}
+#endif
+}
 
 
 /*
@@ -83,11 +94,6 @@ void RenderStage::begin(GraphicsState & gs)
 {
 	// Nothing
 }
-
-
-
-
-
 
 
 /*
@@ -105,8 +111,6 @@ void RenderStage::render(GraphicsState & gs)
 	// End the Stage
 	end(gs);
 }
-
-
 
 
 /*

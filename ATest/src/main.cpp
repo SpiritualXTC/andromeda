@@ -149,6 +149,112 @@ void configResourcesV2(andromeda::ResourceFactory * rf)
 
 
 
+#include <andromeda/Game/game_object.h>
+#include <andromeda/Renderer/scene_graph_hierarchy.h>
+
+void itSG(andromeda::SceneGraphNode * sg)
+{
+	using namespace andromeda;
+	
+	log_tree();
+	
+	for (auto & it : *sg)
+	{
+		const std::shared_ptr<andromeda::GameObject>  & go = it->getObject();
+
+		if (go)
+			log_verbosep("Object = %1%", go->getName());
+		else
+			log_verbosep("Object is probably root");
+
+		itSG(it.get());
+	}
+}
+
+
+void testSG()
+{
+	// Test the SceneGraph
+	log_warn("Scene Graph Test");
+	log_verbose("---------------------------------------------");
+
+	andromeda::SceneGraphHierarchy sgh;
+
+	sgh.addGameObject(std::make_shared<andromeda::GameObject>("go1"));
+	sgh.addGameObject(std::make_shared<andromeda::GameObject>("go2"));
+	sgh.addGameObject(std::make_shared<andromeda::GameObject>("go3"));
+	sgh.addGameObject(std::make_shared<andromeda::GameObject>("go4"));
+	sgh.addGameObject(std::make_shared<andromeda::GameObject>("go5"));
+
+
+	itSG(&sgh);
+	log_verbose("---------------------------------------------");
+
+	sgh.addGameObject(std::make_shared<andromeda::GameObject>("go1"));	// should fail.
+	sgh.addGameObject(std::make_shared<andromeda::GameObject>("go21"), "go2");
+	sgh.addGameObject(std::make_shared<andromeda::GameObject>("go22"), "go2");
+	sgh.addGameObject(std::make_shared<andromeda::GameObject>("go31"), "go3");
+	sgh.addGameObject(std::make_shared<andromeda::GameObject>("go32"), "go3");
+
+	itSG(&sgh);
+	log_verbose("---------------------------------------------");
+
+	sgh.addGameObject(std::make_shared<andromeda::GameObject>("go321"), "go32");
+	sgh.addGameObject(std::make_shared<andromeda::GameObject>("go322"), "go32");
+
+	itSG(&sgh);
+	log_verbose("---------------------------------------------");	
+
+	sgh.removeGameObject("go32");
+	sgh.removeGameObject("go21");
+	
+	itSG(&sgh);
+	log_verbose("---------------------------------------------");
+
+	sgh.addGameObject(std::make_shared<andromeda::GameObject>("go32"), "go3");
+	sgh.addGameObject(std::make_shared<andromeda::GameObject>("go21"), "go2");
+
+	itSG(&sgh);
+	log_verbose("---------------------------------------------");
+
+
+
+	log_warn("End Scene Graph Tests");
+}
+
+
+
+
+#include <andromeda/Scripts/python_script.h>
+/*
+	do actual python tests
+*/
+void doTestPython()
+{
+	andromeda::python::PythonScript ps;
+
+}
+
+
+/*
+	test python:
+	using the aux function due to destructer logic :P
+*/
+void testPython()
+{
+	log_warn("Python Scripting Test");
+	log_verbose("---------------------------------------------");
+
+
+	//doTestPython();
+	
+
+
+	
+	log_verbose("---------------------------------------------");
+	log_warn("Python Scripting Test");
+}
+
 
 
 /*
@@ -199,6 +305,9 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	std::shared_ptr<andromeda::Application> app = std::make_shared<App>();
 
 
+	// TODO: Remove Meh
+	testSG();
+	testPython();
 
 
 	// Run Engine

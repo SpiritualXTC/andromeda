@@ -546,6 +546,18 @@
     <ClInclude Include="src\andromeda\Renderer\Deferred\shadow_stage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\andromeda\Renderer\render_buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\andromeda\Scripts\python_lib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Scripts\python_script.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Utilities\library.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Docs\readme.txt" />
@@ -559,6 +571,7 @@
     <Text Include="libdesign.txt" />
     <Text Include="todo.txt" />
     <Text Include="res\shader\deferredShadow.vs" />
+    <Text Include="include\andromeda\Scripts\readme.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\andromeda\Engine\engine.cpp">
@@ -895,6 +908,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Renderer\Deferred\geometry_environment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\render_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\scene_graph_heirarchy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Scripts\python_lib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Scripts\python_script.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\scene_graph_node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -50,6 +50,12 @@ namespace andromeda
 	protected:
 		std::shared_ptr<RenderCache> & getCache() { return _cache; }
 
+
+		inline RenderableGroup * getRenderableGroup()
+		{
+			return nullptr;
+		}
+
 	private:
 
 
