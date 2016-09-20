@@ -10,6 +10,11 @@
 
 #include <boost/python.hpp>
 
+
+/*
+	TODO:
+	This doesn't need to be exposed.
+*/
 namespace andromeda
 {
 	namespace python

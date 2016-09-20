@@ -8,14 +8,7 @@
 #include <andromeda/Renderer/layer.h>
 #include <andromeda/Renderer/render_stage.h>
 
-#include <andromeda/Renderer/graphics_state.h>
-//#include <andromeda/Renderer/render_cache.h>
-#include <andromeda/Renderer/scene_graph.h>
-
-
-
-#include "renderable_group.h"
-
+#include <andromeda/Renderer/render_state.h>
 
 using namespace andromeda;
 
@@ -166,7 +159,7 @@ void Renderer::update()
 /*
 
 */
-void Renderer::render(GraphicsState & gs)
+void Renderer::render(RenderState & state)
 {
 	// Renders all the Stages
 	for (const auto & it : _stages)
@@ -175,13 +168,13 @@ void Renderer::render(GraphicsState & gs)
 		if (!rs) continue;
 
 		// Push a new Graphics State
-		gs.push();
+		state.push();
 
 		// Render the Scene :: Configuration happens inside the function now.
-		rs->render(gs);
+		rs->render(state);
 
 		// Pop the Graphics State
-		gs.pop();
+		state.pop();
 	}
 
 

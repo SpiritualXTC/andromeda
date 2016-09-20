@@ -26,7 +26,7 @@ namespace andromeda
 
 
 	public:
-		Scene(const std::string & name, std::shared_ptr<SceneGraph> sceneGraph);
+		Scene(const std::string & name, const std::shared_ptr<SceneGraph> & sceneGraph);
 		virtual ~Scene();
 
 		/*

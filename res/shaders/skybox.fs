@@ -14,7 +14,7 @@ out vec4 o_color;
 void main()
 {
 	// Sample Cube
-	vec4 skybox = texture(u_diffuseTexture, v_cubeTextureCoords);
+	vec4 skybox = texture(u_diffuseTexture, normalize(v_cubeTextureCoords));
 
 	// Set Output Color
 	o_color = skybox;

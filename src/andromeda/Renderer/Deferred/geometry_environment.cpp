@@ -3,6 +3,8 @@
 #include <andromeda/Graphics/texture.h>
 #include <andromeda/Graphics/effect.h>
 
+#include <andromeda/Renderer/graphics_state.h>
+
 #include <andromeda/Utilities/log.h>
 
 using namespace andromeda;
@@ -30,7 +32,7 @@ DeferredGeometryEnvironment::~DeferredGeometryEnvironment()
 /*
 
 */
-void DeferredGeometryEnvironment::begin(const IShader * shader)
+void DeferredGeometryEnvironment::begin(GraphicsState & state)
 {
 
 	if (_enviromentReflection)
@@ -38,19 +40,19 @@ void DeferredGeometryEnvironment::begin(const IShader * shader)
 		_enviromentReflection->bind(10);
 
 		/*
-			TODO: Setup Texture Annotations
+		TODO: Setup Texture Annotations
 		*/
-		shader->setUniform("u_envReflection", 10);
+		state.setUniform("u_envReflection", 10);
 	}
 
-	
+
 
 }
 
 /*
 
 */
-void DeferredGeometryEnvironment::end(const IShader * shader)
+void DeferredGeometryEnvironment::end(GraphicsState & state)
 {
 	if (_enviromentReflection)
 	{

@@ -6,7 +6,7 @@
 namespace andromeda
 {
 	// Forward Declarations
-	class RenderState;
+	class GraphicsState;
 
 
 	/*
@@ -25,7 +25,7 @@ namespace andromeda
 		virtual ~IRenderable() {}
 
 		// Render the Object
-		virtual void render(RenderState & rs) = 0;
+		virtual void render(GraphicsState & state) = 0;
 
 		//Get Unique ID of the Renderable
 		inline const Int32 id() const { return _id; }

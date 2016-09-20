@@ -1,4 +1,4 @@
-#include <andromeda/Renderer/scene_graph_hierarchy.h>
+#include <andromeda/Renderer/scene_graph.h>
 
 #include <andromeda/Game/game_object.h>
 
@@ -10,7 +10,7 @@ using namespace andromeda;
 /*
 
 */
-SceneGraphHierarchy::SceneGraphHierarchy()
+SceneGraph::SceneGraph()
 {
 
 }
@@ -19,7 +19,7 @@ SceneGraphHierarchy::SceneGraphHierarchy()
 /*
 
 */
-SceneGraphHierarchy::~SceneGraphHierarchy()
+SceneGraph::~SceneGraph()
 {
 
 }
@@ -30,7 +30,7 @@ SceneGraphHierarchy::~SceneGraphHierarchy()
 
 	Is an object with the name in the Scene Graph?
 */
-Boolean SceneGraphHierarchy::hasObject(const std::string & name)
+Boolean SceneGraph::hasObject(const std::string & name)
 {
 	// Search for the Node
 	const auto & it = _nodes.find(name);
@@ -45,7 +45,7 @@ Boolean SceneGraphHierarchy::hasObject(const std::string & name)
 
 	Is the object in the Scene Graph? (Currently is only doing a name scan)
 */
-Boolean SceneGraphHierarchy::hasObject(std::shared_ptr<GameObject> object)
+Boolean SceneGraph::hasObject(std::shared_ptr<GameObject> object)
 {
 	return hasObject(object->getName());
 }
@@ -56,7 +56,7 @@ Boolean SceneGraphHierarchy::hasObject(std::shared_ptr<GameObject> object)
 
 	Gets the Node
 */
-SceneGraphHierarchy::SceneGraphNode * SceneGraphHierarchy::getNode(const std::string & name)
+SceneGraphNode * SceneGraph::getNode(const std::string & name)
 {
 	// Search for the Node
 	const auto & it = _nodes.find(name);
@@ -75,7 +75,7 @@ SceneGraphHierarchy::SceneGraphNode * SceneGraphHierarchy::getNode(const std::st
 
 	Gets the Game Object
 */
-std::shared_ptr<GameObject> SceneGraphHierarchy::getGameObject(const std::string & name)
+std::shared_ptr<GameObject> SceneGraph::getGameObject(const std::string & name)
 {
 	SceneGraphNode * node = getNode(name);
 
@@ -89,7 +89,7 @@ std::shared_ptr<GameObject> SceneGraphHierarchy::getGameObject(const std::string
 
 	Adds a GameObject to the Root
 */
-Boolean SceneGraphHierarchy::addGameObject(const std::shared_ptr<GameObject> & object)
+Boolean SceneGraph::addGameObject(const std::shared_ptr<GameObject> & object)
 {
 	assert(!!object);
 
@@ -103,7 +103,7 @@ Boolean SceneGraphHierarchy::addGameObject(const std::shared_ptr<GameObject> & o
 
 	Adds a GameObject to a Parent
 */
-Boolean SceneGraphHierarchy::addGameObject(const std::shared_ptr<GameObject> & object, const std::string & parent)
+Boolean SceneGraph::addGameObject(const std::shared_ptr<GameObject> & object, const std::string & parent)
 {
 	assert(!!object);
 
@@ -123,7 +123,7 @@ Boolean SceneGraphHierarchy::addGameObject(const std::shared_ptr<GameObject> & o
 
 	Adds a GameObject to a Node
 */
-Boolean SceneGraphHierarchy::addGameObject(const std::shared_ptr<GameObject> & object, SceneGraphNode * parent)
+Boolean SceneGraph::addGameObject(const std::shared_ptr<GameObject> & object, SceneGraphNode * parent)
 {
 	// Validate Duplicate Node
 	if (hasObject(object->getName()))
@@ -147,7 +147,7 @@ Boolean SceneGraphHierarchy::addGameObject(const std::shared_ptr<GameObject> & o
 
 	Removes a GameObject from the SceneGraph
 */
-Boolean SceneGraphHierarchy::removeGameObject(const std::string & name)
+Boolean SceneGraph::removeGameObject(const std::string & name)
 {
 	// Get the Node
 	SceneGraphNode * node = getNode(name);
@@ -171,7 +171,7 @@ Boolean SceneGraphHierarchy::removeGameObject(const std::string & name)
 	
 	Removes a GameObject from the SceneGraph
 */
-Boolean SceneGraphHierarchy::removeGameObject(const std::shared_ptr<GameObject> & object)
+Boolean SceneGraph::removeGameObject(const std::shared_ptr<GameObject> & object)
 {
 	return removeGameObject(object->getName());
 }

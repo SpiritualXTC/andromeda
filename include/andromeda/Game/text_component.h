@@ -17,25 +17,8 @@ namespace andromeda
 	class Text;
 	class Geometry;
 
-	class RenderState;
+	class GraphicsState;
 
-#if 0
-	class TextRenderComponent : public RenderComponent
-	{
-	public:
-		TextRenderComponent(std::shared_ptr<Font> font, std::shared_ptr<ITransform> transform);
-
-		void render(const std::shared_ptr<andromeda::IShader> shader, andromeda::MatrixStack & ms) override;
-		void render(RenderState & rs) override;
-
-
-	private:
-		std::shared_ptr<Font> _font;
-		std::shared_ptr<ITransform> _transform;
-
-		std::string _string;
-	};
-#endif
 
 
 
@@ -48,7 +31,7 @@ namespace andromeda
 	public:
 		TextRenderComponent(std::shared_ptr<FontGraphics> font, std::shared_ptr<ITransform> transform);
 
-		void render(RenderState & rs) override;
+		void render(GraphicsState & rs) override;
 
 
 		Material & getMaterial() { return _material; }

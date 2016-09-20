@@ -2,8 +2,6 @@
 
 #include <cassert>
 
-#include <andromeda/Math/matrix_stack.h>
-#include <andromeda/Renderer/camera.h>
 #include <andromeda/Renderer/renderable.h>
 
 #include <andromeda/Utilities/log.h>
@@ -21,7 +19,6 @@ RenderableGroup::RenderableGroup(const std::string & groupName)
 }
 
 
-
 /*
 
 */
@@ -32,7 +29,9 @@ RenderableGroup::~RenderableGroup()
 
 
 /*
+	addRenderable():
 
+	Adds a renderable to the list
 */
 Boolean RenderableGroup::addRenderable(IRenderable * renderable)
 {
@@ -45,50 +44,31 @@ Boolean RenderableGroup::addRenderable(IRenderable * renderable)
 	return true;
 }
 
-/*
 
+/*
+	removeRenderable():
+
+	Remove a renderable from the list
 */
 Boolean RenderableGroup::removeRenderable(IRenderable * renderable)
 {
 	if (renderable == nullptr)
 		return false;
 
-	// TEMP, remove the renderable immediately
+	// TEMP :: remove the renderable immediately
+	// TODO :: This may need to be removed in a much smart manner
 	_renderables.erase(renderable);
 
 	return true;
 }
 
 
-
-#if 0
 /*
+	render():
 
+	Render the list of renderables
 */
-void RenderableGroup::render(std::shared_ptr<Camera> & camera, std::shared_ptr<IShader> shader)
-{
-//	assert(camera);
-
-	// Setup Matrix Stack :: Initialise with Camera View Matrix 
-	// Camera needs to be Rewritten
-	//MatrixStack ms(camera->getViewMatrix());
-	MatrixStack ms;
-
-	/*
-		TODO:
-		Render the RenderGroup
-	*/
-	// Render Objects With This Technique
-	for (const auto r : _renderables)
-	{
-		// Render the Renderable
-		r->render(shader, ms);
-	}
-}
-#endif
-
-
-void RenderableGroup::render(RenderState & rs)
+void RenderableGroup::render(GraphicsState & rs)
 {
 	for (const auto r : _renderables)
 	{

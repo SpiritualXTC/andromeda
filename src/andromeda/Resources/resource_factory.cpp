@@ -1,4 +1,4 @@
-#include <andromeda/Resources2/resource_factory.h>
+#include <andromeda/Resources/resource_factory.h>
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>

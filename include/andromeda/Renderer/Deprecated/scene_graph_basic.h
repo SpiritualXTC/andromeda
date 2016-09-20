@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "scene_graph.h"
+#include "../scene_graph.h"
 
 namespace andromeda
 {
@@ -63,7 +63,7 @@ namespace andromeda
 		/*
 			Update all the objects in the scene
 		*/
-		void update(const Float timeStep) override;
+		void update(Float timeStep) override;
 
 
 	private:

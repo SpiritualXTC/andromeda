@@ -1,7 +1,7 @@
 #include <andromeda/Scripts/python_script.h>
 
 
-#include "python_lib.h"
+#include <andromeda/Scripts/python_lib.h>
 
 #include <andromeda/Utilities/log.h>
 

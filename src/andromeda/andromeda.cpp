@@ -13,7 +13,7 @@
 #include <andromeda/Renderer/context.h>
 #include <andromeda/Renderer/scene_manager.h>
 
-#include <andromeda/Resources2/resource_factory.h>
+#include <andromeda/Resources/resource_factory.h>
 
 
 #include <andromeda/Utilities/log.h>

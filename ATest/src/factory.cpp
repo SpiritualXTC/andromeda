@@ -14,7 +14,7 @@
 
 #include <andromeda/Graphics/texture.h>
 
-#include <andromeda/Resources2/resource_factory.h>
+#include <andromeda/Resources/resource_factory.h>
 
 #include <andromeda/Utilities/image.h>
 
@@ -48,9 +48,6 @@ std::shared_ptr<andromeda::GameObject> Factory::createSkybox()
 
 	// Create Material
 	//std::shared_ptr<andromeda::Texture> tex = andromeda::LoadTexture("pattern0.png");
-
-
-
 	andromeda::Material material;
 
 	material.setDiffuse(1, 1, 1)
@@ -70,7 +67,6 @@ std::shared_ptr<andromeda::GameObject> Factory::createSkybox()
 
 		obj->addComponent<andromeda::RenderComponent>(render);
 	}
-
 
 	return obj;
 }
@@ -100,8 +96,6 @@ std::shared_ptr<andromeda::GameObject> Factory::createGround()
 //		return glm::vec3(fx, -4.0f, fz);
 		return glm::vec3(fx, fy, fz);
 	});
-
-
 
 
 	// Create Game Object
@@ -194,7 +188,6 @@ std::shared_ptr<andromeda::GameObject> Factory::createCube()
 }
 
 
-
 /*
 
 */
@@ -249,16 +242,8 @@ std::shared_ptr<andromeda::GameObject> Factory::createSphere(aFloat angle)
 	else
 		return nullptr;
 
-
-
-
 	return obj;
 }
-
-
-
-
-
 
 
 /*
@@ -313,10 +298,6 @@ std::shared_ptr<GameObject> Factory::createLight()
 }
 
 
-
-
-
-
 /*
 
 */
@@ -324,13 +305,6 @@ std::shared_ptr<GameObject> Factory::createText()
 {
 	return nullptr;
 }
-
-
-
-
-
-
-
 
 
 /*

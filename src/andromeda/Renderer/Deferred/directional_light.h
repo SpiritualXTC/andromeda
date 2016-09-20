@@ -25,7 +25,7 @@ namespace andromeda
 
 
 
-			void render(RenderState & rs) override;
+			void render(GraphicsState & state) override;
 
 
 

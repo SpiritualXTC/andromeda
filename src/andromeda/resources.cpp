@@ -2,7 +2,7 @@
 
 #include <andromeda/andromeda.h>
 
-#include <andromeda/Resources2/resource_factory.h>
+#include <andromeda/Resources/resource_factory.h>
 
 using namespace andromeda;
 

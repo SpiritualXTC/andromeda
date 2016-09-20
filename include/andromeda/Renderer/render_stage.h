@@ -3,6 +3,10 @@
 #include <memory>
 #include <vector>
 
+
+#include "render_cache.h"	// where renderablemanager is currently defined
+
+
 namespace andromeda
 {
 	class ILayer;
@@ -16,27 +20,41 @@ namespace andromeda
 	class RenderCache;
 	class RenderableGroup;
 
-	class GraphicsState;
+	class RenderState;
+
+
+	/*
+		TODO:
+		Reconstruct the RenderManager into multiple parts.
+
+		The RenderStage should act as a facade to the Manager
+	*/
+
+
 
 	/*
 
 	*/
-	class RenderStage
+	class RenderStage : public IRenderableManager
 	{
+	private:
+		typedef std::unordered_map<std::string, std::unique_ptr<RenderableGroup>> RenderGroupMap;
+
 	public:
 		RenderStage(const std::shared_ptr<Camera> & camera = nullptr, const std::shared_ptr<ILayerEnvironment> & enviroment = nullptr);
 		virtual ~RenderStage();
 
-		// THIS SECTION NEEDS TO DO CLASS SPECIFIC STUFF...
-		// FOR NOW ... NOTHING IS OK :)
-		virtual void begin(GraphicsState & gs);		// Begin Stage Setup
-		virtual void end(GraphicsState & gs);		// End Stage Setup
+		// Begin the State
+		virtual void begin(RenderState & gs);		
+
+		// End Stage Setup
+		virtual void end(RenderState & gs);			
 
 		// Update all the layers
 		void update(SceneGraph * sg);			
 
 		// Render all the layers
-		void render(GraphicsState & gs);		
+		void render(RenderState & state);
 
 		// Adds a Layer
 		std::shared_ptr<ILayer> addLayer(const std::string & renderGroup,
@@ -47,16 +65,21 @@ namespace andromeda
 		std::shared_ptr<Camera> & getCamera() { return _camera; }
 		const std::shared_ptr<Camera> & getCamera() const { return _camera; }
 
+
+
+
+		// Facade Passthroughs :: Currently has the implementation <,<
+		Boolean RenderStage::addRenderable(IRenderable * renderable, const std::string & group) override;
+		Boolean RenderStage::removeRenderable(IRenderable * renderable, const std::string & group) override;
+
+
 	protected:
-		std::shared_ptr<RenderCache> & getCache() { return _cache; }
-
-
-		inline RenderableGroup * getRenderableGroup()
-		{
-			return nullptr;
-		}
-
+		//std::shared_ptr<RenderCache> & getCache() { return _cache; }
+		RenderableGroup * getRenderGroup(const std::string & group);
+		
 	private:
+		
+
 
 
 		std::shared_ptr<Camera> _camera;
@@ -65,7 +88,11 @@ namespace andromeda
 
 
 		std::shared_ptr<ILayerEnvironment> _environment;
-		std::vector<std::shared_ptr<ILayer>> _layers;
+		std::vector<std::shared_ptr<ILayer>> _layers;		// Unique Ptr?
+
+
+
+		RenderGroupMap _renderGroups;
 	};
 
 }

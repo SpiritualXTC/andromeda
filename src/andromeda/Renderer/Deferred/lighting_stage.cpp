@@ -34,8 +34,6 @@ DeferredLightingStage::DeferredLightingStage(const std::shared_ptr<ILayerEnviron
 
 	// Add the layer for directional lights
 	std::shared_ptr<ILayer> layer = addLayer("directional", effect, directionalTechnique);
-
-//	_directionalLights = getCache()->getRenderGroup("directional");
 }
 
 
@@ -46,26 +44,7 @@ DeferredLightingStage::DeferredLightingStage(const std::shared_ptr<ILayerEnviron
 void DeferredLightingStage::setRenderable(const std::shared_ptr<IRenderable> & renderable)
 {
 	// This is just a hack.
-	std::shared_ptr<RenderableGroup> dl = getCache()->getRenderGroup("directional");
+	RenderableGroup * dl = getRenderGroup("directional");
 
 	dl->addRenderable(renderable.get());
 }
-
-
-#if 0
-/*
-
-*/
-void DeferredLightingStage::addDirectionalLight(const std::shared_ptr<LightDirectional> & directional)
-{
-	// Only support for one directional light.
-	if (_renderable)
-		return;
-
-	// Create Renderable
-	_renderable = std::make_shared<deferred::DeferredDirectionalLight>(directional);
-
-	// Add to the Renderable Group
-	_directionalLights->addRenderable(_renderable.get());
-}
-#endif

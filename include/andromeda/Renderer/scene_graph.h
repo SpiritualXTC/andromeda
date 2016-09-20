@@ -1,77 +1,178 @@
 #pragma once
 
+
+#include <list>
 #include <memory>
+#include <unordered_map>
+#include <vector>
 
-
-#include <andromeda/glm.h>
 
 #include <andromeda/stddef.h>
 
-#include "renderable.h"
-
 namespace andromeda
 {
-	// Forward Declarations
 	class GameObject;
 
-	class RenderCache;
 
-
-	/*
-		This may look a little messy for awhile... while testing the iterators :)
-
-		Especially... as the iterator NEEDS to be abstract ... that is, reading from the iterator 
-		is exactly the same no matter what type of container is in use.
-	*/
 
 
 
 
 	/*
-		Once the Heirarchy SceneGraph is tested... remove this one.
+		This class is currently in an unoptimised form :)
 	*/
-	class SceneGraph
+	class SceneGraphNode
 	{
 	public:
+		typedef std::shared_ptr<SceneGraphNode> NodePtr;
+		typedef std::list<NodePtr> NodeList;
 
+		typedef NodeList::iterator iterator;
+		typedef NodeList::const_iterator const_iterator;
 
 	public:
-		SceneGraph() {}
-		virtual ~SceneGraph() {}
+		SceneGraphNode(SceneGraphNode * parent, const std::shared_ptr<GameObject> & o);
 
-		virtual std::shared_ptr<GameObject> getGameObject(const std::string & name) = 0;
+		// Gets the Object
+		inline const std::shared_ptr<GameObject> & getObject() const { return _object; }
+		inline SceneGraphNode * getParent() { return _parent; }
+		inline const SceneGraphNode * getParent() const { return _parent; }
 
-		virtual Boolean hasObject(const std::string & name) = 0;
-		virtual Boolean hasObject(std::shared_ptr<GameObject> object) = 0;
+
+		inline NodeList::iterator begin() { return _children.begin(); }
+		inline NodeList::iterator end() { return _children.end(); }
+
+		inline NodeList::const_iterator begin() const { return _children.cbegin(); }
+		inline NodeList::const_iterator end() const { return _children.cend(); }
 
 
-		virtual Boolean addGameObject(const std::shared_ptr<GameObject> & object) = 0;
-		virtual Boolean addGameObject(const std::shared_ptr<GameObject> & object, const std::string & parent) { return false; };	// THIS IS SUPPOSED TO BE PURE VIRTUAL :)
 
-		virtual Boolean removeGameObject(const std::string & name) = 0;
-		virtual Boolean removeGameObject(const std::shared_ptr<GameObject> & object) = 0;
+		// Adds a Node to the Child List
+		SceneGraphNode * add(const std::shared_ptr<GameObject> & child);
 
-		virtual const UInt32 getObjectCount() const = 0;
+		// Removes a Node from the Child List
+		Boolean remove(const std::shared_ptr<GameObject> & child);
 
-	
 
-		virtual std::shared_ptr<GameObject> operator[](const char * const name) = 0;
+		void update(Float timeStep);
+		
 
-		virtual void update(const Float timeStep) = 0;
+	protected:
+		SceneGraphNode() {}
+
+
+		// Destroys a Node
+		//virtual Boolean destroy();
+
+		// Updates a Node
+		
+
+
+	private:
+
+		SceneGraphNode * _parent;				// Reference to the parent
+		NodeList _children;						// List of Children ?? Could be a map as well? Determine later
+
+
+												// AABB :: Includes Self & children :)
+		void * _boundingBox;					// Obviously this shouldn't be void * :)
 
 
 		/*
 			TODO:
-			These really shouldn't be here.
-			Access should be done via a begin/end function to allow for better iteration
+			Make this a RAW pointer -- when object removal is enabled, tested and working :)
 		*/
-		virtual Boolean process(std::shared_ptr<RenderCache> & sgCache) = 0;
-
-
+		std::shared_ptr<GameObject> _object;	// Reference to the Object Itself
 	};
 
 
 
+	/*
+		A "Simple" SceneGraph is possible to be done by using the hierarchial sceneGraph, so the basic (and abstract) implementation should be removed :)
 
+		TODO:
+		Move this to the /Game area... maybe
+
+		Rename to SceneGraph
+	*/
+//	class SceneGraphHierarchy : public SceneGraphNode, virtual public SceneGraph
+	class SceneGraph : public SceneGraphNode
+	{		
+	public:
+		typedef std::unordered_map<std::string, SceneGraphNode*> NodeMap;
+
+		typedef NodeMap::iterator iterator;
+		typedef NodeMap::const_iterator const_iterator;
+
+
+
+	public:
+		SceneGraph();
+		virtual ~SceneGraph();
+
+		// Gets the Number of Objects in the SceneGraph
+		const inline UInt32 getObjectCount() const { return _nodes.size(); }
+
+		// Gets a Game Object
+		std::shared_ptr<GameObject> getGameObject(const std::string & name);
+
+		// Has an Object by the Specified Name
+		Boolean hasObject(const std::string & name); //override;
+
+		// Has the Specified Object
+		Boolean hasObject(std::shared_ptr<GameObject> object); //override;
+
+		// Adds a GameObject to the SceneGraph, with the root as a parent
+		Boolean addGameObject(const std::shared_ptr<GameObject> & object); //override;
+
+		// Adds a GameObject to the SceneGraph, with a specified parent
+		Boolean addGameObject(const std::shared_ptr<GameObject> & object, const std::string & parent); //override;
+		
+		// Removes a GameObject from the SceneGraph
+		Boolean removeGameObject(const std::string & name);//override;
+		
+		// Removes a GameObject from the SceneGraph
+		Boolean removeGameObject(const std::shared_ptr<GameObject> & object); //override;
+
+
+		// OBJECT RETRIEVAL :: TESTING
+		std::shared_ptr<GameObject> operator[](const char * const name) //override
+		{
+			return getGameObject(name);
+		}
+
+
+
+		
+
+		// REMOVE MEH. Remove from the INterface. REMOVE IT!
+//		Boolean process(std::shared_ptr<RenderCache> & sgCache) override { return false; }
+
+
+		// Required because of hte interface [TEMP] :: Interface is being removed
+		//		void update(Float timeStep) override { SceneGraphNode::update(timeStep); }
+
+
+
+		/*
+			TODO:
+			Temp Iterator
+
+			A much larger/smarter iterator system needs to be developed
+		*/
+		iterator begin() { return _nodes.begin(); }
+		iterator end() { return _nodes.end(); }
+
+		const_iterator cbegin() const { return _nodes.cbegin(); }
+		const_iterator cend() const { return _nodes.cend(); }
+
+	protected:
+		SceneGraphNode * getNode(const std::string & name);
+
+		Boolean addGameObject(const std::shared_ptr<GameObject> & object, SceneGraphNode * parent);
+
+
+	private:
+		NodeMap _nodes;
+	};
 }
-

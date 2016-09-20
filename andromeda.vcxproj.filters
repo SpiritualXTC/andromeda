@@ -171,9 +171,6 @@
     <ClInclude Include="include\andromeda\Renderer\view.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\andromeda\Renderer\scene_graph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\windows\Renderer\context_windows.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -184,9 +181,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\andromeda\Game\game_object.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\andromeda\Renderer\scene_graph_basic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\andromeda\Game\camera_component.h">
@@ -369,9 +363,6 @@
     <ClInclude Include="include\andromeda\Renderer\scene_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\andromeda\Renderer\scene_graph_hierarchy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\andromeda\Engine\updater.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -423,25 +414,10 @@
     <ClInclude Include="include\andromeda\andromeda_init.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\andromeda\Resources2\resource_factory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\andromeda\Resources2\resource_builder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\andromeda\Resources2\resource_factory.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\andromeda\Resources2\resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\andromeda\graphics_conversion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\opengl\graphics_gl_conversions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\andromeda\Resources2\resource_map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\andromeda\Utilities\Util\ptree_helper.h">
@@ -462,9 +438,6 @@
     <ClInclude Include="include\andromeda\Renderer\render_stage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\andromeda\Renderer\render_state.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\andromeda\Game\light_component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -475,9 +448,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\opengl\Graphics\index_buffer_gl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\andromeda\Renderer\graphics_state.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\andromeda\Renderer\render_cache.h">
@@ -504,18 +474,6 @@
     <ClInclude Include="src\andromeda\Renderer\Deferred\shadow_stage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\andromeda\Resources2\cube_texture_resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\andromeda\Resources2\texture_resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\andromeda\Resources2\volume_texture_resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\andromeda\Resources2\font_resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\andromeda\Graphics\Old\font_broken.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -528,9 +486,6 @@
     <ClInclude Include="include\andromeda\Utilities\string.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\andromeda\Resources2\effect_resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\andromeda\Renderer\render_buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -540,7 +495,46 @@
     <ClInclude Include="include\andromeda\Utilities\library.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\andromeda\Scripts\python_lib.h">
+    <ClInclude Include="include\andromeda\Scripts\python_lib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Resources\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Resources\resource_builder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Resources\resource_factory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Resources\resource_factory.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Resources\resource_map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\andromeda\Resources\cube_texture_resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\andromeda\Resources\effect_resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\andromeda\Resources\font_resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\andromeda\Resources\texture_resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\andromeda\Resources\volume_texture_resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Renderer\scene_graph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Renderer\render_state.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\andromeda\Renderer\graphics_state.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -635,9 +629,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Renderer\layer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Renderer\scene_graph_basic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Game\game_object.cpp">
@@ -796,22 +787,10 @@
     <ClCompile Include="src\andromeda\Utilities\image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\andromeda\Resources2\resource_factory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\andromeda\graphics_conversion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Utilities\Helpers\ptree_helper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Resources2\builder_cube_texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Resources2\builder_volume_texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Resources2\builder_texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\IO\file_text.cpp">
@@ -847,9 +826,6 @@
     <ClCompile Include="src\opengl\Graphics\index_buffer_gl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\andromeda\Renderer\graphics_state.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\andromeda\Renderer\render_cache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -874,9 +850,6 @@
     <ClCompile Include="src\andromeda\Renderer\Deferred\geometry_environment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\andromeda\Resources2\builder_font.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\andromeda\Graphics\old\font_broken.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -886,13 +859,7 @@
     <ClCompile Include="src\andromeda\Graphics\font_graphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\andromeda\Resources2\builder_effect.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\andromeda\Renderer\render_buffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\andromeda\Renderer\scene_graph_heirarchy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Renderer\scene_graph_node.cpp">
@@ -902,6 +869,30 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\andromeda\Scripts\python_script.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Resources\builder_cube_texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Resources\builder_effect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Resources\builder_font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Resources\builder_texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Resources\builder_volume_texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Resources\resource_factory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\scene_graph.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\andromeda\Renderer\render_state.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

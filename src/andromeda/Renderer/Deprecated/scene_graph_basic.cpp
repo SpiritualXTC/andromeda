@@ -1,4 +1,7 @@
+#if 0
+
 #include <andromeda/Renderer/scene_graph_basic.h>
+
 
 #include <cassert>
 
@@ -149,3 +152,5 @@ Boolean BasicSceneGraph::process(std::shared_ptr<RenderCache> & sgCache)
 
 	return true;
 }
+
+#endif

@@ -19,7 +19,7 @@ out vec3 v_cubeTextureCoords;
 void main()
 {
 	// Texture Coordinates - Including Inversions
-	v_cubeTextureCoords = vec3(a_position);
+	v_cubeTextureCoords = normalize(vec3(a_position));
 
 	// Calculate Position
 	gl_Position = u_projection * u_view * a_position;

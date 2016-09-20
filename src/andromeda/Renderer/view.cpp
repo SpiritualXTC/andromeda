@@ -2,7 +2,7 @@
 
 #include <andromeda/graphics.h>
 
-#include <andromeda/Renderer/graphics_state.h>
+#include <andromeda/Renderer/render_state.h>
 #include <andromeda/Renderer/renderer.h>
 
 #include <andromeda/Utilities/log.h>
@@ -148,7 +148,7 @@ void View::resize(const Int32 width, const Int32 height)
 */
 void View::render()
 {
-	GraphicsState gfxs;
+	RenderState rs;
 
 	/*
 		This should be an automatic component of the Graphics API when setting a weighted viewport
@@ -179,7 +179,7 @@ void View::render()
 	//glViewport(left, bottom, width, height);
 	
 
-	gfxs.setViewport(left, bottom, width, height);
+	rs.setViewport(left, bottom, width, height);
 
 
 
@@ -192,9 +192,9 @@ void View::render()
 	// Render Renderer
 	for (const auto & renderer : _renderer)
 	{
-		gfxs.push();
-		renderer.second->render(gfxs);
-		gfxs.pop();
+		rs.push();
+		renderer.second->render(rs);
+		rs.pop();
 	}
 
 

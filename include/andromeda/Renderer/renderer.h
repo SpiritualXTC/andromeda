@@ -26,8 +26,7 @@ namespace andromeda
 	class RenderableGroup;
 	class RenderCache;
 	class RenderStage;
-
-	class GraphicsState;
+	class RenderState;
 
 	/*
 		This will end up replacing BOTH, Layers & LayerGroups.
@@ -50,7 +49,7 @@ namespace andromeda
 
 		virtual void clear() = 0;
 		virtual void update() = 0;
-		virtual void render(GraphicsState & gs) = 0;
+		virtual void render(RenderState & gs) = 0;
 
 
 
@@ -95,7 +94,7 @@ namespace andromeda
 		void update() override;
 
 		// Renders all the methods!
-		void render(GraphicsState & gs) override;
+		void render(RenderState & gs) override;
 
 		// Resize : Doesn't require any action for the basic renderer
 		void resize(Float width, Float height) override;

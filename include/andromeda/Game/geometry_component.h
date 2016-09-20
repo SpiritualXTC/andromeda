@@ -10,7 +10,7 @@ namespace andromeda
 	class Texture;
 	class ITransform;
 	
-	class RenderState;
+	class GraphicsState;
 
 	class GeometryRenderComponent : public RenderComponent
 	{
@@ -20,7 +20,7 @@ namespace andromeda
 		virtual ~GeometryRenderComponent();
 
 
-		void render(RenderState & rs) override;
+		void render(GraphicsState & state) override;
 
 
 		Material & getMaterial() { return _material; }

@@ -16,8 +16,8 @@ namespace andromeda
 			DeferredGeometryStage(const std::shared_ptr<IFrameBuffer> & gBuffer, const std::shared_ptr<Camera> & camera = nullptr, const std::shared_ptr<ILayerEnvironment> & enviro = nullptr);
 
 
-			void begin(GraphicsState & gs) override;
-			void end(GraphicsState & gs) override;
+			void begin(RenderState & gs) override;
+			void end(RenderState & gs) override;
 
 		private:
 			std::shared_ptr<IFrameBuffer> _gBuffer;

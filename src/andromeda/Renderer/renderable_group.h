@@ -46,15 +46,10 @@
 
 namespace andromeda
 {
-	class Camera;
 	class IRenderable;
 
-	class IShader;	// Remove meh
-
-
-	class RenderState;
+	class GraphicsState;
 	
-
 	/*
 	
 	*/
@@ -71,15 +66,14 @@ namespace andromeda
 		// Get Number of Renderables
 		const UInt32 size() const { return _renderables.size(); }
 
+		// Adds a Renderable
 		Boolean addRenderable(IRenderable * renderable);
+
+		// Removes a Renderable
 		Boolean removeRenderable(IRenderable * renderable);
 
-
-
 		// Render all Objects
-		//void render(std::shared_ptr<Camera> & camera, std::shared_ptr<IShader> shader);
-
-		void render(RenderState & rs);
+		void render(GraphicsState & rs);
 
 
 	private:
@@ -87,6 +81,7 @@ namespace andromeda
 
 
 		// This should really be sorted .... by something useful :P
+		// However it may not matter :D
 		std::set<IRenderable*> _renderables;
 	};
 }

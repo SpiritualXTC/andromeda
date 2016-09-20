@@ -23,8 +23,8 @@
 #include <andromeda/Renderer/renderer.h>
 #include <andromeda/Renderer/renderer_deferred.h>
 #include <andromeda/Renderer/scene.h>
-#include <andromeda/Renderer/scene_graph_basic.h>
-#include <andromeda/Renderer/scene_graph_hierarchy.h>
+//#include <andromeda/Renderer/scene_graph_basic.h>
+#include <andromeda/Renderer/scene_graph.h>
 #include <andromeda/Renderer/scene_manager.h>
 #include <andromeda/Renderer/view.h>
 #include <andromeda/Renderer/view_builder.h>
@@ -59,7 +59,8 @@ Game::Game()
 
 
 	// Create the Scene
-	_scene = std::make_shared<andromeda::Scene>("game_scene", std::make_shared<andromeda::BasicSceneGraph>());
+	//_scene = std::make_shared<andromeda::Scene>("game_scene", std::make_shared<andromeda::BasicSceneGraph>());
+	_scene = std::make_shared<andromeda::Scene>("game_scene", std::make_shared<andromeda::SceneGraph>());
 
 	// Add Scene to Scene Manager
 	andromeda::scenes()->addScene(_scene);
@@ -83,7 +84,7 @@ Game::Game()
 
 	// Get Handle to Light
 	_light = directionalLight->getComponentPtr<andromeda::LightDirectionalComponent>();
-
+	_light->setSpecular(1.0f, 1.0f, 1.0f);
 
 
 
@@ -282,6 +283,7 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 	// Add Debug Stage :: Wireframes
 #if 0
 	deferred->addLayer("debug", "", effect, "wireframe");
+	deferred->addLayer("debug", "terrain", effect, "wireframe");
 #endif
 
 
@@ -290,15 +292,9 @@ std::shared_ptr<andromeda::View> Game::createView(aFloat x, aFloat y, aFloat w, 
 	view->addRenderer("deferred", deferred);
 
 
-
-
-
-
-
-
-
-	// Create Local SceneGraph :: This graph doesn't get updated
-	std::shared_ptr<andromeda::SceneGraph> dsg = std::make_shared<andromeda::BasicSceneGraph>();
+	// Create Local SceneGraph :: This graph doesn't get updated :: It should but it currently doesn't. lol
+	std::shared_ptr<andromeda::SceneGraph> dsg = std::make_shared<andromeda::SceneGraph>();
+	
 
 	// Create Debug Renderer :: This needs a different SceneGraph
 	std::shared_ptr<andromeda::IRenderer> debug = std::make_shared<andromeda::Renderer>(dsg);

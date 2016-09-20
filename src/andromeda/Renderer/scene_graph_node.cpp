@@ -1,4 +1,4 @@
-#include <andromeda/Renderer/scene_graph_hierarchy.h>
+#include <andromeda/Renderer/scene_graph.h>
 
 #include <andromeda/Game/game_object.h>
 
@@ -63,18 +63,27 @@ Boolean SceneGraphNode::remove(const std::shared_ptr<GameObject> & child)
 /*
 
 */
-void SceneGraphNode::update(float timeStep)
+void SceneGraphNode::update(Float timeStep)
 {
 	// Update GameObject
-	_object->update(timeStep);
+	if (_object)
+	{
+		_object->update(timeStep);
 
-	// Reset Bound Box to that of the Object
+		// Reset Bound Box to that of the Object
+	}
+	else
+	{
+		// Reset Bound Box to that of a negative extrusion
+	}
 
 	// Update Children
 	for (auto & n : _children)
 	{
+
 		// Update Child Node
-		n->update(timeStep);
+		if (n)
+			n->update(timeStep);
 
 		// Update Bounding Box
 		// Modify the Bound Box so that it extends to include itself and the child

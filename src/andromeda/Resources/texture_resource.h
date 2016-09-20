@@ -2,8 +2,8 @@
 
 #include <andromeda/graphics_types.h>
 
-#include <andromeda/Resources2/resource.h>
-#include <andromeda/Resources2/resource_builder.h>
+#include <andromeda/Resources/resource.h>
+#include <andromeda/Resources/resource_builder.h>
 
 
 

@@ -29,11 +29,15 @@ namespace andromeda
 			virtual ~PythonScript();
 
 		private:
+			// Leave this as being the first property ... 
+			// Makes it call the destructor last ... 
+			// Deal with a fix later :)
+			std::shared_ptr<PythonLib> _lib;
+
+
+
 			bp::object _namespace;
 			bp::object _module;
-			
-
-			std::shared_ptr<PythonLib> _lib;
 		};
 	}
 }

@@ -1,233 +1,279 @@
 #pragma once
 
-#include <stack>
+#include <cassert>
 
 #include <andromeda/stddef.h>
+#include <andromeda/glm.h>
 
-#include <andromeda/Math/region.h>
+#include <andromeda/graphics/effect.h>
+#include <andromeda/Graphics/material.h>
+#include <andromeda/Graphics/light.h>
 
-#include <andromeda/graphics.h>
+#include <andromeda/Renderer/camera.h>
 
 namespace andromeda
 {
-#if 0
-	/*
-		Move me to containers
-	*/
-	template <typename T>
-	class DualStateStack
-	{
-	public:
-		DualStateStack(const T & t)
-			: _original(t)
-			, _value(t)
-		{
-
-		}
-
-		virtual ~DualStateStack()
-		{
-
-		}
-
-		// Sets the New State
-		inline void setValue(T & value) { _altered = true; _value = value; }
-
-		inline T & getOriginal() const { return _original; }
-		inline T & getValue() const { return _value; }
-
-		inline Boolean isAltered() const { return _altered; }
-
-
-
-	private:
-		T _original;
-		T _value;
-		Boolean _altered = false;
-	};
 
 
 
 
 	/*
 		This is a temp class
+		It is to be used until shader annotations are setup
 
-		It is to be used until annotations are setup - unlike the other class this may not need to be changed after annotations are setup
+		Annotations may just go through this class
+		Central point to change things... related to the shader
 
-		This is at the "view" level
+		This is at the "pass" level
 	*/
-	class IGraphicsState
+	class GraphicsState : public IShader
 	{
+	private:
+		// Matrices
+		const std::string PROJECTION_MATRIX = "u_projection";
+		const std::string VIEW_MATRIX = "u_view";
+		const std::string MODEL_MATRIX = "u_model";
+		const std::string NORMAL_MATRIX = "u_normalMatrix";
+
+		const std::string VIEWMODEL_MATRIX = "u_modelview";
+
+		// Material
+		const std::string MATERIAL_AMBIENT = "u_ambientMaterial";				// This is ignored when using the GBuffer
+		const std::string MATERIAL_DIFFUSE = "u_diffuseMaterial";
+		const std::string MATERIAL_SPECULAR = "u_specularMaterial";				// This needs to be added to the GBuffer once the "white" specular is working correctly :: Seems to be working correctly -- or im going insane :)
+		const std::string MATERIAL_SHININESS = "u_shininessMaterial";	
+		const std::string MATERIAL_REFLECTIVITY = "u_reflectivityMaterial";
+
+		// Material Textures
+		const std::string TEXTURE_DIFFUSE = "u_diffuseTexture";
+
+
+		// Lighting
+		const std::string LIGHT_AMBIENT = "u_lightAmbient";
+		const std::string LIGHT_DIFFUSE = "u_lightDiffuse";
+		const std::string LIGHT_SPECULAR = "u_lightSpecular";
+
+		const std::string LIGHT_POSITION = "u_lightPosition";
+
+		const std::string LIGHT_SHADOW = "u_lightShadow";
+		const std::string LIGHT_SHADOW_MAP = "u_lightShadowMap";
+
+		// Environment
+
+
+		// GBuffer
+
+
 	public:
-		IGraphicsState(){}
+		GraphicsState(const IShader * shader, const Camera * camera)
+			: _shader(shader)
+			, _camera(camera)
+		{
+			assert(_camera);
+			assert(_shader);
 
-		virtual const Region2i & getViewport() const = 0;
-	};
+			// Assign Matrices
+			_projection = camera->getProjectionMatrix();
+			_view = camera->getViewMatrix();
 
 
-	// First Level
-	class GraphicsState : public IGraphicsState
-	{
-	public:
-		GraphicsState();						// First Level
-		virtual ~GraphicsState();				// Restoration
+			// Initial Shader States
+			_shader->setUniform(PROJECTION_MATRIX, _projection);
+			_shader->setUniform(VIEW_MATRIX, _view);
 
-		const Region2i & getViewport() const override { return _viewport; }
+			// Set Default Model Matrix
+			setModelMatrix(glm::mat4(1.0f));
+		}
+		virtual ~GraphicsState(){}
+
+
+
+
+		// Set Identity Model Matrix
+		inline void setModelMatrix()
+		{
+			setModelMatrix(glm::mat4(1.0f));
+		}
+
+		// Set Model Matrix
+		inline void setModelMatrix(const glm::mat4 & m) 
+		{
+			_model = m;
+			_viewModel = _view * _model;
+			_normalMatrix = glm::transpose(glm::inverse(glm::mat3(_model)));
+
+			_shader->setUniform(MODEL_MATRIX, _model);
+			_shader->setUniform(NORMAL_MATRIX, _normalMatrix);
+			_shader->setUniform(VIEWMODEL_MATRIX, _viewModel);
+		}
+
+
+
+
+
+		// Set Material States
+		inline void setMaterial(const Material & material)
+		{
+			setMaterialAmbient(material.getAmbient());
+			setMaterialDiffuse(material.getDiffuse());
+			setMaterialSpecular(material.getSpecular());
+			setMaterialShininess(material.getShininess());
+			setMaterialReflectivity(material.getReflectivity());
+
+			if (material.getDiffuseTexture())
+				setTextureDiffuse(0);
+		}
+
+		// Set Ambient Color
+		inline void setMaterialAmbient(const glm::vec3 & v)
+		{
+			_shader->setUniform(MATERIAL_AMBIENT, v);
+		}
+		// Set Diffuse Color
+		inline void setMaterialDiffuse(const glm::vec3 & v)
+		{
+			_shader->setUniform(MATERIAL_DIFFUSE, v);
+		}
+		// Set Specular Color
+		inline void setMaterialSpecular(const glm::vec3 & v)
+		{
+			_shader->setUniform(MATERIAL_SPECULAR, v);
+		}
+
+		// Set Shininess
+		inline void setMaterialShininess(Float f) 
+		{
+			_shader->setUniform(MATERIAL_SHININESS, f);
+		}
+
+		// Set Reflectivity
+		inline void setMaterialReflectivity(Float f)
+		{
+			_shader->setUniform(MATERIAL_REFLECTIVITY, f);
+		}
+
+
+		// Set Diffuse Texture
+		inline void setTextureDiffuse(Int32 bindIndex)
+		{
+			/*
+				TODO: Texture Annotation ???
+			*/
+			_shader->setUniform(TEXTURE_DIFFUSE, bindIndex);
+		}
+
+
+
+
+
+
+
+		// Set Light
+		inline void setLight(const LightDirectional & light)
+		{
+			setLightAmbient(light.getAmbient());
+			setLightDiffuse(light.getDiffuse());
+			setLightSpecular(light.getSpecular());
+
+			setLightPosition(-light.getDirection());
+
+			setLightShadowMap(light.getCastsShadow());
+		}
+
+		// Set Light Ambient Color
+		inline void setLightAmbient(const glm::vec3 & v)
+		{
+			_shader->setUniform(LIGHT_AMBIENT, v);
+		}
+		// Set Light Diffuse Color
+		inline void setLightDiffuse(const glm::vec3 & v)
+		{
+			_shader->setUniform(LIGHT_DIFFUSE, v);
+		}
+		// Set Light Specular Color
+		inline void setLightSpecular(const glm::vec3 & v)
+		{
+			_shader->setUniform(LIGHT_SPECULAR, v);
+		}
+		// Set Light Position
+		inline void setLightPosition(const glm::vec3 & v)
+		{
+			_shader->setUniform(LIGHT_POSITION, v);
+		}
+		// Set Light Shadow Map
+		inline void setLightShadowMap(Boolean enabled)
+		{
+			_shader->setUniform(LIGHT_SHADOW, enabled);
+			if (enabled)
+				_shader->setUniform(LIGHT_SHADOW_MAP, 20);	//20 = Texture Annotation
+		}
+
+
+
+
+		// Pass through
+		inline void setUniform(const std::string &name, const glm::mat3 &m) const override
+		{
+			_shader->setUniform(name, m);
+		}
+		inline void setUniform(const std::string &name, const glm::mat4 &m) const override
+		{
+			_shader->setUniform(name, m);
+		}
+
+		inline void setUniform(const std::string &name, const glm::fvec2 &v) const override
+		{
+			_shader->setUniform(name, v);
+		}
+		inline void setUniform(const std::string &name, const glm::fvec3 &v) const  override
+		{
+			_shader->setUniform(name, v);
+		}
+		inline void setUniform(const std::string &name, const glm::fvec4 &v) const  override
+		{
+			_shader->setUniform(name, v);
+		}
+
+		inline void setUniform(const std::string &name, const glm::ivec2 &v) const  override
+		{
+			_shader->setUniform(name, v);
+		}
+		inline void setUniform(const std::string &name, const glm::ivec3 &v) const  override
+		{
+			_shader->setUniform(name, v);
+		}
+		inline void setUniform(const std::string &name, const glm::ivec4 &v) const override
+		{
+			_shader->setUniform(name, v);
+		}
+		inline void setUniform(const std::string &name, const Float f) const override
+		{
+			_shader->setUniform(name, f);
+		}
+		inline void setUniform(const std::string &name, const Int32 i) const override
+		{
+			_shader->setUniform(name, i);
+		}
+		inline void setUniform(const std::string &name, const Boolean b) const override
+		{
+			_shader->setUniform(name, b);
+		}
 
 
 	private:
-		//std::stack<Region2i> _viewport;
-		Region2i _viewport;
+		const IShader * _shader = nullptr;
+		const Camera * _camera = nullptr;
+
+
+		glm::mat4 _projection;
+		glm::mat4 _view;
+		glm::mat4 _model;
+
+
+		glm::mat4 _viewModel;			// View * Model
+		
+		glm::mat3 _normalMatrix;		// transpose(inverse(mat3(_viewModel)))
 	};
 
 
-
-	class GraphicsStateStack : public IGraphicsState
-	{
-	public:
-		GraphicsStateStack(IGraphicsState & gs);
-		virtual ~GraphicsStateStack();
-
-		inline const Region2i & getViewport() const override { return _viewport.getValue(); }
-
-	private:
-		DualStateStack<Region2i> _viewport;
-	};
-
-#endif
-
-
-
-
-	class ViewportChange
-	{
-	public:
-		inline void apply(Graphics * g, const Region2i & region)
-		{
-			g->setViewport(region.minimum.x, region.minimum.y, region.size().x, region.size().y);
-		}
-	};
-
-
-
-	template <typename T, typename CB>
-	class MaskedStack : public CB
-	{
-		using CB::apply;
-	public:
-		void push(Graphics * g, UInt32 mask, const T & value)
-		{
-			// Append the Bit
-			_mask |= mask;
-			
-			// Set Value
-			apply(g, value);
-
-			// Add the Value
-			_stack.push(value);
-		}
-
-		void pop(Graphics * g, UInt32 mask)
-		{
-			// Pop the Value
-			if (_mask & mask)
-			{
-				// Pop the Top
-				_stack.pop();
-
-				// Restore Value
-				apply(g, _stack.top());
-			}
-
-			// Remove the Bit
-			_mask = _mask & ~mask;
-
-		}
-
-		T& top()
-		{
-			return _stack.top();
-		}
-
-	private:
-		std::stack<T> _stack;
-
-		UInt64 _mask = 0;
-	};
-
-
-	class GraphicsState
-	{
-	public:
-		GraphicsState();
-
-		void push();
-		void pop();
-
-		// Sets the Viewport
-		inline void setViewport(const Region2i & region)
-		{
-			// Push Viewport
-			_viewport.push(_graphics, _mask, region);
-		}
-
-		inline void setViewport(Int32 x, Int32 y, Int32 w, Int32 h)
-		{
-			_viewport.push(_graphics, _mask, Region2i(glm::ivec2(x, y), glm::ivec2(x + w, y + h)));
-		}
-
-
-		UInt32 mask() const { return _mask; }
-
-	private:
-		UInt32 _mask = 0x00000001;
-
-
-		Graphics * _graphics = nullptr;
-		MaskedStack<Region2i, ViewportChange> _viewport;
-	};
-
-
-
-#if 0
-	// Automatically handles the GraphicsState
-	class GraphicsStateStack
-	{
-	public:
-		GraphicsStateStack(GraphicsState & gss)
-			: _stack(gss)
-		{
-			_stack.push();
-		}
-		GraphicsStateStack(GraphicsStateStack & gssi)
-			: _stack(gssi.getGraphicsStack())
-		{
-			_stack.pop();
-		}
-
-		virtual ~GraphicsStateStack()
-		{
-			_stack.pop();
-		}
-
-
-
-
-		// Sets the Viewport
-		inline void setViewport(const Region2i & region)
-		{
-			_stack.setViewport(region);
-		}
-
-
-
-	private:
-		inline GraphicsState & getGraphicsStack() { return _stack; }
-		GraphicsState & _stack;
-	};
-#endif
 }
-
-
-
-

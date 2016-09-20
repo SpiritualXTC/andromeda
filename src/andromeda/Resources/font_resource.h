@@ -4,7 +4,7 @@
 
 #include <andromeda/stddef.h>
 
-#include <andromeda/Resources2/resource_builder.h>
+#include <andromeda/Resources/resource_builder.h>
 
 namespace andromeda
 {

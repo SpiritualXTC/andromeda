@@ -8,7 +8,7 @@
 #include <andromeda/Graphics/frame_buffer.h>
 
 #include <andromeda/Renderer/camera.h>
-#include <andromeda/Renderer/graphics_state.h>
+#include <andromeda/Renderer/render_state.h>
 
 using namespace andromeda;
 using namespace andromeda::deferred;
@@ -28,9 +28,9 @@ DeferredGeometryStage::DeferredGeometryStage(const std::shared_ptr<IFrameBuffer>
 /*
 
 */
-void DeferredGeometryStage::begin(GraphicsState & gs)
+void DeferredGeometryStage::begin(RenderState & state)
 {
-	gs.setViewport(0, 0, _gBuffer->width(), _gBuffer->height());
+	state.setViewport(0, 0, _gBuffer->width(), _gBuffer->height());
 
 	// Bind the Buffer
 	_gBuffer->bind();
@@ -46,7 +46,7 @@ void DeferredGeometryStage::begin(GraphicsState & gs)
 /*
 
 */
-void DeferredGeometryStage::end(GraphicsState & gs)
+void DeferredGeometryStage::end(RenderState & state)
 {
 	_gBuffer->unbind();
 }

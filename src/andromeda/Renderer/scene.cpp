@@ -11,7 +11,7 @@ using namespace andromeda;
 /*
 
 */
-Scene::Scene(const std::string & name, std::shared_ptr<SceneGraph> sceneGraph)
+Scene::Scene(const std::string & name, const std::shared_ptr<SceneGraph> & sceneGraph)
 	: _name(name)
 {
 
@@ -29,8 +29,6 @@ Scene::~Scene()
 
 }
 
-
-
 /*
 	Adds a SceneGraph
 */
@@ -42,30 +40,6 @@ Boolean Scene::addSceneGraph(const std::shared_ptr<SceneGraph> & sg, const std::
 
 	return true;
 }
-
-
-
-
-
-#if 0
-/*
-
-*/
-std::shared_ptr<View> Scene::addScreenView(const std::string & name, Float x, Float y, Float width, Float height, Int32 order)
-{
-	// Create the View
-	std::shared_ptr<View> view = std::make_shared<ScreenView>(x, y, width, height, order);
-
-	// Add the View
-	Boolean b = addView(view);
-	
-	// Validate
-	if (!b) return nullptr;
-
-	// Return the View
-	return view;
-}
-#endif
 
 
 /*

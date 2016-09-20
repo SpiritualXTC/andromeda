@@ -1,5 +1,12 @@
 #pragma once
 
+/*
+	layer.h:
+
+	Note:
+	Layer Extensions have been disabled/removed until they have a use case again.
+*/
+
 #include <memory>
 #include <string>
 #include <list>
@@ -32,7 +39,7 @@ namespace andromeda
 
 	class RenderableGroup;
 
-
+#if 0
 	// Layer Extension :: This ended up not being needed, but leaving it here anyway. Something might need it eventually.
 	class ILayerExtension
 	{
@@ -40,6 +47,8 @@ namespace andromeda
 		virtual void begin(const std::shared_ptr<IShader> & shader) = 0;
 		virtual void end(const std::shared_ptr<IShader> & shader) = 0;
 	};
+#endif
+
 
 	// Customise numerous options that need to be applied to many layers :: This is a temporary setup
 	// May Change it to be a list of uniforms
@@ -47,8 +56,11 @@ namespace andromeda
 	class ILayerEnvironment
 	{
 	public:
-		virtual void begin(const IShader * shader) = 0;
-		virtual void end(const IShader * shader) = 0;
+	//	virtual void begin(const IShader * shader) = 0;
+	//	virtual void end(const IShader * shader) = 0;
+
+		virtual void begin(GraphicsState & state) = 0;
+		virtual void end(GraphicsState & state) = 0;
 	};
 
 
@@ -61,7 +73,7 @@ namespace andromeda
 
 		virtual Boolean render(ILayerEnvironment * environment) = 0;
 
-		virtual Boolean addExtension(const std::shared_ptr<ILayerExtension> & extension) = 0;
+	//	virtual Boolean addExtension(const std::shared_ptr<ILayerExtension> & extension) = 0;
 	};
 
 
@@ -72,7 +84,7 @@ namespace andromeda
 	class Layer : virtual public ILayer
 	{
 	public:
-		Layer(const std::shared_ptr<Camera> & camera, const std::shared_ptr<Effect> & effect, const std::shared_ptr<RenderableGroup> rg);
+		Layer(const std::shared_ptr<Camera> & camera, const std::shared_ptr<Effect> & effect, RenderableGroup * rg);
 		virtual ~Layer();
 		
 
@@ -81,21 +93,24 @@ namespace andromeda
 		Boolean render(ILayerEnvironment * environment) override;							
 
 
-		Boolean addExtension(const std::shared_ptr<ILayerExtension> & extension) override;
+	//	Boolean addExtension(const std::shared_ptr<ILayerExtension> & extension) override;
 
 	protected:
 		inline std::shared_ptr<Camera> getCamera() { return _camera; }
-		inline std::shared_ptr<RenderableGroup> getRenderGroup() { return _renderGroup; }
+	//	inline std::shared_ptr<RenderableGroup> getRenderGroup() { return _renderGroup; }
+		inline RenderableGroup * getRenderGroup() { return _renderGroup; }
 
 	private:
 		std::shared_ptr<Effect> _effect;
 		std::weak_ptr<ITechnique> _technique;
 
+		
 		std::shared_ptr<Camera> _camera;
-		std::shared_ptr<RenderableGroup> _renderGroup;
+	//	std::shared_ptr<RenderableGroup> _renderGroup;
+		RenderableGroup * _renderGroup;
 
 
-		std::list<std::shared_ptr<ILayerExtension>> _extensions;
+	//	std::list<std::shared_ptr<ILayerExtension>> _extensions;
 	};
 
 

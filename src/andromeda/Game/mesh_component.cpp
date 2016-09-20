@@ -6,7 +6,7 @@
 #include <andromeda/Graphics/texture.h>
 #include <andromeda/Math/matrix_stack.h>
 #include <andromeda/Renderer/transform.h>
-#include <andromeda/Renderer/render_state.h>
+#include <andromeda/Renderer/graphics_state.h>
 
 using namespace andromeda;
 
@@ -33,10 +33,10 @@ MeshRenderComponent::~MeshRenderComponent()
 /*
 
 */
-void MeshRenderComponent::render(RenderState & rs)
+void MeshRenderComponent::render(GraphicsState & state)
 {
 	// Set Matrix
-	rs.setModelMatrix(_transform->matrix());
+	state.setModelMatrix(_transform->matrix());
 
 	// Loop through geometry
 	for (Int32 i = 0; i < _mesh->getGeometryCount(); ++i)
@@ -51,7 +51,7 @@ void MeshRenderComponent::render(RenderState & rs)
 			diffuseTex->bind();
 
 		// Set Material
-		rs.setMaterial(material);
+		state.setMaterial(material);
 
 		// Draw Geometry
 		_mesh->drawGeometry(i);

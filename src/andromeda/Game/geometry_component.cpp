@@ -4,9 +4,9 @@
 #include <andromeda/Geometry/geometry.h>
 #include <andromeda/Graphics/effect.h>
 #include <andromeda/Graphics/texture.h>
-#include <andromeda/Math/matrix_stack.h>
+
 #include <andromeda/Renderer/transform.h>
-#include <andromeda/Renderer/render_state.h>
+#include <andromeda/Renderer/graphics_state.h>
 
 using namespace andromeda;
 
@@ -20,6 +20,10 @@ GeometryRenderComponent::GeometryRenderComponent(std::shared_ptr<Geometry> geome
 	_material.setDiffuse(1, 1, 1);
 }
 
+
+/*
+
+*/
 GeometryRenderComponent::GeometryRenderComponent(std::shared_ptr<Geometry> geometry, const Material & material, std::shared_ptr<ITransform> transform)
 	: _geometry(geometry)
 	, _transform(transform)
@@ -27,7 +31,6 @@ GeometryRenderComponent::GeometryRenderComponent(std::shared_ptr<Geometry> geome
 {
 
 }
-
 
 
 /*
@@ -42,10 +45,10 @@ GeometryRenderComponent::~GeometryRenderComponent()
 /*
 
 */
-void GeometryRenderComponent::render(RenderState & rs)
+void GeometryRenderComponent::render(GraphicsState & state)
 {
 	// Set Model Matrix
-	rs.setModelMatrix(_transform->matrix());
+	state.setModelMatrix(_transform->matrix());
 
 	
 	// Get Textures
@@ -56,7 +59,7 @@ void GeometryRenderComponent::render(RenderState & rs)
 		diffuseTex->bind();
 
 	// Set Material
-	rs.setMaterial(_material);
+	state.setMaterial(_material);
 
 	// Render ALL Geometry
 	_geometry->render();

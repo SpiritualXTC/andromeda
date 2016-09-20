@@ -11,7 +11,7 @@
 
 
 #include <andromeda/Renderer/camera.h>
-#include <andromeda/Renderer/render_state.h>
+#include <andromeda/Renderer/graphics_state.h>
 #include <andromeda/Renderer/renderable.h>
 
 
@@ -38,7 +38,7 @@ using namespace andromeda;
 /*
 
 */
-Layer::Layer(const std::shared_ptr<Camera> & camera, const std::shared_ptr<Effect> & effect, const std::shared_ptr<RenderableGroup> rg)
+Layer::Layer(const std::shared_ptr<Camera> & camera, const std::shared_ptr<Effect> & effect, RenderableGroup * rg)
 	: _camera(camera)
 	, _effect(effect)
 	, _renderGroup(rg)
@@ -80,6 +80,7 @@ Boolean Layer::setActiveTechnique(const std::string & technique)
 
 
 
+#if 0
 /*
 
 */
@@ -91,7 +92,7 @@ Boolean Layer::addExtension(const std::shared_ptr<ILayerExtension> & extension)
 
 	return true;
 }
-
+#endif
 
 
 
@@ -127,30 +128,31 @@ Boolean Layer::render(ILayerEnvironment * environment)
 			continue;
 
 		// Set Graphics States
-		RenderState gs(p.get(), _camera.get());
+		GraphicsState gs(p.get(), _camera.get());
 		
 
 		
 		// Apply Environment Options
 		// TODO: RenderEnvironment ?
 		if (environment)
-			environment->begin(p.get());
+			environment->begin(gs);
+		//	environment->begin(p.get());
 
 		// Apply Extensions
-		for (const auto & ext : _extensions)
-			ext->begin(p);
+//		for (const auto & ext : _extensions)
+//			ext->begin(p);
 
 		// Render the RenderGroup
 		if (_renderGroup)
 			_renderGroup->render(gs);
-	//		_renderGroup->render(_camera, p);
 
 		// Apply Environment Options
 		if (environment)
-			environment->end(p.get());
+			environment->end(gs);
+			//environment->end(p.get());
 
-		for (const auto & ext : _extensions)
-			ext->end(p);
+//		for (const auto & ext : _extensions)
+//			ext->end(p);
 	}
 
 	return true;

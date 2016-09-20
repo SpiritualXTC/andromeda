@@ -1,5 +1,4 @@
-#ifndef _ANDROMEDA_GRAPHICS_MATERIAL_H_
-#define _ANDROMEDA_GRAPHICS_MATERIAL_H_
+#pragma once
 
 #include <memory>
 #include <string>
@@ -14,22 +13,12 @@ namespace andromeda
 {
 	class ITexture;
 
-	/*
-		Depending on how the material/mesh/geometry is all integrated this interface may be completely uneeded
-	*/
-	class IMaterial
-	{
-	public:
-		IMaterial() {}
-		virtual ~IMaterial() {}
-	};
-
 
 	/*
 		This class (and the shader) is built around how Asset Importer treats materials...
 		without all the complexities ... hopefully 
 	*/
-	class Material : virtual public IMaterial
+	class Material
 	{
 	public:
 		typedef glm::vec3 MatColor;
@@ -178,10 +167,10 @@ namespace andromeda
 
 	private:
 		// General
-		std::string _name;			// May not be needed at all ... 
+		std::string _name;								// Name of the material - Not really needed, but nice to have :)
 
 		// Color
-		Float _opacity = 1.0f;		// Opacity of the material
+		Float _opacity = 1.0f;							// Opacity of the material
 
 		MatColor _ambient{ 0.0f, 0.0f, 0.0f };			// Ambient Color
 		MatColor _diffuse{ 1.0f, 1.0f, 1.0f };			// Diffuse Color
@@ -198,5 +187,3 @@ namespace andromeda
 	};
 }
 
-
-#endif

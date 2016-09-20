@@ -6,9 +6,7 @@
 #include <andromeda/Graphics/effect.h>
 #include <andromeda/Graphics/texture.h>
 
-#include <andromeda/Math/matrix_stack.h>
-
-#include <andromeda/Renderer/render_state.h>
+#include <andromeda/Renderer/graphics_state.h>
 
 using namespace andromeda;
 using namespace andromeda::deferred;
@@ -54,35 +52,16 @@ DeferredDirectionalLight::DeferredDirectionalLight(const std::shared_ptr<LightDi
 }
 
 
-#if 0
-/*
-
-*/
-void DeferredDirectionalLight::render(const std::shared_ptr<IShader> shader, MatrixStack & ms)
-{
-	// Configure Light Settings
-
-	//glm::mat4 identity(1.0f);
-
-	shader->setUniform("u_modelview", ms.top());
-
-	// Render Full Screen Quad
-	_geometry->render();
-}
-#endif
-
 /*
 	render():
 
 */
-void DeferredDirectionalLight::render(RenderState & rs)
+void DeferredDirectionalLight::render(GraphicsState & state)
 {
 	// Set Identity Matrix
-	rs.setModelMatrix();
+	state.setModelMatrix();
 
-	// Set Light Attributes
-	if (_light)
-		rs.setLight(*_light.get());
+
 
 	// Bind Shadow Map
 	if (_shadowMap)
@@ -95,16 +74,21 @@ void DeferredDirectionalLight::render(RenderState & rs)
 		0.0f, 0.0f, 0.5f, 0.0f,
 		0.5f, 0.5f, 0.5f, 1.0);
 
+	// Precalculate
 	glm::mat4 biasMVP = biasMatrix * _lightMatrix;
 
-	
+	// Set Light Attributes
+	if (_light)
+		state.setLight(*_light.get());
 
 	// Light Matrices
 	//rs.setUniform("u_lightShadow", !!_shadowMap);	// Casts Shadow :: IE Do Shadow Mapping
-	rs.setUniform("u_lightShadowMatrix", biasMVP);
+	state.setUniform("u_lightShadowMatrix", biasMVP);
 	
+	// TODO :: This should be part of the Light Class
 	// Shadow Map
-	rs.setUniform("u_lightShadowMap", 20);	//20 = Texture Annotation .... <,<
+	//rs.setUniform("u_lightShadowMap", 20);	//20 = Texture Annotation .... <,<
+
 
 
 	// Render Full Screen Quad
