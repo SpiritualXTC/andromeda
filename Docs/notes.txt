@@ -5,14 +5,83 @@
 \____|__  /___|  /\____ | |__|   \____/|__|_|  /\___  >____ |(____  /
         \/     \/      \/                    \/     \/     \/     \/ 
 
- _______          __                 
- \      \   _____/  |_  ____   ______
- /   |   \ /  _ \   __\/ __ \ /  ___/
-/    |    (  <_> )  | \  ___/ \___ \ 
-\____|__  /\____/|__|  \___  >____  >
-        \/                 \/     \/ 
-                                     
-                                     
+
+Initialisation: [New Version]
+-----------------------------
+
+Andromeda
+ |
+ --- Config
+ |
+ --- ResourceManager ??? (System?)
+ |
+ --- System
+ |   |
+ |   --- Display
+ |   |
+ |	 --- Platform
+ |	 |   |
+ |	 |   --- Input Devices[]
+ |	 |	 
+ |	 | --- Context (Could be done by platform)
+ |   
+ |--- Timing
+ |
+ |--- Renderer
+ |
+ |--- EventManager
+
+
+
+Important:
+----------
+Rename:	andromeda/Platform to andromeda/System
+Move:	andromeda/Engine/system to andromeda/System/system
+
+
+
+Renderer Notes:
+---------------
+
+Relevant Classes:
+Renderer:
+	The renderer "configures" the context and clears the buffer.
+	Only a single renderer is needed.
+	A renderer contains multiple views/viewports
+
+View:
+	Viewport dimensions (as a weight [0, 1])
+	Each view contains knownledge about the active camera in the scene
+
+SceneGraph:
+	TODO: SceneGraph needs to be gutted and converted to a 2.5D Scene Graph (for simplification)
+	Contains all of the objects in a scene including lights, cameras, objects. EVERYTHING is a SceneGraphObject
+
+
+- A View has a reference to a SceneGraph
+- A SceneGraph contains a list of objects, camera, lights. Essenstially a complete list of all objects that comprise a scene
+	- The basic implementation will be non hierarchical SceneGraph.
+	- However it is also an interface so could (in theory) contain hierarchy with a different implementation
+
+
+
+1. The renderer is updated (drawn).
+2. FOREACH view.
+3.  Determine what objects in the scene need to be displayed
+
+
+
+
+
+Resource Notes:
+---------------
+- The Font: 'unispace.ttf' is NOT allowed to be used in embedded applications!
+	- For testing it will do :) lolololol
+	
+	
+	
+	
+	                                     
 Engine / System Modules:
 ------------------------
 - A better system could be implemented for the core heirarchy :(
@@ -32,6 +101,3 @@ src/windows/platform/platform_windows.cpp:
 					filter down to the context resize. 
 					And also fire off the resize event twice.
                                      
-
-
-

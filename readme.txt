@@ -5,17 +5,47 @@
 \____|__  /___|  /\____ | |__|   \____/|__|_|  /\___  >____ |(____  /
         \/     \/      \/                    \/     \/     \/     \/ 
 
+Installation:
+
+
+Directories:
+andromeda/				: Dource/Include locations
+ATest/					: Deprecated. Gut for new tests
+bin/					: Binaries
+build/					: Project Files
+Debug/					: Intermediate files
+Docs/					: General Random Notes / Documentation
+extern/					: Optional 3rd party location
+include/				: DEPRECATED: Gut for replacement
+res/					: Resources
+resource/				: Resources
+src/					: DEPRECATED: Gut for replacement
+test/					: New Test Environment
+
+TODO: REmove all project files once the new system is up and running
+		
+		
 
 TODO: (Overview)
-- Resource Management overhaul
-- File Management/Loading
-- Texture Annotations
-- Shader Annotations
-- Abstract OpenGL
-- XML Helper Library
-- zLib Support
-- RocketLib Support
-- Change ALL header include gates
+2018
+- CMake 								[-] (In Progress)
+	- Project Structure					[-] (In Progress)
+	- Library Linking					[-] (In Progress)
+	- Test Project						[-] (In Progress)
+	- Full Library Rebuild				[ ]
+- Review 2016 TODOS						[ ]
+- Rebuild SceneGraph for 2.5D only		[ ]
+
+2016
+- Resource Management overhaul			[ ]
+- File Management/Loading				[ ]
+- Texture Annotations					[ ]
+- Shader Annotations					[ ]
+- Abstract OpenGL						[ ]
+- XML Helper Library					[ ]
+- zLib Support							[ ]
+- RocketLib Support						[ ]
+- Change ALL header include gates		[ ]
 
 
 
@@ -52,7 +82,7 @@ Resource Management
 3rd Party DEPENDANCIES:
 boost
  - Required
- - Version 1.6
+ - Version 1.67.0
 
 glew
  - Required for Windows (Maybe others)

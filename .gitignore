@@ -12,7 +12,7 @@ lib/
 bin/
 CMakeFiles/
 Makefile
-*.cmake
+#*.cmake	#Cmake files are currently needed
 CMakeCache.txt
 
 # External Include Files
@@ -88,6 +88,9 @@ ipch/
 *.psess
 *.vsp
 *.vspx
+
+# Visual Studio Misc
+.vs/
 
 # TFS 2012 Local Workspace
 $tf/

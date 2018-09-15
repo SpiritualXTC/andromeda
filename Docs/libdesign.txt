@@ -13,27 +13,19 @@ Notes related to the Library Refactor:
 
 Directory Structure
 
-andromeda				
+andromeda[GIT_ROOT]				
 	/andromeda			
 		/andromeda		:: Core Library
 		/opengl			:: OpenGL Library
 		/windows		:: Windows Platform Implementation
 		/android		:: Android Platform Implementation
-		/sdl			:: SDL2 Platform Implementation
 		/xeffect		:: XEffect Library
-
+	/bin				:: Binaries -maybe-
+	/lib				:: Andromeda Libraries	-maybe-
+		
 	/build				:: Project Files
 		/vs2015			:: Visual Studio Files
 
-	/include			:: Header Library
-		/andromeda
-		/xeffect
-
-	/extern				:: External Library Headers
-		/<lib-name>		:: External Library
-	/lib				:: External Libraries
-		/<platform>
-			/<arch>
 	/res				:: Resources used by samples/tests
 		/fonts
 		/models
