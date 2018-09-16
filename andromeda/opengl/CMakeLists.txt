@@ -21,6 +21,10 @@ set(ANDROMEDA_OPENGL_SOURCE
 	mapping.h
 	opengl.h
 	opengl.cpp
+	shader.h
+	shader.cpp
+	shader_program.h
+	shader_program.cpp
 	texture.h
 	texture.cpp
 	vertex_buffer.h

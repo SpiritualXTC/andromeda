@@ -7,12 +7,14 @@ include(${PROJECT_ROOT}/common/addGLM.cmake)
 include(${PROJECT_ROOT}/common/addBoost.cmake)
 
 # TODO: Split by source_groups ("Shared" "Windows")
-set(ANDROMEDA_WINDOWS_SOURCE
+set(ANDROMEDA_SHARED_SOURCE
 	../shared/context.h
 	../shared/graphics.h
 	../shared/platform.h
 	../shared/platform.cpp
+)
 
+set(ANDROMEDA_WINDOWS_SOURCE
 	windows_gui.h
 	windows_gui.cpp
 	windows_opengl.h
@@ -23,8 +25,14 @@ set(ANDROMEDA_WINDOWS_SOURCE
 
 include(../../common/addGLEW.cmake)
 
+source_group("Windows" FILES ${ANDROMEDA_WINDOWS_SOURCE})
+source_group("Shared" FILES ${ANDROMEDA_SHARED_SOURCE})
+
 include_directories(${PROJECT_SOURCE_DIR}/andromeda)
-add_library(andromeda_windows ${ANDROMEDA_WINDOWS_SOURCE})
+add_library(andromeda_windows 
+	${ANDROMEDA_SHARED_SOURCE}
+	${ANDROMEDA_WINDOWS_SOURCE}
+)
 target_link_libraries(andromeda_windows andromeda_common andromeda_opengl)
 
 include(../../common.cmake)

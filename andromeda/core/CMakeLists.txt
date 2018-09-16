@@ -89,6 +89,7 @@ set(ANDROMEDA_CORE_GRAPHICS_SOURCE
 	Graphics/mesh.cpp
 	Graphics/renderer.h
 	Graphics/renderer.cpp
+	Graphics/shader.h
 	Graphics/texture.h
 	Graphics/types.h
 	Graphics/view.h
