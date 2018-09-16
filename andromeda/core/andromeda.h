@@ -46,7 +46,6 @@ namespace andromeda
 		std::shared_ptr<Timing> _timing;
 		std::shared_ptr<Graphics> _graphics;
 		
-
 		bool _running;
 	};
 }

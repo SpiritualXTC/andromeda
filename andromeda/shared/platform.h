@@ -5,7 +5,9 @@
 
 #include <common/types.h>
 
+#include <core/Engine/events.h>
 #include <core/Engine/module.h>
+
 
 namespace andromeda
 {
@@ -26,18 +28,29 @@ namespace andromeda
 	class IPlatform
 	{
 	public:
-		IPlatform(std::shared_ptr<Engine> engine) {}
-		//	virtual Boolean open() = 0;
-		//	virtual Boolean close() = 0;
-
-		//	virtual Boolean update() = 0;
+		IPlatform(std::shared_ptr<Engine> engine) 
+			: _engine(engine)
+		{
+		}
 
 		virtual std::shared_ptr<IContext> getContext() = 0;
 		virtual std::shared_ptr<IGraphics> getGraphics() = 0;
+		inline std::shared_ptr<Engine> getEngine() { return _engine; }
+		
+	private:
+		std::shared_ptr<Engine> _engine;
+	};
+
+	class IPlatformEvents
+	{
+	public:
+		IPlatformEvents() {}
+
+		virtual void notifyQuit() = 0;
 	};
 
 
-	class Platform : public IPlatform
+	class Platform : public IPlatform, public IPlatformEvents, public QuitObservable
 	{
 	public:
 		Platform(std::shared_ptr<Engine> engine);
@@ -47,8 +60,14 @@ namespace andromeda
 		// IPlatform
 		inline std::shared_ptr<IContext> getContext() override { return _impl->getContext(); }
 		inline std::shared_ptr<IGraphics> getGraphics() override { return _impl->getGraphics(); }
+	
+
+
+		//
+		void notifyQuit();
 
 	private:
+		
 
 		std::shared_ptr<IPlatform> _impl;
 	};

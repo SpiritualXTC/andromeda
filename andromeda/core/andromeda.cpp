@@ -24,13 +24,12 @@ Andromeda::Andromeda() :
 	// Create Timer
 	_timing = std::make_shared<Timing>();
 
-	
 	// TEMP: Timing should be the first module to be added
 	_engine->insert<Timing>(_timing);
 
 	// Create Platform Loader
 	_platform = std::make_shared<Platform>(_engine);
-
+	
 	// Add Platform Modules
 	_graphics = std::make_shared<Graphics>(_platform->getContext(),  _platform->getGraphics());
 

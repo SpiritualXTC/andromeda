@@ -17,7 +17,7 @@ namespace andromeda
 		class WindowsPlatform : public IPlatform, public WindowsGUI::Observer
 		{
 		public:
-			WindowsPlatform(std::shared_ptr<Engine> engine);
+			WindowsPlatform(std::shared_ptr<Engine> engine, IPlatformEvents* eventHandler);
 			virtual ~WindowsPlatform();
 
 			// IPlatform
@@ -34,6 +34,8 @@ namespace andromeda
 			std::shared_ptr<WindowsOpenGLContext> _context;
 
 			std::shared_ptr<IGraphics> _graphics;
+
+			IPlatformEvents* _eventHandler;
 		};
 
 	}

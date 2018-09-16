@@ -25,6 +25,7 @@ set(ANDROMEDA_CORE_ENGINE_SOURCE
 	Engine/display.h
 	Engine/engine.h
 	Engine/engine.cpp
+	Engine/events.h
 	Engine/module.h
 	Engine/module.cpp
 	Engine/scene.h

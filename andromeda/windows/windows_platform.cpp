@@ -17,8 +17,9 @@ using namespace andromeda::windows;
 
 
 
-WindowsPlatform::WindowsPlatform(std::shared_ptr<Engine> engine)
+WindowsPlatform::WindowsPlatform(std::shared_ptr<Engine> engine, IPlatformEvents* eventHandler)
 	: IPlatform(engine)
+	, _eventHandler(eventHandler)
 {
 	log_debug("Windows :: Platform Initialisation");
 
@@ -47,6 +48,11 @@ void WindowsPlatform::notify(LRESULT& result, HWND hWnd, UINT uMsg, WPARAM wPara
 {
 	switch (uMsg)
 	{
+	case WM_CLOSE:
+		if (_eventHandler)
+			_eventHandler->notifyQuit();
+		break;
+
 	case WM_KEYDOWN:
 		//	keyDown((Int8)wParam);
 		_keyboard->keyDown((Int8)wParam);
