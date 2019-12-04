@@ -8,6 +8,7 @@
 #include "Engine/config.h"
 #include "Engine/engine.h"
 #include "Engine/timing.h"
+#include "Engine/invoke.h"
 #include "Graphics/graphics.h"
 
 using namespace andromeda;
@@ -35,6 +36,9 @@ Andromeda::Andromeda() :
 
 	// Add Modules
 	_engine->insert<Graphics>(_graphics);
+
+	// Add Invoker
+	_engine->insert<Invoke>(std::make_shared<Invoke>());
 }
 
 Andromeda::~Andromeda()

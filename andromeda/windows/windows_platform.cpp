@@ -54,7 +54,6 @@ void WindowsPlatform::notify(LRESULT& result, HWND hWnd, UINT uMsg, WPARAM wPara
 		break;
 
 	case WM_KEYDOWN:
-		//	keyDown((Int8)wParam);
 		_keyboard->keyDown((Int8)wParam);
 		break;
 
@@ -107,9 +106,6 @@ void WindowsPlatform::notify(LRESULT& result, HWND hWnd, UINT uMsg, WPARAM wPara
 
 	case WM_MOUSEHWHEEL:
 		_mouse->mouseWheel(GET_WHEEL_DELTA_WPARAM(wParam));
-		//A_LOGD("> Mouse WHeeeeeeeeeeeeeeeeeee.......l\n");
-		// Dispatch Temporary Mouse Events!
-		//dispatchMouseWheelEvent(GET_WHEEL_DELTA_WPARAM(wParam), GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		break;
 	default:
 		return;

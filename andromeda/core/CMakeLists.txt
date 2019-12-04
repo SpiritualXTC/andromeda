@@ -26,6 +26,8 @@ set(ANDROMEDA_CORE_ENGINE_SOURCE
 	Engine/engine.h
 	Engine/engine.cpp
 	Engine/events.h
+	Engine/invoke.h
+	Engine/invoke.cpp
 	Engine/module.h
 	Engine/module.cpp
 	Engine/scene.h

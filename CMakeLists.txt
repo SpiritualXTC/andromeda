@@ -24,6 +24,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 add_subdirectory(${PROJECT_SOURCE_DIR}/andromeda/common)
 add_subdirectory(${PROJECT_SOURCE_DIR}/andromeda/core)
 add_subdirectory(${PROJECT_SOURCE_DIR}/andromeda/opengl)
+add_subdirectory(${PROJECT_SOURCE_DIR}/andromeda/effect)
 
 if (WIN32)
 	add_subdirectory(${PROJECT_SOURCE_DIR}/andromeda/windows)
