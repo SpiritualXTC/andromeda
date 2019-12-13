@@ -6,7 +6,70 @@
         \/     \/      \/                    \/     \/     \/     \/ 
 
 
-TODO: (Overview)
+
+
+
+TODO:
+- Rebuild project from scratch!
+
+- premake5 			[build tools]
+- Libraries
+	- General		[Boost]
+	- Assets		[AssImp]
+	- Physics 		[Bullet]
+	- UI			[imgui]
+	- Graphics		[OpenGL / GLEW]
+	- Compute		[OpenCL]
+	- SceneGraph	[OpenSceneGraph]
+	- FreeType		[FreeType]
+	- GLM			[Math]
+	- Extras
+		- osgbullet	[Integration of Bullet and OpenSceneGraph]
+
+
+
+File Structure:
+andromeda
+	/Build					[Build Scripts / Premake Files]
+	/Bin					[Binary Outputs]
+		/%cfg
+	/Immediate
+		/%cfg
+	/Vendor					[3rd Party Includes :: Would be great if it supported linking later, but leave it as is for now]
+	/Project				[Generated Project Files *.vs, *.make, etc]
+	
+	/Andromeda				[Interfaces/Header Only should be /Andromeda ?]
+		/Core				[Core Engine Interfaces]
+		/Compute			
+		/Graphics
+		/Physics
+		/UI
+		/Util				[Logging, etc]
+			
+	/Source					[Source]
+		/Core
+		/Platform			[Platform Specific Logic / GUI Management]
+			/%platform		[cfg = Windows / Android / Linux / etc]
+		/OpenGL				[Open GL]
+			/%platform		[Open GL Platform Specific Requirements]
+		/OpenCL				[Open CL]
+		/Bullet				[Physics]
+		/UI					[User Interface]
+		/Util
+		
+		Extras:
+		/XEffect			[May remove this]
+	/Data					[Resource Files]
+		*.dat				[Packaged Resource Files]
+		/Textures
+		/Shaders
+		/Meshes
+		/Fonts
+	/Resource				[Resource Project Files, blender/photoshop etc]
+
+
+
+TODO: (Overview) [OLD]
 - Resource Management overhaul
 - File Management/Loading
 - Texture Annotations
@@ -14,7 +77,7 @@ TODO: (Overview)
 - Abstract OpenGL
 - XML Helper Library
 - zLib Support
-- RocketLib Support
+- ImgUI
 - Change ALL header include gates
 
 
